@@ -3,8 +3,12 @@
 - **源分支**：`feature/m2-p1-python-core-hardening`
 - **目标分支**：`develop`
 - **任务包**：`M2-P1`（M2.1 + M2.2 + M2.3）
-- **提交**：`4dbbff3`
+- **提交**：`4dbbff3`（功能）、`22bc5e2`（PR 描述）、`3c72edc`（Tech Lead 评审结论与 TLS 边界文档）
 - **创建链接**：https://github.com/shaozhongfei001/Leibniz-KERT/compare/develop...feature/m2-p1-python-core-hardening?expand=1
+
+> **Tech Lead 评审状态**：已于 2026-08-27 独立核验并**验收通过（有条件）**。
+> 端到端 20/20 PASS、全量测试退出码 0、代码审查通过。
+> 四项待决策事项均获结论且**均不阻塞合并**，详见 `evidence/m2-p1/TECH_LEAD_REVIEW.md`。
 
 ---
 
@@ -128,25 +132,47 @@
 
 **新增文档/工具**：`docs/architecture/DKWS_RUNTIME_HARDENING_M2P1.md`、
 `examples/config/runtime.prod.example.json`、`scripts/verify_m2p1_hardening.py`、
-`evidence/m2-p1/**`
+`evidence/m2-p1/**`（含 `TECH_LEAD_REVIEW.md` 决策台账）
+
+**修改文档**：`docs/architecture/DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
+（新增「2. 网络与 TLS 边界」，落实 Tech Lead 决策 3）
 
 **其他**：`.gitignore` 增加 `!evidence/**/*.log` 例外（证据日志需入库，
 原 `*.log` 规则会将其排除）
 
-## 八、需 Owner / Tech Lead 决策
+## 八、四项决策事项（Tech Lead 已给出结论）
 
-1. **`X-Forwarded-For` 信任策略**：当前**有意不信任**该头（否则调用方可伪造
-   分桶键绕过限流）。若部署在反向代理之后，需明确可信代理配置。
-2. **是否存在多实例部署**：当前限流为进程内计数（依 ADR-015 单机单实例）。
-   若未来多实例，需重新设计共享配额方案。
-3. **TLS / mTLS 终止位置**：当前假定由可信网关负责，应用层未实现。
-4. **密钥下发与轮换流程**：已支持 `active` 标记与多密钥并存，但轮换流程本身
-   需运维侧规范。
+以下四项经 Tech Lead 评审确认，**均不阻塞本 PR 合并**：
+
+| # | 事项 | 结论 | 本 PR 代码改动 |
+|---|---|---|---|
+| 1 | `X-Forwarded-For` 信任策略 | 保持现状：默认不信任，用连接对端 IP，避免伪造分桶键绕过限流（认定为「正确且安全」） | 无 |
+| 2 | 多实例部署 | 维持单机单实例，进程内限流，不引入 Redis（符合 ADR-015） | 无 |
+| 3 | TLS / mTLS 终止位置 | 由可信网关终止，应用层不实现；**须在部署文档中明确** | 仅文档，见下 |
+| 4 | 密钥下发与轮换流程 | 代码层已支持多密钥/`active` 吊销/作用域；运维流程列为**独立任务** | 无 |
+
+决策 3 落地（提交 `3c72edc`）：核验发现 ADR-015 与混合部署运维文档此前
+**均无任何 TLS/反向代理/监听地址表述**，该缺口同时对应 WBS `M2.1` 中
+已列但未落地的条目「TLS 反向代理边界」，属真实漏项，本次补齐：
+
+- `docs/architecture/DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
+  新增「2. 网络与 TLS 边界」（TLS 终止位置与调用链拓扑、逐组件监听地址要求、
+  代理头信任策略的结论与理由、代理侧建议配置），后续章节编号顺延（2~8 → 3~9）
+- `evidence/m2-p1/TECH_LEAD_REVIEW.md` 新增，记录核验结果与四项决策台账
+
+其中特别提示两点运维风险：
+
+1. `serve_skill_service.py` 的 `--host` 默认为 `0.0.0.0`（沿用既有行为），
+   生产部署**必须**显式传 `--host 127.0.0.1`，或以防火墙/安全组约束来源。
+2. 反向代理层的大小限制**不应小于**应用层 `DKWS_MAX_REQUEST_BYTES`，
+   否则应用层 413 会被代理层提前遮蔽。
 
 ## 九、遗留项（非本任务包范围）
 
 - Job 原子领取 / lease / dead-letter → **M2.4**（本次仅实现状态复位）
-- 分布式限流 → 取决于上述决策 2
+- 分布式限流 → 依决策 2，暂不实施
+- `DKWS_TRUSTED_PROXY` 等可信代理配置 → 依决策 1，当前未实现
+- 密钥生成规范 / 下发渠道 / 轮换周期 / 吊销流程 / 审计要求 → 依决策 4，独立运维任务
 - 响应体大小限制对流式响应会先缓冲；当前无流式端点，后续引入需改造
 
 ## 十、非声明
@@ -155,4 +181,5 @@
 - 本次**不**代表 GITS UAT 已通过。
 - 本次**不**代表安全审计已完成。
 - 本次**不**代表 C′ 架构已成为正式基线。
+- Tech Lead 验收**不**代替 Owner 或 Independent QA 签署。
 - Feature Pilot **不**代替 Owner、Tech Lead 或 Independent QA 签署。
