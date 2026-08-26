@@ -19,6 +19,9 @@ target/
 *.tmp
 *.part
 
+# 例外：evidence/ 下的原始日志属交付证据，必须入库
+!evidence/**/*.log
+
 # Local build / deps
 .m2-repo/
 

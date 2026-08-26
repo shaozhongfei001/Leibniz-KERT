@@ -29,6 +29,14 @@ from ..application.skills import SkillExecutionService
 from ..application import report as report_mod
 from ..domain import timeutil
 from ..domain.errors import DKWSException, ServiceNotReadyError
+from ..infrastructure.runtime_config import RuntimeConfig, load_runtime_config
+from ..infrastructure.runtime_store import RuntimeStore
+from .middleware import (
+    ApiKeyAuthMiddleware,
+    ConcurrencyLimitMiddleware,
+    RateLimitMiddleware,
+    SizeLimitMiddleware,
+)
 
 SERVICE_VERSION = "1.0.0"
 
@@ -109,8 +117,43 @@ def _response(request_id: str, data: dict, meta: dict | None = None) -> dict:
     }
 
 
+def _install_hardening(app: FastAPI, cfg: RuntimeConfig) -> None:
+    """按外→内顺序注册 M2.1/M2.2 加固中间件。
+
+    Starlette 的 ``add_middleware`` 为栈式注册（后加先执行），因此这里
+    的调用顺序与实际执行顺序相反。实际执行顺序为：
+
+    大小限制 → 并发限制 → 限流 → 认证 → 路由
+
+    限流置于认证之前，使未认证的洪水请求同样受限；限流中间件自行识别
+    API Key 以保持按 Key 分桶（见 :class:`RateLimitMiddleware`）。
+
+    Args:
+        app: FastAPI 应用。
+        cfg: 运行时配置。
+    """
+    app.add_middleware(ApiKeyAuthMiddleware, config=cfg.auth)
+    app.add_middleware(RateLimitMiddleware, config=cfg.rate_limit, auth_config=cfg.auth)
+    app.add_middleware(ConcurrencyLimitMiddleware, config=cfg.concurrency)
+    app.add_middleware(SizeLimitMiddleware, config=cfg.size_limit)
+
+
 def create_app(workspace: Path, service_id: str = "product_knowledge",
-               skill_packages: Path | None = None) -> FastAPI:
+               skill_packages: Path | None = None,
+               runtime_config: RuntimeConfig | None = None) -> FastAPI:
+    """创建 DKWS HTTP 应用。
+
+    Args:
+        workspace: DKWS 工作区根目录。
+        service_id: 默认服务 ID。
+        skill_packages: 外部 Skill 包目录；``None`` 时使用内置示例目录。
+        runtime_config: 运行时配置；``None`` 时从环境变量/配置文件装载
+            （生产 profile 缺少安全控制会 fail-fast）。
+
+    Returns:
+        已注册路由与加固中间件的 FastAPI 应用。
+    """
+    cfg = runtime_config or load_runtime_config()
     app = FastAPI(title="DKWS Knowledge Service API",
                   description="文件目录型数据知识服务模拟平台（DKWS-SPEC-001 V1.0）",
                   version=SERVICE_VERSION)
@@ -118,7 +161,19 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
     svc = KnowledgeService(ws, service_id=service_id)
     pkgs = Path(skill_packages) if skill_packages else (
         DEFAULT_SKILL_PACKAGES if DEFAULT_SKILL_PACKAGES.is_dir() else None)
-    skill_svc = SkillExecutionService(ws, knowledge=svc, skill_packages=pkgs)
+    store: RuntimeStore | None = None
+    if cfg.runtime_store.enabled:
+        store = RuntimeStore(
+            cfg.runtime_store.resolve_path(ws),
+            wal=cfg.runtime_store.wal,
+            busy_timeout_ms=cfg.runtime_store.busy_timeout_ms,
+            idempotency_ttl_seconds=cfg.runtime_store.idempotency_ttl_seconds)
+        store.recover_stale_jobs()
+    skill_svc = SkillExecutionService(ws, knowledge=svc, skill_packages=pkgs,
+                                     runtime_store=store)
+    app.state.runtime_config = cfg
+    app.state.runtime_store = store
+    _install_hardening(app, cfg)
 
     def _handle(exc: Exception) -> HTTPException:
         if isinstance(exc, DKWSException):
@@ -140,7 +195,18 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
             status = "DEGRADED"
         return _response(f"REQ-H-{timeutil.ts_utc()[:19]}",
                          {"status": status, "service_version": SERVICE_VERSION,
-                          "data_version": version})
+                          "data_version": version,
+                          "runtime": {
+                              "profile": cfg.profile,
+                              "auth_enabled": cfg.auth.enabled,
+                              "rate_limit_enabled": cfg.rate_limit.enabled,
+                              "size_limit_enabled": cfg.size_limit.enabled,
+                              "concurrency_enabled": cfg.concurrency.enabled,
+                              "runtime_store_enabled": store is not None,
+                              "schema_version": (store.schema_version()
+                                                 if store is not None else None),
+                              "warnings": list(cfg.warnings),
+                          }})
 
     @app.post("/v1/extractions", status_code=202)
     def extract(req: ExtractionRequest):
@@ -244,6 +310,17 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
     def evidence(object_id: str):
         try:
             r = svc.trace(object_id)
+            if store is not None:
+                try:
+                    refs = r.data.get("evidence_refs") or r.data.get("evidenceRefs") or []
+                    first = refs[0] if refs else {}
+                    ref_id = (first.get("evidence_id") or first.get("evidenceId")
+                              if isinstance(first, dict) else str(first)) or object_id
+                    store.record_evidence(object_id, str(ref_id),
+                                          source_ref="GET /v1/evidence",
+                                          detail={"ref_count": len(refs)})
+                except Exception:
+                    pass
             return _response(f"REQ-EV-{object_id}", r.data, r.meta)
         except DKWSException as exc:
             raise _handle(exc)

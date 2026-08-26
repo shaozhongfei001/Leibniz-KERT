@@ -28,6 +28,10 @@ ERROR_CODES = {
     "VERSION_NOT_FOUND": ErrorCode("VERSION_NOT_FOUND", 404, False),
     "IDEMPOTENCY_CONFLICT": ErrorCode("IDEMPOTENCY_CONFLICT", 409, False),
     "WORKSPACE_LOCKED": ErrorCode("WORKSPACE_LOCKED", 409, True),
+    "UNAUTHENTICATED": ErrorCode("UNAUTHENTICATED", 401, False),
+    "FORBIDDEN": ErrorCode("FORBIDDEN", 403, False),
+    "RATE_LIMITED": ErrorCode("RATE_LIMITED", 429, True),
+    "CONCURRENCY_LIMITED": ErrorCode("CONCURRENCY_LIMITED", 429, True),
     "SCHEMA_VALIDATION_FAILED": ErrorCode("SCHEMA_VALIDATION_FAILED", 422, False),
     "QUALITY_GATE_FAILED": ErrorCode("QUALITY_GATE_FAILED", 422, False),
     "UNAPPROVED_ASSET": ErrorCode("UNAPPROVED_ASSET", 422, False),
@@ -140,3 +144,38 @@ class RuleConflictError(DKWSException):
 
     exit_code = EXIT_CONFLICT
     error_code = "RULE_CONFLICT"
+
+
+class AuthenticationError(DKWSException):
+    """缺失或无效的 API Key（HTTP 401，M2.1/ADR-013）。"""
+
+    exit_code = EXIT_USAGE
+    error_code = "UNAUTHENTICATED"
+
+
+class AuthorizationError(DKWSException):
+    """密钥有效但作用域不足（HTTP 403，M2.1/ADR-013）。"""
+
+    exit_code = EXIT_USAGE
+    error_code = "FORBIDDEN"
+
+
+class RateLimitError(DKWSException):
+    """超出限流额度（HTTP 429，M2.2）。"""
+
+    exit_code = EXIT_CONFLICT
+    error_code = "RATE_LIMITED"
+
+
+class PayloadTooLargeError(DKWSException):
+    """请求体或响应体超过上限（HTTP 413，M2.2）。"""
+
+    exit_code = EXIT_USAGE
+    error_code = "PAYLOAD_TOO_LARGE"
+
+
+class ConcurrencyLimitError(DKWSException):
+    """在途请求数超过并发上限（HTTP 429，M2.2）。"""
+
+    exit_code = EXIT_CONFLICT
+    error_code = "CONCURRENCY_LIMITED"
