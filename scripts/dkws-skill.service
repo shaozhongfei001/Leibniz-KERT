@@ -1,0 +1,16 @@
+[Unit]
+Description=DKWS Skill Execution Service (customer-engagement + bank-front, port 8106)
+Documentation=file:///home/szf/dev/deepseek_harness/data_knowledge_ws/dkws/docs/skill-execute-api-contract.md
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/szf/dev/deepseek_harness/data_knowledge_ws/dkws
+ExecStart=/home/szf/dev/deepseek_harness/data_knowledge_ws/dkws/.venv/bin/python /home/szf/dev/deepseek_harness/data_knowledge_ws/dkws/scripts/serve_skill_service.py --port 8106 --workspace /home/szf/dev/deepseek_harness/data_knowledge_ws/demo_workspace --pidfile /home/szf/dev/deepseek_harness/data_knowledge_ws/dkws/.skill_service.pid
+Restart=always
+RestartSec=5
+Environment=HOME=/home/szf
+# LLM 凭据由 serve_skill_service.py 从 ~/.dsh/.credentials.yaml 自动读取（DEEPSEEK_API_KEY，不落盘）
+
+[Install]
+WantedBy=default.target

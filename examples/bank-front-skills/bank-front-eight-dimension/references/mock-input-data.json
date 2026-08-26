@@ -1,0 +1,51 @@
+{
+  "_meta": {
+    "skillId": "SK-FRONT-003",
+    "purpose": "模拟 T-MARKET-001 返回的八维分析原始数据，供开发调试、离线调用与评测注入"
+  },
+  "T-MARKET-001": {
+    "industryCode": "C34",
+    "policy": {
+      "direction": "鼓励类",
+      "keyPoints": [
+        "新能源汽车零部件国产化率提升专项",
+        "税收优惠"
+      ],
+      "policyRef": "国发〔2025〕XX号"
+    },
+    "market": {
+      "scaleCagr3y": 0.18,
+      "demandLabel": "扩张",
+      "cr3": 0.35
+    },
+    "technology": {
+      "iterationSpeed": "中速",
+      "localizationRate": 0.72,
+      "rdIntensity": 0.04
+    },
+    "supplyChain": {
+      "upstreamStability": "稳定",
+      "priceTrend12m": "+5%",
+      "bottleneck": "特种钢材"
+    },
+    "region": {
+      "agglomeration": "集聚",
+      "localSupportRate": 0.8
+    },
+    "risk": {
+      "top3Risks": [
+        "大宗商品价格波动",
+        "客户集中度",
+        "政策补贴退坡"
+      ]
+    },
+    "index": {
+      "industryIndex12m": "+12%",
+      "relativeMarket": "跑赢大盘"
+    },
+    "competitiveness": {
+      "marketShare": "细分前五",
+      "techBarrier": "中高"
+    }
+  }
+}

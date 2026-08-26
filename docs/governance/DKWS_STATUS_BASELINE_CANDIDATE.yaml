@@ -1,0 +1,133 @@
+# DKWS 项目状态唯一权威源（Phase 0 候选）
+# 状态：CANDIDATE_READY_FOR_OWNER_REVIEW
+# 生成日期：2026-08-26
+# 本文件是状态/能力/证据的当前受控视图；旧文档若冲突，以本文件+冲突登记册为准。
+
+project:
+  id: DKWS-SPEC-001
+  name: 文件目录型数据知识服务模拟平台
+  baseline_state: DRAFT_CANDIDATE
+  baselined: false
+  frozen: false
+  production_ready: false
+  uat_pass: false
+  independent_qa_signed: false
+  implementation_verification: PARTIAL
+  design_review: COMPLETE
+  production_release_gate: BLOCKED
+  phase0_status: CANDIDATE_READY_FOR_OWNER_REVIEW
+
+repository:
+  dkws_git_repo: false
+  dkws_git_commit_anchor: null
+  dkws_source_present: true
+  dkws_source_path: /home/szf/dev/deepseek_harness/data_knowledge_ws/dkws
+  gits_repo_path: /home/szf/dev/gits-knowledge-engineering
+  gits_current_branch: feature/P30-gits-bank-experience-shell
+  gits_uncommitted_changes: true
+  gits_uncommitted_change_count: 152
+  gits_uat_pass: false
+
+runtime:
+  service_name: dkws-skill
+  service_status: RUNNING
+  base_url: http://127.0.0.1:8106
+  listen_host: 0.0.0.0
+  listen_port: 8106
+  auth_enabled: false
+  tls_enabled: false
+  rate_limit_enabled: false
+  request_size_limit_enabled: false
+
+capabilities:
+  five_layer_workspace:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+  knowledge_pipeline:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+  knowledge_service_search_graph_rule_trace:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+  skill_execution:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+    skill_count: 12
+    skill_count_verified: true
+  r1_previsit:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+    note: 源码注册表包含 R1，健康接口返回 R1；旧 README/代码注释仍称下线，冲突已登记
+  supply_chain_graph:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+  sp20_service_proposal:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+  sp21_interaction_memory:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+  async_jobs:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+    note: 基于 daemon thread，尚未生产级持久化
+  gate_checklist_and_audit:
+    state: CURRENT_IMPLEMENTED
+    verification: PARTIAL
+    note: audit 为镜像，未认证，权威在 GITS
+  knowledge_map_registry:
+    state: DESIGNED_NOT_IMPLEMENTED
+  tool_registry:
+    state: DESIGNED_NOT_IMPLEMENTED
+  multi_knowledge_source_framework:
+    state: DESIGNED_NOT_IMPLEMENTED
+  multi_tenant_isolation:
+    state: DESIGNED_NOT_IMPLEMENTED
+  production_security:
+    state: DESIGNED_NOT_IMPLEMENTED
+  production_observability:
+    state: DESIGNED_NOT_IMPLEMENTED
+  backup_recovery_sop:
+    state: MISSING
+  ci_cd:
+    state: MISSING
+  sbom_supply_chain:
+    state: MISSING
+
+contracts:
+  v13:
+    status: CONFLICTING
+    machine_readable: false
+  v14:
+    status: CONFLICTING
+    machine_readable: false
+  openapi_v2_candidate:
+    status: DESIGNED_AS_CANDIDATE
+    machine_readable: true
+  json_schema_candidate:
+    status: DESIGNED_AS_CANDIDATE
+    machine_readable: true
+
+evidence:
+  independent_review_report:
+    status: CURRENT_AND_VERIFIED
+    path: docs/dd/DKWS_independent_architecture_review_2026-08-26_V1.0.md
+  integration_tests_raw_report:
+    status: DOCUMENTED_BUT_NOT_VERIFIED
+    note: 文档称 137 全绿；无原始报告，后续可复跑生成证据
+  security_scan:
+    status: MISSING
+  sbom:
+    status: MISSING
+  gits_http_adapter:
+    status: PENDING_EVIDENCE
+    note: GITS 工作区存在未提交改动，未提交/未独立验证
+  gits_uat_raw_log:
+    status: MISSING
+
+known_open_items:
+  - ME-01 源码 commit 锚点
+  - ME-03 原始测试报告
+  - ME-06/07 GITS 差异与 UAT 证据
+  - ME-08 GITS 权威合同
+  - ME-10/11 数据制度与生产指标

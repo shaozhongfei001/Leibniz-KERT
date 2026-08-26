@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/gate.schema.json",
+  "title": "GateDefinition",
+  "type": "object",
+  "required": [
+    "gateId",
+    "name",
+    "sequence",
+    "must",
+    "forbidden"
+  ],
+  "properties": {
+    "gateId": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "sequence": {
+      "type": "integer"
+    },
+    "must": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbidden": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assetPath": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "contentHash": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

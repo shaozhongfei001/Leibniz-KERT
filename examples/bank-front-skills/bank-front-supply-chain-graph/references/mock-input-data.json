@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "skillId": "SK-FRONT-002",
+    "purpose": "模拟 T-CORE-001 / T-EXT-001 返回的原始数据，供开发调试、离线调用与评测注入"
+  },
+  "T-CORE-001": {
+    "customerId": "HZB0000001234",
+    "transactions": [
+      {
+        "counterparty": "浙江轴承集团",
+        "amount": 12000000,
+        "direction": "out",
+        "months": "近12月"
+      },
+      {
+        "counterparty": "宁波特种钢公司",
+        "amount": 8000000,
+        "direction": "out",
+        "months": "近12月"
+      },
+      {
+        "counterparty": "新能源汽车主机厂A",
+        "amount": 25000000,
+        "direction": "in",
+        "months": "近12月"
+      },
+      {
+        "counterparty": "变速箱总成厂B",
+        "amount": 18000000,
+        "direction": "in",
+        "months": "近12月"
+      }
+    ]
+  },
+  "T-EXT-001": {
+    "creditCode": "91330100MA27XXXXXX",
+    "industry": "C34",
+    "supplierList": [
+      "浙江轴承集团（C345）",
+      "宁波特种钢公司（C313）"
+    ],
+    "customerList": [
+      "新能源汽车主机厂A（C361）",
+      "变速箱总成厂B（C367）"
+    ],
+    "chainPosition": "中游核心制造环节"
+  }
+}

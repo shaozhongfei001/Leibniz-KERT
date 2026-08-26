@@ -1,0 +1,23 @@
+{
+  "_meta": {
+    "skillId": "SK-FRONT-006",
+    "purpose": "模拟 SK-FRONT-004 冲突清单输出 + SRC-KYC-001 KYC问题库要素，供开发调试、离线调用与评测注入"
+  },
+  "fromFactReconciliation": {
+    "conflicts": [
+      {
+        "issue": "用电量同比+30%，但近半年营收同比-5%",
+        "ruleId": "RUL-FRONT-001-003"
+      },
+      {
+        "issue": "代发薪持续下滑但结算量大幅上升",
+        "ruleId": "RUL-FRONT-001-005"
+      }
+    ]
+  },
+  "KYCChecklist": {
+    "identity": "受益所有人信息缺失",
+    "riskLevel": "风险等级未更新（近1年）",
+    "sanctions": "制裁名单核查结果待更新"
+  }
+}

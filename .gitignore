@@ -1,0 +1,31 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Java / Maven
+target/
+*.class
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Logs / temp
+*.log
+*.pid
+*.tmp
+*.part
+
+# Local build / deps
+.m2-repo/
+
+# OS
+.DS_Store
+
+# Workspace data (if appears inside dkws)
+demo_workspace/
+bank_front_ws/
+.test_demo_ws/

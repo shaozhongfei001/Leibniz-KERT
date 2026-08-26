@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/skill-execute-response.schema.json",
+  "title": "SkillExecuteResponse",
+  "type": "object",
+  "required": [
+    "requestId",
+    "status",
+    "data",
+    "errors",
+    "assemblyTrace",
+    "modelCalls"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "skill_error",
+        "exit_policy_no_new_evidence"
+      ]
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "$ref": "error.schema.json"
+      }
+    },
+    "assemblyTrace": {
+      "type": "array",
+      "items": {
+        "$ref": "assembly-trace.schema.json"
+      }
+    },
+    "modelCalls": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false
+}

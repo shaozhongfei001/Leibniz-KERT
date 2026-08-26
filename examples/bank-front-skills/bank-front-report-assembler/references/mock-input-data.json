@@ -1,0 +1,53 @@
+{
+  "_meta": {
+    "skillId": "SK-FRONT-001",
+    "purpose": "模拟输入数据：开发调试 / 离线调用 / 评测注入",
+    "note": "customerId 与 userId 为调用上下文注入"
+  },
+  "input": {
+    "customerId": "HZB0000001234",
+    "userId": "cm_zhangwei",
+    "goal": "授信营销-流动资金贷款渗透"
+  },
+  "mockSourceData": {
+    "T-CRM-001": {
+      "customerName": "杭州智造精密齿轮有限公司",
+      "industryCode": "C34",
+      "creditCode": "91330100MA27XXXXXX",
+      "scale": "中型企业",
+      "annualRevenue": 68000000,
+      "registeredAddress": "杭州市钱塘区XX路XX号",
+      "mainProducts": "精密齿轮制造（新能源汽车变速箱）",
+      "cooperationYears": 6
+    },
+    "T-CORE-001": {
+      "halfYearRevenue": 32000000,
+      "creditUtilizationRate": 0.72,
+      "electricityUsageKwh": 2850000,
+      "payroll6m": 4800000,
+      "settlementAmount3m": 1.2
+    },
+    "T-EXT-001": {
+      "suppliers": [
+        "浙江轴承集团",
+        "宁波特种钢公司"
+      ],
+      "customers": [
+        "新能源汽车主机厂A",
+        "变速箱总成厂B"
+      ]
+    },
+    "T-MARKET-001": {
+      "eightDimensionScores": {
+        "policy": 4,
+        "market": 4,
+        "tech": 3,
+        "supplyChain": 3,
+        "region": 4,
+        "risk": 3,
+        "index": 3,
+        "competitiveness": 4
+      }
+    }
+  }
+}

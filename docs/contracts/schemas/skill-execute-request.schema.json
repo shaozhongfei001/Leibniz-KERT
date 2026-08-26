@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/skill-execute-request.schema.json",
+  "title": "SkillExecuteRequest",
+  "type": "object",
+  "required": [
+    "skillId"
+  ],
+  "properties": {
+    "skillId": {
+      "type": "string"
+    },
+    "requestId": {
+      "type": "string"
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "context": {
+      "$ref": "context-package.schema.json"
+    },
+    "async": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

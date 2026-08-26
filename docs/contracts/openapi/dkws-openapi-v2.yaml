@@ -1,0 +1,567 @@
+openapi: 3.1.0
+info:
+  title: DKWS Knowledge Engineering Service API
+  version: 2.0.0-candidate
+  description: |
+    DKWS 独立服务端 API 候选唯一权威源。
+    本文件为 Phase 0 候选，不表示生产合同已批准。
+  x-contract-version: 2.0.0-candidate
+  x-contract-bundle-hash: PENDING_COMPUTE
+servers:
+  - url: http://127.0.0.1:8106
+    description: 本地默认（实际以部署配置为准）
+security:
+  - ApiKeyAuth: []
+tags:
+  - name: skill
+    description: Skill 执行与健康
+  - name: job
+    description: 异步任务
+  - name: gate
+    description: 闸门
+  - name: knowledge
+    description: 知识服务
+  - name: ops
+    description: 运维控制面
+
+paths:
+  /api/skill/health:
+    get:
+      operationId: listSkills
+      tags: [skill]
+      summary: 获取 Skill 列表与能力状态
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillHealthResponse'
+  /api/skill/execute:
+    post:
+      operationId: executeSkill
+      tags: [skill]
+      summary: 执行 Skill（同步/异步）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillExecuteRequest'
+      responses:
+        '200':
+          description: 同步执行结果或业务失败（status=skill_error）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillExecuteResponse'
+        '202':
+          description: 异步任务已创建
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncJobAccepted'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: 未知 Skill
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 幂等冲突
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '422':
+          description: 请求校验失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /v1/jobs/{jobId}:
+    get:
+      operationId: getJob
+      tags: [job]
+      summary: 查询异步任务
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job 状态
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobResponse'
+        '404':
+          description: 任务不存在或已过期
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v2/jobs/{jobId}/cancel:
+    post:
+      operationId: cancelJob
+      tags: [job]
+      summary: 取消任务（候选）
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 取消受理
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobResponse'
+        '409':
+          description: 任务已终态
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/skill/gates/{customerId}:
+    get:
+      operationId: listGates
+      tags: [gate]
+      summary: 获取闸门清单资产
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 闸门清单
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GateListResponse'
+  /api/skill/gates/audit:
+    post:
+      operationId: recordGateAudit
+      tags: [gate]
+      summary: 记录闸门审计镜像（候选要求认证）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GateAuditRequest'
+      responses:
+        '200':
+          description: 已记录
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GateAuditResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/graph/query:
+    post:
+      operationId: queryGraph
+      tags: [knowledge]
+      summary: 图谱查询
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphQueryRequest'
+      responses:
+        '200':
+          description: 图谱结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphQueryResponse'
+  /livez:
+    get:
+      operationId: liveness
+      tags: [ops]
+      security: []
+      responses:
+        '200':
+          description: 存活
+  /readyz:
+    get:
+      operationId: readiness
+      tags: [ops]
+      security: []
+      responses:
+        '200':
+          description: 就绪
+        '503':
+          description: 未就绪
+  /metrics:
+    get:
+      operationId: metrics
+      tags: [ops]
+      security: []
+      responses:
+        '200':
+          description: Prometheus 文本格式
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: DKWS 服务到服务 API Key
+
+  responses:
+    Unauthorized:
+      description: 未认证
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: 无权限
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: 超过限流
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    PayloadTooLarge:
+      description: 请求体超限
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    SkillHealthResponse:
+      type: object
+      required: [status, service, skills]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        service:
+          type: string
+          x-note: 生产版应配置化，不写死 customer-engagement
+        contractVersion:
+          type: string
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillInfo'
+
+    SkillInfo:
+      type: object
+      required: [skillId, name, version]
+      properties:
+        skillId:
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+
+    SkillExecuteRequest:
+      type: object
+      required: [skillId]
+      properties:
+        skillId:
+          type: string
+        requestId:
+          type: string
+        request:
+          type: object
+          additionalProperties: true
+        context:
+          $ref: '#/components/schemas/ContextPackage'
+        async:
+          type: boolean
+          description: 异步执行开关
+
+    ContextPackage:
+      type: object
+      description: v1.4 ContextPackage；权威 Schema 以 GITS 附录为准，此处为 Phase 0 候选收敛
+      properties:
+        schemaVersion:
+          type: string
+        customerId:
+          type: string
+        customerName:
+          type: string
+        industry:
+          type: string
+        enterpriseData:
+          type: object
+        proposalContext:
+          type: object
+        interactionId:
+          type: string
+        interactionContent:
+          type: string
+        existingMemories:
+          type: array
+          items:
+            type: object
+
+    SkillExecuteResponse:
+      type: object
+      required: [requestId, status, data, errors, assemblyTrace, modelCalls]
+      properties:
+        requestId:
+          type: string
+        status:
+          type: string
+          enum: [ok, skill_error, exit_policy_no_new_evidence]
+        data:
+          type: object
+          additionalProperties: true
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+        assemblyTrace:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssemblyTraceStep'
+        modelCalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelCall'
+
+    AsyncJobAccepted:
+      type: object
+      required: [jobId, status]
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [PENDING]
+
+    JobResponse:
+      type: object
+      required: [jobId, status]
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, RUNNING, COMPLETED, FAILED, DEAD, CANCELLED]
+        skill_result:
+          $ref: '#/components/schemas/SkillExecuteResponse'
+        error:
+          $ref: '#/components/schemas/ErrorItem'
+
+    AssemblyTraceStep:
+      type: object
+      required: [phase, status, message]
+      properties:
+        stepId:
+          type: string
+        parentStepId:
+          type: string
+        phase:
+          type: string
+          enum: [resolve, idempotency, validate, dkws, evidence, model, parse, compose, tool]
+        component:
+          type: string
+        status:
+          type: string
+          enum: [ok, failed, blocked, skipped, degraded]
+        message:
+          type: string
+        kiId:
+          type: string
+        sourceRefs:
+          type: array
+          items:
+            type: string
+        assetVersion:
+          type: string
+        policyId:
+          type: string
+        errorCode:
+          type: string
+        redactedMessage:
+          type: string
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        durationMs:
+          type: number
+
+    ModelCall:
+      type: object
+      required: [model, inputTokens, outputTokens, latencyMs]
+      properties:
+        model:
+          type: string
+        inputTokens:
+          type: integer
+        outputTokens:
+          type: integer
+        latencyMs:
+          type: number
+        degraded:
+          type: boolean
+        degradationReason:
+          type: string
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorItem'
+        requestId:
+          type: string
+        traceId:
+          type: string
+
+    ErrorItem:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        retryable:
+          type: boolean
+        details:
+          type: object
+
+    GateListResponse:
+      type: object
+      required: [customerId, gates]
+      properties:
+        customerId:
+          type: string
+        gates:
+          type: array
+          items:
+            $ref: '#/components/schemas/GateDefinition'
+
+    GateDefinition:
+      type: object
+      required: [gateId, name, sequence, must, forbidden]
+      properties:
+        gateId:
+          type: string
+        name:
+          type: string
+        sequence:
+          type: integer
+        must:
+          type: array
+          items:
+            type: string
+        forbidden:
+          type: array
+          items:
+            type: string
+        assetPath:
+          type: string
+        version:
+          type: string
+        contentHash:
+          type: string
+
+    GateAuditRequest:
+      type: object
+      required: [customerId, gate, decision, decidedBy]
+      properties:
+        customerId:
+          type: string
+        gate:
+          type: string
+        decision:
+          type: string
+        decidedBy:
+          type: string
+        reason:
+          type: string
+
+    GateAuditResponse:
+      type: object
+      required: [recorded]
+      properties:
+        recorded:
+          type: boolean
+        auditId:
+          type: string
+        recordedAt:
+          type: string
+          format: date-time
+
+    GraphQueryRequest:
+      type: object
+      required: [start_entity_ids, mode]
+      properties:
+        request_id:
+          type: string
+        start_entity_ids:
+          type: array
+          items:
+            type: string
+        relation_types:
+          type: array
+          items:
+            type: string
+        direction:
+          type: string
+          enum: [OUT, IN, BOTH]
+        max_depth:
+          type: integer
+          maximum: 10
+        max_nodes:
+          type: integer
+          maximum: 1000
+        mode:
+          type: string
+          enum: [neighbor, closure, paths]
+        service:
+          type: string
+
+    GraphQueryResponse:
+      type: object
+      required: [nodes, edges]
+      properties:
+        nodes:
+          type: array
+          items:
+            type: object
+        edges:
+          type: array
+          items:
+            type: object
+        paths:
+          type: array
+          items:
+            type: array
+            items:
+              type: object

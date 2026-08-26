@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/assembly-trace.schema.json",
+  "title": "AssemblyTraceStep",
+  "type": "object",
+  "required": [
+    "phase",
+    "status",
+    "message"
+  ],
+  "properties": {
+    "stepId": {
+      "type": "string"
+    },
+    "parentStepId": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "resolve",
+        "idempotency",
+        "validate",
+        "dkws",
+        "evidence",
+        "model",
+        "parse",
+        "compose",
+        "tool"
+      ]
+    },
+    "component": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "failed",
+        "blocked",
+        "skipped",
+        "degraded"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "kiId": {
+      "type": "string"
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assetVersion": {
+      "type": "string"
+    },
+    "policyId": {
+      "type": "string"
+    },
+    "errorCode": {
+      "type": "string"
+    },
+    "redactedMessage": {
+      "type": "string"
+    },
+    "start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "durationMs": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": true
+}

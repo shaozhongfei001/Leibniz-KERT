@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/sp20.schema.json",
+  "title": "ServiceProposalResult",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "skillId",
+    "runId",
+    "status",
+    "timestamp",
+    "content"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+    "skillId": {
+      "type": "string",
+      "const": "SP-20"
+    },
+    "runId": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "PARTIAL"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "content": {
+      "type": "object"
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "gateRecommendations": {
+      "type": "object"
+    },
+    "ruleViolations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false
+}

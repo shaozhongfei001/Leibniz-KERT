@@ -1,0 +1,34 @@
+{
+  "customers": [
+    {
+      "customerId": "CUST-CORP-0001",
+      "customerName": "华东精工装备集团有限公司",
+      "customerShortName": "华东精工集团",
+      "unifiedSocialCreditCode": "91330000MA27DEMO",
+      "establishedDate": "2005-03-15",
+      "registeredCapitalCny": 500000000,
+      "industry": "MANUFACTURING",
+      "region": "浙江省杭州市",
+      "enterpriseScale": "LARGE",
+      "customerTier": "STRATEGIC",
+      "relationshipSince": "2018-06-01",
+      "rmId": "RM-ZW-001",
+      "rmName": "张伟",
+      "managingBranch": "杭州城西支行",
+      "groupFlag": true,
+      "listedStatus": "UNLISTED",
+      "riskLevel": "MEDIUM",
+      "mainProducts": [
+        "精密加工",
+        "智能装备",
+        "自动化产线"
+      ],
+      "coreTags": [
+        "制造业",
+        "出口导向",
+        "技改需求"
+      ],
+      "relationshipSummary": "战略客户，集团本部及子公司在我行开户（摘要与 KI-009 身份段一致，不含 KYC 缺口正文）。"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "_meta": {
+    "skillId": "SK-FRONT-007",
+    "purpose": "模拟 SRC-PRODUCT-001 产品知识卡（2026Q2）与 T-PRODUCT-001 匹配引擎原始数据，供开发调试、离线调用与评测注入"
+  },
+  "SRC-PRODUCT-001": {
+    "products": [
+      {
+        "id": "P-LOAN-001",
+        "name": "流动资金贷款",
+        "desc": "用于企业日常经营周转（采购原材料、支付工资等），期限灵活（1-12个月），可循环使用"
+      },
+      {
+        "id": "P-FACTOR-001",
+        "name": "应收账款池融资",
+        "desc": "以应收账款池为还款来源的融资，加速回款"
+      },
+      {
+        "id": "P-LC-001",
+        "name": "国内信用证",
+        "desc": "国内贸易结算工具，支持开证与议付"
+      },
+      {
+        "id": "P-ORDER-001",
+        "name": "订单融资",
+        "desc": "基于有效订单的预付款融资"
+      }
+    ],
+    "hardConstraints": [
+      {
+        "productId": "P-LOAN-001",
+        "constraint": "客户类型须为企业法人，无重大负面"
+      },
+      {
+        "productId": "P-FACTOR-001",
+        "constraint": "应收账款池须为合格应收账款，无争议"
+      }
+    ],
+    "mutualExclusion": [
+      [
+        "P-LOAN-001",
+        "P-ORDER-001"
+      ]
+    ]
+  },
+  "T-PRODUCT-001": {
+    "matchedCandidates": [
+      {
+        "productId": "P-LOAN-001",
+        "score": 0.9,
+        "matchLevel": "high"
+      },
+      {
+        "productId": "P-FACTOR-001",
+        "score": 0.8,
+        "matchLevel": "high"
+      },
+      {
+        "productId": "P-ORDER-001",
+        "score": 0.6,
+        "matchLevel": "combo"
+      }
+    ]
+  }
+}

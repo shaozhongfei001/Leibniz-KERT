@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/evidence-bundle.schema.json",
+  "title": "EvidenceBundle",
+  "type": "object",
+  "required": [
+    "evidenceId",
+    "objectId",
+    "source",
+    "version",
+    "contentHash"
+  ],
+  "properties": {
+    "evidenceId": {
+      "type": "string"
+    },
+    "objectId": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "sourceType": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "contentHash": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "redacted": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

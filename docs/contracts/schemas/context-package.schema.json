@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/context-package.schema.json",
+  "title": "ContextPackage",
+  "type": "object",
+  "description": "v1.4 ContextPackage 候选 Schema；权威 GITS 附录待对齐",
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+    "customerId": {
+      "type": "string"
+    },
+    "customerName": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "enterpriseData": {
+      "type": "object"
+    },
+    "proposalContext": {
+      "type": "object"
+    },
+    "interactionId": {
+      "type": "string"
+    },
+    "interactionContent": {
+      "type": "string"
+    },
+    "existingMemories": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "required": [],
+  "additionalProperties": true
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "dkws-contract-bundle/v1",
+  "base_dir": "docs/contracts",
+  "encoding": "utf-8",
+  "sort": "path_asc",
+  "bundle_hash": "72a4d0a922be3a84cb961d8e62de375706df5bbc60aff403cfc5a552ec21e278",
+  "files": [
+    {
+      "path": "openapi/dkws-openapi-v2.yaml",
+      "sha256": "ed782cc37796120d0ba1371c5cb188e82da1ae340c1bc99d03e996f4ec4ad90f"
+    },
+    {
+      "path": "schemas/assembly-trace.schema.json",
+      "sha256": "aa4103c153a6dd5546ea730a8f11121de1e99cf59f5139807810a3f59b0090f4"
+    },
+    {
+      "path": "schemas/context-package.schema.json",
+      "sha256": "e9bdca3d7242624e7923f8610272b9a6b75be9554a05af704b6ef673d4600354"
+    },
+    {
+      "path": "schemas/error.schema.json",
+      "sha256": "f0c763496daa295a29d30284e69b6426d62ef4a945c4e769d55fc90e4f1285b3"
+    },
+    {
+      "path": "schemas/evidence-bundle.schema.json",
+      "sha256": "18ff70b720ea8c01dbc451179567880f4c2efbb699354a0c4dd345953ba93a97"
+    },
+    {
+      "path": "schemas/gate.schema.json",
+      "sha256": "b65e898f7388c8db31e55e533830bc8ba4be8608001a6e3efe158f5ab4795061"
+    },
+    {
+      "path": "schemas/job.schema.json",
+      "sha256": "11cd44b6728a6aed19e99a6b02141db4e5631c30daa2be736fba8ccb6b308705"
+    },
+    {
+      "path": "schemas/skill-execute-request.schema.json",
+      "sha256": "a6a235cf1a6eac4050091ddd9d680f3e8f05dbcbf33b26778b8c1c299f340fc9"
+    },
+    {
+      "path": "schemas/skill-execute-response.schema.json",
+      "sha256": "85374135b49c5403e32554c9c952131abd4ca5e1baf2eaba857431ac13434ca5"
+    },
+    {
+      "path": "schemas/sp20.schema.json",
+      "sha256": "25faa93af696b0fb036839e5ed3d495fa09689ac9a72c22b4d49ef51f6f2f074"
+    },
+    {
+      "path": "schemas/sp21.schema.json",
+      "sha256": "f6fa4271692cbcc405b15b93ac6ab64233282fd5d569bf4da16896ceac969265"
+    },
+    {
+      "path": "schemas/supply-chain-graph.schema.json",
+      "sha256": "5dc9c7d22101a39f5a8646f7c0c33e8af864a794fbc20df5d7f90dbbe2635a3d"
+    }
+  ]
+}

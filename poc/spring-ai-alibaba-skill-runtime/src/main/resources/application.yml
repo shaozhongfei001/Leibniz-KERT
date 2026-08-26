@@ -1,0 +1,26 @@
+server:
+  port: 18080
+
+spring:
+  application:
+    name: dkws-skill-runtime-poc
+  ai:
+    openai:
+      base-url: "${DEEPSEEK_BASE_URL:https://api.deepseek.com}"
+      api-key: "${DEEPSEEK_API_KEY:}"
+      chat:
+        options:
+          model: "${DEEPSEEK_MODEL:deepseek-chat}"
+          temperature: 0.3
+
+skill-runtime:
+  user-skills-dir: ./user-skills
+  max-skill-zip-size: 20MB
+  max-skill-files: 200
+  sandbox:
+    work-dir: ./sandbox-work
+    shell-timeout-ms: 10000
+    python-timeout-ms: 10000
+    max-output-bytes: 1048576
+    allow-network: false
+    allowed-shell-commands: "ls,cat,head,tail,python3"

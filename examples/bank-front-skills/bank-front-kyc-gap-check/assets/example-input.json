@@ -1,0 +1,18 @@
+{
+  "customerId": "HZB0000001234",
+  "conflicts": [
+    {
+      "issue": "用电量同比+30%，但近半年营收同比-5%",
+      "ruleId": "RUL-FRONT-001-003"
+    }
+  ],
+  "optional": {
+    "customerName": "杭州智造精密齿轮有限公司",
+    "industrySignals": [
+      "新能源汽车零部件行业景气度波动"
+    ],
+    "kycMissingFields": [
+      "受益所有人信息"
+    ]
+  }
+}

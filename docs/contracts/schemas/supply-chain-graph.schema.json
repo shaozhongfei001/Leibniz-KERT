@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/supply-chain-graph.schema.json",
+  "title": "SupplyChainGraphResult",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "customerId",
+    "buildStatus",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+    "skillId": {
+      "type": "string"
+    },
+    "customerId": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "buildStatus": {
+      "type": "string",
+      "enum": [
+        "complete",
+        "partial"
+      ]
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "interpretation": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

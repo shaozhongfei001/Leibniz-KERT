@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/job.schema.json",
+  "title": "Job",
+  "type": "object",
+  "required": [
+    "jobId",
+    "status"
+  ],
+  "properties": {
+    "jobId": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "RUNNING",
+        "COMPLETED",
+        "FAILED",
+        "DEAD",
+        "CANCELLED"
+      ]
+    },
+    "skill_result": {
+      "$ref": "skill-execute-response.schema.json"
+    },
+    "error": {
+      "type": "object"
+    },
+    "retryCount": {
+      "type": "integer"
+    },
+    "maxRetries": {
+      "type": "integer"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "startedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "finishedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": true
+}

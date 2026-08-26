@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dkws.local/contracts/schemas/sp21.schema.json",
+  "title": "InteractionMemoryResult",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "skillId",
+    "interactionId",
+    "status",
+    "candidateMemories"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+    "skillId": {
+      "type": "string",
+      "const": "SP-21"
+    },
+    "interactionId": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "PARTIAL"
+      ]
+    },
+    "candidateMemories": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "memoryUpdates": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "memorySupersessions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "ruleViolations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false
+}

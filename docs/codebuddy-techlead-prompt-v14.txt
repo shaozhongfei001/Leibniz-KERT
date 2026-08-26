@@ -1,0 +1,194 @@
+====================================================================
+提示词：CodeBuddy 技术负责人 —— GITS 对接 DKWS v1.4（服务建议书与交互记忆）
+版本：2026-08-23 ｜ 本文件为自包含纯文本版（无需再读任何其它文档）
+====================================================================
+
+【角色与任务】
+你是一名资深 Java 技术负责人（Tech Lead），负责「银行智能访前作战单」GITS 项目对接
+DKWS（DeepSeek Harness 上的文件目录型知识服务模拟平台）v1.4 契约，实现服务建议书生成
+（SP-20）与交互记忆抽取（SP-21）两个技能的调用方、闸门编排与前端工作区。请先给出实现
+方案与任务拆解，再分阶段编码，每阶段附改动清单与联调记录。
+
+--------------------------------------------------------------------
+一、职责边界（架构裁定，必须遵守）
+--------------------------------------------------------------------
+DKWS 承担：
+  1) SP-20 对公客户服务建议书生成：逐章（8 章）并行 LLM 生成、断言事实标签
+     （F/C/B/H/P/A）、引用索引、6 条 BLOCKING 规则校验、内部版+对客版双版本确定性过滤。
+  2) SP-21 交互记忆抽取：从交互纪要抽取候选记忆、与既有记忆比对（强化/取代）、
+     3 条规则校验。
+  3) 闸门清单知识资产（GATE-BIZ-G0..G5）与闸门决策审计镜像。
+GITS 承担（DKWS 不做）：
+  1) 闸门状态机 G0-G5：唯一权威、人工审批推进（advanceGate）、GATE_SEQUENCING 顺序校验。
+  2) 交互记忆存储与生命周期：CANDIDATE -> CONFIRMED -> EXPIRED/SUPERSEDED + 置信度衰减。
+  3) 建议书业务版本记录（v1.0/v1.1/v2.0）与对客版放行决策。
+禁止：
+  - 让 DKWS 存记忆、裁决闸门、做业务版本管理。
+  - 在 GITS customer 表写入 KYC/产品/供应链等知识（v1.3 数据所有权：知识在 DKWS）。
+  - 用本地种子或 Mock LLM 填充 DKWS 应返回的内容；DKWS 不可达时页面明确标注，不得静默降级。
+
+--------------------------------------------------------------------
+二、契约基线（v1.3 + v1.4 增量）
+--------------------------------------------------------------------
+服务地址：http://172.22.90.134:8106（同机 127.0.0.1:8106），systemd 用户服务 dkws-skill。
+无鉴权（演示环境网络层控制）；Content-Type/响应 application/json。
+
+端点：
+  POST /api/skill/execute         执行任意 Skill；"async":true 时返回 202+jobId
+  GET  /v1/jobs/{jobId}           异步轮询；完成时 data.skill_result 为完整执行响应
+  GET  /api/skill/report/{requestId}  可视化报告页（调试跳转用，非契约，勿解析 HTML）
+  GET  /api/skill/gates/{customerId}  闸门清单资产（GATE-BIZ-G0..G5）
+  POST /api/skill/gates/audit     闸门决策镜像（非权威，仅审计记录）
+  GET  /api/skill/health          技能清单（含 SP-20、SP-21）
+
+执行响应顶层（所有技能一致，不新增枚举）：
+  { requestId, status, data, errors, assemblyTrace, modelCalls }
+  status 枚举：ok | skill_error | exit_policy_no_new_evidence
+  未知 skillId -> HTTP 404；缺字段/非法 JSON -> 422；执行失败 -> status=skill_error。
+  幂等：同 requestId 重发返回首次结果（进程内 TTL 10 分钟）；异步同 requestId 复用同一 job。
+
+--------------------------------------------------------------------
+三、SP-20 服务建议书（必须走异步）
+--------------------------------------------------------------------
+请求：
+  { "skillId":"SP-20", "requestId":"<req>", "async":true,
+    "request":{ "context":{ ...ContextPackage... } } }
+
+ContextPackage 关键字段（完整见 GITS 提案附录 A，这里给骨架）：
+  schemaVersion:"1.0.0", customerId:"CUST-CORP-0001", customerName, industry("一级-二级"),
+  engagementPhase(PROSPECTING/FIRST_CONTACT/ACTIVE_ENGAGEMENT/PROPOSAL_DELIVERED/
+                  IMPLEMENTATION/RETENTION),
+  journeyId, operatingCaseId, roundNumber,
+  enterpriseData:{ basicInfo{registeredCapital,establishedDate,legalRepresentative,
+                             businessScope,registeredAddress,companyType},
+                   financialSummary{revenue[],netProfit[],totalAssets[],totalLiabilities[],
+                                    operatingCashFlow[]},
+                   creditFacility{totalApproved,totalUsed,products[]},
+                   transactionSummary{monthlyAvgVolume,mainTransactionTypes[],
+                                      settlementMethods[]} },
+  publicData:{ industryReports[], newsEvents[], regulatoryChanges[] },
+  interactionHistory[], interactionMemory[]（已确认记忆，SP-20 UPDATE 用）,
+  evidence[],
+  proposalContext:{ proposalType:"INITIAL|UPDATE",
+                    gateState:{ passed:["G0"], current:"G1" },
+                    previousVersion:"上一版建议书文本（UPDATE 用）" }
+
+响应（async）：
+  202 { "jobId":"JOB-SKILL-YYYYMMDD-NNN", "status":"PENDING" }
+轮询 GET /v1/jobs/{jobId}：data.status 为 PENDING/RUNNING/COMPLETED/FAILED；
+  COMPLETED 时 data.skill_result 即完整执行响应（同同步结构）。轮询间隔 3 秒，总上限 3 分钟。
+
+SP-20 的 data.result（ServiceResult）：
+  schemaVersion, skillId:"SP-20", runId:"RUN-PROPOSAL-...",
+  status:"SUCCESS|PARTIAL"（PARTIAL=存在 BLOCKING 规则违规，顶层 status 仍 ok）,
+  timestamp,
+  content:{
+    proposalDraft: "8 章 Markdown 正文",
+    internalVersion:{ content, factLabels:{ "断言文本":"F|C|B|H|P|A" } },
+    customerVersion:{ content, filteringNotes[], includes:["F","A"], excludes:["C","B","H","P"],
+                      releaseBlockedUntil:["G1","G2","G3"] },   // G1-G3 全过则为 []
+    customerVersionNote: "..." },
+  citations:[ { id:"CIT-0001", claim, source, date:"YYYY-MM-DD",
+                factLabel:"F|C|B|H|P|A", chapterRef:"CH01..CH08" } ],
+  unknowns:[ { id:"UNK-0001", description, suggestedAction, relatedChapter } ],
+  limitations[],
+  gateRecommendations:{ currentGate, passedGates[], overallReadiness:"READY|BLOCKED",
+                        checklist:[ { gate:"G0", state:"PASSED|READY_FOR_REVIEW|BLOCKED|PENDING",
+                                      name, checklist:{must[],forbidden[]} } ],
+                        nextGatePrerequisites[] },
+  ruleViolations:[ { ruleId, severity:"BLOCKING", message } ]
+
+6 条 BLOCKING 规则（违规 -> result.status=PARTIAL + ruleViolations）：
+  CITATION_REQUIRED（断言必须有来源+日期）、NO_UNDISCLOSED_DEGRADATION（风险不得静默移除）、
+  DUAL_VERSION_PRINCIPLE（对客版仅 F/A）、GATE_SEQUENCING（闸门不可跳）、
+  FACT_LABEL_MANDATORY（标签必填）、NO_COMMITMENT_WITHOUT_APPROVAL（未 G3 不承诺）。
+
+事实标签语义：F 已核验事实 / C 推断结论 / B 行为事实 / H 假设 / P 计划承诺 / A 已批准。
+8 大章节：CH01 企业概况与经营现状、CH02 行业与竞争、CH03 财务分析、CH04 风险分析、
+  CH05 需求识别、CH06 服务方案设计、CH07 产品推荐、CH08 实施路径；
+5 配套表：APX-A 客户信息 / APX-B 行业分析 / APX-C 需求-方案-产品映射 / APX-D 专家协同 / APX-E 30-90-180 计划。
+
+--------------------------------------------------------------------
+四、SP-21 交互记忆抽取（同步，<=60 秒）
+--------------------------------------------------------------------
+请求：
+  { "skillId":"SP-21", "requestId":"<req>",
+    "request":{ "context":{
+      "interactionId":"INT-...",
+      "interactionContent":"访后纪要全文",
+      "existingMemories":[ { memoryId, category, content, confidence } ] } } }
+
+data.result：
+  schemaVersion, skillId:"SP-21", interactionId, status:"SUCCESS|PARTIAL",
+  candidateMemories:[ { memoryId:"MEM-...",
+                        category:"PREFERENCE|DECISION_PATTERN|RELATIONSHIP|BUSINESS_SIGNAL|EMOTIONAL_STATE",
+                        content, confidence:0.0-1.0,
+                        suggestedDecayRule:"NONE|LINEAR|STEP", evidenceQuote:"原文摘录" } ],
+  memoryUpdates:[ { memoryId, action:"REINFORCE", confidenceDelta, reason } ],
+  memorySupersessions:[ { memoryId, supersededBy, reason } ],
+  ruleViolations:[ { ruleId:"CONFIDENCE_CALIBRATION|DECAY_RULE_APPLICATION|DUPLICATE_DETECTION",
+                     severity:"BLOCKING", message } ]
+
+要点：
+  - DKWS 不存记忆；候选/更新/取代全部交 GITS InteractionMemoryPort 持久化与人工确认。
+  - 记忆生命周期与衰减在 GITS：PREFERENCE/RELATIONSHIP -> NONE；BUSINESS_SIGNAL -> LINEAR；
+    EMOTIONAL_STATE -> STEP（与 SP-21 建议对齐）。
+  - 已确认记忆在下次 SP-20 UPDATE 时通过 context.interactionMemory 注入。
+
+--------------------------------------------------------------------
+五、闸门协作
+--------------------------------------------------------------------
+  GET  /api/skill/gates/{customerId}
+    -> { customerId, gates:[ { gateId:"GATE-BIZ-G0", name:"G0", sequence, must[], forbidden[] } ] }
+  POST /api/skill/gates/audit
+    body { customerId, gate:"G1", decision:"PASSED", decidedBy:"RM-ZW-001", reason:"..." }
+    -> { recorded:true, ... }
+推进规则：G0->G1->G2->G3->G4->G5 顺序，跳门禁止（GATE_SEQUENCING）。
+对客版放行：仅当 gateState.passed 含 G1/G2/G3 时重新调用 SP-20 UPDATE，
+  返回 customerVersion.releaseBlockedUntil==[] 后方可展示/导出；展示前可再按 factLabels 复核仅 F/A。
+
+--------------------------------------------------------------------
+六、GITS 实现目标（按序交付）
+--------------------------------------------------------------------
+1) 契约 DTO：ContextPackage / ProposalServiceResult / CandidateMemory 等 Java record，
+   全部 @JsonIgnoreProperties(ignoreUnknown=true)（容忍未知字段），字段 camelCase。
+2) 适配器扩展：DshHttpSkillExecutionAdapter 支持 request.context 与 async；
+   SP-20 异步（202 -> 轮询 data.skill_result），SP-21 同步；超时/网络异常回 Fallback。
+3) ProposalPort：generateDraft(INITIAL/UPDATE)、listVersions、getVersion、
+   advanceGate（状态机+GATE_SEQUENCING）、generateCustomerVersion（仅 G1-G3 通过且
+   releaseBlockedUntil==[] 才放行）。
+4) InteractionMemoryPort：SP-21 候选 -> confirmCandidate 落 H2 -> 生命周期与衰减 ->
+   下次 SP-20 UPDATE 注入 context.interactionMemory。
+5) 闸门：从 GET /api/skill/gates/{id} 拉清单渲染闸门页；推进后调 POST /api/skill/gates/audit 镜像。
+6) 前端：建议书工作区 Tab（版本列表 / 内部版-对客版切换 / 闸门进度条 / 交互记忆面板
+   （候选确认、按类别与置信度排序）/ 生成与更新按钮）。
+7) 测试：DTO/状态机/过滤逻辑单测 + 对 8106 真实执行 SP-20(async) 与 SP-21 的集成测试
+   （断言 SUCCESS、引用、双版本、记忆候选）。
+
+--------------------------------------------------------------------
+七、技术栈与约束
+--------------------------------------------------------------------
+  Java 17 + Spring Boot；H2 内存库（重启后需重新灌 gits-crm-customer-master.json 或重新 upsert）。
+  不解析 DKWS HTML 报告页（reportUrl 仅调试跳转）；只消费 execute JSON。
+  对客版双保险：releaseBlockedUntil==[] + factLabels 复核。
+  审计：闸门推进与记忆确认写操作日志；不做静默降级。
+  超时：SP-21 同步 <=60 秒；SP-20 必须异步（勿用长连接硬等）。
+
+--------------------------------------------------------------------
+八、验收标准（全部满足才算完成）
+--------------------------------------------------------------------
+  1) 端到端：建议书 Tab 点「生成」-> SP-20 async 完成 -> 内部版可读（含事实标签）-> 推进 G0->G3
+     -> 对客版放行可导出；
+  2) 记忆闭环：访后提交纪要 -> SP-21 出候选 -> 人工确认 -> 建议书 UPDATE 引用交互记忆；
+  3) 8106 真实联调通过（请求/响应可对照样例）；
+  4) 全部测试绿，前端无 console 报错。
+
+--------------------------------------------------------------------
+九、输出要求
+--------------------------------------------------------------------
+  分阶段 PR：①契约 DTO + 适配器(async) ②ProposalPort + 闸门 ③InteractionMemoryPort ④前端 Tab + 测试。
+  每阶段附：改动清单、联调记录（对 8106 的真实请求/响应片段）。
+  先给实现方案与任务拆解，再开始编码。
+====================================================================
+（完）
+====================================================================

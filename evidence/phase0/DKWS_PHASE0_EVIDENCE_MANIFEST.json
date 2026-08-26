@@ -1,0 +1,53 @@
+{
+  "schema": "dkws-phase0-evidence/v1",
+  "phase": "PHASE0",
+  "status": "CANDIDATE_READY_FOR_OWNER_REVIEW",
+  "date": "2026-08-26",
+  "verified": {
+    "independent_review_report": true,
+    "source_present": true,
+    "service_health_12_skills": true,
+    "contract_bundle_validation": true,
+    "integration_tests_137": true,
+    "unit_contract_security_recovery": true
+  },
+  "documented_but_not_verified": {
+    "e2e_golden": "未复跑（含 LLM 慢用例）",
+    "security_scan": "缺失",
+    "coverage": "缺失",
+    "performance": "缺失"
+  },
+  "missing": [
+    "dkws_git_commit_anchor",
+    "python_dependency_lock",
+    "sbom",
+    "security_scan_report",
+    "coverage_report",
+    "performance_report",
+    "recovery_drill_report",
+    "gits_p24_p30_diff",
+    "gits_http_trace",
+    "gits_uat_raw_log",
+    "gits_authoritative_context_package_schema",
+    "owner_slo_rpo_rto",
+    "bank_data_retention_policy"
+  ],
+  "pending_owner_decision": [
+    "ADR-012 SQLite Runtime Store",
+    "ADR-013 API Key/TLS",
+    "ADR-014 Independent Server Boundary",
+    "ADR-015 Single Node Production Profile",
+    "Production NFR numeric targets",
+    "Data retention periods"
+  ],
+  "contract_bundle_manifest": "evidence/phase0/contract-bundle-manifest.json",
+  "contract_bundle_hash": "72a4d0a922be3a84cb961d8e62de375706df5bbc60aff403cfc5a552ec21e278",
+  "test_evidence": {
+    "integration_tests_log": "evidence/phase0/integration-tests.log",
+    "integration_exit": 0,
+    "unit_contract_security_recovery_log": "evidence/phase0/unit-contract-security-recovery.log",
+    "unit_contract_security_recovery_exit": 0,
+    "contract_bundle_validation": "PASS",
+    "contract_bundle_hash": "72a4d0a922be3a84cb961d8e62de375706df5bbc60aff403cfc5a552ec21e278"
+  }
+}

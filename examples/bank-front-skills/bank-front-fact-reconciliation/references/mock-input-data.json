@@ -1,0 +1,37 @@
+{
+  "_meta": {
+    "skillId": "SK-FRONT-004",
+    "purpose": "模拟 T-CORE-001 / T-EXT-001 返回的行内变动指标原始数据，供开发调试、离线调用与评测注入"
+  },
+  "T-CORE-001": {
+    "customerId": "HZB0000001234",
+    "halfYearRevenue": {
+      "value": 32000000,
+      "yoy": -0.05,
+      "timestamp": "近6个月累计"
+    },
+    "creditUtilizationRate": {
+      "value": 0.72,
+      "remaining": 2800,
+      "unit": "万元"
+    },
+    "payroll6m": {
+      "value": 4800000,
+      "trend": "持续下滑"
+    },
+    "settlement3m": {
+      "value": 1.2,
+      "unit": "亿元",
+      "change": "+25%"
+    }
+  },
+  "T-EXT-001": {
+    "electricity3m": {
+      "value": 2850000,
+      "unit": "千瓦时",
+      "change": "+30%",
+      "authRequired": true
+    },
+    "industryAvgRevenueGrowth": 0.08
+  }
+}
