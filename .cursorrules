@@ -1,0 +1,8 @@
+# Cursor 项目规则
+
+- 开始工作前先阅读 AGENTS.md
+- 遵守 docs/development/RULES.md
+- Python 开发遵守 docs/development/PYTHON_STANDARDS.md
+- Java 开发遵守 docs/development/JAVA_STANDARDS.md
+- 不修改 GITS 仓库
+- 不自行宣布生产就绪或 GITS UAT 通过
