@@ -15,6 +15,7 @@ spring:
 
 skill-runtime:
   user-skills-dir: ./user-skills
+  internal-token: "${DKWS_INTERNAL_TOKEN:poc-internal-token}"
   max-skill-zip-size: 20MB
   max-skill-files: 200
   sandbox:

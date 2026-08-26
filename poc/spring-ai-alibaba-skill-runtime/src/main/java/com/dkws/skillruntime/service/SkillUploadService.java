@@ -2,6 +2,7 @@ package com.dkws.skillruntime.service;
 
 import com.alibaba.cloud.ai.graph.skills.registry.SkillRegistry;
 import com.alibaba.cloud.ai.graph.skills.registry.AbstractSkillRegistry;
+import com.dkws.skillruntime.model.SkillManifest;
 import com.dkws.skillruntime.model.SkillUploadResponse;
 import com.dkws.skillruntime.security.ZipSafeExtractor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,15 +20,18 @@ public class SkillUploadService {
     private final Path userSkillsDir;
     private final ZipSafeExtractor zipSafeExtractor;
     private final SkillRegistry skillRegistry;
+    private final SkillLifecycleService lifecycleService;
 
     public SkillUploadService(
             @Value("${skill-runtime.user-skills-dir}") String userSkillsDir,
             @Value("${skill-runtime.max-skill-zip-size:20MB}") String maxZipSize,
             @Value("${skill-runtime.max-skill-files:200}") int maxFiles,
-            SkillRegistry skillRegistry) {
+            SkillRegistry skillRegistry,
+            SkillLifecycleService lifecycleService) {
         this.userSkillsDir = Path.of(userSkillsDir).toAbsolutePath().normalize();
         this.zipSafeExtractor = new ZipSafeExtractor(parseSize(maxZipSize), maxFiles);
         this.skillRegistry = skillRegistry;
+        this.lifecycleService = lifecycleService;
     }
 
     public SkillUploadResponse upload(MultipartFile file) throws IOException {
@@ -35,7 +39,7 @@ public class SkillUploadService {
             throw new IllegalArgumentException("file is empty");
         }
 
-        Path tempRoot = Files.createTempDirectory("skill-extract-");
+        Path tempRoot = Files.createTempDirectory("skill-staging-");
         try {
             zipSafeExtractor.extractTo(file, tempRoot);
             Path skillMd = tempRoot.resolve("SKILL.md");
@@ -43,18 +47,14 @@ public class SkillUploadService {
                 throw new IllegalArgumentException("SKILL.md not found in zip");
             }
 
-            String skillName = detectSkillName(skillMd);
-            Path target = userSkillsDir.resolve(skillName).normalize();
-            if (!target.startsWith(userSkillsDir)) {
-                throw new SecurityException("invalid skill name");
-            }
-            Files.createDirectories(userSkillsDir);
-            deleteRecursively(target);
-            Files.move(tempRoot, target);
+            String skillId = detectSkillName(skillMd);
+            String version = detectVersion(skillMd);
+            SkillManifest manifest = lifecycleService.install(skillId, version, tempRoot);
+            lifecycleService.activate(skillId, version);
 
             reloadRegistry();
 
-            return new SkillUploadResponse(skillName, "1.0.0", "INSTALLED", true);
+            return new SkillUploadResponse(skillId, manifest.version(), "INSTALLED_AND_ACTIVATED", true);
         } finally {
             deleteRecursively(tempRoot);
         }
@@ -67,6 +67,15 @@ public class SkillUploadService {
             }
         }
         return skillMd.getParent().getFileName().toString();
+    }
+
+    private String detectVersion(Path skillMd) throws IOException {
+        for (String line : Files.readAllLines(skillMd)) {
+            if (line.startsWith("version:")) {
+                return line.substring("version:".length()).trim();
+            }
+        }
+        return "1.0.0";
     }
 
     private void reloadRegistry() {

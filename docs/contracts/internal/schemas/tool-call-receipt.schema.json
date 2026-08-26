@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ToolCallReceipt",
+  "type": "object",
+  "required": [
+    "toolId",
+    "toolVersion",
+    "skillId",
+    "skillVersion",
+    "startedAt",
+    "completedAt",
+    "status"
+  ],
+  "properties": {
+    "toolId": {
+      "type": "string"
+    },
+    "toolVersion": {
+      "type": "string"
+    },
+    "skillId": {
+      "type": "string"
+    },
+    "skillVersion": {
+      "type": "string"
+    },
+    "inputHash": {
+      "type": "string"
+    },
+    "policyDecisionId": {
+      "type": "string"
+    },
+    "sandboxProfileHash": {
+      "type": "string"
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "exitCode": {
+      "type": "integer"
+    },
+    "cpuTime": {
+      "type": "number"
+    },
+    "memoryPeak": {
+      "type": "number"
+    },
+    "outputHash": {
+      "type": "string"
+    },
+    "outputTruncated": {
+      "type": "boolean"
+    },
+    "networkUsed": {
+      "type": "boolean"
+    },
+    "sideEffectReceipt": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "failed",
+        "blocked",
+        "timeout",
+        "error"
+      ]
+    },
+    "errorCode": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

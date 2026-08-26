@@ -20,3 +20,12 @@
 2. 新文件在头部声明 `supersedes` 或 `extends`。
 3. 冲突以状态基线 YAML、契约 v2、ADR 为准。
 4. 任何替代均需在冲突登记册可追溯。
+
+## C′ 混合架构整改新增替代关系（2026-08-26）
+
+| 旧/候选文件 | 新候选文件 | 关系 |
+|---|---|---|
+| `docs/architecture/DKWS_SPRING_AI_ALIBABA_VS_PYTHON_NATIVE_COMPARISON_V1.0.md` | `docs/architecture/DKWS_CONTROLLED_HYBRID_ARCHITECTURE_V1.0_CANDIDATE.md` | SUPERSEDED_BY_C_PRIME |
+| `docs/architecture/DKWS_PRODUCTION_EVOLUTION_PLAN_V2_CANDIDATE.md` | `docs/architecture/DKWS_PRODUCTION_EVOLUTION_PLAN_V2.1_CANDIDATE.md` | SUPERSEDED_BY_V2_1 |
+| `docs/integration/GITS_DKWS_A_PLUS_B_HANDOFF.md` | `docs/integration/GITS_DKWS_A_PLUS_B_HANDOFF_V1.1_CANDIDATE.md` | SUPERSEDED_BY_V1_1 |
+| `poc/spring-ai-alibaba-skill-runtime/README.md` | `poc/spring-ai-alibaba-skill-runtime/POC2_PLAN.md` / `POC2_RESULT.md` | SUPERSEDED_FOR_POC2_STATUS |

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RuntimeCapabilities",
+  "type": "object",
+  "required": [
+    "runtimeVersion",
+    "contractVersion",
+    "status"
+  ],
+  "properties": {
+    "runtimeVersion": {
+      "type": "string"
+    },
+    "contractVersion": {
+      "type": "string"
+    },
+    "contractHash": {
+      "type": "string"
+    },
+    "frameworkVersion": {
+      "type": "string"
+    },
+    "activatedSkills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sandboxCapability": {
+      "type": "string",
+      "enum": [
+        "available",
+        "unavailable",
+        "disabled"
+      ]
+    },
+    "degraded": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "degraded"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

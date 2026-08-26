@@ -1,0 +1,56 @@
+openapi: 3.1.0
+info:
+  title: DKWS Skill Runtime Internal API
+  version: 1.0.0-candidate
+  description: Python Core -> Java Skill Runtime private contract. Not for external clients.
+servers:
+  - url: http://127.0.0.1:18081
+    description: loopback internal
+security:
+  - InternalTokenAuth: []
+paths:
+  /internal/v1/runtime/execute:
+    post:
+      operationId: executePlan
+      summary: Execute an ExecutionPlan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/execution-plan.schema.json'
+      responses:
+        '200':
+          description: ExecutionResult
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/execution-result.schema.json'
+        '401':
+          description: Unauthorized
+        '408':
+          description: Deadline exceeded
+        '409':
+          description: Idempotency conflict
+        '422':
+          description: Invalid plan
+        '503':
+          description: Runtime unavailable
+  /internal/v1/runtime/health:
+    get:
+      operationId: runtimeHealth
+      summary: Runtime health and capabilities
+      security: []
+      responses:
+        '200':
+          description: Health
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/runtime-capabilities.schema.json'
+components:
+  securitySchemes:
+    InternalTokenAuth:
+      type: apiKey
+      in: header
+      name: X-Internal-Token

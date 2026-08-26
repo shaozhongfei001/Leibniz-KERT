@@ -1,0 +1,30 @@
+{
+  "schema": "dkws-poc2-evidence/v1",
+  "workstream": "DKWS-C-MIXED-ARCH-REMEDIATION-01",
+  "status": "PARTIAL_PASS",
+  "date": "2026-08-26",
+  "evidence": {
+    "build_and_unit_tests": "evidence/poc2/build-and-unit-tests.log",
+    "sandbox_smoke": "evidence/poc2/sandbox-smoke.log",
+    "internal_contract_hash": "64b9b432d6ee9fc9e017436171f05e1198ab920121202266c835c471ff2c4550"
+  },
+  "passed": [
+    "maven_test",
+    "two_skills_dynamic_registration",
+    "dynamic_tool_binding_from_manifest",
+    "skill_lifecycle_install_activate_rollback_unit_test",
+    "internal_api_auth_401_without_token",
+    "bwrap_sandbox_basic_execution"
+  ],
+  "not_passed": [
+    "real_tool_call_receipt",
+    "sandbox_security_negative_cases",
+    "python_core_to_java_runtime_e2e",
+    "contract_dual_tests",
+    "sbom",
+    "performance_baseline"
+  ],
+  "blocked": [
+    "github_push_ssh_timeout"
+  ]
+}

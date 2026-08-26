@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ModelCallReceipt",
+  "type": "object",
+  "required": [
+    "model",
+    "promptHash",
+    "inputTokens",
+    "outputTokens",
+    "latencyMs",
+    "status"
+  ],
+  "properties": {
+    "model": {
+      "type": "string"
+    },
+    "promptHash": {
+      "type": "string"
+    },
+    "paramsHash": {
+      "type": "string"
+    },
+    "inputTokens": {
+      "type": "integer"
+    },
+    "outputTokens": {
+      "type": "integer"
+    },
+    "estimatedCost": {
+      "type": "number"
+    },
+    "latencyMs": {
+      "type": "number"
+    },
+    "degraded": {
+      "type": "boolean"
+    },
+    "degradationReason": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "error",
+        "degraded"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

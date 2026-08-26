@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExecutionResult",
+  "type": "object",
+  "required": [
+    "requestId",
+    "runtimeRequestId",
+    "status",
+    "usable",
+    "releaseAllowed",
+    "result",
+    "startedAt",
+    "completedAt"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string"
+    },
+    "runtimeRequestId": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "SUCCESS",
+        "PARTIAL",
+        "DEGRADED",
+        "FAILED"
+      ]
+    },
+    "usable": {
+      "type": "boolean"
+    },
+    "releaseAllowed": {
+      "type": "boolean"
+    },
+    "degraded": {
+      "type": "boolean"
+    },
+    "degradationReason": {
+      "type": "string"
+    },
+    "result": {
+      "type": "object"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "toolCallReceipts": {
+      "type": "array",
+      "items": {
+        "$ref": "tool-call-receipt.schema.json"
+      }
+    },
+    "modelCallReceipts": {
+      "type": "array",
+      "items": {
+        "$ref": "model-call-receipt.schema.json"
+      }
+    },
+    "trace": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false
+}

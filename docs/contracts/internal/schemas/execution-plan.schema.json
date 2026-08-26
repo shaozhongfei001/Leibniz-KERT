@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExecutionPlan",
+  "type": "object",
+  "required": [
+    "contractVersion",
+    "requestId",
+    "tenantId",
+    "customerScope",
+    "skillId",
+    "skillVersion",
+    "skillHash",
+    "activationPlanHash",
+    "policyId",
+    "deadline",
+    "idempotencyKey",
+    "payloadHash",
+    "allowedToolIds"
+  ],
+  "properties": {
+    "contractVersion": {
+      "type": "string"
+    },
+    "requestId": {
+      "type": "string"
+    },
+    "traceparent": {
+      "type": "string"
+    },
+    "tenantId": {
+      "type": "string"
+    },
+    "customerScope": {
+      "type": "object"
+    },
+    "skillId": {
+      "type": "string"
+    },
+    "skillVersion": {
+      "type": "string"
+    },
+    "skillHash": {
+      "type": "string"
+    },
+    "activationPlanHash": {
+      "type": "string"
+    },
+    "policyId": {
+      "type": "string"
+    },
+    "promptPolicyRef": {
+      "type": "string"
+    },
+    "modelPolicyRef": {
+      "type": "string"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "idempotencyKey": {
+      "type": "string"
+    },
+    "payloadHash": {
+      "type": "string"
+    },
+    "allowedToolIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "knowledgeSourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contextPackage": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

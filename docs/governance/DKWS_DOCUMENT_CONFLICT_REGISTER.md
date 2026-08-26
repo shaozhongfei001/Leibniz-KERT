@@ -26,3 +26,13 @@
 - 状态/能力/证据以 `DKWS_STATUS_BASELINE_CANDIDATE.yaml` 为准。
 - 文档替代关系见 `DKWS_SUPERSESSION_MAP.md`。
 - 契约 v1/v2 替代关系以 OpenAPI/JSON Schema 候选为唯一权威源，v1 保留兼容层。
+
+## C′ 混合架构整改新增冲突（2026-08-26）
+
+| ID | 冲突 | 当前判定 | 处理方式 | 状态 |
+|---|---|---|---|---|
+| C-15 | POC README 称骨架待补齐，POC_RESULT 称部分 PASS，源码实现部分完成 | 以 POC2_RESULT 为当前状态，旧 README 标记 superseded | 新 POC2_PLAN/RESULT | RESOLVED_CANDIDATE |
+| C-16 | 生产演进 V2 无 Java Runtime，对比文档另建 Phase 0-5 | 以 V2.1 为主，Java Runtime 独立 Gate | 新 V2.1 | RESOLVED_CANDIDATE |
+| C-17 | GITS A+B 被推迟到 Java Runtime 之后 | 以独立评审为准：A+B 不等 Java Runtime | GITS V1.1 | RESOLVED_CANDIDATE |
+| C-18 | 独立服务边界仍把 Skill 执行全放 Python dkws-server | C′ 将 Java Runtime 作为内部执行器 | 新 C′ 架构 | RESOLVED_CANDIDATE |
+| C-19 | OpenAPI `x-contract-bundle-hash: PENDING_COMPUTE` 与 manifest hash 关系不清 | 以 manifest 为实际 hash，OpenAPI 中改为引用 manifest | 后续修正 | PENDING |
