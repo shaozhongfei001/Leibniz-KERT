@@ -1,0 +1,20 @@
+[llm] 已注入 DeepSeek（deepseek-chat）
+[security] API Key 认证已启用（1 个密钥，请求头 X-API-Key）
+[skill] 服务监听 http://127.0.0.1:18744（workspace=/tmp/dkws-m2p4-e2e-ws）
+[skill] 端点: POST /api/skill/execute | GET /api/skill/health | GET /v1/health
+INFO:     Started server process [3832948]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18744 (Press CTRL+C to quit)
+{"timestamp": "2026-08-27T09:12:57Z", "level": "INFO", "logger": "dkws.access", "event_code": "HTTP_ACCESS", "message": "GET /livez -> 200", "request_id": "REQ-2f68bfa20fe04d85", "trace_id": "a9e7913cc29f4741b06abe75754eab9f", "span_id": "ed6161d376f34643", "service": "dkws-python-core", "method": "GET", "path": "/livez", "status": 200, "duration_ms": 3.191, "client_ip": "127.0.0.1"}
+INFO:     127.0.0.1:59000 - "GET /livez HTTP/1.1" 200 OK
+{"timestamp": "2026-08-27T09:12:57Z", "level": "INFO", "logger": "dkws.access", "event_code": "HTTP_ACCESS", "message": "GET /v1/health -> 200", "request_id": "REQ-1acc3438b88d446f", "trace_id": "67d762776b934aa4bac36ca63fdd864c", "span_id": "1748762bf6794b26", "service": "dkws-python-core", "method": "GET", "path": "/v1/health", "status": 200, "duration_ms": 2.109, "client_ip": "127.0.0.1"}
+INFO:     127.0.0.1:59006 - "GET /v1/health HTTP/1.1" 200 OK
+{"timestamp": "2026-08-27T09:12:57Z", "level": "INFO", "logger": "dkws.access", "event_code": "HTTP_ACCESS", "message": "GET /metrics -> 200", "request_id": "REQ-5e23ce66e9ce49d7", "trace_id": "5f4ccbf01bd445128162fce4acd0b0bb", "span_id": "de0dbcf63e184b36", "service": "dkws-python-core", "method": "GET", "path": "/metrics", "status": 200, "duration_ms": 2.112, "client_ip": "127.0.0.1"}
+INFO:     127.0.0.1:59018 - "GET /metrics HTTP/1.1" 200 OK
+{"timestamp": "2026-08-27T09:12:57Z", "level": "INFO", "logger": "dkws.access", "event_code": "HTTP_ACCESS", "message": "GET /livez -> 200", "request_id": "REQ-0721c9905a324f4c", "trace_id": "da16fa6599b04fa489201cb9eb3b99c8", "span_id": "cdac7c5c4a1748d5", "service": "dkws-python-core", "method": "GET", "path": "/livez", "status": 200, "duration_ms": 1.011, "client_ip": "127.0.0.1"}
+INFO:     127.0.0.1:59030 - "GET /livez HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [3832948]

@@ -52,6 +52,7 @@ from .middleware import (
     ConcurrencyLimitMiddleware,
     ObservabilityMiddleware,
     RateLimitMiddleware,
+    ResponseRedactionMiddleware,
     SizeLimitMiddleware,
 )
 
@@ -140,10 +141,12 @@ def _install_hardening(app: FastAPI, cfg: RuntimeConfig) -> None:
     Starlette 的 ``add_middleware`` 为栈式注册（后加先执行），因此这里
     的调用顺序与实际执行顺序相反。实际执行顺序为：
 
-    可观测性 → 大小限制 → 并发限制 → 限流 → 认证 → 路由
+    可观测性 → 响应脱敏 → 大小限制 → 并发限制 → 限流 → 认证 → 路由
 
     - 可观测性置于**最外层**，因此被限流/认证拦截的请求同样产生指标与日志，
       使可观测性不留盲区（4xx 拒绝也可观测）。
+    - 响应脱敏（M2.9）紧随其后：需在响应体最终成型后处理，
+      且脱敏动作本身应被可观测（其日志由外层中间件的上下文覆盖）。
     - 限流置于认证之前，使未认证的洪水请求同样受限；限流中间件自行识别
       API Key 以保持按 Key 分桶（见 :class:`RateLimitMiddleware`）。
 
@@ -155,6 +158,7 @@ def _install_hardening(app: FastAPI, cfg: RuntimeConfig) -> None:
     app.add_middleware(RateLimitMiddleware, config=cfg.rate_limit, auth_config=cfg.auth)
     app.add_middleware(ConcurrencyLimitMiddleware, config=cfg.concurrency)
     app.add_middleware(SizeLimitMiddleware, config=cfg.size_limit)
+    app.add_middleware(ResponseRedactionMiddleware, config=cfg.redaction)
     app.add_middleware(ObservabilityMiddleware, config=cfg.observability)
 
 
@@ -202,7 +206,8 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         # 并存时会误抢正在被 Worker 正常处理的 Job（已标记 deprecated）。
         store.reclaim_expired_leases()
     skill_svc = SkillExecutionService(ws, knowledge=svc, skill_packages=pkgs,
-                                     runtime_store=store, profile=cfg.profile)
+                                     runtime_store=store, profile=cfg.profile,
+                                     llm_redaction=cfg.redaction.llm_enabled)
     app.state.runtime_config = cfg
     app.state.runtime_store = store
     # 暴露 Service 便于运维自检与测试断言（M2-P2 Owner 决策 3 的校验链路）

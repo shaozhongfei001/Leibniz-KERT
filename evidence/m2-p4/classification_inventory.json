@@ -1,0 +1,219 @@
+[
+  {
+    "field": "accountno",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "账号"
+  },
+  {
+    "field": "address",
+    "classification": "RESTRICTED",
+    "mask_style": "EDGES",
+    "keep": 3,
+    "note": "地址"
+  },
+  {
+    "field": "apikey",
+    "classification": "RESTRICTED",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "API 密钥"
+  },
+  {
+    "field": "authorization",
+    "classification": "RESTRICTED",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "授权头"
+  },
+  {
+    "field": "balance",
+    "classification": "CONFIDENTIAL",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "余额"
+  },
+  {
+    "field": "bankaccount",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "银行账号"
+  },
+  {
+    "field": "cardno",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "卡号"
+  },
+  {
+    "field": "contactphone",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "联系电话"
+  },
+  {
+    "field": "credential",
+    "classification": "RESTRICTED",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "凭据"
+  },
+  {
+    "field": "creditcode",
+    "classification": "CONFIDENTIAL",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "统一社会信用代码"
+  },
+  {
+    "field": "creditlimit",
+    "classification": "CONFIDENTIAL",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "授信额度"
+  },
+  {
+    "field": "customerid",
+    "classification": "INTERNAL",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "客户号"
+  },
+  {
+    "field": "customername",
+    "classification": "INTERNAL",
+    "mask_style": "EDGES",
+    "keep": 1,
+    "note": "客户名称"
+  },
+  {
+    "field": "email",
+    "classification": "RESTRICTED",
+    "mask_style": "EDGES",
+    "keep": 2,
+    "note": "邮箱"
+  },
+  {
+    "field": "homeaddress",
+    "classification": "RESTRICTED",
+    "mask_style": "EDGES",
+    "keep": 3,
+    "note": "住址"
+  },
+  {
+    "field": "idcard",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "身份证号"
+  },
+  {
+    "field": "idcardno",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "身份证号"
+  },
+  {
+    "field": "idnumber",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "身份证号"
+  },
+  {
+    "field": "legalperson",
+    "classification": "CONFIDENTIAL",
+    "mask_style": "EDGES",
+    "keep": 1,
+    "note": "法定代表人"
+  },
+  {
+    "field": "mobile",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "手机号"
+  },
+  {
+    "field": "password",
+    "classification": "RESTRICTED",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "口令"
+  },
+  {
+    "field": "phone",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "电话"
+  },
+  {
+    "field": "privatekey",
+    "classification": "RESTRICTED",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "私钥"
+  },
+  {
+    "field": "revenue",
+    "classification": "CONFIDENTIAL",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "营收"
+  },
+  {
+    "field": "riskrating",
+    "classification": "CONFIDENTIAL",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "风险评级"
+  },
+  {
+    "field": "rmid",
+    "classification": "INTERNAL",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "客户经理号"
+  },
+  {
+    "field": "secret",
+    "classification": "RESTRICTED",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "密钥"
+  },
+  {
+    "field": "taxno",
+    "classification": "CONFIDENTIAL",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "税号"
+  },
+  {
+    "field": "telephone",
+    "classification": "RESTRICTED",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "电话"
+  },
+  {
+    "field": "token",
+    "classification": "RESTRICTED",
+    "mask_style": "FULL",
+    "keep": 0,
+    "note": "令牌"
+  },
+  {
+    "field": "unifiedsocialcreditcode",
+    "classification": "CONFIDENTIAL",
+    "mask_style": "TAIL",
+    "keep": 4,
+    "note": "统一社会信用代码"
+  }
+]

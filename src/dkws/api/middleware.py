@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import threading
 import time
@@ -27,6 +28,12 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from ..domain.errors import ERROR_CODES
+from ..infrastructure.classification import (
+    Classification,
+    RedactionPolicy,
+    RedactionReport,
+    redact_structure,
+)
 from ..infrastructure.observability import (
     MetricsRegistry,
     Tracer,
@@ -48,6 +55,7 @@ from ..infrastructure.runtime_config import (
     ConcurrencyConfig,
     ObservabilityConfig,
     RateLimitConfig,
+    RedactionConfig,
     SizeLimitConfig,
 )
 
@@ -520,3 +528,69 @@ class ObservabilityMiddleware(BaseHTTPMiddleware):
                       key_id=request.state.__dict__.get(STATE_KEY_ID),
                       client_ip=_client_ip(request))
             reset_request_context(token)
+
+
+class ResponseRedactionMiddleware(BaseHTTPMiddleware):
+    """响应脱敏中间件（M2.9）：按数据分类掩码出站 JSON 字段。
+
+    **默认关闭**：既有响应契约与测试依赖原文（例如报告正文含企业名），
+    贸然全局脱敏会破坏门禁。生产环境可显式开启，或由调用方按
+    ``X-DKWS-Redact`` 请求头选择性启用（仅当配置允许时）。
+
+    仅处理 ``application/json`` 响应；其他类型（Prometheus 文本、
+    Markdown 报告、二进制）原样透传——报告类产物的脱敏应在生成阶段
+    按分类处理，而非在传输层粗暴替换。
+    """
+
+    def __init__(self, app, config: RedactionConfig):
+        """绑定脱敏配置。"""
+        super().__init__(app)
+        self._config = config
+        self._logger = logging.getLogger("dkws.redaction")
+
+    def _policy(self) -> RedactionPolicy:
+        """按配置构造脱敏策略。"""
+        return RedactionPolicy(
+            threshold=Classification.parse(self._config.response_threshold),
+            mask_text=self._config.response_mask_text,
+            annotate=self._config.annotate)
+
+    async def dispatch(self, request: Request, call_next: CallNext) -> Response:
+        """脱敏 JSON 响应体。"""
+        response = await call_next(request)
+        if not self._config.response_enabled:
+            return response
+        content_type = response.headers.get("content-type", "")
+        if "application/json" not in content_type:
+            return response
+        if response.status_code >= 500:
+            # 5xx 响应体可能非 JSON 信封，避免二次处理掩盖原始错误
+            return response
+
+        body = b""
+        async for chunk in response.body_iterator:
+            body += chunk if isinstance(chunk, bytes) else str(chunk).encode()
+        try:
+            payload = json.loads(body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            # 声明 JSON 但内容不可解析：原样返回，不做猜测
+            return Response(content=body, status_code=response.status_code,
+                            headers=dict(response.headers),
+                            media_type=response.media_type)
+
+        report = RedactionReport()
+        redacted = redact_structure(payload, self._policy(), report=report)
+        if report.count and self._config.annotate and isinstance(redacted, dict):
+            meta = redacted.get("meta")
+            if isinstance(meta, dict):
+                meta["redaction"] = report.as_dict()
+        if report.count:
+            log_event(self._logger, "INFO", "RESPONSE_REDACTED",
+                      f"响应脱敏 {report.count} 个字段",
+                      path=request.url.path, masked=report.count)
+
+        new_body = json.dumps(redacted, ensure_ascii=False).encode("utf-8")
+        headers = dict(response.headers)
+        headers["content-length"] = str(len(new_body))
+        return Response(content=new_body, status_code=response.status_code,
+                        headers=headers, media_type="application/json")

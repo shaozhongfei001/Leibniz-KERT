@@ -198,6 +198,30 @@ class ObservabilityConfig:
 
 
 @dataclass(frozen=True)
+class RedactionConfig:
+    """数据脱敏配置（M2.9）。
+
+    Attributes:
+        response_enabled: 是否脱敏 API JSON 响应。**默认关闭**——既有响应
+            契约与测试依赖原文（如报告正文含企业名），全局脱敏会破坏门禁；
+            生产可显式开启。
+        response_threshold: 响应脱敏阈值（``RESTRICTED``/``CONFIDENTIAL`` 等）。
+        response_mask_text: 响应中的自由文本是否做值形态掩码。
+        llm_enabled: 是否在提示词出站前脱敏。**默认开启**——客户数据进入
+            外部模型属重大合规风险（独立评审 L659）。
+        log_enabled: 是否对结构化日志字段按分类脱敏（叠加于既有正则脱敏）。
+        annotate: 是否在响应 ``meta.redaction`` 中附脱敏说明。
+    """
+
+    response_enabled: bool = False
+    response_threshold: str = "RESTRICTED"
+    response_mask_text: bool = False
+    llm_enabled: bool = True
+    log_enabled: bool = True
+    annotate: bool = True
+
+
+@dataclass(frozen=True)
 class RuntimeConfig:
     """DKWS 运行时总配置。"""
 
@@ -209,6 +233,7 @@ class RuntimeConfig:
     concurrency: ConcurrencyConfig = field(default_factory=ConcurrencyConfig)
     runtime_store: RuntimeStoreConfig = field(default_factory=RuntimeStoreConfig)
     observability: ObservabilityConfig = field(default_factory=ObservabilityConfig)
+    redaction: RedactionConfig = field(default_factory=RedactionConfig)
     warnings: tuple[str, ...] = ()
 
     @property
@@ -461,17 +486,39 @@ def load_runtime_config(env: dict[str, str] | None = None,
         readiness_require_store=bool(obs_ready_store),
     )
 
+    file_red = file_cfg.get("redaction") or {}
+    red_response = _env_bool(env, "DKWS_REDACT_RESPONSE", None)
+    if red_response is None:
+        red_response = bool(file_red.get("response_enabled", False))
+    red_text = _env_bool(env, "DKWS_REDACT_RESPONSE_TEXT", None)
+    if red_text is None:
+        red_text = bool(file_red.get("response_mask_text", False))
+    red_llm = _env_bool(env, "DKWS_LLM_REDACTION", None)
+    if red_llm is None:
+        red_llm = bool(file_red.get("llm_enabled", True))
+    red_log = _env_bool(env, "DKWS_REDACT_LOGS", None)
+    if red_log is None:
+        red_log = bool(file_red.get("log_enabled", True))
+    redaction = RedactionConfig(
+        response_enabled=bool(red_response),
+        response_threshold=(env.get("DKWS_REDACT_THRESHOLD")
+                            or file_red.get("response_threshold", "RESTRICTED")).strip(),
+        response_mask_text=bool(red_text),
+        llm_enabled=bool(red_llm),
+        log_enabled=bool(red_log),
+        annotate=bool(file_red.get("annotate", True)))
+
     cfg = RuntimeConfig(profile=profile, bind_host=bind_host, auth=auth,
                         rate_limit=rate_limit, size_limit=size_limit,
                         concurrency=concurrency, runtime_store=runtime_store,
-                        observability=observability)
+                        observability=observability, redaction=redaction)
     problems = validate_runtime_config(cfg)
     if problems and cfg.is_production and strict:
         raise ConfigError("生产 profile 配置校验失败：" + "；".join(problems))
     return RuntimeConfig(profile=cfg.profile, bind_host=cfg.bind_host, auth=cfg.auth,
                          rate_limit=cfg.rate_limit, size_limit=cfg.size_limit,
                          concurrency=cfg.concurrency, runtime_store=cfg.runtime_store,
-                         observability=cfg.observability,
+                         observability=cfg.observability, redaction=cfg.redaction,
                          warnings=tuple(problems))
 
 
