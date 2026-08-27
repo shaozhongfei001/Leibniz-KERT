@@ -1,0 +1,72 @@
+{
+  "schema": "dkws_release_manifest/v1",
+  "release_id": "636b2147ac19",
+  "created_at": "2026-08-27T09:54:28Z",
+  "git": {
+    "available": true,
+    "commit": "636b2147ac191964156646450c37dc38be5d58ff",
+    "short_commit": "636b2147ac19",
+    "branch": "feature/m2-remaining",
+    "tag": "636b214",
+    "dirty": true,
+    "dirty_file_count": 7,
+    "committed_at": "2026-08-27T17:22:03+08:00"
+  },
+  "versions": {
+    "package": "0.1.0",
+    "service_http": "1.0.0",
+    "runtime_db_schema": 2,
+    "projection_builder": "1.0.0",
+    "python": "3.12.8",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35"
+  },
+  "components": {
+    "python_source": {
+      "present": true,
+      "path": "/home/szf/dev/Leibniz-KERT/src",
+      "file_count": 62,
+      "content_sha256": "eb5c93c40d9ac9c003a49a389db80703c061e32c9061872a2711afb646119725"
+    },
+    "public_contracts": {
+      "present": true,
+      "path": "/home/szf/dev/Leibniz-KERT/docs/contracts/openapi",
+      "file_count": 1,
+      "content_sha256": "47d77c8dff93a45adcefd63a81297a79652ec80011a563135b3f59df70873ea8"
+    },
+    "public_schemas": {
+      "present": true,
+      "path": "/home/szf/dev/Leibniz-KERT/docs/contracts/schemas",
+      "file_count": 11,
+      "content_sha256": "0508f6422e576f9908148975277db69ebf7912b168daf4ee0306064a140d2d9f"
+    },
+    "internal_contracts": {
+      "present": true,
+      "path": "/home/szf/dev/Leibniz-KERT/docs/contracts/internal",
+      "file_count": 8,
+      "content_sha256": "c06e7b9df7d63cc9ee5348bc992a9e364c83144e45f33ce35a1e68b4edca3553"
+    },
+    "skill_packages": {
+      "present": true,
+      "path": "/home/szf/dev/Leibniz-KERT/skills",
+      "file_count": 31,
+      "content_sha256": "4ec330faf059156cc3dd0d51f75a271e0739638bd03f3f31c7e87f4a6aeb9b8b"
+    },
+    "scripts": {
+      "present": true,
+      "path": "/home/szf/dev/Leibniz-KERT/scripts",
+      "file_count": 23,
+      "content_sha256": "d355fcf4e1165acea05a50b114d1909c06c3d40df301ecee8a10d24ceab18797"
+    }
+  },
+  "environment": {
+    "python": "3.12.8",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "profile": "dev"
+  },
+  "notes": [
+    "本清单不代表已通过发布门禁或生产验收。",
+    "版本号在代码中分散于多处（package/service_http/runtime_db_schema/projection_builder），本清单如实记录但未统一——统一涉及多处契约与测试，属独立变更。",
+    "工作区存在 7 个未提交变更：本次发布内容与任何 commit 均不完全对应，不应用于生产。"
+  ],
+  "fingerprint": "fba04f8f4a8018c21146bafcfcccba392e127a1328f40a4b7b566dcedb656c76"
+}
