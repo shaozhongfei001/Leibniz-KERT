@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "journal_mode": "wal",
+  "tables": [
+    "evidence_audit",
+    "gate_audit",
+    "idempotency_records",
+    "jobs",
+    "schema_version"
+  ],
+  "idempotency_records": 1,
+  "gate_audit": 1
+}

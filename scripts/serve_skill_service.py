@@ -45,8 +45,24 @@ def main() -> None:
             print(f"[llm] credentials 读取失败（{exc}），使用确定性适配器", flush=True)
 
     from dkws.api.server import create_app
+    from dkws.infrastructure.runtime_config import ConfigError, load_runtime_config
 
-    app = create_app(Path(args.workspace).resolve())
+    # M2.1/ADR-015：绑定地址纳入配置校验；生产 profile 缺少认证/限流时拒绝启动
+    os.environ.setdefault("DKWS_BIND_HOST", args.host)
+    try:
+        cfg = load_runtime_config()
+    except ConfigError as exc:
+        raise SystemExit(f"[security] 运行时配置校验失败，拒绝启动：{exc}") from exc
+    for warning in cfg.warnings:
+        print(f"[security][WARN] {warning}", flush=True)
+    if not cfg.auth.enabled:
+        print("[security][WARN] 未启用 API Key 认证（dev 模式）；"
+              "生产环境请设置 DKWS_PROFILE=prod 与 DKWS_API_KEYS", flush=True)
+    else:
+        print(f"[security] API Key 认证已启用（{len(cfg.auth.active_keys())} 个密钥，"
+              f"请求头 {cfg.auth.header_name}）", flush=True)
+
+    app = create_app(Path(args.workspace).resolve(), runtime_config=cfg)
     if args.pidfile:
         Path(args.pidfile).write_text(str(os.getpid()))
     print(f"[skill] 服务监听 http://{args.host}:{args.port}（workspace={args.workspace}）", flush=True)

@@ -1,0 +1,139 @@
+{
+  "task_package": "M2-P1",
+  "generated_at": "2026-08-27T02:12:39+0800",
+  "environment": {
+    "python": "3.12.8",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "workspace": "/tmp/dkws-m2p1-e2e-ws"
+  },
+  "checks": [
+    {
+      "name": "prod_profile_fail_fast",
+      "passed": true,
+      "detail": "退出码=1，输出含拒绝启动说明"
+    },
+    {
+      "name": "prod_profile_starts_with_full_config",
+      "passed": true,
+      "detail": "服务在 127.0.0.1:18711 就绪"
+    },
+    {
+      "name": "health_public_without_key",
+      "passed": true,
+      "detail": "GET /v1/health → 200"
+    },
+    {
+      "name": "missing_key_401",
+      "passed": true,
+      "detail": "无密钥 → 401 UNAUTHENTICATED；WWW-Authenticate='ApiKey realm=\"dkws\", header=\"X-API-Key\"'"
+    },
+    {
+      "name": "wrong_key_401",
+      "passed": true,
+      "detail": "错误密钥 → 401，响应体不回显密钥"
+    },
+    {
+      "name": "valid_key_accepted",
+      "passed": true,
+      "detail": "有效密钥 → 503（通过认证，非 401/403）"
+    },
+    {
+      "name": "non_admin_scope_403",
+      "passed": true,
+      "detail": "普通密钥访问闸门审计 → 403 FORBIDDEN"
+    },
+    {
+      "name": "admin_scope_allowed",
+      "passed": true,
+      "detail": "admin 密钥访问闸门审计 → 200"
+    },
+    {
+      "name": "oversize_request_413",
+      "passed": true,
+      "detail": "4KB 请求体（上限 2048） → 413 PAYLOAD_TOO_LARGE"
+    },
+    {
+      "name": "rate_limit_429",
+      "passed": true,
+      "detail": "连续请求状态码=[503, 503, 429]，Retry-After='1'（burst=3）"
+    },
+    {
+      "name": "skill_execute_succeeds",
+      "passed": true,
+      "detail": "POST /api/skill/execute → 200"
+    },
+    {
+      "name": "health_reports_hardening",
+      "passed": true,
+      "detail": "runtime={\"profile\": \"prod\", \"auth_enabled\": true, \"rate_limit_enabled\": true, \"size_limit_enabled\": true, \"concurrency_enabled\": true, \"runtime_store_enabled\": true, \"schema_version\": 1, \"warnings\": []}"
+    },
+    {
+      "name": "store_under_control_dir",
+      "passed": true,
+      "detail": "数据库路径=90_control/runtime/runtime.db"
+    },
+    {
+      "name": "wal_enabled",
+      "passed": true,
+      "detail": "journal_mode=wal"
+    },
+    {
+      "name": "schema_version_recorded",
+      "passed": true,
+      "detail": "schema_version=1"
+    },
+    {
+      "name": "no_knowledge_tables",
+      "passed": true,
+      "detail": "表清单=['evidence_audit', 'gate_audit', 'idempotency_records', 'jobs', 'schema_version']（不含任何知识内容表，知识权威源仍为文件资产）"
+    },
+    {
+      "name": "idempotency_persisted",
+      "passed": true,
+      "detail": "幂等记录 E2E-IDEM-1 已落库，scope=skill_execute"
+    },
+    {
+      "name": "gate_audit_persisted",
+      "passed": true,
+      "detail": "闸门审计已落库，decision=APPROVED"
+    },
+    {
+      "name": "gate_audit_jsonl_kept",
+      "passed": true,
+      "detail": "JSONL 审计留痕仍在写入（与 Store 互补，均非业务权威）"
+    },
+    {
+      "name": "restart_idempotency_replay",
+      "passed": true,
+      "detail": "重启后同 requestId → 200，assemblyTrace 含 idempotency 阶段"
+    }
+  ],
+  "health_runtime": {
+    "profile": "prod",
+    "auth_enabled": true,
+    "rate_limit_enabled": true,
+    "size_limit_enabled": true,
+    "concurrency_enabled": true,
+    "runtime_store_enabled": true,
+    "schema_version": 1,
+    "warnings": []
+  },
+  "store_stats": {
+    "schema_version": 1,
+    "journal_mode": "wal",
+    "tables": [
+      "evidence_audit",
+      "gate_audit",
+      "idempotency_records",
+      "jobs",
+      "schema_version"
+    ],
+    "idempotency_records": 1,
+    "gate_audit": 1
+  },
+  "summary": {
+    "passed": 20,
+    "total": 20,
+    "result": "PASS"
+  }
+}

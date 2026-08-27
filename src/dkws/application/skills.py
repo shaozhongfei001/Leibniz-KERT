@@ -14,6 +14,7 @@ HTTP 端点：由 `api/server.py` 暴露 `POST /api/skill/execute` 与 `GET /api
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import time
@@ -24,6 +25,8 @@ from ..domain import timeutil
 from ..infrastructure.adapters import llm as llm_mod
 
 IDEMPOTENCY_TTL_S = 600
+#: Runtime Store 中 Skill 执行幂等记录的作用域（M2.3）
+IDEMPOTENCY_SCOPE = "skill_execute"
 SKILL_DIR = "skills/customer-engagement"
 
 
@@ -59,14 +62,18 @@ class SkillExecutionService:
     def __init__(self, workspace: Path | None = None,
                  knowledge: object | None = None,
                  skill_packages: Path | str | None = None,
-                 customer_knowledge_service_id: str = "customer_knowledge"):
+                 customer_knowledge_service_id: str = "customer_knowledge",
+                 runtime_store: object | None = None):
         """knowledge: 兼容参数（历史 product_knowledge 检索），v1.3 起取数走客户知识库。
         customer_knowledge_service_id: 客户知识服务投影（v1.3 数据所有权：按 customerId 取数）。
         skill_packages: 可选外部 Skill 包根目录（含 <skill>/SKILL.md + references/output-schema.md），
-        动态注册为可执行 Skill（通用契约 executor）。"""
+        动态注册为可执行 Skill（通用契约 executor）。
+        runtime_store: 可选 SQLite Runtime Store（M2.3）；提供时幂等记录额外持久化，
+        使进程重启后仍可按 requestId 复放，内存缓存继续作为一级快路径。"""
         self.workspace = Path(workspace) if workspace else None
         self.knowledge = knowledge
         self._idem: dict[str, tuple[SkillExecuteResult, float]] = {}
+        self._store = runtime_store
         self._evidence_ts: dict[str, str] = {}  # customerId -> 最新 evidenceTimestamp（无新证据策略）
         self._packages: dict[str, dict] = {}
         if skill_packages:
@@ -139,14 +146,14 @@ class SkillExecutionService:
              "message": f"skillId={skill_id} requestId={request_id}"},
         ]
 
-        # 幂等（D3）
-        if request_id in self._idem:
-            hit, _ = self._idem[request_id]
+        # 幂等（D3）：内存快路径 → Runtime Store 持久层（M2.3）
+        hit_result = self._idem_lookup(request_id)
+        if hit_result is not None:
             trace.append({"phase": "idempotency", "status": "ok", "message": "命中缓存（NO_OP）"})
             return SkillExecuteResult(
-                request_id=request_id, status=hit.status, data=hit.data,
-                errors=hit.errors, assembly_trace=trace + hit.assembly_trace,
-                model_calls=hit.model_calls, skill_id=hit.skill_id)
+                request_id=request_id, status=hit_result.status, data=hit_result.data,
+                errors=hit_result.errors, assembly_trace=trace + hit_result.assembly_trace,
+                model_calls=hit_result.model_calls, skill_id=hit_result.skill_id)
 
         info = self._info(skill_id)
         if info is None:
@@ -195,9 +202,37 @@ class SkillExecutionService:
         return self._finish(result)
 
     def get_result(self, request_id: str) -> SkillExecuteResult | None:
-        """按 requestId 取回已执行结果（幂等缓存，TTL 内有效），用于报告渲染。"""
+        """按 requestId 取回已执行结果（幂等缓存，TTL 内有效），用于报告渲染。
+
+        查找顺序：内存缓存 → Runtime Store（若启用），后者支持跨进程重启复放。
+        """
+        return self._idem_lookup(request_id)
+
+    def _idem_lookup(self, request_id: str) -> SkillExecuteResult | None:
+        """在内存与 Runtime Store 中查找幂等结果。"""
         hit = self._idem.get(request_id)
-        return hit[0] if hit else None
+        if hit:
+            return hit[0]
+        if self._store is None or not request_id:
+            return None
+        record = self._store.lookup(IDEMPOTENCY_SCOPE, request_id)
+        if record is None or not record.response:
+            return None
+        restored = self._result_from_payload(request_id, record.response)
+        self._idem[request_id] = (restored, time.monotonic())
+        return restored
+
+    @staticmethod
+    def _result_from_payload(request_id: str, payload: dict) -> SkillExecuteResult:
+        """把持久化的响应载荷还原为 :class:`SkillExecuteResult`。"""
+        return SkillExecuteResult(
+            request_id=request_id,
+            status=str(payload.get("status", "ok")),
+            data=payload.get("data") or {},
+            errors=payload.get("errors") or [],
+            assembly_trace=payload.get("assemblyTrace") or [],
+            model_calls=payload.get("modelCalls") or [],
+            skill_id=str(payload.get("skillId", "")))
 
     def execute_async(self, skill_id: str, request_id: str | None,
                       request: dict | None) -> str:
@@ -236,6 +271,7 @@ class SkillExecutionService:
         return job.job_id
 
     def _finish(self, result: SkillExecuteResult) -> SkillExecuteResult:
+        """写入幂等缓存（内存 + 可选 Runtime Store）并做容量回收。"""
         if result.request_id:
             self._idem[result.request_id] = (result, time.monotonic())
             if len(self._idem) > 500:
@@ -243,7 +279,28 @@ class SkillExecutionService:
                 for k, (_, ts) in list(self._idem.items()):
                     if now - ts > IDEMPOTENCY_TTL_S:
                         del self._idem[k]
+            self._persist_idem(result)
         return result
+
+    def _persist_idem(self, result: SkillExecuteResult) -> None:
+        """把结果写入 Runtime Store；持久化失败不影响主流程（best-effort）。"""
+        if self._store is None:
+            return
+        payload = result.as_dict()
+        payload["skillId"] = result.skill_id
+        digest = hashlib.sha256(
+            json.dumps({"skillId": result.skill_id}, sort_keys=True,
+                       ensure_ascii=False).encode("utf-8")).hexdigest()
+        try:
+            existing = self._store.lookup(IDEMPOTENCY_SCOPE, result.request_id)
+            if existing is None:
+                self._store.remember(IDEMPOTENCY_SCOPE, result.request_id, digest,
+                                     response=payload,
+                                     ttl_seconds=IDEMPOTENCY_TTL_S)
+            else:
+                self._store.complete(IDEMPOTENCY_SCOPE, result.request_id, payload)
+        except Exception:
+            return
 
     # ---------------- 模型与解析 ----------------
 
@@ -541,7 +598,11 @@ class SkillExecutionService:
 
     def record_gate_audit(self, customer_id: str, gate: str, decision: str,
                           decided_by: str, reason: str = "") -> dict:
-        """业务闸门决策镜像（非权威，权威在 GITS）；追加 90_control/audit/gates.jsonl。"""
+        """业务闸门决策镜像（非权威，权威在 GITS）；追加 90_control/audit/gates.jsonl。
+
+        启用 Runtime Store 时（M2.3）同步写入 ``gate_audit`` 表，便于按客户查询；
+        JSONL 仍为可追加审计留痕，二者互为补充，均非业务权威。
+        """
         if self.workspace is None:
             raise ValueError("工作区未配置（无法记录审计镜像）")
         rec = {"customerId": customer_id, "gate": gate, "decision": decision,
@@ -551,6 +612,11 @@ class SkillExecutionService:
         d.mkdir(parents=True, exist_ok=True)
         with (d / "gates.jsonl").open("a", encoding="utf-8") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        if self._store is not None:
+            try:
+                self._store.record_gate(customer_id, gate, decision, decided_by, reason)
+            except Exception:
+                pass
         return {"recorded": True, **rec}
 
 

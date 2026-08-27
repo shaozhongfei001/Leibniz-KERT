@@ -1,0 +1,14 @@
+[llm] 已注入 DeepSeek（deepseek-chat）
+[security] API Key 认证已启用（2 个密钥，请求头 X-API-Key）
+[skill] 服务监听 http://127.0.0.1:18711（workspace=/tmp/dkws-m2p1-e2e-ws）
+[skill] 端点: POST /api/skill/execute | GET /api/skill/health | GET /v1/health
+INFO:     Started server process [359570]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18711 (Press CTRL+C to quit)
+INFO:     127.0.0.1:39428 - "GET /v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39436 - "POST /api/skill/execute HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [359570]

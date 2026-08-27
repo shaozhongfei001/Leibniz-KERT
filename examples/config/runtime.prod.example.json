@@ -1,0 +1,47 @@
+{
+  "_comment": "DKWS Python Core 生产 profile 运行时配置示例（M2-P1）。使用方式：export DKWS_CONFIG_FILE=<本文件路径>。密钥请使用 digest（sha256 十六进制），不要在文件中保存明文；digest 生成：python -c \"import hashlib,sys;print(hashlib.sha256(sys.argv[1].encode()).hexdigest())\" '<secret>'",
+  "profile": "prod",
+  "bind_host": "127.0.0.1",
+  "auth": {
+    "enabled": true,
+    "header_name": "X-API-Key",
+    "keys": [
+      {
+        "key_id": "gits-caller",
+        "digest": "REPLACE_WITH_SHA256_DIGEST_OF_YOUR_SECRET",
+        "scopes": ["read", "execute"],
+        "active": true
+      },
+      {
+        "key_id": "ops-admin",
+        "digest": "REPLACE_WITH_SHA256_DIGEST_OF_ADMIN_SECRET",
+        "scopes": ["read", "execute", "admin"],
+        "active": true
+      }
+    ],
+    "public_paths": ["/v1/health", "/api/skill/health"],
+    "admin_path_prefixes": ["/api/skill/gates/audit"]
+  },
+  "rate_limit": {
+    "enabled": true,
+    "requests_per_minute": 600,
+    "burst": 60
+  },
+  "size_limit": {
+    "enabled": true,
+    "max_request_bytes": 1048576,
+    "max_response_bytes": 8388608
+  },
+  "concurrency": {
+    "enabled": true,
+    "max_in_flight": 32,
+    "acquire_timeout_seconds": 0
+  },
+  "runtime_store": {
+    "enabled": true,
+    "path": null,
+    "wal": true,
+    "busy_timeout_ms": 5000,
+    "idempotency_ttl_seconds": 600
+  }
+}

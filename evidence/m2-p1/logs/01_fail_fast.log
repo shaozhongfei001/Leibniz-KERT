@@ -1,0 +1,4 @@
+exit_code=1
+
+[llm] 已注入 DeepSeek（deepseek-chat）
+[security] 运行时配置校验失败，拒绝启动：生产 profile 配置校验失败：生产 profile 必须启用 API Key 认证（DKWS_AUTH_ENABLED=true）；生产 profile 必须启用限流（DKWS_RATE_LIMIT_ENABLED=true）
