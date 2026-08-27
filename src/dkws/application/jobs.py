@@ -3,6 +3,18 @@
 - 每个任务：90_control/jobs/<job_id>/STATUS.md + 原始日志 + 完成后 RUN_REPORT.md；
 - 状态转换校验前态（§11.1）；
 - 幂等：同 job_type + idempotency_key 的任务，终态则 NO_OP，执行中则冲突。
+
+M2.4（Owner 决策路线 C′）状态权威变更
+------------------------------------
+自 M2.4 起，当注入 ``runtime_store`` 时：
+
+- **SQLite Runtime Store 为 Job 状态的唯一权威**（原子领取、lease、重试、
+  dead-letter 均在库内完成，见 :mod:`dkws.infrastructure.runtime_store`）；
+- ``STATUS.md`` / ``RUN_REPORT.md`` 降级为**从 SQLite 派生的只读审计投影**，
+  仍按 §9.14/§9.15 契约写出，以保持 FR-CTL 审计产物要求与既有读取路径不变；
+- 幂等判定优先查 SQLite；未注入 Store 时回落到扫描 ``STATUS.md``（M1 行为）。
+
+派生方向是单向的：**SQLite → 文件**。任何组件都不得反向以文件内容更新状态。
 """
 
 from __future__ import annotations
@@ -15,6 +27,7 @@ from ..domain import hashing, ids, states, timeutil
 from ..domain.errors import ConflictError, UsageError
 from ..infrastructure import logging as logging_mod, markdown
 from ..infrastructure.fs import WorkspaceWriter
+from ..infrastructure.runtime_store import RuntimeStore
 
 STATUS_HEADINGS = ["当前摘要", "输入输出", "错误与恢复建议"]
 REPORT_HEADINGS = ["执行摘要", "输入与输出", "质量结果", "警告与错误",
@@ -27,7 +40,14 @@ class JobController:
     def __init__(self, workspace: Path, writer: WorkspaceWriter, *,
                  job_type: str, requested_by: str, idempotency_key: str,
                  input_refs: list[dict] | None = None,
-                 component: str = "dkws"):
+                 component: str = "dkws",
+                 runtime_store: RuntimeStore | None = None):
+        """初始化任务控制器。
+
+        Args:
+            runtime_store: M2.4 起注入后，SQLite 成为状态权威，
+                ``STATUS.md`` 转为派生投影；``None`` 时保持 M1 的纯文件行为。
+        """
         self.ws = Path(workspace)
         self.writer = writer
         self.job_type = job_type.upper()
@@ -35,6 +55,7 @@ class JobController:
         self.idempotency_key = idempotency_key
         self.input_refs = input_refs or []
         self.noop = False
+        self._store = runtime_store
         self._existing_fm: dict = {}
         self.job_id = self._resolve_job_id()
         self.logger = logging_mod.JobLogger(self.ws, self.job_id, component=component)
@@ -45,10 +66,43 @@ class JobController:
         self.output_refs: list[dict] = list(self._existing_fm.get("output_refs", []))
         self.error_code: str | None = None
         self.error_message: str | None = None
+        if self._store is not None and not self.noop:
+            # 在权威表登记 Job；幂等冲突已在 _resolve_job_id 阶段拦截
+            self._store.create_job(
+                self.job_id, self.job_type,
+                {"requested_by": self.requested_by, "input_refs": self.input_refs},
+                idem_key=self.idempotency_key)
 
     # ---------------- 幂等 ----------------
 
     def _resolve_job_id(self) -> str:
+        """解析 Job ID 并判定幂等。
+
+        注入 Store 时以 SQLite 为权威（单一数据源，无需扫描文件系统）；
+        未注入时回落到扫描 ``STATUS.md``（保持 M1 行为，不破坏既有调用方）。
+        """
+        if self._store is not None:
+            return self._resolve_job_id_from_store()
+        return self._resolve_job_id_from_files()
+
+    def _resolve_job_id_from_store(self) -> str:
+        """基于 SQLite 权威表判定幂等并分配 Job ID。"""
+        existing = self._store.find_job_by_idem(self.job_type, self.idempotency_key)
+        if existing is not None:
+            if existing.status in states.JOB_TERMINAL:
+                self.noop = True
+                self._existing_fm = {"job_id": existing.job_id,
+                                     "output_refs": (existing.result or {}).get(
+                                         "output_refs", [])}
+                return existing.job_id
+            raise ConflictError(
+                f"幂等键冲突：任务 {existing.job_id} 正在执行"
+                f"（status={existing.status}）")
+        max_seq = self._store.max_job_seq(self.job_type)
+        return ids.new_job_id(self.job_type, seq=max_seq + 1)
+
+    def _resolve_job_id_from_files(self) -> str:
+        """扫描 ``STATUS.md`` 判定幂等（M1 兼容路径）。"""
         jobs_root = self.ws / "90_control" / "jobs"
         if not jobs_root.is_dir():
             return ids.new_job_id(self.job_type)
@@ -76,11 +130,25 @@ class JobController:
                 max_seq = max(max_seq, int(m.group(1)))
         return ids.new_job_id(self.job_type, seq=max_seq + 1)
 
+    def _sync_store(self, *, result: dict | None = None) -> None:
+        """把当前状态同步到 SQLite 权威表（未注入 Store 时为空操作）。
+
+        调用顺序约定：**先同步 SQLite，再派生写文件**，
+        确保任何时刻文件内容都不领先于权威表。
+        """
+        if self._store is None:
+            return
+        self._store.sync_job_state(
+            self.job_id, self.status, progress=self.progress,
+            error_code=self.error_code, error_message=self.error_message,
+            result=result)
+
     # ---------------- 生命周期 ----------------
 
     def start(self) -> "JobController":
         states.transition_job("PENDING", "RUNNING")
         self.status = "RUNNING"
+        self._sync_store()
         self._write_status()
         self.logger.info("JOB_START", "任务开始", job_type=self.job_type)
         return self
@@ -100,6 +168,7 @@ class JobController:
         if error_message is not None:
             self.error_message = error_message
         self.updated_at = timeutil.now_utc()
+        self._sync_store()
         self._write_status()
         self.logger.log("INFO" if status not in ("FAILED", "CANCELLED") else "WARN",
                         log_code, log_message,
@@ -112,6 +181,7 @@ class JobController:
         self.status = "VALIDATING"
         self.progress = 99
         self.updated_at = timeutil.now_utc()
+        self._sync_store()
         self._write_status()
         self.logger.info("JOB_VALIDATING", "输出校验中")
         states.transition_job(self.status, "COMPLETED")
@@ -120,6 +190,9 @@ class JobController:
         self.output_refs = output_refs
         self.updated_at = timeutil.now_utc()
         finished_at = timeutil.now_utc()
+        self._sync_store(result={"output_refs": output_refs,
+                                 "output_count": output_count,
+                                 "rejected_count": rejected_count})
         self._write_status(finished_at=finished_at)
         self._write_report(
             final_status="COMPLETED", finished_at=finished_at,
@@ -141,6 +214,7 @@ class JobController:
         self.error_message = message
         self.updated_at = timeutil.now_utc()
         finished_at = timeutil.now_utc()
+        self._sync_store()
         self._write_status(finished_at=finished_at)
         self._write_report(
             final_status="FAILED", finished_at=finished_at,
@@ -156,6 +230,7 @@ class JobController:
         return f"90_control/jobs/{self.job_id}/STATUS.md"
 
     def _write_status(self, finished_at=None) -> None:
+        """派生写出 ``STATUS.md``（M2.4 起为只读投影，权威在 SQLite）。"""
         fm = {
             "schema": "job_status/v1",
             "job_id": self.job_id,

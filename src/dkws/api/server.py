@@ -170,9 +170,11 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
             idempotency_ttl_seconds=cfg.runtime_store.idempotency_ttl_seconds)
         store.recover_stale_jobs()
     skill_svc = SkillExecutionService(ws, knowledge=svc, skill_packages=pkgs,
-                                     runtime_store=store)
+                                     runtime_store=store, profile=cfg.profile)
     app.state.runtime_config = cfg
     app.state.runtime_store = store
+    # 暴露 Service 便于运维自检与测试断言（M2-P2 Owner 决策 3 的校验链路）
+    app.state.skill_service = skill_svc
     _install_hardening(app, cfg)
 
     def _handle(exc: Exception) -> HTTPException:
