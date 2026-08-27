@@ -1,0 +1,45 @@
+[Unit]
+# DKWS 备份定时任务（M2.7，补齐 M2-P5 登记的「无调度集成」遗留项）
+#
+# 安装：
+#   sudo cp deploy/systemd/dkws-backup.{service,timer} /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now dkws-backup.timer
+#   systemctl list-timers dkws-backup.timer   # 确认下次触发时间
+#
+# 重要：备份频率对应 RPO，保留策略对应存储成本。
+# 本模板给出的 daily 仅为**占位默认**，实际值属 Owner 决策
+# （见 evidence/m2-p5/README.md §9）。
+Description=DKWS workspace backup (timer-driven)
+Documentation=file:///opt/dkws/docs/architecture/DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md
+
+[Service]
+Type=oneshot
+User=dkws
+Group=dkws
+WorkingDirectory=/opt/dkws
+Environment=PYTHONPATH=/opt/dkws/src
+
+# 备份目标必须在工作区之外，否则工具会拒绝执行
+# （落入工作区会触发 WS_BAD_FILENAME 破坏一致性检查）
+ExecStart=/opt/dkws/.venv/bin/python /opt/dkws/scripts/dkws_ops.py backup \
+    --workspace /var/lib/dkws/workspace \
+    --dest /var/backups/dkws
+
+# 备份后立即校验：未校验的备份等于没有备份
+ExecStartPost=/bin/sh -c 'latest=$(ls -1dt /var/backups/dkws/backup-* 2>/dev/null | head -1); \
+    if [ -n "$latest" ]; then \
+        /opt/dkws/.venv/bin/python /opt/dkws/scripts/dkws_ops.py verify --backup "$latest"; \
+    fi'
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=dkws-backup
+
+# 备份需读工作区、写备份目录
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/backups/dkws
+ReadOnlyPaths=/var/lib/dkws
+PrivateTmp=yes
+NoNewPrivileges=yes
+CapabilityBoundingSet=

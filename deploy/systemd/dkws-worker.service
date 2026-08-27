@@ -1,0 +1,79 @@
+[Unit]
+# DKWS 持久化异步 Worker（M2.7）
+#
+# 安装：
+#   sudo cp deploy/systemd/dkws-worker.service /etc/systemd/system/
+#   sudo cp deploy/.env.example /etc/dkws/worker.env
+#   sudo chmod 600 /etc/dkws/worker.env
+#   sudo systemctl daemon-reload && sudo systemctl enable --now dkws-worker
+#
+# Worker 无 HTTP 端口。它与 API 共享同一 SQLite Runtime Store，
+# 故必须与 API 部署在**同一主机、同一文件系统**（ADR-015 单机单实例）。
+#
+# 未启动 Worker 的后果：异步入队的 Job 无人执行、永久积压。
+# 可用 `python scripts/run_worker.py --workspace ... --stats` 查看队列深度。
+Description=DKWS Persistent Async Worker (job queue consumer)
+Documentation=file:///opt/dkws/docs/architecture/DKWS_PERSISTENT_WORKER_M2P2.md
+After=network-online.target dkws-api.service
+Wants=network-online.target
+# 与 API 同生共死：API 停则 Worker 停（二者共享同一 Runtime Store）
+PartOf=dkws-api.service
+
+[Service]
+Type=simple
+User=dkws
+Group=dkws
+WorkingDirectory=/opt/dkws
+
+EnvironmentFile=/etc/dkws/worker.env
+Environment=PYTHONPATH=/opt/dkws/src
+Environment=PYTHONUNBUFFERED=1
+
+ExecStart=/opt/dkws/.venv/bin/python /opt/dkws/scripts/run_worker.py \
+    --workspace /var/lib/dkws/workspace
+
+Restart=always
+RestartSec=5
+
+# 优雅停机：Worker 收到 SIGTERM 后不再领取新 Job，等当前 Job 完成后退出。
+# TimeoutStopSec 须大于单个 Job 的最长执行时间，否则会被 SIGKILL 打断，
+# 导致 lease 未释放、需等 lease 过期才能被回收（延长恢复时间）。
+TimeoutStopSec=120
+KillSignal=SIGTERM
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=dkws-worker
+
+# ---------- 安全加固 ----------
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/dkws
+PrivateTmp=yes
+
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+PrivateDevices=yes
+
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+LimitNOFILE=65535
+MemoryMax=2G
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

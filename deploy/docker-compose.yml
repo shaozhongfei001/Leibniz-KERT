@@ -1,0 +1,138 @@
+# DKWS 单节点部署编排（M2.7）
+#
+# 依 ADR-015 单机单实例：不引入 Kubernetes、不引入 Redis/MQ。
+# 服务清单：
+#   - api     Python Core，唯一公共入口
+#   - worker  持久化异步 Worker（无 HTTP 端口）
+#
+# TLS 由外层反向代理终止，本编排只在**回环**暴露端口
+# （见 DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS §2.2）。
+#
+# 用法：
+#   cp deploy/.env.example deploy/.env   # 填入 API Key
+#   docker compose -f deploy/docker-compose.yml up -d
+#
+# 注意：api 与 worker 共享同一 workspace volume——Worker 需读写
+# 同一份 SQLite Runtime Store（ADR-015 单机单实例前提）。
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: dkws-python-core:local
+    container_name: dkws-api
+    restart: unless-stopped
+    # 仅绑回环：对外暴露由反向代理负责，避免绕过 TLS 与网关策略
+    ports:
+      - "127.0.0.1:8106:8106"
+    environment:
+      DKWS_PROFILE: prod
+      DKWS_BIND_HOST: 0.0.0.0
+      DKWS_API_KEYS: ${DKWS_API_KEYS:?需在 .env 中配置 API Key，生产 profile 缺失将拒绝启动}
+      DKWS_RATE_LIMIT_ENABLED: "true"
+      DKWS_RATE_LIMIT_RPM: ${DKWS_RATE_LIMIT_RPM:-600}
+      DKWS_SIZE_LIMIT_ENABLED: "true"
+      DKWS_CONCURRENCY_ENABLED: "true"
+      DKWS_RUNTIME_STORE_ENABLED: "true"
+      DKWS_STRUCTURED_LOGS: "true"
+      DKWS_LOG_LEVEL: ${DKWS_LOG_LEVEL:-INFO}
+      DKWS_METRICS_ENABLED: "true"
+      DKWS_METRICS_REQUIRE_ADMIN: ${DKWS_METRICS_REQUIRE_ADMIN:-true}
+      DKWS_LLM_REDACTION: "true"
+      DKWS_REDACT_RESPONSE: ${DKWS_REDACT_RESPONSE:-false}
+    volumes:
+      - workspace:/data/workspace
+      - backups:/data/backups
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8106/livez"]
+      interval: 15s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    # 安全加固：只读根文件系统 + 丢弃全部能力
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  worker:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: dkws-python-core:local
+    container_name: dkws-worker
+    restart: unless-stopped
+    # Worker 无 HTTP 端口，覆盖镜像默认入口
+    entrypoint: ["python", "/app/scripts/run_worker.py"]
+    command: ["--workspace", "/data/workspace"]
+    environment:
+      DKWS_PROFILE: prod
+      DKWS_RUNTIME_STORE_ENABLED: "true"
+      DKWS_STRUCTURED_LOGS: "true"
+      DKWS_LOG_LEVEL: ${DKWS_LOG_LEVEL:-INFO}
+      DKWS_LLM_REDACTION: "true"
+      DKWS_WORKER_LEASE_SECONDS: ${DKWS_WORKER_LEASE_SECONDS:-30}
+      DKWS_WORKER_POLL_INTERVAL: ${DKWS_WORKER_POLL_INTERVAL:-1.0}
+    volumes:
+      - workspace:/data/workspace
+      - backups:/data/backups
+    depends_on:
+      api:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # ---------- 备份一次性服务 ----------
+  # 手动触发：docker compose -f deploy/docker-compose.yml run --rm backup
+  # 备份集写入 /data/backups，可通过 docker cp 或挂载取出
+  backup:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: dkws-python-core:local
+    container_name: dkws-backup
+    # 覆盖镜像默认入口，执行备份命令
+    entrypoint: ["python", "/app/scripts/dkws_ops.py"]
+    command: ["backup", "--workspace", "/data/workspace", "--dest", "/data/backups"]
+    environment:
+      DKWS_PROFILE: prod
+      DKWS_STRUCTURED_LOGS: "true"
+      DKWS_LOG_LEVEL: ${DKWS_LOG_LEVEL:-INFO}
+    volumes:
+      - workspace:/data/workspace
+      - backups:/data/backups
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    profiles:
+      - backup
+
+volumes:
+  # 知识资产为权威源，必须持久化且纳入备份
+  workspace:
+    name: dkws_workspace
+  backups:
+    name: dkws_backups

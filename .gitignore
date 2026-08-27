@@ -32,3 +32,4 @@ target/
 demo_workspace/
 bank_front_ws/
 .test_demo_ws/
+UNKNOWN.egg-info/

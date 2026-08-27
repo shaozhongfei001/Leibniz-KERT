@@ -1,0 +1,227 @@
+{
+  "meta": {
+    "project": "Leibniz-KERT (DKWS)",
+    "milestone": "M2.10 NFR Baseline",
+    "disclaimer": "基线值，非 SLA 承诺",
+    "environment": {
+      "os": "Linux",
+      "os_version": "6.8.0-47-generic",
+      "cpu_count": "20",
+      "python_version": "3.10.12",
+      "architecture": "x86_64",
+      "hostname": "x2",
+      "timestamp_utc": "2026-08-27T11:00:28.235503+00:00"
+    },
+    "test_config": {
+      "mode": "deterministic (no LLM keys)",
+      "base_url": "http://localhost:8106",
+      "latency_samples": 100,
+      "throughput_concurrency": 10,
+      "throughput_duration_seconds": 10,
+      "concurrency_levels": [
+        1,
+        10,
+        50,
+        100
+      ]
+    }
+  },
+  "latency_baseline": [
+    {
+      "scenario": "health",
+      "description": "/v1/health 健康检查",
+      "samples": 100,
+      "latency_ms": {
+        "p50": 1.94,
+        "p95": 2.74,
+        "p99": 3.11,
+        "mean": 2.02,
+        "min": 1.67,
+        "max": 3.38
+      }
+    },
+    {
+      "scenario": "skill_outreach",
+      "description": "Skill 同步执行 (outreach)",
+      "samples": 100,
+      "latency_ms": {
+        "p50": 4933.2,
+        "p95": 5892.09,
+        "p99": 6100.24,
+        "mean": 4841.6,
+        "min": 3210.05,
+        "max": 6362.58
+      }
+    },
+    {
+      "scenario": "skill_meeting",
+      "description": "Skill 同步执行 (meeting)",
+      "samples": 100,
+      "latency_ms": {
+        "p50": 4861.81,
+        "p95": 6002.93,
+        "p99": 6668.52,
+        "mean": 4836.28,
+        "min": 3572.93,
+        "max": 6705.78
+      }
+    },
+    {
+      "scenario": "skill_previsit",
+      "description": "Skill 同步执行 (previsit)",
+      "samples": 100,
+      "latency_ms": {
+        "p50": 0.62,
+        "p95": 3.18,
+        "p99": 5.1,
+        "mean": 0.92,
+        "min": 0.47,
+        "max": 6.08
+      }
+    },
+    {
+      "scenario": "skill_async_outreach",
+      "description": "Skill 异步提交 (outreach)",
+      "samples": 100,
+      "latency_ms": {
+        "p50": 857.83,
+        "p95": 943.03,
+        "p99": 961.85,
+        "mean": 861.37,
+        "min": 773.23,
+        "max": 975.28
+      }
+    }
+  ],
+  "throughput_baseline": [
+    {
+      "scenario": "health",
+      "description": "/v1/health RPS",
+      "concurrency": 10,
+      "duration_seconds": 10,
+      "rps": 547.8,
+      "p50_ms": 15.8,
+      "p95_ms": 23.09
+    },
+    {
+      "scenario": "skill_outreach",
+      "description": "Skill 同步执行 RPS",
+      "concurrency": 5,
+      "duration_seconds": 15,
+      "rps": 1.2,
+      "p50_ms": 4831.08,
+      "p95_ms": 5770.68
+    },
+    {
+      "scenario": "skill_async_outreach",
+      "description": "Skill 异步提交 RPS",
+      "concurrency": 10,
+      "duration_seconds": 10,
+      "rps": 1.2,
+      "p50_ms": 10272.48,
+      "p95_ms": 10984.31
+    }
+  ],
+  "concurrency_baseline": [
+    {
+      "scenario": "health",
+      "concurrency": 1,
+      "rps": 296.67,
+      "p50_ms": 2.13,
+      "p95_ms": 3.07,
+      "p99_ms": 3.92,
+      "error_rate_pct": 0.0
+    },
+    {
+      "scenario": "health",
+      "concurrency": 10,
+      "rps": 538.47,
+      "p50_ms": 16.04,
+      "p95_ms": 23.48,
+      "p99_ms": 29.54,
+      "error_rate_pct": 0.0
+    },
+    {
+      "scenario": "health",
+      "concurrency": 50,
+      "rps": 545.67,
+      "p50_ms": 88.2,
+      "p95_ms": 106.26,
+      "p99_ms": 115.79,
+      "error_rate_pct": 0.0
+    },
+    {
+      "scenario": "health",
+      "concurrency": 100,
+      "rps": 505.73,
+      "p50_ms": 194.74,
+      "p95_ms": 226.44,
+      "p99_ms": 245.65,
+      "error_rate_pct": 0.0
+    },
+    {
+      "scenario": "skill_outreach",
+      "concurrency": 1,
+      "rps": 0.2,
+      "p50_ms": 5398.33,
+      "p95_ms": 5612.01,
+      "p99_ms": 5631.0,
+      "error_rate_pct": 0.0
+    },
+    {
+      "scenario": "skill_outreach",
+      "concurrency": 5,
+      "rps": 1.13,
+      "p50_ms": 4910.15,
+      "p95_ms": 6074.56,
+      "p99_ms": 6532.03,
+      "error_rate_pct": 0.0
+    },
+    {
+      "scenario": "skill_outreach",
+      "concurrency": 10,
+      "rps": 2.2,
+      "p50_ms": 4787.2,
+      "p95_ms": 5637.49,
+      "p99_ms": 5750.36,
+      "error_rate_pct": 0.0
+    },
+    {
+      "scenario": "skill_async_outreach",
+      "concurrency": 1,
+      "rps": 1.07,
+      "p50_ms": 953.21,
+      "p95_ms": 995.97,
+      "p99_ms": 1013.42,
+      "error_rate_pct": 0.0
+    },
+    {
+      "scenario": "skill_async_outreach",
+      "concurrency": 5,
+      "rps": 1.0,
+      "p50_ms": 5176.89,
+      "p95_ms": 6429.1,
+      "p99_ms": 6993.64,
+      "error_rate_pct": 0.0
+    },
+    {
+      "scenario": "skill_async_outreach",
+      "concurrency": 10,
+      "rps": 1.27,
+      "p50_ms": 10473.97,
+      "p95_ms": 11869.49,
+      "p99_ms": 13072.79,
+      "error_rate_pct": 0.0
+    }
+  ],
+  "resource_baseline": {
+    "idle_rss_mb": 0.0,
+    "idle_vms_mb": 0.0,
+    "single_request_rss_delta_mb": 0.0,
+    "single_request_vms_delta_mb": 0.0,
+    "worker_rss_mb": 0.0,
+    "sqlite_file_size_kb": 0.0,
+    "sqlite_after_100_kb": 0.0,
+    "sqlite_after_500_kb": 0.0
+  }
+}
