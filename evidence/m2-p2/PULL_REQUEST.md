@@ -4,7 +4,7 @@
 - **目标分支**：`develop`
 - **任务包**：`M2-P2`，范围 `M2.4 持久化异步 Worker`
 - **基线**：`develop` @ `8d20235`（M2-P1 已合入）
-- **提交**：`42dd56f`
+- **提交**：`42dd56f`（功能）、`e7411c1`（PR 描述）、`+1`（Owner 决策补充）
 - **创建链接**：https://github.com/shaozhongfei001/Leibniz-KERT/compare/develop...feature/m2-p2-persistent-worker?expand=1
 
 ---
@@ -93,15 +93,15 @@ lease 被回收后原持有者写回一律返回 `None`。
 
 | 命令 | 结果 | 退出码 |
 |---|---|---|
-| `python -m pytest tests -v` | **461 passed** / 0 failed / 0 skipped | 0 |
+| `python -m pytest tests -v` | **481 passed** / 0 failed / 0 skipped | 0 |
 | `python -m pytest tests/unit -v` | 177 passed | 0 |
-| `python -m pytest tests/integration -v` | 176 passed | 0 |
+| `python -m pytest tests/integration -v` | 196 passed | 0 |
 | `python -m pytest tests/security -v` | 36 passed | 0 |
 | `python -m pytest tests/recovery -v` | 18 passed | 0 |
-| `python scripts/verify_m2p2_worker.py` | **22/22 → PASS** | 0 |
-| `ruff check <新增 6 文件>` | All checks passed | 0 |
+| `python scripts/verify_m2p2_worker.py` | **27/27 → PASS** | 0 |
+| `ruff check <新增 7 文件>` | All checks passed | 0 |
 
-**门禁未降低**：356（`develop` 基线）→ **461**，新增 105 个测试函数。
+**门禁未降低**：356（`develop` 基线）→ **481**，新增 125 个测试函数。
 既有测试**零修改零删除**，仅按 Owner 决策统一 3 处 `SUCCEEDED` → `COMPLETED` 断言。
 
 `jobs.py` / `skills.py` 的存量 ruff 告警数**改动前后完全一致**（10 / 11 处），
@@ -147,24 +147,54 @@ lease 被回收后原持有者写回一律返回 `None`。
 **新增文档/工具**：`docs/architecture/DKWS_PERSISTENT_WORKER_M2P2.md`、
 `scripts/run_worker.py`、`scripts/verify_m2p2_worker.py`、`evidence/m2-p2/**`
 
-## 七、需 Owner / Tech Lead 确认
+## 七、Owner 审核结论与合并前待办（已全部完成）
 
-1. **Handler 幂等性责任边界**：至少一次语义要求 Handler 可重入。现有 9 个应用服务
-   （ingest/extract/publish 等）若要接入 Worker，需逐一确认幂等性。
-   本次**仅接线 `SKILL`**，其余未接入。
-2. **`recover_stale_jobs` 是否标记 deprecated**：M2.4 已提供更安全的
-   `reclaim_expired_leases`，前者保留中。
-3. **`execute_async` 默认模式**：当前未注入 Store 时仍走线程模式（会丢任务）。
-   是否在生产 profile 下强制要求启用 Store？
+Owner 于 2026-08-27 审核：**APPROVE WITH CONDITIONS**，三项合并前待办已全部落实。
+
+| # | Owner 结论 | 落实 |
+|---|---|---|
+| 1 | Handler 幂等性作为明确边界，**不阻塞** M2-P2；后续接入其余 8 个服务时须逐一声明幂等性并补「重复执行无副作用」测试 | 已在 `register_handlers()` docstring 标注幂等性评审要求；本次仅 `SKILL` 接入 |
+| 2 | `recover_stale_jobs` **标记 deprecated 但保留兼容**，不删除、不改行为 | 已加 `.. deprecated:: M2.4` 与误抢风险说明 |
+| 3 | 生产 profile **必须强制启用 Runtime Store**，否则拒绝异步执行，禁止回退 threading；须在合并前补充 | 已实现并补测 |
+
+### 决策 3 实现细节（安全/可靠性要求）
+
+`SkillExecutionService` 新增 `profile` 参数。`profile=prod` 且未启用 Store 时：
+
+```
+ServiceNotReadyError: 生产 profile 下异步执行必须启用 Runtime Store：
+线程模式在进程崩溃时会丢任务。请设置 DKWS_RUNTIME_STORE_ENABLED=true
+并启动 Worker（scripts/run_worker.py），或改用同步执行。
+```
+
+- HTTP **503 `SERVICE_NOT_READY`**，`retryable=true`（启用 Store 后即恢复）
+- `details` 含 `profile` / `runtime_store_enabled` / `remediation`，便于运维定位
+- **拒绝时不创建任何 Job**，确认未回退 threading（端到端检查 24 专门验证）
+- profile 比较**忽略大小写与空白**，防配置笔误绕过校验
+- **同步执行不受约束**（不依赖 Worker，无丢任务风险）
+- profile 来源：构造参数优先，缺省读 `DKWS_PROFILE`（默认 `dev`）；
+  `create_app()` 自动传入 `cfg.profile`
+
+附带改动：`app.state` 暴露 `skill_service`，用于运维自检与校验链路测试
+（对 M2-P3 可观测性亦有价值）。
+
+### 补充后指标
+
+| 项 | 补充前 | 补充后 |
+|---|---|---|
+| 全量测试 | 461 passed | **481 passed** |
+| 端到端检查 | 22/22 | **27/27** |
+| 新增测试函数 | 105 | **125** |
 
 ## 八、遗留项
 
 | 项 | 归属 |
 |---|---|
 | 至少一次语义（不提供 exactly-once） | 设计取舍，已文档化 |
+| 其余 8 个应用服务接入 Worker（须先过幂等性评审） | 后续，依 Owner 决策 1 |
 | 无优先级队列（当前 FIFO） | 后续 |
 | 无 cron / 周期调度（`available_at` 仅支持一次性延迟） | 后续 |
-| 可观测性（无 `/metrics`，仅进程内 `WorkerStats` 与日志） | **M2.5 / M2-P3** |
+| 可观测性（无 `/metrics`，仅进程内 `WorkerStats` 与日志） | **M2-P3 = M2.5**（Owner 已确认，分支 `feature/m2-p3-observability`） |
 | 跨主机多实例（需共享同一 SQLite 文件） | 依 ADR-015，暂不支持 |
 
 ## 九、非声明

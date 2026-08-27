@@ -1,7 +1,7 @@
 {
   "task_package": "M2-P2",
   "scope": "M2.4 持久化异步 Worker",
-  "generated_at": "2026-08-27T11:38:23+0800",
+  "generated_at": "2026-08-27T12:09:03+0800",
   "environment": {
     "python": "3.12.8",
     "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
@@ -26,7 +26,7 @@
     {
       "name": "crash_worker_claims_job",
       "passed": true,
-      "detail": "子进程 pid=2518578 领取 J-CRASH，status=RUNNING owner=w-crash attempts=1"
+      "detail": "子进程 pid=2642499 领取 J-CRASH，status=RUNNING owner=w-crash attempts=1"
     },
     {
       "name": "worker_killed_with_sigkill",
@@ -117,6 +117,31 @@
       "name": "cli_requeue_rejects_unknown",
       "passed": true,
       "detail": "重放不存在的 Job 返回非零退出码=1"
+    },
+    {
+      "name": "prod_async_without_store_rejected",
+      "passed": true,
+      "detail": "prod + Store 未启用 → 拒绝异步执行，HTTP 503，remediation=DKWS_RUNTIME_STORE_ENABLED=true"
+    },
+    {
+      "name": "prod_async_no_thread_fallback",
+      "passed": true,
+      "detail": "拒绝时未创建任何 SKILL Job 目录，确认未回退 threading 模式"
+    },
+    {
+      "name": "dev_async_still_allowed",
+      "passed": true,
+      "detail": "dev profile 未启用 Store 时仍可异步执行（不破坏开发流程）"
+    },
+    {
+      "name": "recover_stale_jobs_marked_deprecated",
+      "passed": true,
+      "detail": "docstring 含 deprecated 标记并指向 reclaim_expired_leases"
+    },
+    {
+      "name": "recover_stale_jobs_still_available",
+      "passed": true,
+      "detail": "方法保留可用，未删除、未改变既有行为"
     }
   ],
   "queue_stats_final": {
@@ -130,8 +155,8 @@
     "expired_leases": 0
   },
   "summary": {
-    "passed": 22,
-    "total": 22,
+    "passed": 27,
+    "total": 27,
     "result": "PASS"
   }
 }

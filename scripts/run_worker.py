@@ -64,15 +64,20 @@ def build_parser() -> argparse.ArgumentParser:
     return ap
 
 
-def register_handlers(worker, workspace: Path) -> None:
+def register_handlers(worker, workspace: Path, store) -> None:
     """注册业务 Handler。
 
     当前仅注册 ``SKILL`` 类型作为示例接线；实际业务 Handler 应由各应用服务
-    在此登记。保持此函数为唯一注册入口，便于后续扩展与审计。
+    在此登记。保持此函数为唯一注册入口，便于后续扩展与幂等性评审。
+
+    Args:
+        worker: 目标 Worker。
+        workspace: 工作区根目录。
+        store: Runtime Store（注入 Service，使其感知持久化能力）。
     """
     from dkws.application.skills import SkillExecutionService
 
-    service = SkillExecutionService(workspace)
+    service = SkillExecutionService(workspace, runtime_store=store)
 
     def handle_skill(job):
         """执行 Skill 类型 Job。"""
@@ -137,7 +142,7 @@ def main() -> int:
         config.max_jobs = args.max_jobs
 
     worker = JobWorker(store, config)
-    register_handlers(worker, workspace)
+    register_handlers(worker, workspace, store)
     worker.install_signal_handlers()
 
     print(f"[worker] schema_version={store.schema_version()} db={db_path}", flush=True)

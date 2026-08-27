@@ -10,6 +10,8 @@
 6. SIGTERM 优雅停机：当前 Job 完成后退出，不留悬挂 lease
 7. 并发领取无重复投递（原子性）
 8. 运维子命令 --stats / --list-dead-letters / --requeue
+9. 生产 profile 未启用 Runtime Store 时拒绝异步执行（Owner 决策 3）
+10. recover_stale_jobs 已标记 deprecated（Owner 决策 2）
 
 用法：
     python scripts/verify_m2p2_worker.py [--out evidence/m2-p2]
@@ -345,6 +347,64 @@ def check_cli(report: dict, workspace: Path, log_dir: Path) -> None:
          f"重放不存在的 Job 返回非零退出码={missing.returncode}")
 
 
+def check_prod_async_guard(report: dict, workspace: Path) -> None:
+    """场景 9：生产 profile 未启用 Runtime Store 时拒绝异步执行。
+
+    对应 Owner 审核决策 3（2026-08-27）：禁止回退 threading 模式，
+    以免生产环境进程崩溃丢任务。
+    """
+    from dkws.application.skills import SkillExecutionService
+    from dkws.domain.errors import ServiceNotReadyError
+
+    svc_prod = SkillExecutionService(workspace, profile="prod")
+    rejected = False
+    http_status = None
+    details: dict = {}
+    try:
+        svc_prod.execute_async("skill-customer-outreach-script", "REQ-GUARD-1",
+                               {"customerId": "CUST-CORP-0001"})
+    except ServiceNotReadyError as exc:
+        rejected = True
+        http_status = exc.http_status()
+        details = exc.details
+    _log(report, "prod_async_without_store_rejected",
+         rejected and http_status == 503,
+         f"prod + Store 未启用 → 拒绝异步执行，HTTP {http_status}，"
+         f"remediation={details.get('remediation')}")
+
+    jobs_root = workspace / "90_control" / "jobs"
+    guard_jobs = list(jobs_root.glob("JOB-SKILL-*")) if jobs_root.is_dir() else []
+    _log(report, "prod_async_no_thread_fallback", not guard_jobs,
+         "拒绝时未创建任何 SKILL Job 目录，确认未回退 threading 模式")
+
+    svc_dev = SkillExecutionService(workspace, profile="dev")
+    dev_ok = False
+    try:
+        job_id = svc_dev.execute_async("skill-customer-outreach-script", "REQ-GUARD-2",
+                                       {"customerId": "CUST-CORP-0001"})
+        dev_ok = bool(job_id)
+    except Exception as exc:  # noqa: BLE001 - 仅用于记录验证结果
+        dev_ok = False
+        details = {"error": str(exc)}
+    _log(report, "dev_async_still_allowed", dev_ok,
+         "dev profile 未启用 Store 时仍可异步执行（不破坏开发流程）")
+
+
+def check_deprecation_marker(report: dict) -> None:
+    """场景 10：recover_stale_jobs 已标记 deprecated（Owner 决策 2）。"""
+    import inspect
+
+    from dkws.infrastructure.runtime_store import RuntimeStore
+
+    doc = inspect.getdoc(RuntimeStore.recover_stale_jobs) or ""
+    _log(report, "recover_stale_jobs_marked_deprecated",
+         ".. deprecated:: M2.4" in doc and "reclaim_expired_leases" in doc,
+         "docstring 含 deprecated 标记并指向 reclaim_expired_leases")
+    _log(report, "recover_stale_jobs_still_available",
+         callable(RuntimeStore.recover_stale_jobs),
+         "方法保留可用，未删除、未改变既有行为")
+
+
 def main() -> int:
     """执行全部验证并写出报告。"""
     ap = argparse.ArgumentParser()
@@ -381,6 +441,8 @@ def main() -> int:
     check_graceful_shutdown(report, store, db, tmp, log_dir)
     check_concurrency(report, store)
     check_cli(report, workspace, log_dir)
+    check_prod_async_guard(report, workspace)
+    check_deprecation_marker(report)
 
     report["queue_stats_final"] = store.queue_stats()
     passed = sum(1 for c in report["checks"] if c["passed"])

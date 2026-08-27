@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import time
 from dataclasses import dataclass, field
@@ -63,17 +64,24 @@ class SkillExecutionService:
                  knowledge: object | None = None,
                  skill_packages: Path | str | None = None,
                  customer_knowledge_service_id: str = "customer_knowledge",
-                 runtime_store: object | None = None):
+                 runtime_store: object | None = None,
+                 profile: str | None = None):
         """knowledge: 兼容参数（历史 product_knowledge 检索），v1.3 起取数走客户知识库。
         customer_knowledge_service_id: 客户知识服务投影（v1.3 数据所有权：按 customerId 取数）。
         skill_packages: 可选外部 Skill 包根目录（含 <skill>/SKILL.md + references/output-schema.md），
         动态注册为可执行 Skill（通用契约 executor）。
         runtime_store: 可选 SQLite Runtime Store（M2.3）；提供时幂等记录额外持久化，
-        使进程重启后仍可按 requestId 复放，内存缓存继续作为一级快路径。"""
+        使进程重启后仍可按 requestId 复放，内存缓存继续作为一级快路径。
+        profile: 运行 profile（``dev``/``prod``）。M2.4 起生产 profile 下
+        ``execute_async`` 强制要求启用 Runtime Store，否则拒绝异步执行，
+        以免进程崩溃丢任务（Owner 决策 2026-08-27）。缺省时读
+        ``DKWS_PROFILE`` 环境变量。"""
         self.workspace = Path(workspace) if workspace else None
         self.knowledge = knowledge
         self._idem: dict[str, tuple[SkillExecuteResult, float]] = {}
         self._store = runtime_store
+        self._profile = (profile if profile is not None
+                         else os.environ.get("DKWS_PROFILE", "dev")).strip().lower()
         self._evidence_ts: dict[str, str] = {}  # customerId -> 最新 evidenceTimestamp（无新证据策略）
         self._packages: dict[str, dict] = {}
         if skill_packages:
@@ -240,21 +248,41 @@ class SkillExecutionService:
 
         两种执行模式：
 
-        - **持久化模式（M2.4，推荐）**：注入 ``runtime_store`` 时仅入队，
+        - **持久化模式（M2.4，生产唯一允许）**：注入 ``runtime_store`` 时仅入队，
           由独立 Worker 进程（``scripts/run_worker.py``）领取执行。
           进程崩溃后 Job 不丢失，可被 lease 回收机制重新调度。
-        - **线程模式（M1 兼容）**：未注入 Store 时沿用后台线程立即执行。
-          该模式下进程退出即丢任务，仅适用于开发环境。
+        - **线程模式（仅 dev 兼容）**：未注入 Store 时沿用后台线程立即执行。
+          该模式下**进程退出即丢任务**，仅适用于开发环境。
 
-        返回 job_id；轮询 GET /v1/jobs/{job_id}（完成时含 skill_result）。
+        生产强制约束（Owner 决策 2026-08-27）：
+            ``profile=prod`` 且未启用 Runtime Store 时**拒绝异步执行**，
+            抛出 :class:`ServiceNotReadyError`（HTTP 503），
+            **禁止**回退到线程模式，以免生产环境进程崩溃丢任务。
+
+        Returns:
+            job_id；轮询 GET /v1/jobs/{job_id}（完成时含 skill_result）。
+
+        Raises:
+            ServiceNotReadyError: 生产 profile 下未启用 Runtime Store。
+            ValueError: 未配置工作区。
         """
         import threading
 
+        from ..domain.errors import ServiceNotReadyError
         from ..infrastructure.fs import WorkspaceWriter
         from .jobs import JobController
 
         if self.workspace is None:
             raise ValueError("异步执行需要工作区（workspace 未配置）")
+        if self._store is None and self._profile == "prod":
+            raise ServiceNotReadyError(
+                "生产 profile 下异步执行必须启用 Runtime Store："
+                "线程模式在进程崩溃时会丢任务。请设置 "
+                "DKWS_RUNTIME_STORE_ENABLED=true 并启动 Worker "
+                "（scripts/run_worker.py），或改用同步执行。",
+                details={"profile": self._profile, "runtime_store_enabled": False,
+                         "remediation": "DKWS_RUNTIME_STORE_ENABLED=true"})
+
         writer = WorkspaceWriter(self.workspace)
         idem = request_id or f"req-{int(time.time() * 1000)}"
         job = JobController(self.workspace, writer, job_type="SKILL",

@@ -521,11 +521,20 @@ class RuntimeStore:
                            target_status: str = "PENDING") -> list[str]:
         """进程重启后把残留的运行中 Job 复位为待处理，返回受影响 ID。
 
-        M2.3 引入的粗粒度复位：**无条件**复位所有 ``RUNNING``，不看 lease。
-        M2.4 起推荐使用 :meth:`reclaim_expired_leases`（仅回收 lease 已过期者），
-        以便多 Worker 并存时不会误抢正在被其它 Worker 正常处理的 Job。
+        .. deprecated:: M2.4
+           **新代码请使用** :meth:`reclaim_expired_leases`。
+           本方法为 M2.3 遗留的粗粒度复位：**无条件**复位所有 ``RUNNING``，
+           完全不看 lease，因此在多 Worker 并存时会**误抢**正在被其它 Worker
+           正常处理（lease 仍有效）的 Job，可能导致同一 Job 被并发执行两次。
 
-        本方法保留用于单 Worker 部署下的启动清理，行为与 M2.3 一致。
+           保留原因：兼容 M2.3 已有的调用方与测试；行为**不做任何改变**，
+           也不计划删除。仅适用于确定只有单个 Worker 的启动清理场景。
+
+           Owner 决策（2026-08-27）：标记 deprecated 但保留兼容，
+           避免新代码误用。
+
+        Returns:
+            被复位的 Job ID 列表。
         """
         now = time.time()
         with self._write_lock:

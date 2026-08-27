@@ -109,10 +109,15 @@ Worker 侧据此抛 `LeaseLostError` 并放弃写回，交由回收机制重新�
 
 | 方法 | 行为 | 适用 |
 |---|---|---|
-| `recover_stale_jobs()`（M2.3） | **无条件**复位所有 `RUNNING` | 单 Worker 部署的启动清理 |
-| `reclaim_expired_leases()`（M2.4，推荐） | 仅回收 lease **已过期**者 | 多 Worker 并存；可在运行期周期性安全调用 |
+| `recover_stale_jobs()`（M2.3，**已 deprecated**） | **无条件**复位所有 `RUNNING` | 仅单 Worker 部署的启动清理 |
+| `reclaim_expired_leases()`（M2.4，**推荐**） | 仅回收 lease **已过期**者 | 多 Worker 并存；可在运行期周期性安全调用 |
 
-M2.3 的方法予以保留以维持兼容，但多 Worker 场景应使用后者。
+Owner 决策（2026-08-27）：`recover_stale_jobs` **标记 deprecated 但保留兼容**，
+不删除、不改变既有行为，仅在 docstring 中标注以避免新代码误用。
+
+风险说明：该方法完全不看 lease，多 Worker 并存时会**误抢**正在被其它 Worker
+正常处理（lease 仍有效）的 Job，可能导致同一 Job 被并发执行两次。
+**新代码一律使用 `reclaim_expired_leases()`。**
 
 ## 6. 重试与退避
 
@@ -186,8 +191,38 @@ python scripts/run_worker.py --workspace ./workspace --stats
 
 | 模式 | 触发条件 | 行为 |
 |---|---|---|
-| **持久化（推荐）** | 注入 `runtime_store` | 仅入队，由独立 Worker 进程领取；**进程崩溃不丢任务** |
-| 线程（M1 兼容） | 未注入 Store | 后台线程立即执行；**进程退出即丢任务**，仅适用开发环境 |
+| **持久化（生产唯一允许）** | 注入 `runtime_store` | 仅入队，由独立 Worker 进程领取；**进程崩溃不丢任务** |
+| 线程（仅 dev 兼容） | 未注入 Store 且 `profile != prod` | 后台线程立即执行；**进程退出即丢任务** |
+
+### 生产强制约束（Owner 决策 2026-08-27）
+
+`profile=prod` 且未启用 Runtime Store 时，`execute_async()` **拒绝执行**：
+
+```
+ServiceNotReadyError: 生产 profile 下异步执行必须启用 Runtime Store：
+线程模式在进程崩溃时会丢任务。请设置 DKWS_RUNTIME_STORE_ENABLED=true
+并启动 Worker（scripts/run_worker.py），或改用同步执行。
+```
+
+- HTTP 状态：**503 `SERVICE_NOT_READY`**，`retryable=true`（启用 Store 后即恢复）
+- 错误 `details` 含 `profile` / `runtime_store_enabled` / `remediation`，便于运维定位
+- **禁止**回退线程模式：拒绝时不创建任何 Job，避免生产环境静默丢任务
+- profile 比较忽略大小写与空白，防止配置笔误绕过校验
+- **同步执行不受此约束**（不依赖 Worker，无丢任务风险）
+
+profile 来源：构造参数 `profile=` 优先，缺省读 `DKWS_PROFILE` 环境变量（默认 `dev`）。
+`create_app()` 会自动将 `cfg.profile` 传入 Service。
+
+正确的生产配置：
+
+```bash
+export DKWS_PROFILE=prod
+export DKWS_RUNTIME_STORE_ENABLED=true
+# 1) 启动 API
+python scripts/serve_skill_service.py --workspace ./workspace --host 127.0.0.1
+# 2) 另起进程启动 Worker（必需，否则入队的 Job 无人执行）
+python scripts/run_worker.py --workspace ./workspace
+```
 
 ## 11. 不引入的依赖
 

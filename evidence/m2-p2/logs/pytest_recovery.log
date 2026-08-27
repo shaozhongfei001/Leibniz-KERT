@@ -1,5 +1,5 @@
 ### 命令: python -m pytest tests/recovery -v --tb=short -p no:cacheprovider
-### 时间: 2026-08-27T11:40:55+08:00
+### 时间: 2026-08-27T12:11:04+08:00
 ### Python: Python 3.12.8
 
 ============================= test session starts ==============================
@@ -12,6 +12,6 @@ collected 18 items
 tests/recovery/test_recovery.py ....                                     [ 22%]
 tests/recovery/test_worker_crash_recovery.py ..............              [100%]
 
-============================== 18 passed in 8.08s ==============================
+============================== 18 passed in 7.58s ==============================
 
 ### 退出码: 0

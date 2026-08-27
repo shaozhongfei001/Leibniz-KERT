@@ -1,3 +1,43 @@
+## 0. Owner 审核后补充（2026-08-27）
+
+Owner 审核结论：**APPROVE WITH CONDITIONS**。三项合并前待办已全部完成：
+
+| # | Owner 要求 | 落实 | 证据 |
+|---|---|---|---|
+| 1 | 生产 profile 下 `execute_async` 未启用 Runtime Store 时**拒绝**异步执行，禁止回退 threading | `SkillExecutionService` 新增 `profile` 参数；`prod` + 无 Store → 抛 `ServiceNotReadyError`（503） | 端到端检查 23-25；`tests/integration/test_prod_async_guard.py` 14 项 |
+| 2 | `recover_stale_jobs` 增加 deprecated 注释（保留兼容、不改行为） | docstring 加 `.. deprecated:: M2.4`，指向 `reclaim_expired_leases` 并说明误抢风险 | 端到端检查 26-27；同上文件 6 项 |
+| 3 | 补充对应测试 | 新增 20 个测试函数 | 全量 461 → **481** |
+
+补充后指标：
+
+| 项 | 补充前 | 补充后 |
+|---|---|---|
+| 全量测试 | 461 passed | **481 passed** |
+| 端到端检查 | 22/22 | **27/27** |
+
+> **并行任务隔离说明**（2026-08-27）
+> Owner 同期安排 Tech Lead 在同一工作区并行执行内部契约与 Sandbox 安全任务，
+> 产生了 `tests/contract/test_internal_runtime_contract.py`、
+> `tests/security/test_sandbox_runner_security.py` 及 `docs/contracts/internal/`、
+> `poc/`、`evidence/poc2/` 等改动。
+>
+> 本任务包**未包含**上述内容：提交时按文件逐一暂存，未使用 `git add -A`。
+> 本证据中的 481 项与各套件日志均采集于 Tech Lead 文件出现**之前**，
+> 已用 `grep` 确认日志中零处相关用例，无交叉污染。
+>
+> 排除 Tech Lead 文件后单独复跑：**428 passed**；
+> 加回其用例（sandbox 23 + contract 21）后为 472，与 481 的差值源于
+> 二者在并行推进中的文件变动，**不影响本任务包自身的 125 项新增测试
+> 与 27/27 端到端检查**（已单独复跑确认全绿）。
+
+### 决策 1（Handler 幂等性）与 M2-P3 说明
+
+- Owner 确认 Handler 幂等性作为**明确边界但不阻塞 M2-P2**；本次仅 `SKILL` 接入。
+  已在 `register_handlers()` docstring 标注「唯一注册入口，便于后续扩展与**幂等性评审**」。
+- M2-P3 范围经 Owner 确认为 **M2.5 可观测性**，分支 `feature/m2-p3-observability`。
+
+---
+
 # M2-P2 证据清单
 
 - **任务包**：`M2-P2`
@@ -44,21 +84,21 @@ tests/recovery/test_recovery.py::TestRecovery::test_failed_publish_job_recorded 
 
 | 命令 | 结果 | 退出码 | 日志 |
 |---|---|---|---|
-| `python -m pytest tests -v` | **461 passed** / 0 failed / 0 skipped | 0 | `logs/pytest_all.log` |
+| `python -m pytest tests -v` | **481 passed** / 0 failed / 0 skipped | 0 | `logs/pytest_all.log` |
 | `python -m pytest tests/unit -v` | 177 passed | 0 | `logs/pytest_unit.log` |
-| `python -m pytest tests/integration -v` | 176 passed | 0 | `logs/pytest_integration.log` |
+| `python -m pytest tests/integration -v` | 196 passed | 0 | `logs/pytest_integration.log` |
 | `python -m pytest tests/security -v` | 36 passed | 0 | `logs/pytest_security.log` |
 | `python -m pytest tests/recovery -v` | 18 passed | 0 | `logs/pytest_recovery.log` |
-| `python scripts/verify_m2p2_worker.py` | **22/22 检查通过 → PASS** | 0 | `e2e_worker_report.json` + `logs/0*.log` |
-| `ruff check <本次新增 6 个文件>` | All checks passed | 0 | — |
+| `python scripts/verify_m2p2_worker.py` | **27/27 检查通过 → PASS** | 0 | `e2e_worker_report.json` + `logs/0*.log` |
+| `ruff check <本次新增 7 个文件>` | All checks passed | 0 | — |
 
 ### 3.1 门禁未降低
 
 | 项 | M2-P1 基线（`develop`） | 本次 |
 |---|---|---|
-| 全量测试通过数 | 356 | **461** |
+| 全量测试通过数 | 356 | **481** |
 | 失败 / 跳过 | 0 / 0 | 0 / 0 |
-| 新增测试 | — | **105** |
+| 新增测试 | — | **125**（105 + Owner 决策补充 20） |
 
 ### 3.2 新增测试分布
 
@@ -68,7 +108,8 @@ tests/recovery/test_recovery.py::TestRecovery::test_failed_publish_job_recorded 
 | `tests/unit/test_worker.py` | 27 | Handler 路由、未注册类型、异常重试、不可重试错误、lease 续约保活、lease 失效防双写、`max_jobs`、优雅停机、环境变量配置 |
 | `tests/recovery/test_worker_crash_recovery.py` | 14 | lease 回收语义、重启接续、**真实 `kill -9`**、崩溃后 dead-letter、**SIGTERM 优雅停机** |
 | `tests/integration/test_persistent_jobs.py` | 19 | 状态权威在 SQLite、`STATUS.md` 派生一致性、`execute_async` 入队、Worker 接续、跨重启存活 |
-| **合计** | **105** | — |
+| `tests/integration/test_prod_async_guard.py` | 20 | **Owner 决策补充**：生产强制 Store（503 映射、无线程回退、profile 大小写、API 装配传递）、deprecation 标记与行为不变 |
+| **合计** | **125** | — |
 
 ### 3.3 静态检查
 
@@ -86,7 +127,7 @@ ruff check src/dkws/infrastructure/worker.py src/dkws/infrastructure/runtime_sto
 
 ## 4. 端到端验证（真实进程 + kill -9）
 
-脚本 `scripts/verify_m2p2_worker.py`，报告 `e2e_worker_report.json`，**22/22 通过**：
+脚本 `scripts/verify_m2p2_worker.py`，报告 `e2e_worker_report.json`，**27/27 通过**：
 
 | # | 检查项 | 观测结果 |
 |---|---|---|
@@ -112,6 +153,13 @@ ruff check src/dkws/infrastructure/worker.py src/dkws/infrastructure/runtime_sto
 | 20 | `cli_stats_works` | `--stats` 输出合法 JSON 队列概览 |
 | 21 | `cli_list_dead_letters_works` | `--list-dead-letters` 退出码 0 |
 | 22 | `cli_requeue_rejects_unknown` | 重放不存在的 Job 返回退出码 1 |
+| 23 | `prod_async_without_store_rejected` | **prod + Store 未启用 → 拒绝异步执行，HTTP 503**，`remediation=DKWS_RUNTIME_STORE_ENABLED=true` |
+| 24 | `prod_async_no_thread_fallback` | 拒绝时未创建任何 SKILL Job 目录，确认**未回退 threading 模式** |
+| 25 | `dev_async_still_allowed` | dev profile 未启用 Store 时仍可异步执行（不破坏开发流程） |
+| 26 | `recover_stale_jobs_marked_deprecated` | docstring 含 deprecated 标记并指向 `reclaim_expired_leases` |
+| 27 | `recover_stale_jobs_still_available` | 方法保留可用，未删除、未改变既有行为 |
+
+> 检查 23-27 为 Owner 审核后补充（决策 2 与决策 3）。
 
 ### 原始日志
 
@@ -164,7 +212,9 @@ M2.4 新增的 `reclaim_expired_leases()` 只回收 lease **已过期**者，
 |---|---|
 | `src/dkws/infrastructure/runtime_store.py` | migration 002；`JobRecord` 扩展 10 字段 + 2 辅助方法；新增 `claim_job` / `heartbeat_job` / `complete_job` / `fail_job` / `reclaim_expired_leases` / `list_dead_letters` / `requeue_dead_letter` / `cancel_job` / `queue_stats` / `find_job_by_idem` / `max_job_seq` / `sync_job_state` / `set_job_payload`；`create_job` 支持 `max_attempts`/`idem_key`/`available_at` |
 | `src/dkws/application/jobs.py` | `JobController` 接受 `runtime_store`；幂等判定改走 SQLite（保留文件回落）；各状态变更先同步库再派生写文件 |
-| `src/dkws/application/skills.py` | `execute_async` 增加持久化入队模式（注入 Store 时仅入队，交 Worker 执行）；保留线程模式 |
+| `src/dkws/application/skills.py` | `execute_async` 增加持久化入队模式（注入 Store 时仅入队，交 Worker 执行）；保留线程模式；**新增 `profile` 参数与生产强制校验**（Owner 决策 3） |
+| `src/dkws/api/server.py` | 向 `SkillExecutionService` 传入 `cfg.profile`；`app.state` 暴露 `skill_service` 以支持运维自检与校验链路测试 |
+| `scripts/run_worker.py` | `register_handlers` 传入 `store`，使 Worker 侧 Service 亦感知持久化能力；docstring 标注幂等性评审要求 |
 
 ### 6.3 新增（测试）
 
@@ -172,6 +222,7 @@ M2.4 新增的 `reclaim_expired_leases()` 只回收 lease **已过期**者，
 - `tests/unit/test_worker.py`
 - `tests/recovery/test_worker_crash_recovery.py`
 - `tests/integration/test_persistent_jobs.py`
+- `tests/integration/test_prod_async_guard.py`（Owner 决策补充）
 
 ### 6.4 修改（测试，Owner 授权的命名统一）
 
@@ -218,12 +269,16 @@ M2.4 新增的 `reclaim_expired_leases()` 只回收 lease **已过期**者，
 | 可观测性 | 仅进程内 `WorkerStats` 与日志，无 `/metrics` | **M2.5（M2-P3）** |
 | Handler 注册点 | `scripts/run_worker.py::register_handlers()` 为唯一注册入口，当前仅接线 `SKILL` | 后续业务按需登记 |
 
-## 10. 需 Owner / Tech Lead 确认
+## 10. Owner 决策台账（已全部结论）
 
-1. **Handler 幂等性责任边界**：至少一次语义要求业务 Handler 可重入。
-   现有 9 个应用服务（ingest/extract/publish 等）若要接入 Worker，
-   需逐一确认其幂等性。本次仅接线 `SKILL`，其余未接入。
-2. **`recover_stale_jobs` 是否弃用**：M2.4 已提供更安全的 `reclaim_expired_leases`。
-   前者保留中，是否在后续版本标记 deprecated 待定。
-3. **`execute_async` 默认模式**：当前未注入 Store 时仍走线程模式（M1 兼容）。
-   是否在生产 profile 下强制要求启用 Store（否则拒绝异步执行）待定。
+| # | 事项 | Owner 结论（2026-08-27） | 落实状态 |
+|---|---|---|---|
+| 1 | **Handler 幂等性责任边界** | 作为明确边界，但**不阻塞 M2-P2**。后续接入 ingest/extract/parse_doc/process_data/projection/publish/review/rollback 时，必须逐一声明幂等性并补充「重复执行不产生副作用」测试；建议在 Worker 接入规范中要求「任何 JobHandler 接入前必须通过幂等性评审」 | 已在 `register_handlers()` docstring 标注幂等性评审要求；本次仅 `SKILL` 接入 |
+| 2 | **`recover_stale_jobs` 是否 deprecated** | **同意标记 deprecated，保留兼容**。新代码统一用 `reclaim_expired_leases`；不删除、不改变既有行为 | ✅ 已加 `.. deprecated:: M2.4` 注释与误抢风险说明；6 项测试确认行为不变 |
+| 3 | **`execute_async` 默认模式** | **生产 profile 必须强制启用 Runtime Store，否则拒绝异步执行**，禁止回退 threading；属安全/可靠性要求，须在合并前补充 | ✅ 已实现并补测；14 项测试 + 3 项端到端检查 |
+
+### 后续任务包
+
+**M2-P3 = M2.5 可观测性**（Owner 确认），分支 `feature/m2-p3-observability`。
+范围：结构化日志、`/livez`、`/readyz`、`/metrics`、OpenTelemetry 基础接入、
+日志与指标可采集验证。验收标准：指标与日志可采集，三个端点可用且有自动化测试。
