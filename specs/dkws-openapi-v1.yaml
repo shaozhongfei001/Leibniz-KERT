@@ -1,0 +1,1025 @@
+openapi: 3.0.3
+info:
+  title: DKWS Skill Execution API
+  description: |
+    独立知识工程服务端 (DKWS) API 规范。
+
+    - v1.3 基线：单客户技能执行、健康检查、报告查看
+    - v1.4 增量：SP-20 服务建议书（异步）、SP-21 交互记忆抽取、闸门协作端点
+
+    权威契约：`docs/skill-execute-api-contract-v1.4.md`
+  version: "1.4.0"
+  contact:
+    name: DKWS Team
+  license:
+    name: Proprietary
+
+servers:
+  - url: http://127.0.0.1:8106
+    description: 本地开发（默认 DSH_BASE_URL）
+
+tags:
+  - name: Health
+    description: 健康检查与探针
+  - name: Skill
+    description: Skill 执行与查询
+  - name: Job
+    description: 异步作业管理
+  - name: Gate
+    description: 闸门协作
+  - name: Observability
+    description: 可观测性
+
+paths:
+  /v1/health:
+    get:
+      tags: [Health]
+      summary: 服务健康检查
+      description: 返回 DKWS 服务整体健康状态和已注册技能清单
+      operationId: getHealth
+      responses:
+        "200":
+          description: 服务健康
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+              example:
+                status: ok
+                timestamp: "2026-08-28T10:00:00Z"
+                skills:
+                  - skillId: R1
+                    name: 对公客户画像
+                    version: "1.0.0"
+                  - skillId: SP-20
+                    name: 对公客户服务建议书生成
+                    version: "1.0.0"
+                  - skillId: SP-21
+                    name: 交互记忆抽取
+                    version: "1.0.0"
+
+  /api/skill/health:
+    get:
+      tags: [Skill, Health]
+      summary: Skill 子系统健康检查
+      description: GITS 适配器使用的 Skill 健康检查端点，返回已注册技能清单
+      operationId: getSkillHealth
+      responses:
+        "200":
+          description: Skill 子系统健康
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillHealthResponse"
+              example:
+                status: ok
+                skills:
+                  - skillId: R1
+                    name: 对公客户画像
+                  - skillId: SP-20
+                    name: 对公客户服务建议书生成
+                  - skillId: SP-21
+                    name: 交互记忆抽取
+
+  /v1/skills:
+    get:
+      tags: [Skill]
+      summary: 列出可用 Skill
+      description: 返回所有已注册 Skill 的详细信息，包括参数定义和闸门要求
+      operationId: listSkills
+      responses:
+        "200":
+          description: Skill 列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillListResponse"
+              example:
+                skills:
+                  - skillId: R1
+                    name: 对公客户画像
+                    description: 基于知识图谱生成对公客户 360 度画像
+                    version: "1.0.0"
+                    parameters:
+                      - name: customerId
+                        type: string
+                        required: true
+                        description: 客户 ID
+                  - skillId: SP-20
+                    name: 对公客户服务建议书生成
+                    description: 生成对公客户服务建议书（含事实标签、双版本、闸门检查）
+                    version: "1.0.0"
+                    async: true
+                    parameters:
+                      - name: context
+                        type: object
+                        required: true
+                        description: ContextPackage（含 customerId、schemaVersion 等）
+
+  /api/skill/execute:
+    post:
+      tags: [Skill]
+      summary: 执行 Skill
+      description: |
+        同步或异步执行指定 Skill。
+
+        - 同步模式（默认）：返回完整执行结果
+        - 异步模式（`async: true`）：返回 202 + jobId，通过 `GET /v1/jobs/{jobId}` 轮询结果
+      operationId: executeSkill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillExecuteRequest"
+            examples:
+              sync_r1:
+                summary: R1 同步执行
+                value:
+                  skillId: R1
+                  requestId: req-20260828-001
+                  request:
+                    customerId: CUST-001
+              async_sp20:
+                summary: SP-20 异步执行
+                value:
+                  skillId: SP-20
+                  requestId: req-20260828-002
+                  async: true
+                  request:
+                    context:
+                      schemaVersion: "1.0.0"
+                      customerId: CUST-001
+              sp21_sync:
+                summary: SP-21 同步执行
+                value:
+                  skillId: SP-21
+                  requestId: req-20260828-003
+                  request:
+                    context:
+                      schemaVersion: "1.0.0"
+                      customerId: CUST-001
+                      interactionId: INT-001
+      responses:
+        "200":
+          description: 同步执行成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillExecuteResponse"
+              example:
+                requestId: req-20260828-001
+                status: ok
+                data:
+                  skillId: R1
+                  reportUrl: /api/skill/report/req-20260828-001
+                  result:
+                    summary: "客户 CUST-001 画像生成完成"
+        "202":
+          description: 异步执行已接受
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AsyncAcceptedResponse"
+              example:
+                jobId: JOB-SKILL-20260828-001
+                status: PENDING
+        "400":
+          description: 请求参数错误
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                requestId: req-20260828-001
+                status: skill_error
+                errors:
+                  - code: INVALID_PARAMETER
+                    message: "customerId is required"
+        "404":
+          description: Skill 不存在
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                requestId: req-20260828-001
+                status: skill_error
+                errors:
+                  - code: SKILL_NOT_FOUND
+                    message: "Skill UNKNOWN not registered"
+        "500":
+          description: 服务内部错误
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/skill/report/{requestId}:
+    get:
+      tags: [Skill]
+      summary: 获取 Skill 执行报告
+      description: 根据 requestId 获取 Skill 执行后的报告内容
+      operationId: getSkillReport
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Skill 执行请求 ID
+      responses:
+        "200":
+          description: 报告内容
+          content:
+            text/markdown:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: object
+        "404":
+          description: 报告不存在
+
+  /api/skill/gates/{customerId}:
+    get:
+      tags: [Gate]
+      summary: 获取客户闸门清单
+      description: |
+        返回指定客户的 GATE-BIZ-G0..G5 清单资产（must/forbidden）。
+        GITS 用此渲染闸门页面。
+      operationId: getGates
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 客户 ID
+      responses:
+        "200":
+          description: 闸门清单
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GateListResponse"
+              example:
+                customerId: CUST-001
+                gates:
+                  - gate: G0
+                    name: 证据准备
+                    state: PASSED
+                    checklist:
+                      must:
+                        - "客户基本信息完整"
+                      forbidden:
+                        - "过期证据"
+                  - gate: G1
+                    name: 事实核验
+                    state: READY_FOR_REVIEW
+                    checklist:
+                      must:
+                        - "所有事实标签已标注"
+                      forbidden:
+                        - "未标注来源的断言"
+        "404":
+          description: 客户无闸门资产
+
+  /api/skill/gates/audit:
+    post:
+      tags: [Gate]
+      summary: 闸门决策镜像
+      description: |
+        业务闸门决策**镜像**（非权威）。权威状态机在 GITS。
+        DKWS 仅追加记录到 `90_control/audit/gates.jsonl`。
+      operationId: auditGate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GateAuditRequest"
+            example:
+              customerId: CUST-001
+              gate: G1
+              decision: PASSED
+              decidedBy: user-zhangsan
+              reason: "所有事实标签已标注完成"
+      responses:
+        "200":
+          description: 镜像记录成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GateAuditResponse"
+              example:
+                recorded: true
+                timestamp: "2026-08-28T10:30:00Z"
+                auditPath: "90_control/audit/gates.jsonl"
+
+  /v1/jobs/{jobId}:
+    get:
+      tags: [Job]
+      summary: 查询异步 Job 状态
+      description: |
+        查询异步 Skill 执行 Job 的状态。
+        COMPLETED 时 `data.skill_result` 为完整 execute 响应（与同步响应同构）。
+      operationId: getJob
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 异步作业 ID（格式 JOB-SKILL-YYYYMMDD-NNN）
+      responses:
+        "200":
+          description: Job 状态
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobStatusResponse"
+              examples:
+                pending:
+                  summary: 等待中
+                  value:
+                    jobId: JOB-SKILL-20260828-001
+                    status: PENDING
+                    createdAt: "2026-08-28T10:00:00Z"
+                running:
+                  summary: 执行中
+                  value:
+                    jobId: JOB-SKILL-20260828-001
+                    status: RUNNING
+                    createdAt: "2026-08-28T10:00:00Z"
+                    startedAt: "2026-08-28T10:00:01Z"
+                completed:
+                  summary: 已完成
+                  value:
+                    jobId: JOB-SKILL-20260828-001
+                    status: COMPLETED
+                    createdAt: "2026-08-28T10:00:00Z"
+                    startedAt: "2026-08-28T10:00:01Z"
+                    completedAt: "2026-08-28T10:02:30Z"
+                    data:
+                      skill_result:
+                        requestId: req-20260828-002
+                        status: ok
+                        data:
+                          skillId: SP-20
+                          reportUrl: /api/skill/report/req-20260828-002
+                failed:
+                  summary: 执行失败
+                  value:
+                    jobId: JOB-SKILL-20260828-001
+                    status: FAILED
+                    createdAt: "2026-08-28T10:00:00Z"
+                    startedAt: "2026-08-28T10:00:01Z"
+                    completedAt: "2026-08-28T10:00:30Z"
+                    error:
+                      code: SKILL_EXECUTION_ERROR
+                      message: "Context package validation failed"
+        "404":
+          description: Job 不存在
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /livez:
+    get:
+      tags: [Health]
+      summary: 存活探针
+      description: Kubernetes 存活探针，进程存活即返回 200
+      operationId: livez
+      responses:
+        "200":
+          description: 进程存活
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /readyz:
+    get:
+      tags: [Health]
+      summary: 就绪探针
+      description: Kubernetes 就绪探针，服务可接受请求时返回 200
+      operationId: readyz
+      responses:
+        "200":
+          description: 服务就绪
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+        "503":
+          description: 服务未就绪
+
+  /metrics:
+    get:
+      tags: [Observability]
+      summary: Prometheus 指标
+      description: 返回 Prometheus 格式的指标数据
+      operationId: getMetrics
+      responses:
+        "200":
+          description: Prometheus 指标
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key 认证（演示环境可省略）
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status, timestamp, skills]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        timestamp:
+          type: string
+          format: date-time
+        skills:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkillInfo"
+
+    SkillHealthResponse:
+      type: object
+      required: [status, skills]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        skills:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkillBriefInfo"
+
+    SkillInfo:
+      type: object
+      required: [skillId, name]
+      properties:
+        skillId:
+          type: string
+          description: Skill 唯一标识
+        name:
+          type: string
+          description: Skill 显示名称
+        version:
+          type: string
+          description: Skill 版本
+        description:
+          type: string
+        async:
+          type: boolean
+          description: 是否支持异步执行
+          default: false
+        parameters:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkillParameter"
+
+    SkillBriefInfo:
+      type: object
+      required: [skillId, name]
+      properties:
+        skillId:
+          type: string
+        name:
+          type: string
+
+    SkillParameter:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [string, number, boolean, object, array]
+        required:
+          type: boolean
+          default: false
+        description:
+          type: string
+        default:
+          description: 参数默认值
+
+    SkillListResponse:
+      type: object
+      required: [skills]
+      properties:
+        skills:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkillInfo"
+
+    SkillExecuteRequest:
+      type: object
+      required: [skillId, requestId, request]
+      properties:
+        skillId:
+          type: string
+          description: Skill 唯一标识
+          example: R1
+        requestId:
+          type: string
+          description: 请求唯一标识（幂等键）
+          example: req-20260828-001
+        async:
+          type: boolean
+          description: 是否异步执行（默认 false）
+          default: false
+        request:
+          $ref: "#/components/schemas/SkillRequestBody"
+        context:
+          $ref: "#/components/schemas/ContextPackage"
+          description: |
+            顶层 context（v1.3 兼容）。
+            与 request.context 二选一，服务端合并时 request.context 优先。
+
+    SkillRequestBody:
+      type: object
+      description: |
+        Skill 执行请求体。
+        - 单客户技能（R1/图谱/外联/会面）：传 `customerId`
+        - 组合技能（SP-20/SP-21）：传 `context`（ContextPackage）
+      properties:
+        customerId:
+          type: string
+          description: 客户 ID（单客户技能）
+          example: CUST-001
+        context:
+          $ref: "#/components/schemas/ContextPackage"
+        structuredFacts:
+          type: object
+          description: 结构化事实（v1.3 遗留，已忽略）
+          deprecated: true
+          additionalProperties: true
+
+    ContextPackage:
+      type: object
+      description: SP-20/SP-21 专用上下文包
+      required: [schemaVersion, customerId]
+      properties:
+        schemaVersion:
+          type: string
+          example: "1.0.0"
+        customerId:
+          type: string
+          example: CUST-001
+        interactionId:
+          type: string
+          description: 交互 ID（SP-21 必需）
+        gateState:
+          type: object
+          description: 闸门状态（SP-20 使用）
+          properties:
+            passed:
+              type: array
+              items:
+                type: string
+              description: 已通过的闸门列表
+              example: ["G0"]
+        proposalContext:
+          type: object
+          description: 建议书上下文（SP-20 使用）
+          additionalProperties: true
+
+    SkillExecuteResponse:
+      type: object
+      required: [requestId, status, data]
+      properties:
+        requestId:
+          type: string
+        status:
+          type: string
+          enum: [ok, skill_error, exit_policy_no_new_evidence]
+        data:
+          $ref: "#/components/schemas/SkillExecuteData"
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+        assemblyTrace:
+          type: object
+          description: 知识装配追踪
+          additionalProperties: true
+        modelCalls:
+          type: array
+          description: 模型调用记录
+          items:
+            type: object
+            additionalProperties: true
+
+    SkillExecuteData:
+      type: object
+      required: [skillId]
+      properties:
+        skillId:
+          type: string
+        reportUrl:
+          type: string
+          description: 报告 URL
+        result:
+          description: |
+            执行结果。
+            - 旧技能：自由结构
+            - SP-20：ServiceResult（含 proposalDraft、citations、gateRecommendations 等）
+            - SP-21：InteractionMemoryResult（含 candidateMemories、memoryUpdates 等）
+          oneOf:
+            - $ref: "#/components/schemas/ServiceResult"
+            - $ref: "#/components/schemas/InteractionMemoryResult"
+            - type: object
+              additionalProperties: true
+        ruleViolations:
+          type: array
+          description: 规则校验违规（v1.4 新增）
+          items:
+            $ref: "#/components/schemas/RuleViolation"
+
+    ServiceResult:
+      type: object
+      description: SP-20 服务建议书执行结果
+      properties:
+        schemaVersion:
+          type: string
+          example: "1.0.0"
+        skillId:
+          type: string
+          example: SP-20
+        runId:
+          type: string
+          example: RUN-PROPOSAL-20260828-001
+        status:
+          type: string
+          enum: [SUCCESS, PARTIAL]
+        timestamp:
+          type: string
+          format: date-time
+        content:
+          type: object
+          properties:
+            proposalDraft:
+              type: string
+              description: 8 章 Markdown 正文
+            internalVersion:
+              type: object
+              properties:
+                content:
+                  type: string
+                factLabels:
+                  type: object
+                  additionalProperties:
+                    type: string
+            customerVersion:
+              type: object
+              properties:
+                content:
+                  type: string
+                filteringNotes:
+                  type: array
+                  items:
+                    type: string
+                includes:
+                  type: array
+                  items:
+                    type: string
+                excludes:
+                  type: array
+                  items:
+                    type: string
+                releaseBlockedUntil:
+                  type: array
+                  items:
+                    type: string
+            customerVersionNote:
+              type: string
+        citations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Citation"
+        unknowns:
+          type: array
+          items:
+            $ref: "#/components/schemas/Unknown"
+        limitations:
+          type: array
+          items:
+            type: string
+        gateRecommendations:
+          $ref: "#/components/schemas/GateRecommendations"
+
+    InteractionMemoryResult:
+      type: object
+      description: SP-21 交互记忆抽取结果
+      properties:
+        schemaVersion:
+          type: string
+          example: "1.0.0"
+        skillId:
+          type: string
+          example: SP-21
+        interactionId:
+          type: string
+        status:
+          type: string
+          enum: [SUCCESS, PARTIAL]
+        candidateMemories:
+          type: array
+          items:
+            $ref: "#/components/schemas/CandidateMemory"
+        memoryUpdates:
+          type: array
+          items:
+            $ref: "#/components/schemas/MemoryUpdate"
+        memorySupersessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/MemorySupersession"
+        ruleViolations:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuleViolation"
+
+    Citation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: CIT-0001
+        claim:
+          type: string
+        source:
+          type: string
+        date:
+          type: string
+          format: date
+        factLabel:
+          type: string
+          enum: [F, C, B, H, P, A]
+          description: "F=事实, C=推论, B=信念, H=假设, P=预测, A=断言"
+        chapterRef:
+          type: string
+          example: CH01
+
+    Unknown:
+      type: object
+      properties:
+        id:
+          type: string
+          example: UNK-0001
+        description:
+          type: string
+        suggestedAction:
+          type: string
+        relatedChapter:
+          type: string
+
+    CandidateMemory:
+      type: object
+      properties:
+        memoryId:
+          type: string
+        category:
+          type: string
+          enum: [PREFERENCE, DECISION_PATTERN, RELATIONSHIP, BUSINESS_SIGNAL, EMOTIONAL_STATE]
+        content:
+          type: string
+        confidence:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+        suggestedDecayRule:
+          type: string
+          enum: [NONE, LINEAR, STEP]
+        evidenceQuote:
+          type: string
+
+    MemoryUpdate:
+      type: object
+      properties:
+        memoryId:
+          type: string
+        action:
+          type: string
+          enum: [REINFORCE]
+        confidenceDelta:
+          type: number
+          format: float
+        reason:
+          type: string
+
+    MemorySupersession:
+      type: object
+      properties:
+        memoryId:
+          type: string
+        supersededBy:
+          type: string
+        reason:
+          type: string
+
+    RuleViolation:
+      type: object
+      properties:
+        ruleId:
+          type: string
+          description: |
+            SP-20 规则：CITATION_REQUIRED, NO_UNDISCLOSED_DEGRADATION, DUAL_VERSION_PRINCIPLE,
+            GATE_SEQUENCING, FACT_LABEL_MANDATORY, NO_COMMITMENT_WITHOUT_APPROVAL
+            SP-21 规则：CONFIDENCE_CALIBRATION, DECAY_RULE_APPLICATION, DUPLICATE_DETECTION
+        severity:
+          type: string
+          enum: [BLOCKING, WARNING]
+        message:
+          type: string
+
+    GateRecommendations:
+      type: object
+      properties:
+        currentGate:
+          type: string
+          example: G1
+        passedGates:
+          type: array
+          items:
+            type: string
+          example: ["G0"]
+        overallReadiness:
+          type: string
+          enum: [READY, BLOCKED]
+        checklist:
+          type: array
+          items:
+            $ref: "#/components/schemas/GateChecklistItem"
+        nextGatePrerequisites:
+          type: array
+          items:
+            type: string
+
+    GateChecklistItem:
+      type: object
+      properties:
+        gate:
+          type: string
+        state:
+          type: string
+          enum: [PASSED, READY_FOR_REVIEW, BLOCKED, PENDING]
+        name:
+          type: string
+        checklist:
+          type: object
+          properties:
+            must:
+              type: array
+              items:
+                type: string
+            forbidden:
+              type: array
+              items:
+                type: string
+
+    AsyncAcceptedResponse:
+      type: object
+      required: [jobId, status]
+      properties:
+        jobId:
+          type: string
+          description: 异步作业 ID
+          example: JOB-SKILL-20260828-001
+        status:
+          type: string
+          enum: [PENDING]
+          description: 初始状态始终为 PENDING
+
+    JobStatusResponse:
+      type: object
+      required: [jobId, status]
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, RUNNING, COMPLETED, FAILED]
+        createdAt:
+          type: string
+          format: date-time
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        data:
+          type: object
+          description: COMPLETED 时包含 skill_result
+          properties:
+            skill_result:
+              $ref: "#/components/schemas/SkillExecuteResponse"
+        error:
+          type: object
+          description: FAILED 时的错误信息
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+
+    GateListResponse:
+      type: object
+      required: [customerId, gates]
+      properties:
+        customerId:
+          type: string
+        gates:
+          type: array
+          items:
+            $ref: "#/components/schemas/GateChecklistItem"
+
+    GateAuditRequest:
+      type: object
+      required: [customerId, gate, decision, decidedBy]
+      properties:
+        customerId:
+          type: string
+        gate:
+          type: string
+          description: 闸门标识（G0..G5）
+          example: G1
+        decision:
+          type: string
+          enum: [PASSED, BLOCKED, WAIVED]
+        decidedBy:
+          type: string
+          description: 决策人
+          example: user-zhangsan
+        reason:
+          type: string
+          description: 决策原因
+
+    GateAuditResponse:
+      type: object
+      required: [recorded]
+      properties:
+        recorded:
+          type: boolean
+        timestamp:
+          type: string
+          format: date-time
+        auditPath:
+          type: string
+          description: 审计记录路径
+
+    ErrorResponse:
+      type: object
+      required: [requestId, status]
+      properties:
+        requestId:
+          type: string
+        status:
+          type: string
+          enum: [skill_error, exit_policy_no_new_evidence]
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+
+    ErrorDetail:
+      type: object
+      properties:
+        code:
+          type: string
+          description: |
+            错误码：
+            - INVALID_PARAMETER: 请求参数错误
+            - SKILL_NOT_FOUND: Skill 不存在
+            - SKILL_EXECUTION_ERROR: Skill 执行错误
+            - CONTEXT_VALIDATION_ERROR: 上下文验证失败
+            - GATE_CHECK_FAILED: 闸门检查失败
+            - JOB_NOT_FOUND: Job 不存在
+            - INTERNAL_ERROR: 内部错误
+        message:
+          type: string
+        detail:
+          type: object
+          additionalProperties: true

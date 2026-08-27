@@ -1,0 +1,38 @@
+# M3-P0 E2E 测试配置
+# 用法：python scripts/verify_m3_e2e.py --config scripts/m3_e2e_config.yaml
+
+# DKWS 基础 URL
+dkws_base_url: http://127.0.0.1:8106
+
+# API Key（留空 = 确定性模式，无需 LLM 密钥）
+api_key: ""
+
+# 测试客户 ID
+test_customer_id: CUST-E2E-001
+
+# 超时配置（秒）
+timeout_seconds: 30
+poll_interval_seconds: 2
+max_poll_attempts: 30
+
+# 各场景预期结果
+expected:
+  r1_previsit:
+    skill_count_min: 1
+    outreach_skill_available: true
+    execution_status: 200
+  sp20_proposal:
+    submit_status: 202
+    job_final_status: COMPLETED
+    chapters_count_min: 1
+  sp21_memory:
+    execution_status: 200
+    memories_count_min: 1
+    has_confidence: true
+  supply_chain_graph:
+    execution_status: 200
+    nodes_count_min: 1
+    edges_count_min: 0
+  gate_collaboration:
+    query_status: 200
+    advance_status: 200
