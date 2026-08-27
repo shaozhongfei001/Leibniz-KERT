@@ -1,0 +1,142 @@
+{
+  "task_package": "M2-P3",
+  "scope": "M2.5 可观测性（结构化日志 / livez / readyz / metrics / 追踪）",
+  "generated_at": "2026-08-27T16:24:47+0800",
+  "environment": {
+    "python": "3.12.8",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "workspace": "/tmp/dkws-m2p3-e2e-ws"
+  },
+  "checks": [
+    {
+      "name": "server_starts",
+      "passed": true,
+      "detail": "服务在 127.0.0.1:18733 就绪（结构化日志已启用）"
+    },
+    {
+      "name": "livez_available",
+      "passed": true,
+      "detail": "GET /livez → 200，status=alive，uptime=0.373s"
+    },
+    {
+      "name": "readyz_available",
+      "passed": true,
+      "detail": "GET /readyz → 200，status=ready，检查项=['job_queue', 'knowledge_projection', 'runtime_store', 'workspace']"
+    },
+    {
+      "name": "metrics_available",
+      "passed": true,
+      "detail": "GET /metrics → 200，content-type=text/plain; version=0.0.4; charset=utf-8"
+    },
+    {
+      "name": "metrics_parseable_by_collector",
+      "passed": true,
+      "detail": "解析成功：10 个指标名，8 个 TYPE 声明"
+    },
+    {
+      "name": "metrics_http_requests_labeled",
+      "passed": true,
+      "detail": "dkws_http_requests_total 含 method/path/status 标签，样本数=3"
+    },
+    {
+      "name": "metrics_latency_histogram",
+      "passed": true,
+      "detail": "延迟直方图含 _bucket/_count/_sum 三件套"
+    },
+    {
+      "name": "metrics_histogram_type_declared",
+      "passed": true,
+      "detail": "TYPE 声明=histogram"
+    },
+    {
+      "name": "metrics_no_high_cardinality",
+      "passed": true,
+      "detail": "路径标签使用路由模板 {object_id}，未泄漏具体 ID（避免标签爆炸）"
+    },
+    {
+      "name": "metrics_queue_gauges",
+      "passed": true,
+      "detail": "队列深度指标已暴露（claimable/dead_letter/expired_leases）"
+    },
+    {
+      "name": "metrics_build_info",
+      "passed": true,
+      "detail": "构建信息与运行时长指标已暴露"
+    },
+    {
+      "name": "trace_headers_returned",
+      "passed": true,
+      "detail": "X-Request-Id=REQ-ea3fa017b29541b6…，traceparent=00-c94fbdc7153143a4b3c22…"
+    },
+    {
+      "name": "trace_request_id_preserved",
+      "passed": true,
+      "detail": "沿用调用方 X-Request-Id，便于跨系统关联"
+    },
+    {
+      "name": "trace_continues_upstream",
+      "passed": true,
+      "detail": "沿用上游 trace_id，生成新 span_id=e04109e7a4154af1"
+    },
+    {
+      "name": "trace_rejects_malformed",
+      "passed": true,
+      "detail": "畸形 traceparent 被拒并新建 trace，不污染链路"
+    },
+    {
+      "name": "rejected_requests_observable",
+      "passed": true,
+      "detail": "未认证请求 → 401，指标含 status=\"401\" 与 4xx 计数（可观测性无盲区）"
+    },
+    {
+      "name": "probes_exempt_from_rate_limit",
+      "passed": true,
+      "detail": "连续 6 次 /livez 状态码=[200, 200, 200, 200, 200, 200]（burst=3 仍全通过）"
+    },
+    {
+      "name": "metrics_exempt_from_rate_limit",
+      "passed": true,
+      "detail": "连续 5 次 /metrics 状态码=[200, 200, 200, 200, 200]"
+    },
+    {
+      "name": "logs_are_single_line_json",
+      "passed": true,
+      "detail": "捕获 28 条单行 JSON 日志"
+    },
+    {
+      "name": "logs_have_access_events",
+      "passed": true,
+      "detail": "访问日志 28 条，事件码 HTTP_ACCESS"
+    },
+    {
+      "name": "logs_have_correlation_fields",
+      "passed": true,
+      "detail": "含关联字段 request_id/trace_id（示例 status=200，duration_ms=1.612）"
+    },
+    {
+      "name": "logs_have_service_field",
+      "passed": true,
+      "detail": "service=dkws-python-core"
+    },
+    {
+      "name": "logs_do_not_leak_api_keys",
+      "passed": true,
+      "detail": "日志中未出现任何 API Key 明文"
+    },
+    {
+      "name": "prod_profile_probes_public",
+      "passed": true,
+      "detail": "生产 profile 下匿名访问：{'/livez': 200, '/readyz': 200, '/metrics': 200}（探针不被 401 拦截）"
+    },
+    {
+      "name": "prod_profile_business_still_protected",
+      "passed": true,
+      "detail": "业务端点仍要求认证 → 401"
+    }
+  ],
+  "summary": {
+    "passed": 25,
+    "total": 25,
+    "result": "PASS"
+  }
+}

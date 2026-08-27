@@ -1,0 +1,56 @@
+### 命令: python -m pytest tests -v --tb=short -p no:cacheprovider
+### 时间: 2026-08-27T16:27:07+08:00
+### Python: Python 3.12.8
+
+============================= test session starts ==============================
+platform linux -- Python 3.12.8, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/szf/dev/Leibniz-KERT
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 602 items
+
+tests/contract/test_contracts.py ....................................... [  6%]
+..............                                                           [  8%]
+tests/e2e/test_golden_scenario.py .                                      [  8%]
+tests/integration/test_api.py ........                                   [ 10%]
+tests/integration/test_extract_review.py ...............                 [ 12%]
+tests/integration/test_gates.py .....                                    [ 13%]
+tests/integration/test_ingest.py ..............                          [ 15%]
+tests/integration/test_interaction_memory.py .........                   [ 17%]
+tests/integration/test_kuzu_graph.py ......                              [ 18%]
+tests/integration/test_observability_endpoints.py ...................... [ 22%]
+.....................                                                    [ 25%]
+tests/integration/test_parse_doc.py ........                             [ 26%]
+tests/integration/test_persistent_jobs.py ...................            [ 30%]
+tests/integration/test_process_data.py ........                          [ 31%]
+tests/integration/test_prod_async_guard.py ....................          [ 34%]
+tests/integration/test_projection.py .....                               [ 35%]
+tests/integration/test_publish.py ........                               [ 36%]
+tests/integration/test_runtime_store_api.py ....................         [ 40%]
+tests/integration/test_service_proposal.py .........                     [ 41%]
+tests/integration/test_services.py ...............                       [ 44%]
+tests/integration/test_skills.py ............................            [ 48%]
+tests/recovery/test_recovery.py ....                                     [ 49%]
+tests/recovery/test_worker_crash_recovery.py ..............              [ 51%]
+tests/security/test_api_hardening.py ..............................      [ 56%]
+tests/security/test_security.py ......                                   [ 57%]
+tests/unit/test_job_queue.py ........................................... [ 64%]
+..                                                                       [ 65%]
+tests/unit/test_markdown.py ...................                          [ 68%]
+tests/unit/test_observability.py ....................................... [ 74%]
+......................................                                   [ 81%]
+tests/unit/test_runtime_config.py ......................                 [ 84%]
+tests/unit/test_runtime_store.py ....................................... [ 91%]
+                                                                         [ 91%]
+tests/unit/test_worker.py ...........................                    [ 95%]
+tests/unit/test_workspace.py .........................                   [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/szf/dev/Leibniz-KERT/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 602 passed, 1 warning in 114.98s (0:01:54) ==================
+
+### 退出码: 0

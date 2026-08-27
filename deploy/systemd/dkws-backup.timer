@@ -1,0 +1,23 @@
+[Unit]
+# DKWS 备份定时器（M2.7）
+#
+# ⚠ OnCalendar=daily 与保留策略均为**占位默认**，非 Owner 批准的 RPO 目标。
+# 调整前请确认：备份间隔 = 最大可接受数据丢失窗口（RPO）。
+Description=Run DKWS workspace backup on a schedule
+Documentation=file:///opt/dkws/evidence/m2-p5/README.md
+
+[Timer]
+# 每日 02:30 执行（低峰时段，减少与业务争抢 IO）
+OnCalendar=*-*-* 02:30:00
+
+# 若上次因主机关机而错过，启动后补跑一次
+Persistent=true
+
+# 随机延迟 0~15 分钟，避免多主机同时备份造成存储 IO 峰值
+RandomizedDelaySec=900
+
+# 防止定时器堆积：上一次未完成则跳过本次
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

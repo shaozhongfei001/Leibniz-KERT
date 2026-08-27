@@ -1,0 +1,86 @@
+[Unit]
+# DKWS Python Core —— 唯一公共入口（M2.7）
+#
+# 安装：
+#   sudo cp deploy/systemd/dkws-api.service /etc/systemd/system/
+#   sudo mkdir -p /etc/dkws && sudo cp deploy/.env.example /etc/dkws/api.env
+#   sudo chmod 600 /etc/dkws/api.env   # 含 API Key，必须限权
+#   sudo systemctl daemon-reload && sudo systemctl enable --now dkws-api
+#
+# 路径约定（安装时按实际环境调整）：
+#   代码      /opt/dkws
+#   虚拟环境  /opt/dkws/.venv
+#   工作区    /var/lib/dkws/workspace
+#   配置      /etc/dkws/api.env
+Description=DKWS Python Core API (knowledge service, port 8106)
+Documentation=file:///opt/dkws/docs/architecture/DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=dkws
+Group=dkws
+WorkingDirectory=/opt/dkws
+
+# 环境变量从受限权限文件读取，避免 API Key 出现在 unit 文件或进程命令行
+EnvironmentFile=/etc/dkws/api.env
+Environment=PYTHONPATH=/opt/dkws/src
+Environment=PYTHONUNBUFFERED=1
+
+# 仅监听回环：TLS 与对外暴露由反向代理负责（见部署文档 §2.2）
+# 生产 profile 下若绑非回环地址且未启用认证，启动会被拒绝（fail-fast）
+ExecStart=/opt/dkws/.venv/bin/python /opt/dkws/scripts/serve_skill_service.py \
+    --host 127.0.0.1 \
+    --port 8106 \
+    --workspace /var/lib/dkws/workspace
+
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+# 结构化日志输出到 journald，由 journald 统一轮转与采集
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=dkws-api
+
+# ---------- 安全加固 ----------
+# 文件系统：只读系统目录，仅工作区与备份目录可写
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/dkws
+PrivateTmp=yes
+
+# 权限：禁止提权与新特权
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+# 内核与设备
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+PrivateDevices=yes
+
+# 网络：仅需 IPv4/IPv6/Unix
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+# ---------- 资源上限 ----------
+# 依 WBS M2.10 资源基线；实际值需按生产负载调整
+LimitNOFILE=65535
+MemoryMax=2G
+TasksMax=512
+
+[Install]
+WantedBy=multi-user.target

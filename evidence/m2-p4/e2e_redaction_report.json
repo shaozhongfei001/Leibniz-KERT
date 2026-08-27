@@ -1,0 +1,346 @@
+{
+  "task_package": "M2-P4",
+  "scope": "M2.9 数据分类与脱敏",
+  "generated_at": "2026-08-27T17:12:57+0800",
+  "environment": {
+    "python": "3.12.8",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "workspace": "/tmp/dkws-m2p4-e2e-ws"
+  },
+  "checks": [
+    {
+      "name": "classification_inventory_exportable",
+      "passed": true,
+      "detail": "分类清单 31 条，各等级分布={'RESTRICTED': 20, 'CONFIDENTIAL': 8, 'INTERNAL': 3}，全部含中文说明"
+    },
+    {
+      "name": "unknown_classification_fails_safe",
+      "passed": true,
+      "detail": "未知分类标记回落 INTERNAL（不当作 PUBLIC，避免拼写错误导致泄漏）"
+    },
+    {
+      "name": "mask_styles_correct",
+      "passed": true,
+      "detail": "掩码保留尾部可核对且长度不变：138123…→*******8000; 110101…→**************1234; 913100…→**************Q12X"
+    },
+    {
+      "name": "mask_boundary_no_leak",
+      "passed": true,
+      "detail": "keep=0→'******'，keep=-3→'******'（早期实现会产出 '******abcdef' 泄漏原值）"
+    },
+    {
+      "name": "mask_short_value_no_leak",
+      "passed": true,
+      "detail": "短值 '123'→'***'，不因保留位数大于长度而泄漏"
+    },
+    {
+      "name": "api_policy_masks_restricted",
+      "passed": true,
+      "detail": "API 策略掩码 6 个 RESTRICTED 字段：['idCardNo', 'items[0].email', 'mobile', 'nested.bankAccount', 'nested.contactPhone', 'note']"
+    },
+    {
+      "name": "api_policy_preserves_confidential",
+      "passed": true,
+      "detail": "保留 CONFIDENTIAL 与 INTERNAL 字段供业务使用（避免破坏既有契约）"
+    },
+    {
+      "name": "llm_policy_stricter_than_api",
+      "passed": true,
+      "detail": "LLM 策略掩码 7 个字段（含 CONFIDENTIAL），严于 API 策略的 6 个"
+    },
+    {
+      "name": "llm_policy_masks_free_text",
+      "passed": true,
+      "detail": "自由文本亦掩码：note='联系 *******8000'"
+    },
+    {
+      "name": "redaction_does_not_mutate_input",
+      "passed": true,
+      "detail": "脱敏不修改入参，内部计算仍可用明文"
+    },
+    {
+      "name": "redaction_depth_guard",
+      "passed": true,
+      "detail": "深层嵌套触发深度保护并标记 truncated（防御栈溢出）"
+    },
+    {
+      "name": "llm_external_prompt_redacted",
+      "passed": true,
+      "detail": "外部适配器收到脱敏提示词：user=用户 手机 *******8000 邮箱 zh***************om…"
+    },
+    {
+      "name": "llm_redaction_traced",
+      "passed": true,
+      "detail": "脱敏动作在 assemblyTrace 留痕，可审计"
+    },
+    {
+      "name": "llm_local_prompt_not_redacted",
+      "passed": true,
+      "detail": "本地适配器收到原文（不出网，脱敏会降低结果质量）"
+    },
+    {
+      "name": "llm_redaction_switch_effective",
+      "passed": true,
+      "detail": "显式关闭后原文出站（配置开关生效，供内网自建模型场景）"
+    },
+    {
+      "name": "server_starts_with_redaction",
+      "passed": true,
+      "detail": "生产 profile + 响应脱敏 + LLM 脱敏 组合下服务正常启动"
+    },
+    {
+      "name": "response_envelope_intact",
+      "passed": true,
+      "detail": "启用脱敏后信封结构完整：['data', 'errors', 'meta', 'request_id', 'status']"
+    },
+    {
+      "name": "content_length_correct",
+      "passed": true,
+      "detail": "content-length=467 与实际字节一致（避免响应截断）"
+    },
+    {
+      "name": "non_json_passthrough",
+      "passed": true,
+      "detail": "Prometheus 文本原样透传，未被 JSON 脱敏逻辑处理"
+    },
+    {
+      "name": "probes_work_with_redaction",
+      "passed": true,
+      "detail": "探针在脱敏启用下正常"
+    },
+    {
+      "name": "logs_no_sensitive_leak",
+      "passed": true,
+      "detail": "服务日志中无 API Key 与敏感值明文"
+    },
+    {
+      "name": "internal_artifacts_keep_plaintext",
+      "passed": true,
+      "detail": "Skill 执行成功（status=ok）：脱敏只作用于出站通道，不改内部产物与业务逻辑"
+    }
+  ],
+  "inventory": [
+    {
+      "field": "accountno",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "账号"
+    },
+    {
+      "field": "address",
+      "classification": "RESTRICTED",
+      "mask_style": "EDGES",
+      "keep": 3,
+      "note": "地址"
+    },
+    {
+      "field": "apikey",
+      "classification": "RESTRICTED",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "API 密钥"
+    },
+    {
+      "field": "authorization",
+      "classification": "RESTRICTED",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "授权头"
+    },
+    {
+      "field": "balance",
+      "classification": "CONFIDENTIAL",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "余额"
+    },
+    {
+      "field": "bankaccount",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "银行账号"
+    },
+    {
+      "field": "cardno",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "卡号"
+    },
+    {
+      "field": "contactphone",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "联系电话"
+    },
+    {
+      "field": "credential",
+      "classification": "RESTRICTED",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "凭据"
+    },
+    {
+      "field": "creditcode",
+      "classification": "CONFIDENTIAL",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "统一社会信用代码"
+    },
+    {
+      "field": "creditlimit",
+      "classification": "CONFIDENTIAL",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "授信额度"
+    },
+    {
+      "field": "customerid",
+      "classification": "INTERNAL",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "客户号"
+    },
+    {
+      "field": "customername",
+      "classification": "INTERNAL",
+      "mask_style": "EDGES",
+      "keep": 1,
+      "note": "客户名称"
+    },
+    {
+      "field": "email",
+      "classification": "RESTRICTED",
+      "mask_style": "EDGES",
+      "keep": 2,
+      "note": "邮箱"
+    },
+    {
+      "field": "homeaddress",
+      "classification": "RESTRICTED",
+      "mask_style": "EDGES",
+      "keep": 3,
+      "note": "住址"
+    },
+    {
+      "field": "idcard",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "身份证号"
+    },
+    {
+      "field": "idcardno",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "身份证号"
+    },
+    {
+      "field": "idnumber",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "身份证号"
+    },
+    {
+      "field": "legalperson",
+      "classification": "CONFIDENTIAL",
+      "mask_style": "EDGES",
+      "keep": 1,
+      "note": "法定代表人"
+    },
+    {
+      "field": "mobile",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "手机号"
+    },
+    {
+      "field": "password",
+      "classification": "RESTRICTED",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "口令"
+    },
+    {
+      "field": "phone",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "电话"
+    },
+    {
+      "field": "privatekey",
+      "classification": "RESTRICTED",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "私钥"
+    },
+    {
+      "field": "revenue",
+      "classification": "CONFIDENTIAL",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "营收"
+    },
+    {
+      "field": "riskrating",
+      "classification": "CONFIDENTIAL",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "风险评级"
+    },
+    {
+      "field": "rmid",
+      "classification": "INTERNAL",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "客户经理号"
+    },
+    {
+      "field": "secret",
+      "classification": "RESTRICTED",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "密钥"
+    },
+    {
+      "field": "taxno",
+      "classification": "CONFIDENTIAL",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "税号"
+    },
+    {
+      "field": "telephone",
+      "classification": "RESTRICTED",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "电话"
+    },
+    {
+      "field": "token",
+      "classification": "RESTRICTED",
+      "mask_style": "FULL",
+      "keep": 0,
+      "note": "令牌"
+    },
+    {
+      "field": "unifiedsocialcreditcode",
+      "classification": "CONFIDENTIAL",
+      "mask_style": "TAIL",
+      "keep": 4,
+      "note": "统一社会信用代码"
+    }
+  ],
+  "summary": {
+    "passed": 22,
+    "total": 22,
+    "result": "PASS"
+  }
+}

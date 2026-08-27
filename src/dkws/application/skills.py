@@ -24,6 +24,7 @@ from pathlib import Path
 
 from ..domain import timeutil
 from ..infrastructure.adapters import llm as llm_mod
+from ..infrastructure.classification import detect_value_patterns, redact_for_llm
 
 IDEMPOTENCY_TTL_S = 600
 #: Runtime Store 中 Skill 执行幂等记录的作用域（M2.3）
@@ -59,19 +60,32 @@ class SkillExecuteResult:
         }
 
 
+def _is_external_adapter(adapter) -> bool:
+    """判断适配器是否会把提示词发往**外部**服务。
+
+    按类型判定而非字符串比较：``DeterministicLlmAdapter`` 与库内检索不出网，
+    对其脱敏只会降低结果质量；仅 OpenAI 兼容适配器需要出站脱敏。
+    """
+    return isinstance(adapter, llm_mod.OpenAiCompatibleLlmAdapter)
+
+
 class SkillExecutionService:
     def __init__(self, workspace: Path | None = None,
                  knowledge: object | None = None,
                  skill_packages: Path | str | None = None,
                  customer_knowledge_service_id: str = "customer_knowledge",
                  runtime_store: object | None = None,
-                 profile: str | None = None):
+                 profile: str | None = None,
+                 llm_redaction: bool | None = None):
         """knowledge: 兼容参数（历史 product_knowledge 检索），v1.3 起取数走客户知识库。
         customer_knowledge_service_id: 客户知识服务投影（v1.3 数据所有权：按 customerId 取数）。
         skill_packages: 可选外部 Skill 包根目录（含 <skill>/SKILL.md + references/output-schema.md），
         动态注册为可执行 Skill（通用契约 executor）。
         runtime_store: 可选 SQLite Runtime Store（M2.3）；提供时幂等记录额外持久化，
         使进程重启后仍可按 requestId 复放，内存缓存继续作为一级快路径。
+        llm_redaction: 是否在提示词出站前脱敏（M2.9）。缺省读
+        ``DKWS_LLM_REDACTION``，**默认开启**——客户数据进入外部模型属重大
+        合规风险（独立评审 L659），故采取安全默认；仅对外部适配器生效。
         profile: 运行 profile（``dev``/``prod``）。M2.4 起生产 profile 下
         ``execute_async`` 强制要求启用 Runtime Store，否则拒绝异步执行，
         以免进程崩溃丢任务（Owner 决策 2026-08-27）。缺省时读
@@ -82,6 +96,11 @@ class SkillExecutionService:
         self._store = runtime_store
         self._profile = (profile if profile is not None
                          else os.environ.get("DKWS_PROFILE", "dev")).strip().lower()
+        if llm_redaction is None:
+            raw = os.environ.get("DKWS_LLM_REDACTION", "").strip().lower()
+            # 安全默认：未显式关闭即启用
+            llm_redaction = raw not in ("0", "false", "no", "off")
+        self._llm_redaction_enabled = bool(llm_redaction)
         self._evidence_ts: dict[str, str] = {}  # customerId -> 最新 evidenceTimestamp（无新证据策略）
         self._packages: dict[str, dict] = {}
         if skill_packages:
@@ -355,10 +374,29 @@ class SkillExecutionService:
 
     def _call_model(self, kind: str, system: str, user: str,
                     trace: list[dict]) -> tuple[str, dict]:
+        """调用模型适配器；出站前按 M2.9 策略脱敏提示词。
+
+        脱敏在此收口的理由：``_call_model`` 是**唯一**的模型出站点，
+        客户数据进入外部模型属重大合规风险（独立评审 L659）。
+        脱敏只作用于**发送出去的文本**，内部计算与产物仍用明文，
+        因此不影响业务逻辑与既有报告内容。
+
+        仅当适配器为**外部**模型时脱敏：本地/库内适配器（``library`` 等）
+        不出网，脱敏反而会降低结果质量。
+        """
         adapter = llm_mod.create_llm_adapter(kind)
+        outbound_system, outbound_user = system, user
+        if self._llm_redaction_enabled and _is_external_adapter(adapter):
+            outbound_system = redact_for_llm(system)
+            outbound_user = redact_for_llm(user)
+            hits = sorted(set(detect_value_patterns(system)
+                              + detect_value_patterns(user)))
+            if hits:
+                trace.append({"phase": "llm_redaction", "status": "ok",
+                              "message": f"出站提示词已脱敏：{','.join(hits)}"})
         started = time.monotonic()
         try:
-            res = adapter.complete(system, user)
+            res = adapter.complete(outbound_system, outbound_user)
         except Exception as exc:
             trace.append({"phase": "model", "status": "failed", "message": str(exc)})
             raise

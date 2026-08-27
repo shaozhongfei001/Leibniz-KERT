@@ -1,0 +1,39 @@
+### 命令: python -m pytest tests/integration -v --tb=short -p no:cacheprovider
+### 时间: 2026-08-27T16:25:11+08:00
+### Python: Python 3.12.8
+
+============================= test session starts ==============================
+platform linux -- Python 3.12.8, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/szf/dev/Leibniz-KERT
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 240 items
+
+tests/integration/test_api.py ........                                   [  3%]
+tests/integration/test_extract_review.py ...............                 [  9%]
+tests/integration/test_gates.py .....                                    [ 11%]
+tests/integration/test_ingest.py ..............                          [ 17%]
+tests/integration/test_interaction_memory.py .........                   [ 21%]
+tests/integration/test_kuzu_graph.py ......                              [ 23%]
+tests/integration/test_observability_endpoints.py ...................... [ 32%]
+.....................                                                    [ 41%]
+tests/integration/test_parse_doc.py ........                             [ 45%]
+tests/integration/test_persistent_jobs.py ...................            [ 52%]
+tests/integration/test_process_data.py ........                          [ 56%]
+tests/integration/test_prod_async_guard.py ....................          [ 64%]
+tests/integration/test_projection.py .....                               [ 66%]
+tests/integration/test_publish.py ........                               [ 70%]
+tests/integration/test_runtime_store_api.py ....................         [ 78%]
+tests/integration/test_service_proposal.py .........                     [ 82%]
+tests/integration/test_services.py ...............                       [ 88%]
+tests/integration/test_skills.py ............................            [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/szf/dev/Leibniz-KERT/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 240 passed, 1 warning in 95.82s (0:01:35) ===================
+
+### 退出码: 0

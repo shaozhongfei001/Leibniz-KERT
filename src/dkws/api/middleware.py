@@ -16,6 +16,8 @@
 from __future__ import annotations
 
 import asyncio
+import json
+import logging
 import threading
 import time
 from collections.abc import Awaitable, Callable
@@ -26,19 +28,48 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from ..domain.errors import ERROR_CODES
+from ..infrastructure.classification import (
+    Classification,
+    RedactionPolicy,
+    RedactionReport,
+    redact_structure,
+)
+from ..infrastructure.observability import (
+    MetricsRegistry,
+    Tracer,
+    format_traceparent,
+    get_metrics_registry,
+    get_tracer,
+    log_event,
+    new_request_id,
+    new_span_id,
+    new_trace_id,
+    parse_traceparent,
+    reset_request_context,
+    set_request_context,
+)
 from ..infrastructure.runtime_config import (
+    DEFAULT_EXEMPT_PATHS,
     SCOPE_ADMIN,
     AuthConfig,
     ConcurrencyConfig,
+    ObservabilityConfig,
     RateLimitConfig,
+    RedactionConfig,
     SizeLimitConfig,
 )
 
 CallNext = Callable[[Request], Awaitable[Response]]
 
+#: 指标端点路径（访问控制由 ObservabilityConfig 决定，见认证中间件说明）
+METRICS_PATH = "/metrics"
+
 #: 认证通过后写入 ``request.state`` 的字段名
 STATE_KEY_ID = "api_key_id"
 STATE_SCOPES = "api_key_scopes"
+#: 可观测性中间件写入 ``request.state`` 的字段名
+STATE_REQUEST_ID = "request_id"
+STATE_TRACE_ID = "trace_id"
 
 
 def error_response(status_code: int, code: str, message: str,
@@ -73,6 +104,19 @@ def _client_ip(request: Request) -> str:
     return client.host if client and client.host else "unknown"
 
 
+def _publish_identity(request: Request, key_id: str, scopes: list[str]) -> None:
+    """把认证身份同时写入 ``request.state`` 与 ASGI ``scope``。
+
+    ``BaseHTTPMiddleware`` 为每一层中间件构造**独立的** ``Request`` 对象，
+    因此仅写 ``request.state`` 无法传递到路由处理函数；ASGI ``scope`` 字典
+    在整个请求生命周期内共享，故一并写入以便端点读取。
+    """
+    request.state.__dict__[STATE_KEY_ID] = key_id
+    request.state.__dict__[STATE_SCOPES] = scopes
+    request.scope[STATE_KEY_ID] = key_id
+    request.scope[STATE_SCOPES] = scopes
+
+
 class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
     """API Key 认证中间件（401/403）。
 
@@ -98,6 +142,19 @@ class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         presented = request.headers.get(cfg.header_name, "")
+        if path == METRICS_PATH:
+            # /metrics 的访问控制由 ObservabilityConfig.metrics_require_admin
+            # 单一决定：若在此按普通端点强制 401，该开关将永无机会生效。
+            # 采集器通常无法携带密钥，故此处放行并尽力识别身份，
+            # 由端点自身校验 admin 作用域（需强控时置 metrics_require_admin=true）。
+            if not presented:
+                header = request.headers.get("Authorization", "")
+                if header.lower().startswith("bearer "):
+                    presented = header[7:].strip()
+            found = cfg.verify(presented) if presented else None
+            if found is not None:
+                _publish_identity(request, found.key_id, sorted(found.scopes))
+            return await call_next(request)
         if not presented:
             auth_header = request.headers.get("Authorization", "")
             if auth_header.lower().startswith("bearer "):
@@ -115,8 +172,7 @@ class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
         if cfg.requires_admin(path) and not record.has_scope(SCOPE_ADMIN):
             return error_response(403, "FORBIDDEN",
                                   f"作用域不足：端点 {path} 需要 {SCOPE_ADMIN} 作用域")
-        request.state.__dict__[STATE_KEY_ID] = record.key_id
-        request.state.__dict__[STATE_SCOPES] = sorted(record.scopes)
+        _publish_identity(request, record.key_id, sorted(record.scopes))
         return await call_next(request)
 
 
@@ -191,7 +247,8 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         cfg = self._config
         if not cfg.enabled:
             return await call_next(request)
-        if cfg.enabled and request.url.path in ("/v1/health", "/api/skill/health"):
+        # 探针与指标采集为高频周期性访问，被限流会导致误判服务异常
+        if request.url.path in DEFAULT_EXEMPT_PATHS:
             return await call_next(request)
         now = self._now()
         key = self._bucket_key(request)
@@ -357,3 +414,183 @@ class SizeLimitMiddleware(BaseHTTPMiddleware):
         """构造 413 响应。"""
         return error_response(413, "PAYLOAD_TOO_LARGE",
                               f"{what}大小 {actual} 字节超过上限 {limit} 字节")
+
+
+class ObservabilityMiddleware(BaseHTTPMiddleware):
+    """请求可观测性中间件（M2.5）：贯通 trace context、记录指标与访问日志。
+
+    位于中间件栈**最外层**，因此能覆盖被限流/认证拦截的请求，
+    使 4xx 拒绝同样产生指标与日志（可观测性不应有盲区）。
+
+    职责：
+    1. 解析或新建 W3C Trace Context（``traceparent``），写入请求上下文；
+    2. 生成/沿用 ``X-Request-Id``，并在响应头回传，便于端到端排障；
+    3. 记录 HTTP 请求计数与延迟直方图；
+    4. 输出结构化访问日志（字段含 request_id/trace_id/status/duration）。
+
+    路径标签使用**路由模板**（如 ``/v1/evidence/{object_id}``）而非原始路径，
+    避免高基数标签把指标存储打爆。
+    """
+
+    def __init__(self, app, config: ObservabilityConfig,
+                 *, registry: MetricsRegistry | None = None,
+                 tracer: Tracer | None = None,
+                 time_source: Callable[[], float] | None = None):
+        """绑定配置与注册表；``time_source`` 便于测试注入。"""
+        super().__init__(app)
+        self._config = config
+        self._registry = registry or get_metrics_registry()
+        self._tracer = tracer or get_tracer()
+        self._now = time_source or time.perf_counter
+        self._logger = logging.getLogger("dkws.access")
+
+    @staticmethod
+    def _route_template(request: Request) -> str:
+        """返回路由模板，未匹配到路由时回落为 ``__unmatched__``。
+
+        直接用原始路径会因路径参数（如 job_id）产生无界标签基数，
+        故优先取 Starlette 解析出的 ``route.path``。
+        """
+        route = request.scope.get("route")
+        template = getattr(route, "path", None)
+        if template:
+            return str(template)
+        return request.url.path if request.url.path in DEFAULT_EXEMPT_PATHS else "__unmatched__"
+
+    async def dispatch(self, request: Request, call_next: CallNext) -> Response:
+        """包裹请求处理，记录 trace / 指标 / 访问日志。"""
+        cfg = self._config
+        incoming = parse_traceparent(request.headers.get("traceparent"))
+        if incoming is not None:
+            trace_id, parent_span_id = incoming
+        else:
+            trace_id, parent_span_id = new_trace_id(), None
+        span_id = new_span_id()
+        request_id = (request.headers.get("X-Request-Id") or "").strip() or new_request_id()
+
+        token = set_request_context(request_id=request_id, trace_id=trace_id,
+                                   span_id=span_id, method=request.method,
+                                   path=request.url.path)
+        request.state.__dict__[STATE_REQUEST_ID] = request_id
+        request.state.__dict__[STATE_TRACE_ID] = trace_id
+
+        started = self._now()
+        wall_start = time.time()
+        status_code = 500
+        response: Response | None = None
+        try:
+            response = await call_next(request)
+            status_code = response.status_code
+            return response
+        except Exception:
+            # 未捕获异常也要留下指标与日志，再交由上层异常处理
+            self._registry.counter(
+                "http_errors_total", "未捕获异常导致的请求失败数",
+                labels={"method": request.method,
+                        "path": self._route_template(request)})
+            raise
+        finally:
+            duration = max(0.0, self._now() - started)
+            path_label = self._route_template(request)
+            labels = {"method": request.method, "path": path_label,
+                      "status": str(status_code)}
+            self._registry.counter("http_requests_total", "HTTP 请求总数",
+                                   labels=labels)
+            self._registry.observe("http_request_duration_seconds",
+                                   duration, "HTTP 请求处理耗时（秒）",
+                                   labels={"method": request.method,
+                                           "path": path_label})
+            if status_code >= 500:
+                self._registry.counter("http_server_errors_total",
+                                       "5xx 响应数", labels=labels)
+            elif status_code >= 400:
+                self._registry.counter("http_client_errors_total",
+                                       "4xx 响应数", labels=labels)
+
+            if cfg.tracing_enabled and self._tracer.should_sample():
+                self._tracer.record_span(
+                    f"{request.method} {path_label}", trace_id, span_id,
+                    parent_span_id, wall_start, time.time(),
+                    status="OK" if status_code < 500 else "ERROR",
+                    http_status=status_code, http_method=request.method)
+
+            # 响应头回传（异常路径下 response 为 None，跳过）
+            if response is not None:
+                response.headers["X-Request-Id"] = request_id
+                response.headers["traceparent"] = format_traceparent(trace_id, span_id)
+
+            log_event(self._logger,
+                      "WARNING" if status_code >= 400 else "INFO",
+                      "HTTP_ACCESS",
+                      f"{request.method} {request.url.path} -> {status_code}",
+                      status=status_code,
+                      duration_ms=round(duration * 1000, 3),
+                      key_id=request.state.__dict__.get(STATE_KEY_ID),
+                      client_ip=_client_ip(request))
+            reset_request_context(token)
+
+
+class ResponseRedactionMiddleware(BaseHTTPMiddleware):
+    """响应脱敏中间件（M2.9）：按数据分类掩码出站 JSON 字段。
+
+    **默认关闭**：既有响应契约与测试依赖原文（例如报告正文含企业名），
+    贸然全局脱敏会破坏门禁。生产环境可显式开启，或由调用方按
+    ``X-DKWS-Redact`` 请求头选择性启用（仅当配置允许时）。
+
+    仅处理 ``application/json`` 响应；其他类型（Prometheus 文本、
+    Markdown 报告、二进制）原样透传——报告类产物的脱敏应在生成阶段
+    按分类处理，而非在传输层粗暴替换。
+    """
+
+    def __init__(self, app, config: RedactionConfig):
+        """绑定脱敏配置。"""
+        super().__init__(app)
+        self._config = config
+        self._logger = logging.getLogger("dkws.redaction")
+
+    def _policy(self) -> RedactionPolicy:
+        """按配置构造脱敏策略。"""
+        return RedactionPolicy(
+            threshold=Classification.parse(self._config.response_threshold),
+            mask_text=self._config.response_mask_text,
+            annotate=self._config.annotate)
+
+    async def dispatch(self, request: Request, call_next: CallNext) -> Response:
+        """脱敏 JSON 响应体。"""
+        response = await call_next(request)
+        if not self._config.response_enabled:
+            return response
+        content_type = response.headers.get("content-type", "")
+        if "application/json" not in content_type:
+            return response
+        if response.status_code >= 500:
+            # 5xx 响应体可能非 JSON 信封，避免二次处理掩盖原始错误
+            return response
+
+        body = b""
+        async for chunk in response.body_iterator:
+            body += chunk if isinstance(chunk, bytes) else str(chunk).encode()
+        try:
+            payload = json.loads(body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            # 声明 JSON 但内容不可解析：原样返回，不做猜测
+            return Response(content=body, status_code=response.status_code,
+                            headers=dict(response.headers),
+                            media_type=response.media_type)
+
+        report = RedactionReport()
+        redacted = redact_structure(payload, self._policy(), report=report)
+        if report.count and self._config.annotate and isinstance(redacted, dict):
+            meta = redacted.get("meta")
+            if isinstance(meta, dict):
+                meta["redaction"] = report.as_dict()
+        if report.count:
+            log_event(self._logger, "INFO", "RESPONSE_REDACTED",
+                      f"响应脱敏 {report.count} 个字段",
+                      path=request.url.path, masked=report.count)
+
+        new_body = json.dumps(redacted, ensure_ascii=False).encode("utf-8")
+        headers = dict(response.headers)
+        headers["content-length"] = str(len(new_body))
+        return Response(content=new_body, status_code=response.status_code,
+                        headers=headers, media_type="application/json")

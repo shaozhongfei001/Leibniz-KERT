@@ -1,0 +1,22 @@
+[llm] 已注入 DeepSeek（deepseek-chat）
+[security] API Key 认证已启用（2 个密钥，请求头 X-API-Key）
+[skill] 服务监听 http://127.0.0.1:18733（workspace=/tmp/dkws-m2p3-e2e-ws）
+[skill] 端点: POST /api/skill/execute | GET /api/skill/health | GET /v1/health
+INFO:     Started server process [3639662]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18733 (Press CTRL+C to quit)
+{"timestamp": "2026-08-27T08:24:48Z", "level": "INFO", "logger": "dkws.access", "event_code": "HTTP_ACCESS", "message": "GET /livez -> 200", "request_id": "REQ-46d65d076e6243c8", "trace_id": "44b6ad3c8b7943dfa8ce1d6a3e288f9e", "span_id": "8731d19b9f514105", "service": "dkws-python-core", "method": "GET", "path": "/livez", "status": 200, "duration_ms": 1.729, "client_ip": "127.0.0.1"}
+INFO:     127.0.0.1:43550 - "GET /livez HTTP/1.1" 200 OK
+{"timestamp": "2026-08-27T08:24:48Z", "level": "INFO", "logger": "dkws.access", "event_code": "HTTP_ACCESS", "message": "GET /livez -> 200", "request_id": "REQ-74d77fcb372642dd", "trace_id": "6ed821094ba0404182c6e155f9073fe9", "span_id": "2639d4c534ca454f", "service": "dkws-python-core", "method": "GET", "path": "/livez", "status": 200, "duration_ms": 0.809, "client_ip": "127.0.0.1"}
+INFO:     127.0.0.1:43556 - "GET /livez HTTP/1.1" 200 OK
+{"timestamp": "2026-08-27T08:24:48Z", "level": "INFO", "logger": "dkws.access", "event_code": "HTTP_ACCESS", "message": "GET /readyz -> 200", "request_id": "REQ-b40d3ff1263b4f3f", "trace_id": "98db947e785b4e0e8a4303f8c224e634", "span_id": "54fd699ac6ba412b", "service": "dkws-python-core", "method": "GET", "path": "/readyz", "status": 200, "duration_ms": 2.545, "client_ip": "127.0.0.1"}
+INFO:     127.0.0.1:43566 - "GET /readyz HTTP/1.1" 200 OK
+{"timestamp": "2026-08-27T08:24:48Z", "level": "INFO", "logger": "dkws.access", "event_code": "HTTP_ACCESS", "message": "GET /metrics -> 200", "request_id": "REQ-36bcbd3017e24215", "trace_id": "55d434b69ce74feb9bcebf5da4390154", "span_id": "89ba6bef6f4e4c14", "service": "dkws-python-core", "method": "GET", "path": "/metrics", "status": 200, "duration_ms": 1.357, "client_ip": "127.0.0.1"}
+INFO:     127.0.0.1:43570 - "GET /metrics HTTP/1.1" 200 OK
+{"timestamp": "2026-08-27T08:24:48Z", "level": "WARNING", "logger": "dkws.access", "event_code": "HTTP_ACCESS", "message": "GET /v1/catalog -> 401", "request_id": "REQ-82d4d5428c73499a", "trace_id": "b493e4e44e8947179502c6bd287a548b", "span_id": "1a809ecaae5d428d", "service": "dkws-python-core", "method": "GET", "path": "/v1/catalog", "status": 401, "duration_ms": 0.529, "client_ip": "127.0.0.1"}
+INFO:     127.0.0.1:43582 - "GET /v1/catalog HTTP/1.1" 401 Unauthorized
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [3639662]

@@ -18,23 +18,41 @@ GET  /v1/catalog
 
 from __future__ import annotations
 
+import logging
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi import Response as FastApiResponse
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 
+from ..application import report as report_mod
 from ..application.jobs import read_job_status
 from ..application.services import KnowledgeService
 from ..application.skills import SkillExecutionService
-from ..application import report as report_mod
 from ..domain import timeutil
 from ..domain.errors import DKWSException, ServiceNotReadyError
-from ..infrastructure.runtime_config import RuntimeConfig, load_runtime_config
+from ..infrastructure.observability import (
+    configure_structured_logging,
+    get_metrics_registry,
+    get_tracer,
+    log_event,
+    otel_available,
+    prometheus_client_available,
+)
+from ..infrastructure.runtime_config import (
+    SCOPE_ADMIN,
+    RuntimeConfig,
+    load_runtime_config,
+)
 from ..infrastructure.runtime_store import RuntimeStore
 from .middleware import (
     ApiKeyAuthMiddleware,
     ConcurrencyLimitMiddleware,
+    ObservabilityMiddleware,
     RateLimitMiddleware,
+    ResponseRedactionMiddleware,
     SizeLimitMiddleware,
 )
 
@@ -118,15 +136,19 @@ def _response(request_id: str, data: dict, meta: dict | None = None) -> dict:
 
 
 def _install_hardening(app: FastAPI, cfg: RuntimeConfig) -> None:
-    """按外→内顺序注册 M2.1/M2.2 加固中间件。
+    """按外→内顺序注册 M2.1/M2.2 加固与 M2.5 可观测性中间件。
 
     Starlette 的 ``add_middleware`` 为栈式注册（后加先执行），因此这里
     的调用顺序与实际执行顺序相反。实际执行顺序为：
 
-    大小限制 → 并发限制 → 限流 → 认证 → 路由
+    可观测性 → 响应脱敏 → 大小限制 → 并发限制 → 限流 → 认证 → 路由
 
-    限流置于认证之前，使未认证的洪水请求同样受限；限流中间件自行识别
-    API Key 以保持按 Key 分桶（见 :class:`RateLimitMiddleware`）。
+    - 可观测性置于**最外层**，因此被限流/认证拦截的请求同样产生指标与日志，
+      使可观测性不留盲区（4xx 拒绝也可观测）。
+    - 响应脱敏（M2.9）紧随其后：需在响应体最终成型后处理，
+      且脱敏动作本身应被可观测（其日志由外层中间件的上下文覆盖）。
+    - 限流置于认证之前，使未认证的洪水请求同样受限；限流中间件自行识别
+      API Key 以保持按 Key 分桶（见 :class:`RateLimitMiddleware`）。
 
     Args:
         app: FastAPI 应用。
@@ -136,6 +158,8 @@ def _install_hardening(app: FastAPI, cfg: RuntimeConfig) -> None:
     app.add_middleware(RateLimitMiddleware, config=cfg.rate_limit, auth_config=cfg.auth)
     app.add_middleware(ConcurrencyLimitMiddleware, config=cfg.concurrency)
     app.add_middleware(SizeLimitMiddleware, config=cfg.size_limit)
+    app.add_middleware(ResponseRedactionMiddleware, config=cfg.redaction)
+    app.add_middleware(ObservabilityMiddleware, config=cfg.observability)
 
 
 def create_app(workspace: Path, service_id: str = "product_knowledge",
@@ -154,6 +178,15 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         已注册路由与加固中间件的 FastAPI 应用。
     """
     cfg = runtime_config or load_runtime_config()
+    # M2.5：结构化日志需在任何日志产生前配置
+    if cfg.observability.structured_logs:
+        configure_structured_logging(level=cfg.observability.log_level,
+                                     service=cfg.observability.service_name)
+    registry = get_metrics_registry()
+    tracer = get_tracer()
+    if cfg.observability.otel_enabled:
+        tracer.attach_otel()
+
     app = FastAPI(title="DKWS Knowledge Service API",
                   description="文件目录型数据知识服务模拟平台（DKWS-SPEC-001 V1.0）",
                   version=SERVICE_VERSION)
@@ -168,13 +201,24 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
             wal=cfg.runtime_store.wal,
             busy_timeout_ms=cfg.runtime_store.busy_timeout_ms,
             idempotency_ttl_seconds=cfg.runtime_store.idempotency_ttl_seconds)
-        store.recover_stale_jobs()
+        # M2.4：改用 lease 感知的回收，仅处理 lease 已过期者。
+        # 原 recover_stale_jobs 会无条件复位所有 RUNNING，在 Worker 与 API
+        # 并存时会误抢正在被 Worker 正常处理的 Job（已标记 deprecated）。
+        store.reclaim_expired_leases()
     skill_svc = SkillExecutionService(ws, knowledge=svc, skill_packages=pkgs,
-                                     runtime_store=store, profile=cfg.profile)
+                                     runtime_store=store, profile=cfg.profile,
+                                     llm_redaction=cfg.redaction.llm_enabled)
     app.state.runtime_config = cfg
     app.state.runtime_store = store
     # 暴露 Service 便于运维自检与测试断言（M2-P2 Owner 决策 3 的校验链路）
     app.state.skill_service = skill_svc
+    app.state.metrics_registry = registry
+    app.state.tracer = tracer
+    app.state.observability_capabilities = {
+        "otel_available": otel_available(),
+        "otel_attached": tracer.otel_attached,
+        "prometheus_client_available": prometheus_client_available(),
+    }
     _install_hardening(app, cfg)
 
     def _handle(exc: Exception) -> HTTPException:
@@ -186,6 +230,136 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         return HTTPException(status_code=500,
                              detail={"error": {"code": "INTERNAL_ERROR",
                                                "message": str(exc)}})
+
+    @app.get("/livez")
+    def livez():
+        """存活探针：进程是否活着。
+
+        **不检查任何外部依赖**——存活探针一旦失败通常触发重启，
+        若把依赖故障计入存活，会导致依赖抖动时无谓地重启本服务。
+        依赖健康归 ``/readyz`` 负责。
+
+        故意不使用 :func:`_response` 信封：探针需裸响应与真实 HTTP 状态码，
+        便于 Kubernetes / systemd / 负载均衡器直接判定。
+        """
+        return {"status": "alive", "service": cfg.observability.service_name,
+                "service_version": SERVICE_VERSION,
+                "uptime_seconds": round(registry.uptime_seconds(), 3)}
+
+    @app.get("/readyz")
+    def readyz(response: FastApiResponse):
+        """就绪探针：能否正常承接业务流量。
+
+        检查项及其严重级别：
+
+        | 检查项 | 未通过后果 |
+        |---|---|
+        | 工作区存在且可写 | **not ready**（无法写审计与产物） |
+        | Runtime Store 可连接 | 取决于 ``readiness_require_store`` |
+        | 知识投影可读 | 仅 degraded，**不阻断** |
+        | 队列积压（过期 lease） | 仅 degraded，不阻断 |
+
+        知识投影**不作硬性条件**：全新部署尚未发布投影时若判为未就绪，
+        实例将永远无法进入服务状态；且部分只读能力（健康、目录）此时仍可用。
+        投影缺失通过 ``degraded`` 标记与 ``/v1/health`` 的 ``DEGRADED`` 暴露。
+
+        未就绪返回 **503**，使负载均衡器摘除本实例而不重启进程。
+        """
+        checks: dict[str, dict] = {}
+        ready = True
+        degraded: list[str] = []
+
+        try:
+            writable = ws.is_dir() and os.access(ws, os.W_OK)
+            checks["workspace"] = {"ok": bool(writable), "path": str(ws)}
+            ready = ready and bool(writable)
+        except OSError as exc:
+            checks["workspace"] = {"ok": False, "error": str(exc)}
+            ready = False
+
+        try:
+            checks["knowledge_projection"] = {"ok": True, "version": svc._active_version()}
+        except ServiceNotReadyError as exc:
+            # 投影缺失不阻断就绪（见上表说明），仅标记 degraded
+            checks["knowledge_projection"] = {"ok": False, "error": str(exc),
+                                              "blocking": False}
+            degraded.append("knowledge_projection")
+
+        if store is not None:
+            try:
+                checks["runtime_store"] = {"ok": True,
+                                           "schema_version": store.schema_version(),
+                                           "journal_mode": store.journal_mode()}
+            except Exception as exc:  # noqa: BLE001 - 探针需兜住任何 DB 异常
+                checks["runtime_store"] = {"ok": False, "error": str(exc)}
+                if cfg.observability.readiness_require_store:
+                    ready = False
+                else:
+                    degraded.append("runtime_store")
+            try:
+                stats = store.queue_stats()
+                checks["job_queue"] = {"ok": True, "claimable": stats["claimable"],
+                                       "dead_letter": stats["dead_letter"],
+                                       "expired_leases": stats["expired_leases"]}
+                if stats["expired_leases"] > 0:
+                    degraded.append("job_queue_expired_leases")
+            except Exception as exc:  # noqa: BLE001 - 队列统计失败不阻断就绪
+                checks["job_queue"] = {"ok": False, "error": str(exc)}
+                degraded.append("job_queue")
+        else:
+            checks["runtime_store"] = {"ok": True, "enabled": False,
+                                       "note": "未启用运行态持久化（dev 可接受）"}
+
+        registry.gauge("readiness", 1.0 if ready else 0.0,
+                       "服务是否就绪（1=就绪，0=未就绪）")
+        response.status_code = 200 if ready else 503
+        return {"status": "ready" if ready else "not_ready",
+                "degraded": degraded, "checks": checks}
+
+    @app.get("/metrics")
+    def metrics(request: Request, response: FastApiResponse):
+        """Prometheus 文本格式指标端点。
+
+        安全考量：指标含队列深度、DB schema 版本等内部信息。
+        ``metrics_require_admin=true`` 时要求 admin 作用域；否则依赖网络层
+        限制采集来源（生产建议二者至少其一，见部署文档）。
+
+        故意不使用 :func:`_response` 信封：Prometheus 需要
+        ``text/plain`` 曝光格式。
+        """
+        if not cfg.observability.metrics_enabled:
+            response.status_code = 404
+            return PlainTextResponse("指标端点未启用\n", status_code=404)
+        if cfg.observability.metrics_require_admin:
+            # BaseHTTPMiddleware 每层各有独立 Request，故身份经 ASGI scope 传递
+            scopes = (request.scope.get("api_key_scopes")
+                      or request.state.__dict__.get("api_key_scopes") or ())
+            if SCOPE_ADMIN not in tuple(scopes):
+                return PlainTextResponse(
+                    "指标端点要求 admin 作用域\n", status_code=403)
+
+        # 采集时刷新运行态派生指标，避免额外后台线程
+        if store is not None:
+            try:
+                stats = store.queue_stats()
+                registry.gauge("job_queue_claimable", stats["claimable"],
+                               "可领取的 Job 数")
+                registry.gauge("job_queue_dead_letter", stats["dead_letter"],
+                               "进入 dead-letter 的 Job 数")
+                registry.gauge("job_queue_expired_leases", stats["expired_leases"],
+                               "lease 已过期待回收的 Job 数")
+                for status_name, count in (stats.get("by_status") or {}).items():
+                    registry.gauge("job_status_count", count,
+                                   "各状态 Job 数", labels={"status": status_name})
+            except Exception:  # noqa: BLE001 - 指标采集失败不应影响端点可用
+                registry.counter("metrics_collection_errors_total",
+                                 "指标采集失败次数")
+        registry.gauge("process_uptime_seconds", registry.uptime_seconds(),
+                       "进程运行时长（秒）")
+        registry.gauge("build_info", 1.0, "构建信息",
+                       labels={"version": SERVICE_VERSION, "profile": cfg.profile})
+        return PlainTextResponse(registry.render(),
+                                 media_type="text/plain; version=0.0.4; charset=utf-8")
 
     @app.get("/v1/health")
     def health():
@@ -321,8 +495,14 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
                     store.record_evidence(object_id, str(ref_id),
                                           source_ref="GET /v1/evidence",
                                           detail={"ref_count": len(refs)})
-                except Exception:
-                    pass
+                except Exception as exc:  # noqa: BLE001 - 审计镜像失败不阻断主流程
+                    # M2.5：原为静默 pass，现补日志与指标使失败可观测
+                    registry.counter("evidence_audit_errors_total",
+                                     "evidence 审计镜像写入失败次数")
+                    log_event(logging.getLogger("dkws.api"), "WARNING",
+                              "EVIDENCE_AUDIT_FAILED",
+                              "evidence 审计镜像写入失败（不影响查询结果）",
+                              object_id=object_id, error=str(exc))
             return _response(f"REQ-EV-{object_id}", r.data, r.meta)
         except DKWSException as exc:
             raise _handle(exc)
@@ -356,6 +536,7 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
     def skill_execute(req: SkillExecuteRequest):
         """D2-D6 + v1.4：执行一个 skill（幂等 / fail-closed / 无新证据策略 / 异步 / ContextPackage）。"""
         import json as _json
+
         from fastapi import Response
 
         if req.context is not None:

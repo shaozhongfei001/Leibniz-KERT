@@ -1,0 +1,192 @@
+{
+  "task_package": "M2-P5",
+  "scope": "M2.6 备份恢复与升级回滚",
+  "generated_at": "2026-08-27T17:54:28+0800",
+  "environment": {
+    "python": "3.12.8",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35"
+  },
+  "checks": [
+    {
+      "name": "backup_rejects_dest_inside_workspace",
+      "passed": true,
+      "detail": "备份目标落工作区内被拒绝（否则触发 WS_BAD_FILENAME 破坏一致性检查）"
+    },
+    {
+      "name": "backup_created",
+      "passed": true,
+      "detail": "备份集=drill-001 文件数=9 字节=608 耗时=0.018s"
+    },
+    {
+      "name": "backup_db_uses_online_api",
+      "passed": true,
+      "detail": "Runtime DB 经 sqlite_online_backup 生成快照（schema=2），未直接拷贝 WAL 热文件"
+    },
+    {
+      "name": "backup_captures_consistency_point",
+      "passed": true,
+      "detail": "一致性点：CURRENT={'product_knowledge': '2026.08.27.1'} core=['product_knowledge'] db_schema=2"
+    },
+    {
+      "name": "backup_excludes_stale_locks",
+      "passed": true,
+      "detail": "失效锁被排除（锁含 pid/host，恢复到新主机必然失效）"
+    },
+    {
+      "name": "backup_includes_marker",
+      "passed": true,
+      "detail": "工作区标记已备份（缺失会导致恢复后所有命令拒绝执行）"
+    },
+    {
+      "name": "verify_passes_on_intact",
+      "passed": true,
+      "detail": "完整备份逐文件 sha256 比对通过"
+    },
+    {
+      "name": "verify_detects_tampering",
+      "passed": true,
+      "detail": "篡改被检出：['哈希不匹配：01_raw/batch=20260827/part_0.csv']"
+    },
+    {
+      "name": "verify_detects_missing",
+      "passed": true,
+      "detail": "文件缺失被检出"
+    },
+    {
+      "name": "restore_completed",
+      "passed": true,
+      "detail": "恢复文件数=10 耗时=0.004s"
+    },
+    {
+      "name": "restore_workspace_usable",
+      "passed": true,
+      "detail": "恢复后 is_workspace=True，BLOCKER 数=0"
+    },
+    {
+      "name": "restore_structure_check_clean",
+      "passed": true,
+      "detail": "check_workspace(full) 结果=无问题"
+    },
+    {
+      "name": "restore_consistency_matched",
+      "passed": true,
+      "detail": "一致性校验匹配=True，不匹配项=无"
+    },
+    {
+      "name": "restore_clears_residual_locks",
+      "passed": true,
+      "detail": "清理残留锁 1 个"
+    },
+    {
+      "name": "restore_preserves_m24_semantics",
+      "passed": true,
+      "detail": "COMPLETED 保持、dead_letter 保持（attempts=1 未重置）、PENDING 保持"
+    },
+    {
+      "name": "restore_dead_letter_not_reclaimed",
+      "passed": true,
+      "detail": "恢复后 dead-letter 不被误领取，仅 PENDING 可领"
+    },
+    {
+      "name": "restore_data_byte_identical",
+      "passed": true,
+      "detail": "原始数据逐字节一致"
+    },
+    {
+      "name": "restore_refuses_corrupted_backup",
+      "passed": true,
+      "detail": "损坏备份被拒绝恢复，避免覆盖现场（拒绝理由：备份完整性校验失败，拒绝恢复（避免用损坏备份覆盖现场）：哈希不匹配：01_raw/batch=20260827/part_0.c…）"
+    },
+    {
+      "name": "disaster_recovery_from_scratch",
+      "passed": true,
+      "detail": "源工作区完全删除后从备份恢复：文件数=10 耗时=0.004s，结构检查与运行态均完整"
+    },
+    {
+      "name": "release_manifest_has_git_anchor",
+      "passed": true,
+      "detail": "git 锚点已补齐（治理文档原登记 dkws_git_commit_anchor=null）：commit=636b2147ac19 branch=feature/m2-remaining dirty=True"
+    },
+    {
+      "name": "release_manifest_components",
+      "passed": true,
+      "detail": "组件哈希齐备：['internal_contracts', 'public_contracts', 'public_schemas', 'python_source', 'scripts', 'skill_packages']"
+    },
+    {
+      "name": "release_manifest_records_version_spread",
+      "passed": true,
+      "detail": "如实记录版本分散：{'package': '0.1.0', 'service_http': '1.0.0', 'runtime_db_schema': 2, 'projection_builder': '1.0.0', 'python': '3.12.8', 'platform': 'Linux-6.8.0-47-generic-x86_64-with-glibc2.35'}"
+    },
+    {
+      "name": "release_manifest_compare_detects_diff",
+      "passed": true,
+      "detail": "比对识别差异：组件=['python_source'] 版本=['package']"
+    },
+    {
+      "name": "release_manifest_compare_identical",
+      "passed": true,
+      "detail": "同一清单比对无差异"
+    },
+    {
+      "name": "release_fingerprint_stable",
+      "passed": true,
+      "detail": "发布指纹稳定：fba04f8f4a8018c21146…"
+    }
+  ],
+  "backup_elapsed_seconds": 0.018,
+  "restore_elapsed_seconds": 0.004,
+  "disaster_recovery_seconds": 0.004,
+  "backup_manifest_excerpt": {
+    "backup_id": "drill-001",
+    "file_count": 9,
+    "included_dirs": [
+      "01_raw",
+      "02_work",
+      "03_core",
+      "04_serve",
+      "90_control"
+    ],
+    "consistency_point": {
+      "captured_at": "2026-08-27T09:54:28Z",
+      "current_pointers": {
+        "product_knowledge": "2026.08.27.1"
+      },
+      "core_versions": {
+        "product_knowledge": [
+          "version=2026.08.27.1"
+        ]
+      },
+      "runtime_schema_version": 2,
+      "runtime_queue": {
+        "by_status": {
+          "COMPLETED": 1,
+          "FAILED": 1,
+          "PENDING": 1
+        },
+        "claimable": 1,
+        "dead_letter": 1,
+        "expired_leases": 0
+      }
+    },
+    "runtime_db": {
+      "present": true,
+      "relative_path": "90_control/runtime/runtime.db",
+      "sha256": "3894ffca1df7529738e837c69a5fea8a90a923937c75921d0b1d9a3e7a21dd89",
+      "size": 65536,
+      "schema_version": 2,
+      "method": "sqlite_online_backup"
+    },
+    "notes": [
+      "本备份不代表已通过灾备演练验收。",
+      "RPO/RTO 与备份频率、保留策略属 Owner 决策，本清单不预设业务默认值。",
+      "90_control/locks 已排除：锁含 pid/host，恢复后必然失效，应由 dkws recover --clear-expired 清理。",
+      "Runtime DB 经 SQLite 在线备份 API 生成一致性快照，未直接拷贝热文件。"
+    ]
+  },
+  "timing_note": "上述耗时为本机小规模演练实测值，仅作观测记录。RPO/RTO 目标属 Owner 决策，本报告不宣称满足任何具体指标。",
+  "summary": {
+    "passed": 25,
+    "total": 25,
+    "result": "PASS"
+  }
+}

@@ -1,0 +1,74 @@
+# DKWS 反向代理示例（M2.7，TLS 终止在此层）
+#
+# 依据 DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS §2：
+# - TLS 由网关终止，DKWS 应用层不实现
+# - 仅放通 TLS 1.2+，mTLS 可选
+# - 保留 X-API-Key 请求头（应用层认证依赖它）
+# - 代理层 client_max_body_size 不得小于应用层 DKWS_MAX_REQUEST_BYTES
+#   （默认 1MB），否则应用层 413 会被代理层提前遮蔽，排障困难
+# - 不信任 X-Forwarded-For 语义由应用层默认保持：
+#   限流按连接对端 IP 分桶，已认证流量按 API Key 分桶
+
+# HTTPS 服务
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name dkws.example.com;
+
+    # TLS 1.2+；证书路径按实际部署调整
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_certificate     /etc/nginx/tls/dkws.example.com.crt;
+    ssl_certificate_key /etc/nginx/tls/dkws.example.com.key;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:DKWS:10m;
+    ssl_prefer_server_ciphers off;
+
+    # 可选 mTLS：校验调用方证书（应用层不实现，属网关职责）
+    # ssl_verify_client optional_no_ca;  # 按实际证书体系配置
+
+    # 请求体上限：不得小于应用层 DKWS_MAX_REQUEST_BYTES
+    client_max_body_size 2m;
+
+    # 安全响应头（应用层不负责，网关统一补充）
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+
+    # 只放通 DKWS 需要的路径；其余一律拒绝
+    location / {
+        proxy_pass http://127.0.0.1:8106;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        # 注意：应用层默认不信任 X-Forwarded-For（防伪造分桶键绕过限流），
+        # 见部署文档 §2.3。如需按真实客户端 IP 限流，
+        # 须先实现 DKWS_TRUSTED_PROXY 显式配置后再转发此头。
+        # proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+        proxy_send_timeout 120s;
+    }
+
+    # 健康检查路径允许不带 API Key（应用层白名单）
+    location = /livez {
+        proxy_pass http://127.0.0.1:8106;
+        access_log off;
+    }
+    location = /readyz {
+        proxy_pass http://127.0.0.1:8106;
+        access_log off;
+    }
+
+    # 访问日志：脱敏常规字段即可，无需记录请求体
+    access_log /var/log/nginx/dkws.access.log;
+    error_log  /var/log/nginx/dkws.error.log warn;
+}
+
+# 非 TLS 明文一律拒绝（避免误配暴露）
+server {
+    listen 80;
+    listen [::]:80;
+    server_name dkws.example.com;
+    return 301 https://$host$request_uri;
+}

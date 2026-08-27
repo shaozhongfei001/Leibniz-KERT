@@ -27,8 +27,14 @@ PROFILE_DEV = "dev"
 PROFILE_PROD = "prod"
 VALID_PROFILES = (PROFILE_DEV, PROFILE_PROD)
 
-# 匿名可访问的端点（存活探针）。其余端点在启用认证后一律需要密钥。
-DEFAULT_PUBLIC_PATHS: tuple[str, ...] = ("/v1/health", "/api/skill/health")
+# 匿名可访问的端点（存活/就绪探针）。其余端点在启用认证后一律需要密钥。
+# M2.5：/livez 与 /readyz 加入白名单，否则生产 profile 下探针会被 401 拦截。
+DEFAULT_PUBLIC_PATHS: tuple[str, ...] = ("/v1/health", "/api/skill/health",
+                                         "/livez", "/readyz")
+
+# 不计入限流的端点：探针与指标采集为高频周期性访问，被限流会导致误判服务异常。
+DEFAULT_EXEMPT_PATHS: tuple[str, ...] = ("/v1/health", "/api/skill/health",
+                                         "/livez", "/readyz", "/metrics")
 
 # 管理/闸门类端点：即使密钥有效，也要求具备 admin 作用域（ADR-013）。
 DEFAULT_ADMIN_PATH_PREFIXES: tuple[str, ...] = ("/api/skill/gates/audit",)
@@ -162,6 +168,60 @@ class RuntimeStoreConfig:
 
 
 @dataclass(frozen=True)
+class ObservabilityConfig:
+    """可观测性配置（M2.5）。
+
+    Attributes:
+        structured_logs: 是否把根 logger 切为单行 JSON 输出到 stdout。
+        log_level: 日志级别。
+        service_name: 写入日志与追踪的服务标识。
+        metrics_enabled: 是否暴露 ``/metrics``。
+        metrics_require_admin: ``/metrics`` 是否要求 admin 作用域。
+            指标含队列深度、DB schema 版本等内部信息，生产建议开启；
+            若采集器无法携带密钥，可关闭并改由网络层限制来源。
+        tracing_enabled: 是否启用追踪（W3C Trace Context 贯通）。
+        trace_sample_ratio: 采样率 0.0~1.0。
+        otel_enabled: 是否尝试桥接 OpenTelemetry SDK（未安装则自动降级）。
+        readiness_require_store: ``/readyz`` 是否把 Runtime Store 可连接
+            作为**硬性**就绪条件。
+    """
+
+    structured_logs: bool = False
+    log_level: str = "INFO"
+    service_name: str = "dkws-python-core"
+    metrics_enabled: bool = True
+    metrics_require_admin: bool = False
+    tracing_enabled: bool = True
+    trace_sample_ratio: float = 1.0
+    otel_enabled: bool = False
+    readiness_require_store: bool = True
+
+
+@dataclass(frozen=True)
+class RedactionConfig:
+    """数据脱敏配置（M2.9）。
+
+    Attributes:
+        response_enabled: 是否脱敏 API JSON 响应。**默认关闭**——既有响应
+            契约与测试依赖原文（如报告正文含企业名），全局脱敏会破坏门禁；
+            生产可显式开启。
+        response_threshold: 响应脱敏阈值（``RESTRICTED``/``CONFIDENTIAL`` 等）。
+        response_mask_text: 响应中的自由文本是否做值形态掩码。
+        llm_enabled: 是否在提示词出站前脱敏。**默认开启**——客户数据进入
+            外部模型属重大合规风险（独立评审 L659）。
+        log_enabled: 是否对结构化日志字段按分类脱敏（叠加于既有正则脱敏）。
+        annotate: 是否在响应 ``meta.redaction`` 中附脱敏说明。
+    """
+
+    response_enabled: bool = False
+    response_threshold: str = "RESTRICTED"
+    response_mask_text: bool = False
+    llm_enabled: bool = True
+    log_enabled: bool = True
+    annotate: bool = True
+
+
+@dataclass(frozen=True)
 class RuntimeConfig:
     """DKWS 运行时总配置。"""
 
@@ -172,6 +232,8 @@ class RuntimeConfig:
     size_limit: SizeLimitConfig = field(default_factory=SizeLimitConfig)
     concurrency: ConcurrencyConfig = field(default_factory=ConcurrencyConfig)
     runtime_store: RuntimeStoreConfig = field(default_factory=RuntimeStoreConfig)
+    observability: ObservabilityConfig = field(default_factory=ObservabilityConfig)
+    redaction: RedactionConfig = field(default_factory=RedactionConfig)
     warnings: tuple[str, ...] = ()
 
     @property
@@ -190,6 +252,17 @@ def _env_bool(env: dict[str, str], name: str, default: bool | None) -> bool | No
     if raw is None or raw == "":
         return default
     return raw.strip().lower() in ("1", "true", "yes", "on")
+
+
+def _env_float(env: dict[str, str], name: str, default: float) -> float:
+    """解析浮点环境变量；未设置返回 default，非法则抛 ConfigError。"""
+    raw = env.get(name)
+    if raw is None or raw == "":
+        return default
+    try:
+        return float(raw)
+    except ValueError as exc:
+        raise ConfigError(f"环境变量 {name} 需为数字，实际为 {raw!r}") from exc
 
 
 def _env_int(env: dict[str, str], name: str, default: int) -> int:
@@ -309,6 +382,7 @@ def load_runtime_config(env: dict[str, str] | None = None,
     file_size = file_cfg.get("size_limit") or {}
     file_conc = file_cfg.get("concurrency") or {}
     file_store = file_cfg.get("runtime_store") or {}
+    file_obs = file_cfg.get("observability") or {}
 
     profile = (env.get("DKWS_PROFILE") or file_cfg.get("profile") or PROFILE_DEV).strip().lower()
     if profile not in VALID_PROFILES:
@@ -377,15 +451,74 @@ def load_runtime_config(env: dict[str, str] | None = None,
             int(file_store.get("idempotency_ttl_seconds", 600))),
     )
 
+    obs_structured = _env_bool(env, "DKWS_STRUCTURED_LOGS", None)
+    if obs_structured is None:
+        # 生产默认开启结构化日志（容器/采集器友好），dev 保持人类可读
+        obs_structured = bool(file_obs.get("structured_logs",
+                                           profile == PROFILE_PROD))
+    obs_metrics = _env_bool(env, "DKWS_METRICS_ENABLED", None)
+    if obs_metrics is None:
+        obs_metrics = bool(file_obs.get("metrics_enabled", True))
+    obs_metrics_admin = _env_bool(env, "DKWS_METRICS_REQUIRE_ADMIN", None)
+    if obs_metrics_admin is None:
+        obs_metrics_admin = bool(file_obs.get("metrics_require_admin", False))
+    obs_tracing = _env_bool(env, "DKWS_TRACING_ENABLED", None)
+    if obs_tracing is None:
+        obs_tracing = bool(file_obs.get("tracing_enabled", True))
+    obs_otel = _env_bool(env, "DKWS_OTEL_ENABLED", None)
+    if obs_otel is None:
+        obs_otel = bool(file_obs.get("otel_enabled", False))
+    obs_ready_store = _env_bool(env, "DKWS_READINESS_REQUIRE_STORE", None)
+    if obs_ready_store is None:
+        obs_ready_store = bool(file_obs.get("readiness_require_store", True))
+    observability = ObservabilityConfig(
+        structured_logs=bool(obs_structured),
+        log_level=(env.get("DKWS_LOG_LEVEL")
+                   or file_obs.get("log_level", "INFO")).strip().upper(),
+        service_name=(env.get("DKWS_SERVICE_NAME")
+                      or file_obs.get("service_name", "dkws-python-core")).strip(),
+        metrics_enabled=bool(obs_metrics),
+        metrics_require_admin=bool(obs_metrics_admin),
+        tracing_enabled=bool(obs_tracing),
+        trace_sample_ratio=_env_float(env, "DKWS_TRACE_SAMPLE_RATIO",
+                                      float(file_obs.get("trace_sample_ratio", 1.0))),
+        otel_enabled=bool(obs_otel),
+        readiness_require_store=bool(obs_ready_store),
+    )
+
+    file_red = file_cfg.get("redaction") or {}
+    red_response = _env_bool(env, "DKWS_REDACT_RESPONSE", None)
+    if red_response is None:
+        red_response = bool(file_red.get("response_enabled", False))
+    red_text = _env_bool(env, "DKWS_REDACT_RESPONSE_TEXT", None)
+    if red_text is None:
+        red_text = bool(file_red.get("response_mask_text", False))
+    red_llm = _env_bool(env, "DKWS_LLM_REDACTION", None)
+    if red_llm is None:
+        red_llm = bool(file_red.get("llm_enabled", True))
+    red_log = _env_bool(env, "DKWS_REDACT_LOGS", None)
+    if red_log is None:
+        red_log = bool(file_red.get("log_enabled", True))
+    redaction = RedactionConfig(
+        response_enabled=bool(red_response),
+        response_threshold=(env.get("DKWS_REDACT_THRESHOLD")
+                            or file_red.get("response_threshold", "RESTRICTED")).strip(),
+        response_mask_text=bool(red_text),
+        llm_enabled=bool(red_llm),
+        log_enabled=bool(red_log),
+        annotate=bool(file_red.get("annotate", True)))
+
     cfg = RuntimeConfig(profile=profile, bind_host=bind_host, auth=auth,
                         rate_limit=rate_limit, size_limit=size_limit,
-                        concurrency=concurrency, runtime_store=runtime_store)
+                        concurrency=concurrency, runtime_store=runtime_store,
+                        observability=observability, redaction=redaction)
     problems = validate_runtime_config(cfg)
     if problems and cfg.is_production and strict:
         raise ConfigError("生产 profile 配置校验失败：" + "；".join(problems))
     return RuntimeConfig(profile=cfg.profile, bind_host=cfg.bind_host, auth=cfg.auth,
                          rate_limit=cfg.rate_limit, size_limit=cfg.size_limit,
                          concurrency=cfg.concurrency, runtime_store=cfg.runtime_store,
+                         observability=cfg.observability, redaction=cfg.redaction,
                          warnings=tuple(problems))
 
 
@@ -404,6 +537,8 @@ def validate_runtime_config(cfg: RuntimeConfig) -> list[str]:
         problems.append("rate_limit.requests_per_minute 须为正数")
     if cfg.size_limit.max_request_bytes <= 0:
         problems.append("size_limit.max_request_bytes 须为正数")
+    if not 0.0 <= cfg.observability.trace_sample_ratio <= 1.0:
+        problems.append("observability.trace_sample_ratio 须在 0.0~1.0 之间")
     if cfg.concurrency.max_in_flight <= 0:
         problems.append("concurrency.max_in_flight 须为正数")
     if not cfg.is_production:

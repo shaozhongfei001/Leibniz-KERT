@@ -101,10 +101,33 @@ Python Core 的 `DKWS_BIND_HOST` 参与生产 profile 校验：
 
 ## 6. 可观测
 
+> M2.5 已落地，实现细节见 `DKWS_OBSERVABILITY_M2P3.md`。
+
 - 统一 JSON 日志字段：requestId, traceId, tenantId, skillId
-- W3C Trace Context 贯通
-- Metrics：HTTP、Skill、Tool、Model、Sandbox
+  （`DKWS_STRUCTURED_LOGS=true` 启用，生产默认开启）
+- W3C Trace Context 贯通（沿用上游 `traceparent`，畸形值拒绝并新建 trace）
+- Metrics：HTTP（计数/延迟直方图/4xx/5xx）、Job 队列深度、就绪状态、构建信息
 - 告警：Java Runtime down、Sandbox 失败率、磁盘、JVM heap
+
+### 6.1 探针端点
+
+| 端点 | 用途 | 语义 |
+|---|---|---|
+| `/livez` | 存活 | **不检查依赖**；失败通常触发重启 |
+| `/readyz` | 就绪 | 检查工作区与 Runtime Store；未就绪返回 **503**，摘除实例但**不重启** |
+| `/metrics` | 指标 | Prometheus `text/plain; version=0.0.4` |
+| `/v1/health` | 兼容 | 既有端点，附 `runtime` 加固状态 |
+
+三者均在限流豁免与匿名白名单中（`/metrics` 除外，其鉴权由
+`DKWS_METRICS_REQUIRE_ADMIN` 单一决定）。
+
+### 6.2 采集侧要求
+
+- **`/metrics` 需保护**：指标含队列深度、DB schema 版本等内部信息。
+  生产须设 `DKWS_METRICS_REQUIRE_ADMIN=true`，或由网络层限制采集来源。
+- **路径标签为路由模板**（如 `/v1/evidence/{object_id}`），已内建高基数防护。
+- **Worker 进程无 HTTP 端口**，其统计不经 `/metrics` 暴露；
+  跨进程聚合需 textfile collector 或 pushgateway（当前未实现）。
 
 ## 7. 发布与版本
 
@@ -115,10 +138,93 @@ Python Core 的 `DKWS_BIND_HOST` 参与生产 profile 校验：
 
 ## 8. 备份
 
+> M2.6 已落地，实现见 `src/dkws/infrastructure/backup.py`，
+> 运维入口 `scripts/dkws_ops.py`。演练报告见 `evidence/m2-p5/`。
+
 - 备份 Python Runtime Store、知识资产、受控 Skill 包
 - Java Runtime 无状态，不备份
 
-## 9. 回滚
+### 8.1 备份范围
+
+| 目录 | 是否必备 | 理由 |
+|---|---|---|
+| `01_raw` | **必备** | 原始批次不可重建 |
+| `03_core` | **必备** | 唯一知识权威源（ADR-012） |
+| `90_control` | **必备** | 治理与审计不可重建 |
+| `02_work` | 默认纳入 | 看似可重建，但 `04_serve` 数据集重建依赖其 parquet 中间产物 |
+| `04_serve` | 默认纳入 | 重建耗时计入 RTO |
+| `90_control/locks` | **排除** | 锁含 pid/host，恢复后必然失效 |
+| `90_control/runtime` | **排除文件拷贝** | DB 单独走 SQLite 在线备份 API |
+
+### 8.2 硬性约束
+
+1. **备份产物必须落工作区外**：落入会触发 `WS_BAD_FILENAME`，
+   破坏 `check_workspace` 一致性检查。工具会在构造期拒绝。
+2. **Runtime DB 必须用在线备份 API**：WAL 模式下直接拷贝 `.db` 会与
+   `-wal`/`-shm` 不一致。
+3. **必须捕获一致性点**：同时记录 `CURRENT.md` 指针、`03_core` 版本清单、
+   DB schema 版本，使恢复后可验证「知识版本 ↔ 运行态」是否匹配。
+
+### 8.3 操作
+
+```bash
+# 备份（目标必须在工作区之外）
+python scripts/dkws_ops.py backup --workspace ./workspace --dest /var/backups/dkws
+
+# 校验完整性（逐文件 sha256）
+python scripts/dkws_ops.py verify --backup /var/backups/dkws/backup-<ts>
+```
+
+### 8.4 待 Owner 决策
+
+**RPO / RTO 目标、备份频率、保留策略、演练频率均未设定**——
+工具不内置业务默认值。需运维侧在调度层（cron / systemd timer）配置。
+
+## 9. 恢复
+
+```bash
+# 恢复（演练建议恢复到新目录，勿直接覆盖生产）
+python scripts/dkws_ops.py restore \
+    --backup /var/backups/dkws/backup-<ts> --target /srv/dkws-restored
+```
+
+恢复流程内建以下动作：
+
+1. **先校验后恢复**（默认）：损坏备份被拒绝，避免用坏备份覆盖现场造成二次灾难；
+2. **清理残留锁**：否则后续写操作会被无主锁永久阻塞；
+3. **补齐空目录**：`rglob` 不捕获空目录，而目录结构是 `check_workspace` 的依据；
+4. **一致性校验**：比对恢复后与备份时的一致性点，不匹配则显式报告；
+5. **结构检查**：运行 `check_workspace(full)`，存在 BLOCKER 时返回非零退出码。
+
+恢复**不会**重置 Job 的 `attempts`、不会清除 `dead_letter` 标记——
+这些是 M2.4 语义，受 `tests/recovery` 锁定。
+
+## 10. 回滚
 
 - 保留上一版本发布 manifest
 - 回滚顺序：Python Core → Java Runtime → Skill 版本
+
+### 10.1 发布清单
+
+```bash
+# 生成（含 git commit 锚点、4 套版本号汇总、6 个组件哈希）
+python scripts/dkws_ops.py manifest --out /srv/releases/RELEASE_MANIFEST.json
+
+# 升级/回滚前比对差异
+python scripts/dkws_ops.py compare --left old.json --right new.json
+```
+
+清单含 `fingerprint`（由 git commit 与组件哈希派生），
+可判断「两次部署是否为同一份代码 + 同一份契约」。
+
+**工作区脏状态会被检出**：存在未提交变更时清单标注「不应用于生产」，
+命令返回退出码 2（可用 `--allow-dirty` 放行）。
+
+### 10.2 已知限制
+
+| 项 | 说明 |
+|---|---|
+| 回滚动作仍需人工 | 工具提供差异识别，不自动执行回滚 |
+| 版本号未统一 | 代码中并存 4 套版本，清单只记录不统一 |
+| 无异地/加密备份 | 备份为本地明文 |
+| 无增量备份 | 全量拷贝，大数据量下窗口与成本待评估 |
