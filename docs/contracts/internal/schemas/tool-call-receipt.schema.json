@@ -1,80 +1,106 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dkws.internal/skill-runtime/v1/tool-call-receipt.schema.json",
   "title": "ToolCallReceipt",
+  "description": "单次工具调用的可审计回执。必须由 Runtime 实际捕获执行事实生成，不得由框架日志或叙述文本替代。资源字段在 sandbox 执行时必填。",
   "type": "object",
   "required": [
     "toolId",
     "toolVersion",
     "skillId",
     "skillVersion",
+    "inputHash",
+    "policyDecisionId",
     "startedAt",
     "completedAt",
+    "outputHash",
+    "outputTruncated",
+    "networkUsed",
     "status"
   ],
   "properties": {
-    "toolId": {
-      "type": "string"
-    },
-    "toolVersion": {
-      "type": "string"
-    },
-    "skillId": {
-      "type": "string"
-    },
+    "toolId": { "type": "string", "minLength": 1 },
+    "toolVersion": { "type": "string", "minLength": 1 },
+    "skillId": { "type": "string", "minLength": 1 },
     "skillVersion": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
     },
     "inputHash": {
-      "type": "string"
+      "description": "规范化工具入参的 SHA-256。",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "policyDecisionId": {
-      "type": "string"
+      "description": "Tool Policy 判定标识，用于回溯为何允许/拒绝本次调用。blocked 状态同样必须有判定 ID。",
+      "type": "string",
+      "minLength": 1
     },
     "sandboxProfileHash": {
-      "type": "string"
-    },
-    "startedAt": {
+      "description": "OS Sandbox profile 哈希；仅当工具经沙箱执行时必填（见 allOf 约束）。",
       "type": "string",
-      "format": "date-time"
+      "pattern": "^[0-9a-f]{64}$"
     },
-    "completedAt": {
-      "type": "string",
-      "format": "date-time"
-    },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
     "exitCode": {
+      "description": "沙箱/子进程退出码。非零表示工具执行失败或被杀。",
       "type": "integer"
     },
     "cpuTime": {
-      "type": "number"
+      "description": "CPU 时间（秒）。",
+      "type": "number",
+      "minimum": 0
     },
     "memoryPeak": {
-      "type": "number"
+      "description": "峰值内存（字节）。",
+      "type": "number",
+      "minimum": 0
     },
     "outputHash": {
-      "type": "string"
+      "description": "工具输出（截断后实际返回内容）的 SHA-256。无输出时为空串的哈希。",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "outputTruncated": {
+      "description": "输出是否因超过 maxOutputBytes 被截断。",
       "type": "boolean"
     },
     "networkUsed": {
+      "description": "本次调用是否使用网络。沙箱默认禁网，正常应为 false；为 true 需有策略依据。",
       "type": "boolean"
     },
     "sideEffectReceipt": {
+      "description": "副作用回执（写入路径、外部调用等）。只读工具可省略。",
       "type": "object"
     },
     "status": {
       "type": "string",
-      "enum": [
-        "ok",
-        "failed",
-        "blocked",
-        "timeout",
-        "error"
-      ]
+      "enum": ["ok", "failed", "blocked", "timeout", "error"]
     },
     "errorCode": {
-      "type": "string"
+      "description": "非 ok 状态必填，取值与 RuntimeError.code 对齐（如 TOOL_NOT_ALLOWED、TOOL_TIMEOUT、SANDBOX_UNAVAILABLE）。",
+      "type": "string",
+      "minLength": 1
     }
   },
+  "allOf": [
+    {
+      "description": "非 ok 状态必须给出 errorCode。",
+      "if": {
+        "properties": { "status": { "enum": ["failed", "blocked", "timeout", "error"] } },
+        "required": ["status"]
+      },
+      "then": { "required": ["errorCode"] }
+    },
+    {
+      "description": "沙箱执行成功/失败时必须记录 profile 哈希与资源消耗；blocked（策略拒绝，未进入沙箱）不要求。",
+      "if": {
+        "properties": { "status": { "enum": ["ok", "failed", "timeout"] } },
+        "required": ["status"]
+      },
+      "then": { "required": ["exitCode"] }
+    }
+  ],
   "additionalProperties": false
 }

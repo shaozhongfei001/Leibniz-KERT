@@ -1,0 +1,35 @@
+{
+  "contractVersion": "1.0",
+  "requestId": "req-01J8Z4KQ7X9M2N4P6R8T0V2X4Z",
+  "traceparent": "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+  "tenantId": "tenant-demo",
+  "customerScope": {
+    "scopeId": "scope-corp-rm-001",
+    "classificationCeiling": "INTERNAL",
+    "allowedDomains": ["kyc", "credit"]
+  },
+  "skillId": "demo-skill",
+  "skillVersion": "1.0.0",
+  "skillHash": "3b8f1d2a4c6e8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f70819",
+  "activationPlanHash": "9f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a0",
+  "policyId": "policy-readonly-v1",
+  "promptPolicyRef": "prompt-policy://demo-skill/v1",
+  "modelPolicyRef": "model-policy://internal-default/v1",
+  "deadline": "2026-08-27T12:00:30Z",
+  "idempotencyKey": "idem-8f2a1c4b9d7e6053",
+  "payloadHash": "1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+  "allowedToolIds": ["read_skill"],
+  "knowledgeSourceRefs": [
+    {
+      "refId": "ki://demo/KI-FRONT-001",
+      "kind": "DOCUMENT",
+      "contentHash": "c1d2e3f405162738495a6b7c8d9e0f1122334455667788990aabbccddeeff001"
+    }
+  ],
+  "contextPackage": {
+    "inputs": {
+      "question": "列出 demo-skill 可用的知识条目"
+    },
+    "maxOutputBytes": 65536
+  }
+}

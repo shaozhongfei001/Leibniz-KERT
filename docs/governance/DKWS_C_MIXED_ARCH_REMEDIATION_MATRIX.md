@@ -12,6 +12,8 @@
 | C-B01 | Blocker | Java Runtime 部署形态、产品所有权和权威边界未决，且材料允许 GITS 直连 | 对比文档、POC 源码、HANDOVER | 新 C′ 架构候选、ADR-016、内部契约、GITS 交接 V1.1 | 形成 C′ 架构，唯一公共入口 Python Core，删除 GITS 直连 Java 路径 | 架构评审 + ADR Owner 批准 | ADR-016、边界矩阵、部署拓扑 | IN_PROGRESS | Owner/Tech Lead |
 | C-B02 | Blocker | Python Core—Java Runtime 无机器内部契约 | 现有 contracts 无 internal | docs/contracts/internal/* | 建立内部 OpenAPI/Schema + 契约 hash + 双端 contract tests | JSON Schema 校验、OpenAPI 解析、contract tests | contract bundle manifest + 测试日志 | IN_PROGRESS | Contract Owners |
 | C-B03 | Blocker | PythonTool/ShellTool 沙箱执行失败，安全配置未闭合 | POC_RESULT、源码 ShellCommandGuard 未接入 | Sandbox Runner POC、POC-2 | 生产默认关闭；用 bwrap/nsjail 做 OS Sandbox POC | 安全负向用例、资源限制、独立安全 QA | sandbox-security-tests.log + 独立 QA | IN_PROGRESS | Security Lead |
+
+> **C-B03 状态高估更正（2026-08-27，Owner 授权）**：执行报告 V1.0 曾将 C-B03 标为 `MACHINE_TESTS_PASS_PENDING_INDEPENDENT_SECURITY_QA`，与本矩阵 `IN_PROGRESS` 自相矛盾，且引用日志不存在、20 项安全负向用例 0 项执行。现统一为 `IN_PROGRESS`，详见冲突登记册 C-20。C-B03 关闭前提不变：真实 OS Sandbox 执行 + 安全负向用例通过 + 资源限制通过 + **独立安全 QA 复核**（Tech Lead 不得自签）。
 | C-B04 | Blocker | POC 未完成 DKWS 集成、真实 Tool receipt、生产热更新/回滚和故障恢复 | POC 无 tests、无 receipts | POC-2 | 实现 staging/activate/rollback、动态 Tool 绑定、receipts、自动化测试 | 自动化测试 + 原始日志 + 重放 | POC2_EVIDENCE_MANIFEST.json | IN_PROGRESS | Tech Lead |
 | C-B05 | Blocker | 方案 C 未纳入独立服务边界、演进 V2、NFR、验收计划和 ADR | 多文档冲突 | 新候选文档 + supersession map | 统一 Phase 0 基线和 supersession map | 冲突登记、追溯矩阵 | 冲突清零、追溯矩阵 | IN_PROGRESS | Architecture Owner |
 

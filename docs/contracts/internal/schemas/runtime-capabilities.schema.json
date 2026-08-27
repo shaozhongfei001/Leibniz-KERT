@@ -1,49 +1,80 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dkws.internal/skill-runtime/v1/runtime-capabilities.schema.json",
   "title": "RuntimeCapabilities",
+  "description": "健康与能力上报。对应 POC-2 准入第 20 项：必须返回 runtime version、contract version、contract hash、framework version、activated Skill、Sandbox capability、degraded 状态。此端点是唯一免内部认证端点，因此不得暴露 Secret、路径或拓扑细节。",
   "type": "object",
   "required": [
     "runtimeVersion",
     "contractVersion",
+    "contractHash",
+    "frameworkVersion",
+    "activatedSkills",
+    "sandboxCapability",
+    "degraded",
     "status"
   ],
   "properties": {
     "runtimeVersion": {
-      "type": "string"
+      "description": "Java Skill Runtime 自身版本。",
+      "type": "string",
+      "minLength": 1
     },
     "contractVersion": {
-      "type": "string"
+      "description": "所实现的内部契约版本，须与 ExecutionPlan.contractVersion major 兼容。",
+      "type": "string",
+      "minLength": 1
     },
     "contractHash": {
-      "type": "string"
+      "description": "内部契约 bundle 哈希，由 scripts/internal_contract_hash.py 重算可验证。",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "frameworkVersion": {
-      "type": "string"
+      "description": "Spring AI Alibaba / Spring Boot 框架版本标识。",
+      "type": "string",
+      "minLength": 1
     },
     "activatedSkills": {
+      "description": "当前激活的 Skill 列表（skillId + version + hash 三元组）。",
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object",
+        "required": ["skillId", "version", "hash"],
+        "properties": {
+          "skillId": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "minLength": 1 },
+          "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        },
+        "additionalProperties": false
       }
     },
     "sandboxCapability": {
+      "description": "Sandbox 能力状态。未通过安全 Gate 时生产必须为 disabled。",
       "type": "string",
-      "enum": [
-        "available",
-        "unavailable",
-        "disabled"
-      ]
+      "enum": ["available", "unavailable", "disabled"]
     },
-    "degraded": {
-      "type": "boolean"
+    "sandboxBackend": {
+      "description": "沙箱后端标识（nsjail / bubblewrap / none）。",
+      "type": "string",
+      "enum": ["nsjail", "bubblewrap", "none"]
     },
+    "degraded": { "type": "boolean" },
+    "degradationReason": { "type": "string", "minLength": 1 },
     "status": {
       "type": "string",
-      "enum": [
-        "ok",
-        "degraded"
-      ]
+      "enum": ["ok", "degraded"]
     }
   },
+  "allOf": [
+    {
+      "description": "status 与 degraded 必须一致，且降级需给出原因。",
+      "if": { "properties": { "degraded": { "const": true } }, "required": ["degraded"] },
+      "then": {
+        "required": ["degradationReason"],
+        "properties": { "status": { "const": "degraded" } }
+      }
+    }
+  ],
   "additionalProperties": false
 }

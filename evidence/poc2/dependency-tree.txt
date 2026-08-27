@@ -1,0 +1,223 @@
+===============================================================================
+DKWS POC-2 EVIDENCE
+===============================================================================
+workstream:       DKWS-C-MIXED-ARCH-REMEDIATION-01
+description:      固定依赖版本树（用于双栈依赖治理）
+command:          mvn -B -ntp dependency:tree
+workingDirectory: poc/spring-ai-alibaba-skill-runtime
+startedAt:        2026-08-27T04:31:46.818971+00:00
+completedAt:      2026-08-27T04:31:48.470314+00:00
+durationSeconds:  1.651
+exitCode:         0
+verdict:          PASS
+findings:         C-M07
+repositoryBranch: feature/m2-p2-persistent-worker
+repositoryCommit: e98bcae4d9f02a928cba9495453aa257373b75db
+workingTreeDirty: True
+environment:
+  platform: Linux-6.8.0-47-generic-x86_64-with-glibc2.35
+  python: 3.12.8
+  java: openjdk version "21.0.11" 2026-04-21
+  maven: [1mApache Maven 3.6.3[m
+  bwrap: bubblewrap 0.6.1
+  nsjail: NOT_INSTALLED
+===============================================================================
+RAW STDOUT
+===============================================================================
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------< com.dkws:spring-ai-alibaba-skill-runtime >--------------
+[INFO] Building spring-ai-alibaba-skill-runtime 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.6.1:tree (default-cli) @ spring-ai-alibaba-skill-runtime ---
+[INFO] com.dkws:spring-ai-alibaba-skill-runtime:jar:0.0.1-SNAPSHOT
+[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:3.3.5:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:3.3.5:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot:jar:3.3.5:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-autoconfigure:jar:3.3.5:compile
+[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:3.3.5:compile
+[INFO] |  |  |  +- ch.qos.logback:logback-classic:jar:1.5.11:compile
+[INFO] |  |  |  |  \- ch.qos.logback:logback-core:jar:1.5.11:compile
+[INFO] |  |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.23.1:compile
+[INFO] |  |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.23.1:compile
+[INFO] |  |  |  \- org.slf4j:jul-to-slf4j:jar:2.0.16:compile
+[INFO] |  |  +- jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile
+[INFO] |  |  \- org.yaml:snakeyaml:jar:2.2:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-json:jar:3.3.5:compile
+[INFO] |  |  \- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.17.2:compile
+[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:3.3.5:compile
+[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.31:compile
+[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:10.1.31:compile
+[INFO] |  +- org.springframework:spring-web:jar:6.1.14:compile
+[INFO] |  |  +- org.springframework:spring-beans:jar:6.1.14:compile
+[INFO] |  |  \- io.micrometer:micrometer-observation:jar:1.13.6:compile
+[INFO] |  |     \- io.micrometer:micrometer-commons:jar:1.13.6:compile
+[INFO] |  \- org.springframework:spring-webmvc:jar:6.1.14:compile
+[INFO] |     +- org.springframework:spring-aop:jar:6.1.14:compile
+[INFO] |     +- org.springframework:spring-context:jar:6.1.14:compile
+[INFO] |     \- org.springframework:spring-expression:jar:6.1.14:compile
+[INFO] +- org.springframework.boot:spring-boot-starter-validation:jar:3.3.5:compile
+[INFO] |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:10.1.31:compile
+[INFO] |  \- org.hibernate.validator:hibernate-validator:jar:8.0.1.Final:compile
+[INFO] |     +- jakarta.validation:jakarta.validation-api:jar:3.0.2:compile
+[INFO] |     +- org.jboss.logging:jboss-logging:jar:3.5.3.Final:compile
+[INFO] |     \- com.fasterxml:classmate:jar:1.7.0:compile
+[INFO] +- com.alibaba.cloud.ai:spring-ai-alibaba-agent-framework:jar:1.1.2.0:compile
+[INFO] |  +- io.modelcontextprotocol.sdk:mcp:jar:0.14.0:compile
+[INFO] |  |  +- io.modelcontextprotocol.sdk:mcp-json-jackson2:jar:0.14.0:compile
+[INFO] |  |  |  +- io.modelcontextprotocol.sdk:mcp-json:jar:0.14.0:compile
+[INFO] |  |  |  \- com.networknt:json-schema-validator:jar:1.5.7:compile
+[INFO] |  |  |     +- com.ethlo.time:itu:jar:1.10.3:compile
+[INFO] |  |  |     \- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.17.2:compile
+[INFO] |  |  \- io.modelcontextprotocol.sdk:mcp-core:jar:0.14.0:compile
+[INFO] |  +- io.github.a2asdk:a2a-java-sdk-client:jar:0.2.5.Beta2:compile
+[INFO] |  |  +- io.github.a2asdk:a2a-java-sdk-common:jar:0.2.5.Beta2:compile
+[INFO] |  |  \- io.github.a2asdk:a2a-java-sdk-spec:jar:0.2.5.Beta2:compile
+[INFO] |  +- org.apache.commons:commons-lang3:jar:3.14.0:compile
+[INFO] |  +- org.apache.httpcomponents:httpclient:jar:4.5.14:compile
+[INFO] |  |  \- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+[INFO] |  \- com.alibaba:fastjson:jar:1.2.83:compile
+[INFO] +- com.alibaba.cloud.ai:spring-ai-alibaba-graph-core:jar:1.1.2.0:compile
+[INFO] |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.17.2:compile
+[INFO] |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.17.2:compile
+[INFO] |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.17.2:compile
+[INFO] |  +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.17.2:compile
+[INFO] |  +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.17.2:compile
+[INFO] |  +- io.projectreactor:reactor-core:jar:3.6.11:compile
+[INFO] |  |  \- org.reactivestreams:reactive-streams:jar:1.0.4:compile
+[INFO] |  +- org.springframework.ai:spring-ai-commons:jar:1.1.2:compile
+[INFO] |  |  +- io.micrometer:micrometer-core:jar:1.13.6:compile
+[INFO] |  |  |  +- org.hdrhistogram:HdrHistogram:jar:2.2.2:runtime
+[INFO] |  |  |  \- org.latencyutils:LatencyUtils:jar:2.0.3:runtime
+[INFO] |  |  +- io.micrometer:context-propagation:jar:1.1.2:compile
+[INFO] |  |  +- com.fasterxml.jackson.module:jackson-module-jsonSchema:jar:2.17.2:compile
+[INFO] |  |  |  \- javax.validation:validation-api:jar:1.1.0.Final:compile
+[INFO] |  |  \- com.knuddels:jtokkit:jar:1.1.0:compile
+[INFO] |  +- org.springframework.ai:spring-ai-rag:jar:1.1.2:compile
+[INFO] |  |  \- org.springframework.ai:spring-ai-vector-store:jar:1.1.2:compile
+[INFO] |  +- org.springframework.ai:spring-ai-retry:jar:1.1.2:compile
+[INFO] |  |  \- org.springframework.retry:spring-retry:jar:2.0.10:compile
+[INFO] |  +- org.springframework.ai:spring-ai-autoconfigure-retry:jar:1.1.2:compile
+[INFO] |  +- org.jetbrains:annotations:jar:13.0:compile
+[INFO] |  +- org.springframework.ai:spring-ai-deepseek:jar:1.1.2:compile
+[INFO] |  |  +- org.springframework:spring-context-support:jar:6.1.14:compile
+[INFO] |  |  \- org.springframework:spring-webflux:jar:6.1.14:compile
+[INFO] |  +- org.springframework.ai:spring-ai-client-chat:jar:1.1.2:compile
+[INFO] |  |  +- io.swagger.core.v3:swagger-annotations-jakarta:jar:2.2.38:compile
+[INFO] |  |  +- com.github.victools:jsonschema-module-swagger-2:jar:4.38.0:compile
+[INFO] |  |  \- com.github.victools:jsonschema-generator:jar:4.38.0:compile
+[INFO] |  +- org.apache.commons:commons-collections4:jar:4.4:compile
+[INFO] |  +- org.apache.commons:commons-exec:jar:1.3:compile
+[INFO] |  +- commons-codec:commons-codec:jar:1.16.1:compile
+[INFO] |  +- org.slf4j:slf4j-api:jar:2.0.16:compile
+[INFO] |  \- io.opentelemetry:opentelemetry-api:jar:1.37.0:compile
+[INFO] |     \- io.opentelemetry:opentelemetry-context:jar:1.37.0:compile
+[INFO] +- com.alibaba.cloud.ai:spring-ai-alibaba-starter-tool-calling-python:jar:1.1.2.0:compile
+[INFO] |  +- com.alibaba.cloud.ai:spring-ai-alibaba-starter-tool-calling-common:jar:1.1.2.0:compile
+[INFO] |  |  +- org.apache.httpcomponents.client5:httpclient5:jar:5.3.1:compile
+[INFO] |  |  |  +- org.apache.httpcomponents.core5:httpcore5:jar:5.2.5:compile
+[INFO] |  |  |  \- org.apache.httpcomponents.core5:httpcore5-h2:jar:5.2.5:compile
+[INFO] |  |  \- io.projectreactor.netty:reactor-netty-http:jar:1.1.23:compile
+[INFO] |  |     +- io.netty:netty-codec-http:jar:4.1.114.Final:compile
+[INFO] |  |     |  +- io.netty:netty-common:jar:4.1.114.Final:compile
+[INFO] |  |     |  +- io.netty:netty-buffer:jar:4.1.114.Final:compile
+[INFO] |  |     |  +- io.netty:netty-transport:jar:4.1.114.Final:compile
+[INFO] |  |     |  +- io.netty:netty-codec:jar:4.1.114.Final:compile
+[INFO] |  |     |  \- io.netty:netty-handler:jar:4.1.114.Final:compile
+[INFO] |  |     +- io.netty:netty-codec-http2:jar:4.1.114.Final:compile
+[INFO] |  |     +- io.netty:netty-resolver-dns:jar:4.1.114.Final:compile
+[INFO] |  |     |  +- io.netty:netty-resolver:jar:4.1.114.Final:compile
+[INFO] |  |     |  \- io.netty:netty-codec-dns:jar:4.1.114.Final:compile
+[INFO] |  |     +- io.netty:netty-resolver-dns-native-macos:jar:osx-x86_64:4.1.114.Final:compile
+[INFO] |  |     |  \- io.netty:netty-resolver-dns-classes-macos:jar:4.1.114.Final:compile
+[INFO] |  |     +- io.netty:netty-transport-native-epoll:jar:linux-x86_64:4.1.114.Final:compile
+[INFO] |  |     |  +- io.netty:netty-transport-native-unix-common:jar:4.1.114.Final:compile
+[INFO] |  |     |  \- io.netty:netty-transport-classes-epoll:jar:4.1.114.Final:compile
+[INFO] |  |     \- io.projectreactor.netty:reactor-netty-core:jar:1.1.23:compile
+[INFO] |  |        \- io.netty:netty-handler-proxy:jar:4.1.114.Final:compile
+[INFO] |  |           \- io.netty:netty-codec-socks:jar:4.1.114.Final:compile
+[INFO] |  \- org.springframework.ai:spring-ai-model:jar:1.1.2:compile
+[INFO] |     +- org.springframework.ai:spring-ai-template-st:jar:1.1.2:compile
+[INFO] |     |  \- org.antlr:ST4:jar:4.3.4:compile
+[INFO] |     |     \- org.antlr:antlr-runtime:jar:3.5.3:compile
+[INFO] |     +- org.springframework:spring-messaging:jar:6.1.14:compile
+[INFO] |     +- org.antlr:antlr4-runtime:jar:4.13.1:compile
+[INFO] |     \- com.github.victools:jsonschema-module-jackson:jar:4.38.0:compile
+[INFO] +- org.springframework.ai:spring-ai-starter-model-openai:jar:1.1.2:compile
+[INFO] |  +- org.springframework.ai:spring-ai-autoconfigure-model-openai:jar:1.1.2:compile
+[INFO] |  |  +- org.springframework.ai:spring-ai-autoconfigure-model-tool:jar:1.1.2:compile
+[INFO] |  |  +- org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:jar:1.1.2:compile
+[INFO] |  |  +- org.springframework.ai:spring-ai-autoconfigure-model-embedding-observation:jar:1.1.2:compile
+[INFO] |  |  \- org.springframework.ai:spring-ai-autoconfigure-model-image-observation:jar:1.1.2:compile
+[INFO] |  +- org.springframework.ai:spring-ai-openai:jar:1.1.2:compile
+[INFO] |  +- org.springframework.ai:spring-ai-autoconfigure-model-chat-client:jar:1.1.2:compile
+[INFO] |  \- org.springframework.ai:spring-ai-autoconfigure-model-chat-memory:jar:1.1.2:compile
+[INFO] +- org.graalvm.polyglot:polyglot:jar:25.0.1:compile
+[INFO] |  +- org.graalvm.sdk:collections:jar:25.0.1:compile
+[INFO] |  \- org.graalvm.sdk:nativeimage:jar:25.0.1:compile
+[INFO] |     \- org.graalvm.sdk:word:jar:25.0.1:compile
+[INFO] +- org.graalvm.polyglot:python:pom:25.0.1:compile
+[INFO] |  \- org.graalvm.python:python:pom:25.0.1:runtime
+[INFO] |     +- org.graalvm.python:python-language:jar:25.0.1:runtime
+[INFO] |     |  +- org.graalvm.truffle:truffle-api:jar:25.0.1:runtime
+[INFO] |     |  +- org.graalvm.tools:profiler-tool:jar:25.0.1:runtime
+[INFO] |     |  |  \- org.graalvm.shadowed:json:jar:25.0.1:runtime
+[INFO] |     |  +- org.graalvm.regex:regex:jar:25.0.1:runtime
+[INFO] |     |  +- org.graalvm.truffle:truffle-nfi:jar:25.0.1:runtime
+[INFO] |     |  +- org.graalvm.truffle:truffle-nfi-libffi:jar:25.0.1:runtime
+[INFO] |     |  +- org.graalvm.truffle:truffle-nfi-panama:jar:25.0.1:runtime
+[INFO] |     |  +- org.graalvm.shadowed:icu4j:jar:25.0.1:runtime
+[INFO] |     |  +- org.graalvm.shadowed:xz:jar:25.0.1:runtime
+[INFO] |     |  +- org.bouncycastle:bcprov-jdk18on:jar:1.78.1:runtime
+[INFO] |     |  +- org.bouncycastle:bcpkix-jdk18on:jar:1.78.1:runtime
+[INFO] |     |  \- org.bouncycastle:bcutil-jdk18on:jar:1.78.1:runtime
+[INFO] |     +- org.graalvm.python:python-resources:jar:25.0.1:runtime
+[INFO] |     \- org.graalvm.truffle:truffle-runtime:jar:25.0.1:runtime
+[INFO] |        +- org.graalvm.sdk:jniutils:jar:25.0.1:runtime
+[INFO] |        \- org.graalvm.truffle:truffle-compiler:jar:25.0.1:runtime
+[INFO] +- commons-io:commons-io:jar:2.16.1:compile
+[INFO] \- org.springframework.boot:spring-boot-starter-test:jar:3.3.5:test
+[INFO]    +- org.springframework.boot:spring-boot-test:jar:3.3.5:test
+[INFO]    +- org.springframework.boot:spring-boot-test-autoconfigure:jar:3.3.5:test
+[INFO]    +- com.jayway.jsonpath:json-path:jar:2.9.0:test
+[INFO]    +- jakarta.xml.bind:jakarta.xml.bind-api:jar:4.0.2:test
+[INFO]    |  \- jakarta.activation:jakarta.activation-api:jar:2.1.3:test
+[INFO]    +- net.minidev:json-smart:jar:2.5.1:test
+[INFO]    |  \- net.minidev:accessors-smart:jar:2.5.1:test
+[INFO]    |     \- org.ow2.asm:asm:jar:9.6:test
+[INFO]    +- org.assertj:assertj-core:jar:3.25.3:test
+[INFO]    |  \- net.bytebuddy:byte-buddy:jar:1.14.19:test
+[INFO]    +- org.awaitility:awaitility:jar:4.2.2:test
+[INFO]    +- org.hamcrest:hamcrest:jar:2.2:test
+[INFO]    +- org.junit.jupiter:junit-jupiter:jar:5.10.5:test
+[INFO]    |  +- org.junit.jupiter:junit-jupiter-api:jar:5.10.5:test
+[INFO]    |  |  +- org.opentest4j:opentest4j:jar:1.3.0:test
+[INFO]    |  |  +- org.junit.platform:junit-platform-commons:jar:1.10.5:test
+[INFO]    |  |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO]    |  +- org.junit.jupiter:junit-jupiter-params:jar:5.10.5:test
+[INFO]    |  \- org.junit.jupiter:junit-jupiter-engine:jar:5.10.5:test
+[INFO]    |     \- org.junit.platform:junit-platform-engine:jar:1.10.5:test
+[INFO]    +- org.mockito:mockito-core:jar:5.11.0:test
+[INFO]    |  +- net.bytebuddy:byte-buddy-agent:jar:1.14.19:test
+[INFO]    |  \- org.objenesis:objenesis:jar:3.3:test
+[INFO]    +- org.mockito:mockito-junit-jupiter:jar:5.11.0:test
+[INFO]    +- org.skyscreamer:jsonassert:jar:1.5.3:test
+[INFO]    |  \- com.vaadin.external.google:android-json:jar:0.0.20131108.vaadin1:test
+[INFO]    +- org.springframework:spring-core:jar:6.1.14:compile
+[INFO]    |  \- org.springframework:spring-jcl:jar:6.1.14:compile
+[INFO]    +- org.springframework:spring-test:jar:6.1.14:test
+[INFO]    \- org.xmlunit:xmlunit-core:jar:2.9.1:test
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.094 s
+[INFO] Finished at: 2026-08-27T12:31:48+08:00
+[INFO] ------------------------------------------------------------------------
+
+===============================================================================
+RAW STDERR
+===============================================================================
+
+===============================================================================
+EXIT_CODE=0

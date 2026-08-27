@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-08-27T04:30:55.805721+00:00",
+  "bundleHash": "64b9b432d6ee9fc9e017436171f05e1198ab920121202266c835c471ff2c4550",
+  "recomputeCommand": "python scripts/internal_contract_hash.py",
+  "contracts": {
+    "label": "internal-contracts",
+    "root": "docs/contracts/internal",
+    "fileCount": 8,
+    "aggregateHash": "3b12a41e9d76a32956d177f3a9c38be802b8a1f5bc561879f6d25195c931e1fe",
+    "files": [
+      {
+        "path": "docs/contracts/internal/schemas/execution-plan.schema.json",
+        "sha256": "84d009ad3d58276315a1595250ef1bf3c4410fc4399b814bd9b581b18e0fb191",
+        "sizeBytes": 1504
+      },
+      {
+        "path": "docs/contracts/internal/schemas/execution-result.schema.json",
+        "sha256": "70f51249b4a1bdfcbbf6ea76558a0667f02a52f05a67f9b16eba1a54d114bb37",
+        "sizeBytes": 1443
+      },
+      {
+        "path": "docs/contracts/internal/schemas/model-call-receipt.schema.json",
+        "sha256": "fb2655cc90768bd497f4adfb0df688d3ced3979118907b02243ad285711a688a",
+        "sizeBytes": 869
+      },
+      {
+        "path": "docs/contracts/internal/schemas/runtime-capabilities.schema.json",
+        "sha256": "575289a269084eea6142f8284aac7e4da721d1d154af77c45faa0d608d94cd24",
+        "sizeBytes": 871
+      },
+      {
+        "path": "docs/contracts/internal/schemas/runtime-error.schema.json",
+        "sha256": "ac2943cf291555b543c295f73ecdb7f994326beaff8cfde337d88988b26ddb79",
+        "sizeBytes": 400
+      },
+      {
+        "path": "docs/contracts/internal/schemas/tool-call-receipt.schema.json",
+        "sha256": "c5174b22634bf3ddf8940a419189adbe8832ddc822343389115411444aa90392",
+        "sizeBytes": 1390
+      },
+      {
+        "path": "docs/contracts/internal/openapi/dkws-skill-runtime-internal-v1.yaml",
+        "sha256": "839e8e7e8e6a348591d8374467c3cc48a1a3e6cc7a9021e510197c302b5d8d54",
+        "sizeBytes": 1521
+      },
+      {
+        "path": "docs/contracts/internal/README.md",
+        "sha256": "06481ba42a36adc28efb34dfc6472bbe421b764b6871d4590423dea8602ce7f3",
+        "sizeBytes": 682
+      }
+    ]
+  },
+  "note": "bundleHash 可由 recomputeCommand 重算验证；契约变更必导致哈希变化。"
+}

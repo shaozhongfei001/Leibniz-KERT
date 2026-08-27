@@ -1,0 +1,17 @@
+{
+  "runtimeVersion": "0.0.1-poc2",
+  "contractVersion": "1.0",
+  "contractHash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "frameworkVersion": "spring-ai-alibaba-1.1.2.0",
+  "activatedSkills": [
+    {
+      "skillId": "demo-skill",
+      "version": "1.0.0",
+      "hash": "3b8f1d2a4c6e8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f70819"
+    }
+  ],
+  "sandboxCapability": "disabled",
+  "sandboxBackend": "none",
+  "degraded": false,
+  "status": "ok"
+}

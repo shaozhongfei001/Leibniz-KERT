@@ -1,0 +1,78 @@
+===============================================================================
+DKWS POC-2 EVIDENCE
+===============================================================================
+workstream:       DKWS-C-MIXED-ARCH-REMEDIATION-01
+description:      Java 21 离线可重复构建 + 全量单元测试（clean test）
+command:          mvn -B -ntp clean test
+workingDirectory: poc/spring-ai-alibaba-skill-runtime
+startedAt:        2026-08-27T04:31:43.956951+00:00
+completedAt:      2026-08-27T04:31:46.812565+00:00
+durationSeconds:  2.856
+exitCode:         0
+verdict:          PASS
+findings:         C-B04, C-M01
+repositoryBranch: feature/m2-p2-persistent-worker
+repositoryCommit: e98bcae4d9f02a928cba9495453aa257373b75db
+workingTreeDirty: True
+environment:
+  platform: Linux-6.8.0-47-generic-x86_64-with-glibc2.35
+  python: 3.12.8
+  java: openjdk version "21.0.11" 2026-04-21
+  maven: [1mApache Maven 3.6.3[m
+  bwrap: bubblewrap 0.6.1
+  nsjail: NOT_INSTALLED
+===============================================================================
+RAW STDOUT
+===============================================================================
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------< com.dkws:spring-ai-alibaba-skill-runtime >--------------
+[INFO] Building spring-ai-alibaba-skill-runtime 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.3.2:clean (default-clean) @ spring-ai-alibaba-skill-runtime ---
+[INFO] Deleting /home/szf/dev/Leibniz-KERT/poc/spring-ai-alibaba-skill-runtime/target
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:resources (default-resources) @ spring-ai-alibaba-skill-runtime ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:compile (default-compile) @ spring-ai-alibaba-skill-runtime ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 21 source files with javac [debug parameters release 21] to target/classes
+[INFO] /home/szf/dev/Leibniz-KERT/poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/config/AgentConfig.java: /home/szf/dev/Leibniz-KERT/poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/config/AgentConfig.java使用或覆盖了已过时的 API。
+[INFO] /home/szf/dev/Leibniz-KERT/poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/config/AgentConfig.java: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:testResources (default-testResources) @ spring-ai-alibaba-skill-runtime ---
+[INFO] skip non existing resourceDirectory /home/szf/dev/Leibniz-KERT/poc/spring-ai-alibaba-skill-runtime/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:testCompile (default-testCompile) @ spring-ai-alibaba-skill-runtime ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ spring-ai-alibaba-skill-runtime ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.dkws.skillruntime.service.SkillLifecycleServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s -- in com.dkws.skillruntime.service.SkillLifecycleServiceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.279 s
+[INFO] Finished at: 2026-08-27T12:31:46+08:00
+[INFO] ------------------------------------------------------------------------
+
+===============================================================================
+RAW STDERR
+===============================================================================
+
+===============================================================================
+EXIT_CODE=0

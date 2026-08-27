@@ -1,0 +1,64 @@
+{
+  "requestId": "req-01J8Z4KQ7X9M2N4P6R8T0V2X4Z",
+  "runtimeRequestId": "rt-7d3f9a1c",
+  "status": "SUCCESS",
+  "usable": true,
+  "releaseAllowed": true,
+  "degraded": false,
+  "result": {
+    "answer": "demo-skill 可用知识条目：KI-FRONT-001"
+  },
+  "errors": [],
+  "startedAt": "2026-08-27T12:00:00Z",
+  "completedAt": "2026-08-27T12:00:02Z",
+  "toolCallReceipts": [
+    {
+      "toolId": "read_skill",
+      "toolVersion": "1.0.0",
+      "skillId": "demo-skill",
+      "skillVersion": "1.0.0",
+      "inputHash": "aa11bb22cc33dd44ee55ff6677889900aa11bb22cc33dd44ee55ff6677889900",
+      "policyDecisionId": "pd-2026-08-27-0001",
+      "sandboxProfileHash": "e75dc94cce447cd29036bbcfc548cb0472147221f57baef168517a522d0b88d2",
+      "startedAt": "2026-08-27T12:00:00Z",
+      "completedAt": "2026-08-27T12:00:01Z",
+      "exitCode": 0,
+      "cpuTime": 0.042,
+      "memoryPeak": 12931072,
+      "outputHash": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+      "outputTruncated": false,
+      "networkUsed": false,
+      "status": "ok"
+    }
+  ],
+  "modelCallReceipts": [
+    {
+      "model": "internal-mock-chat",
+      "modelPolicyRef": "model-policy://internal-default/v1",
+      "promptHash": "d2e3f405162738495a6b7c8d9e0f1122334455667788990aabbccddeeff00112",
+      "paramsHash": "f405162738495a6b7c8d9e0f1122334455667788990aabbccddeeff0011223d2",
+      "inputTokens": 128,
+      "outputTokens": 64,
+      "estimatedCost": 0.0012,
+      "latencyMs": 850.5,
+      "degraded": false,
+      "status": "ok"
+    }
+  ],
+  "trace": [
+    {
+      "spanId": "00f067aa0ba902b7",
+      "name": "skill.execute",
+      "startedAt": "2026-08-27T12:00:00Z",
+      "completedAt": "2026-08-27T12:00:02Z",
+      "attributes": { "skillId": "demo-skill" }
+    },
+    {
+      "spanId": "1a2b3c4d5e6f7081",
+      "parentSpanId": "00f067aa0ba902b7",
+      "name": "tool.read_skill",
+      "startedAt": "2026-08-27T12:00:00Z",
+      "completedAt": "2026-08-27T12:00:01Z"
+    }
+  ]
+}

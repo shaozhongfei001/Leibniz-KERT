@@ -1,30 +1,171 @@
 {
-  "schema": "dkws-poc2-evidence/v1",
   "workstream": "DKWS-C-MIXED-ARCH-REMEDIATION-01",
-  "status": "PARTIAL_PASS",
-  "date": "2026-08-26",
-  "evidence": {
-    "build_and_unit_tests": "evidence/poc2/build-and-unit-tests.log",
-    "sandbox_smoke": "evidence/poc2/sandbox-smoke.log",
-    "internal_contract_hash": "64b9b432d6ee9fc9e017436171f05e1198ab920121202266c835c471ff2c4550"
+  "poc": "spring-ai-alibaba-skill-runtime",
+  "phase": "POC-2",
+  "generatedAt": "2026-08-27T04:30:55.805982+00:00",
+  "environment": {
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "python": "3.12.8",
+    "java": "openjdk version \"21.0.11\" 2026-04-21",
+    "maven": "\u001b[1mApache Maven 3.6.3\u001b[m",
+    "bwrap": "bubblewrap 0.6.1",
+    "nsjail": "NOT_INSTALLED"
   },
-  "passed": [
-    "maven_test",
-    "two_skills_dynamic_registration",
-    "dynamic_tool_binding_from_manifest",
-    "skill_lifecycle_install_activate_rollback_unit_test",
-    "internal_api_auth_401_without_token",
-    "bwrap_sandbox_basic_execution"
+  "anchors": {
+    "branch": "feature/m2-p2-persistent-worker",
+    "commit": "e98bcae4d9f02a928cba9495453aa257373b75db",
+    "dirty": true,
+    "javaSourceHash": "baa45741de813523608de179ac366986aec4568cb62c4c9556a6f47e81708b85",
+    "sandboxSourceHash": "5de322b075254950aa2f4ca4c85d76fc6e3eab727334624279f9d429b811afad",
+    "contractBundleHash": "64b9b432d6ee9fc9e017436171f05e1198ab920121202266c835c471ff2c4550",
+    "reportSha256": "2d1f7a1bfe7776df0b4c9dfd4bb2a7c14f30e0bae7c826dd5128e687d4228feb",
+    "reportHashMatch": true
+  },
+  "artifacts": [
+    {
+      "file": "build.log",
+      "description": "Java 21 离线可重复构建 + 全量单元测试",
+      "command": "mvn -B -ntp clean test",
+      "workingDirectory": "poc/spring-ai-alibaba-skill-runtime",
+      "correspondingFindings": [
+        "C-B04",
+        "C-M01"
+      ],
+      "present": false,
+      "sha256": null,
+      "exitCode": null,
+      "status": "MISSING",
+      "reason": "证据文件不存在"
+    },
+    {
+      "file": "unit-tests.log",
+      "description": "Skill 生命周期 / 契约 / 安全组件单元测试",
+      "command": "mvn -B -ntp clean test",
+      "workingDirectory": "poc/spring-ai-alibaba-skill-runtime",
+      "correspondingFindings": [
+        "C-B04",
+        "C-M02",
+        "C-M05"
+      ],
+      "present": false,
+      "sha256": null,
+      "exitCode": null,
+      "status": "MISSING",
+      "reason": "证据文件不存在"
+    },
+    {
+      "file": "contract-tests.log",
+      "description": "Python/Java 双端 consumer/provider 契约测试",
+      "command": "python -m pytest tests/contract/test_internal_runtime_contract.py -v (consumer) + mvn test -Dtest=InternalContractSchemaTest (provider)",
+      "workingDirectory": ".",
+      "correspondingFindings": [
+        "C-B02"
+      ],
+      "present": false,
+      "sha256": null,
+      "exitCode": null,
+      "status": "MISSING",
+      "reason": "证据文件不存在"
+    },
+    {
+      "file": "sandbox-security-tests.log",
+      "description": "OS Sandbox（bubblewrap）安全负向用例与资源限制",
+      "command": "python -m pytest tests/security/test_sandbox_runner_security.py -v",
+      "workingDirectory": ".",
+      "correspondingFindings": [
+        "C-B03"
+      ],
+      "present": false,
+      "sha256": null,
+      "exitCode": null,
+      "status": "MISSING",
+      "reason": "证据文件不存在"
+    },
+    {
+      "file": "dependency-tree.txt",
+      "description": "固定依赖版本树",
+      "command": "mvn -B -ntp dependency:tree -DoutputFile=...",
+      "workingDirectory": "poc/spring-ai-alibaba-skill-runtime",
+      "correspondingFindings": [
+        "C-M07"
+      ],
+      "present": false,
+      "sha256": null,
+      "exitCode": null,
+      "status": "MISSING",
+      "reason": "证据文件不存在"
+    },
+    {
+      "file": "sbom.json",
+      "description": "CycloneDX SBOM（Java 栈）",
+      "command": "mvn -B -ntp org.cyclonedx:cyclonedx-maven-plugin:2.8.0:makeAggregateBom -DoutputFormat=json",
+      "workingDirectory": "poc/spring-ai-alibaba-skill-runtime",
+      "correspondingFindings": [
+        "C-M07"
+      ],
+      "present": false,
+      "sha256": null,
+      "exitCode": null,
+      "status": "MISSING",
+      "reason": "证据文件不存在"
+    },
+    {
+      "file": "performance-baseline.json",
+      "description": "性能基线测量（非 NFR 达标声明）",
+      "command": "python scripts/poc2_performance_baseline.py",
+      "workingDirectory": ".",
+      "correspondingFindings": [
+        "C-M09"
+      ],
+      "present": false,
+      "sha256": null,
+      "exitCode": null,
+      "status": "MISSING",
+      "reason": "证据文件不存在"
+    },
+    {
+      "file": "integration-tests.log",
+      "description": "Python Core -> Java Runtime 集成测试",
+      "command": "N/A",
+      "workingDirectory": ".",
+      "correspondingFindings": [
+        "C-B04"
+      ],
+      "present": false,
+      "sha256": null,
+      "exitCode": null,
+      "status": "NOT_EXECUTED",
+      "reason": "Core->Runtime 集成尚未实现（施工令禁止未经 Owner 授权接入生产 Core）；内部契约已就绪但无运行时联调，故本项未执行。"
+    },
+    {
+      "file": "reliability-tests.log",
+      "description": "故障注入：Runtime 不可达/重启/取消/熔断",
+      "command": "N/A",
+      "workingDirectory": ".",
+      "correspondingFindings": [
+        "C-B04",
+        "C-M04"
+      ],
+      "present": false,
+      "sha256": null,
+      "exitCode": null,
+      "status": "NOT_EXECUTED",
+      "reason": "依赖 Core->Runtime 集成，未实现，故未执行。"
+    }
   ],
-  "not_passed": [
-    "real_tool_call_receipt",
-    "sandbox_security_negative_cases",
-    "python_core_to_java_runtime_e2e",
-    "contract_dual_tests",
-    "sbom",
-    "performance_baseline"
-  ],
-  "blocked": [
-    "github_push_ssh_timeout"
+  "summary": {
+    "pass": 0,
+    "fail": 0,
+    "notExecuted": 2,
+    "missing": 7
+  },
+  "nonClaims": [
+    "本证据集不代表方案 C 已成为正式基线。",
+    "本证据集不代表 Spring AI Alibaba Runtime 已生产可用。",
+    "本证据集不代表 Python/Shell 沙箱已通过独立安全审查（C-B03 需独立安全 QA）。",
+    "本证据集不代表 DKWS 已生产就绪。",
+    "本证据集不代表 GITS UAT 已通过。",
+    "性能数据仅为 baseline measurement，非 NFR 达标声明。",
+    "Tech Lead 自测不替代独立 QA 签署。"
   ]
 }

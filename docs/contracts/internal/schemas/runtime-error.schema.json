@@ -1,24 +1,87 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dkws.internal/skill-runtime/v1/runtime-error.schema.json",
   "title": "RuntimeError",
+  "description": "内部契约统一错误结构。错误必须以本结构显式返回，**不得以 HTTP 200 + 普通成功文本隐藏**。retryable 由 Runtime 依错误性质判定，Core 依此决定是否重试与熔断。",
   "type": "object",
-  "required": [
-    "code",
-    "message"
-  ],
+  "required": ["code", "message", "retryable"],
   "properties": {
     "code": {
-      "type": "string"
+      "description": "稳定错误码。契约违规类（*_INVALID/*_MISMATCH/*_UNSUPPORTED/*_CONFLICT）一律 retryable=false。",
+      "type": "string",
+      "enum": [
+        "UNAUTHENTICATED",
+        "REPLAY_DETECTED",
+        "CONTRACT_VERSION_UNSUPPORTED",
+        "PLAN_INVALID",
+        "UNKNOWN_FIELD_REJECTED",
+        "IDEMPOTENCY_KEY_CONFLICT",
+        "SKILL_NOT_FOUND",
+        "SKILL_NOT_ACTIVE",
+        "SKILL_HASH_MISMATCH",
+        "SKILL_SIGNATURE_INVALID",
+        "ACTIVATION_PLAN_MISMATCH",
+        "ACTIVATION_FAILED",
+        "TOOL_NOT_ALLOWED",
+        "TOOL_FAILED",
+        "TOOL_TIMEOUT",
+        "OUTPUT_LIMIT_EXCEEDED",
+        "SANDBOX_UNAVAILABLE",
+        "SANDBOX_TIMEOUT",
+        "SANDBOX_PROCESS_KILLED",
+        "SANDBOX_EXECUTABLE_NOT_ALLOWED",
+        "SANDBOX_PATH_TRAVERSAL",
+        "SANDBOX_SYMLINK_ESCAPE",
+        "MODEL_UNAVAILABLE",
+        "BUDGET_EXCEEDED",
+        "DEADLINE_EXCEEDED",
+        "CANCELLED",
+        "RUNTIME_UNAVAILABLE",
+        "INTERNAL_ERROR"
+      ]
     },
     "message": {
-      "type": "string"
+      "description": "面向运维的可读描述，不得包含 Secret 或完整 payload。",
+      "type": "string",
+      "minLength": 1
     },
     "retryable": {
+      "description": "Core 是否可安全重试。契约违规与策略拒绝必须为 false。",
       "type": "boolean"
     },
     "details": {
+      "description": "结构化补充信息（如被拒绝的 toolId、未知字段名）。",
       "type": "object"
     }
   },
+  "allOf": [
+    {
+      "description": "契约违规 / 策略拒绝类错误不可重试。",
+      "if": {
+        "properties": {
+          "code": {
+            "enum": [
+              "UNAUTHENTICATED",
+              "REPLAY_DETECTED",
+              "CONTRACT_VERSION_UNSUPPORTED",
+              "PLAN_INVALID",
+              "UNKNOWN_FIELD_REJECTED",
+              "IDEMPOTENCY_KEY_CONFLICT",
+              "SKILL_HASH_MISMATCH",
+              "SKILL_SIGNATURE_INVALID",
+              "ACTIVATION_PLAN_MISMATCH",
+              "TOOL_NOT_ALLOWED",
+              "SANDBOX_EXECUTABLE_NOT_ALLOWED",
+              "SANDBOX_PATH_TRAVERSAL",
+              "SANDBOX_SYMLINK_ESCAPE",
+              "BUDGET_EXCEEDED"
+            ]
+          }
+        },
+        "required": ["code"]
+      },
+      "then": { "properties": { "retryable": { "const": false } } }
+    }
+  ],
   "additionalProperties": false
 }

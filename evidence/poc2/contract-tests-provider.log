@@ -1,0 +1,66 @@
+===============================================================================
+DKWS POC-2 EVIDENCE
+===============================================================================
+workstream:       DKWS-C-MIXED-ARCH-REMEDIATION-01
+description:      内部契约 provider 侧（Java Runtime 视角）契约测试
+command:          mvn -B -ntp test -Dtest=InternalContractSchemaTest
+workingDirectory: poc/spring-ai-alibaba-skill-runtime
+startedAt:        2026-08-27T04:31:48.646577+00:00
+completedAt:      2026-08-27T04:31:50.032274+00:00
+durationSeconds:  1.386
+exitCode:         1
+verdict:          FAIL
+findings:         C-B02
+repositoryBranch: feature/m2-p2-persistent-worker
+repositoryCommit: e98bcae4d9f02a928cba9495453aa257373b75db
+workingTreeDirty: True
+environment:
+  platform: Linux-6.8.0-47-generic-x86_64-with-glibc2.35
+  python: 3.12.8
+  java: openjdk version "21.0.11" 2026-04-21
+  maven: [1mApache Maven 3.6.3[m
+  bwrap: bubblewrap 0.6.1
+  nsjail: NOT_INSTALLED
+===============================================================================
+RAW STDOUT
+===============================================================================
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------< com.dkws:spring-ai-alibaba-skill-runtime >--------------
+[INFO] Building spring-ai-alibaba-skill-runtime 0.0.1-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:resources (default-resources) @ spring-ai-alibaba-skill-runtime ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:compile (default-compile) @ spring-ai-alibaba-skill-runtime ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:testResources (default-testResources) @ spring-ai-alibaba-skill-runtime ---
+[INFO] skip non existing resourceDirectory /home/szf/dev/Leibniz-KERT/poc/spring-ai-alibaba-skill-runtime/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.13.0:testCompile (default-testCompile) @ spring-ai-alibaba-skill-runtime ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.2.5:test (default-test) @ spring-ai-alibaba-skill-runtime ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.800 s
+[INFO] Finished at: 2026-08-27T12:31:50+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project spring-ai-alibaba-skill-runtime: No tests matching pattern "InternalContractSchemaTest" were executed! (Set -Dsurefire.failIfNoSpecifiedTests=false to ignore this error.) -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+
+===============================================================================
+RAW STDERR
+===============================================================================
+
+===============================================================================
+EXIT_CODE=1

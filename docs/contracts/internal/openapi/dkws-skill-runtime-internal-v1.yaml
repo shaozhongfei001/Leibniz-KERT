@@ -2,17 +2,51 @@ openapi: 3.1.0
 info:
   title: DKWS Skill Runtime Internal API
   version: 1.0.0-candidate
-  description: Python Core -> Java Skill Runtime private contract. Not for external clients.
+  description: |
+    Python Core -> Java Skill Runtime 私有内部契约。**不对 GITS 或任何外部客户端开放**。
+
+    权威边界（C' 架构）：
+    - Python Core 是唯一公共入口、唯一 Runtime Store 写入方、唯一 Gate/Evidence/成本控制面。
+    - Java Runtime 无状态，只执行本契约下发的 ExecutionPlan，不写 SQLite、不读五层工作区。
+    - 本 API 只监听 loopback / 内部网络，必须携带 X-Internal-Token 服务到服务认证。
+
+    语义约定：
+    - 认证：除 /health 外全部端点要求 X-Internal-Token；缺失或无效返回 401，且不得以 200 文本隐藏错误。
+    - 防重放：X-Request-Nonce + X-Request-Timestamp，超出 300s 时间窗或 nonce 重复返回 409 REPLAY_DETECTED。
+    - 幂等：同 idempotencyKey 同 payloadHash 返回既有结果；同 key 不同 payload 返回 409 IDEMPOTENCY_KEY_CONFLICT。
+    - deadline：ExecutionPlan.deadline 为绝对截止；到期返回 408 DEADLINE_EXCEEDED。
+    - timeout/cancel：Core 可调用 cancel 端点主动取消；Runtime 必须尽力中止并返回 FAILED/CANCELLED 回执。
+    - retryable：RuntimeError.retryable 指示 Core 是否可重试；契约违规类错误一律不可重试。
+    - 熔断：Core 侧对 503/超时累计触发熔断；Runtime 不可达时 Core 降级为只读能力，Skill 执行 fail-closed。
+    - 版本兼容：contractVersion major 不一致返回 422 CONTRACT_VERSION_UNSUPPORTED；minor 向后兼容。
+    - 未知字段：所有 schema additionalProperties=false，未知字段一律拒绝（fail-closed），不做静默丢弃。
+    - 输出大小：contextPackage.maxOutputBytes 限制单次输出；超限截断并置 outputTruncated=true。
+    - Trace：traceparent 必填，requestId 贯穿 ExecutionResult 与全部 receipt。
+  x-contract-version: '1.0'
+  x-contract-bundle-hash-source: scripts/internal_contract_hash.py
 servers:
   - url: http://127.0.0.1:18081
-    description: loopback internal
+    description: loopback internal only
 security:
   - InternalTokenAuth: []
+tags:
+  - name: execution
+    description: 受控执行面（Core 下发 ExecutionPlan）
+  - name: admin
+    description: Skill 生命周期管理面（Core 控制面驱动，staging -> activate -> rollback）
+  - name: observability
+    description: 健康与能力上报
 paths:
   /internal/v1/runtime/execute:
     post:
       operationId: executePlan
+      tags: [execution]
       summary: Execute an ExecutionPlan
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+        - $ref: '#/components/parameters/RequestNonce'
+        - $ref: '#/components/parameters/RequestTimestamp'
+        - $ref: '#/components/parameters/Traceparent'
       requestBody:
         required: true
         content:
@@ -21,34 +55,277 @@ paths:
               $ref: '../schemas/execution-plan.schema.json'
       responses:
         '200':
-          description: ExecutionResult
+          description: ExecutionResult（含 SUCCESS/PARTIAL/DEGRADED/FAILED；业务失败也用 200 + FAILED 表达，不得以文本隐藏）
           content:
             application/json:
               schema:
                 $ref: '../schemas/execution-result.schema.json'
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/Unauthorized'
         '408':
-          description: Deadline exceeded
+          $ref: '#/components/responses/DeadlineExceeded'
         '409':
-          description: Idempotency conflict
+          $ref: '#/components/responses/Conflict'
         '422':
-          description: Invalid plan
+          $ref: '#/components/responses/InvalidPlan'
         '503':
-          description: Runtime unavailable
+          $ref: '#/components/responses/RuntimeUnavailable'
+  /internal/v1/runtime/execute/{requestId}/cancel:
+    post:
+      operationId: cancelExecution
+      tags: [execution]
+      summary: Cancel an in-flight execution
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+        - name: requestId
+          in: path
+          required: true
+          schema: { type: string, minLength: 8, maxLength: 128 }
+      responses:
+        '202':
+          description: 取消已受理（幂等；已完成的请求返回 202 且不改变结果）
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /internal/v1/admin/skills:
+    get:
+      operationId: listSkills
+      tags: [admin]
+      summary: List installed skill versions and active pointer
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+      responses:
+        '200':
+          description: Installed skills
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [skills]
+                properties:
+                  skills:
+                    type: array
+                    items:
+                      type: object
+                      required: [skillId, versions, activeVersion]
+                      properties:
+                        skillId: { type: string }
+                        activeVersion: { type: [string, 'null'] }
+                        versions:
+                          type: array
+                          items:
+                            type: object
+                            required: [version, hash, state]
+                            properties:
+                              version: { type: string }
+                              hash: { type: string, pattern: '^[0-9a-f]{64}$' }
+                              state:
+                                type: string
+                                enum: [STAGED, INSTALLED, ACTIVE, SUPERSEDED, REJECTED]
+                additionalProperties: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /internal/v1/admin/skills/install:
+    post:
+      operationId: installSkill
+      tags: [admin]
+      summary: Install a skill package into staging (never overwrites active version)
+      description: |
+        上传进入 staging，完成校验 -> hash 比对 -> 发布凭据验证 -> 安全扫描 -> 安装为非活动版本。
+        install 绝不切换活动版本；切换必须由显式 activate 完成。
+        hash 不匹配返回 422 SKILL_HASH_MISMATCH；凭据无效返回 422 SKILL_SIGNATURE_INVALID。
+        重复安装同 skillId+version+hash 幂等返回既有安装记录。
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [skillId, version, hash, packageBase64, publisherCredential]
+              properties:
+                skillId: { type: string }
+                version: { type: string }
+                hash: { type: string, pattern: '^[0-9a-f]{64}$' }
+                packageBase64: { type: string }
+                publisherCredential: { type: string }
+              additionalProperties: false
+      responses:
+        '201':
+          description: Installed into staging as non-active version
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [skillId, version, hash, state]
+                properties:
+                  skillId: { type: string }
+                  version: { type: string }
+                  hash: { type: string }
+                  state: { type: string, enum: [INSTALLED] }
+                additionalProperties: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/InvalidPlan'
+  /internal/v1/admin/skills/activate:
+    post:
+      operationId: activateSkill
+      tags: [admin]
+      summary: Atomically switch active skill version
+      description: |
+        原子切换活动版本。激活失败必须保持旧版本继续服务（fail-safe）。
+        activationPlanHash 由 Core 控制面提供，Runtime 记录以便与 ExecutionPlan 校验一致性。
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [skillId, version, hash, activationPlanHash]
+              properties:
+                skillId: { type: string }
+                version: { type: string }
+                hash: { type: string, pattern: '^[0-9a-f]{64}$' }
+                activationPlanHash: { type: string, pattern: '^[0-9a-f]{64}$' }
+              additionalProperties: false
+      responses:
+        '200':
+          description: Activated
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [skillId, activeVersion, previousVersion, activationPlanHash]
+                properties:
+                  skillId: { type: string }
+                  activeVersion: { type: string }
+                  previousVersion: { type: [string, 'null'] }
+                  activationPlanHash: { type: string }
+                additionalProperties: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/InvalidPlan'
+  /internal/v1/admin/skills/rollback:
+    post:
+      operationId: rollbackSkill
+      tags: [admin]
+      summary: Roll back to the previous active version
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [skillId]
+              properties:
+                skillId: { type: string }
+                targetVersion:
+                  description: 省略则回滚到上一个活动版本
+                  type: string
+              additionalProperties: false
+      responses:
+        '200':
+          description: Rolled back
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [skillId, activeVersion, rolledBackFrom]
+                properties:
+                  skillId: { type: string }
+                  activeVersion: { type: string }
+                  rolledBackFrom: { type: string }
+                additionalProperties: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /internal/v1/runtime/health:
     get:
       operationId: runtimeHealth
+      tags: [observability]
       summary: Runtime health and capabilities
       security: []
       responses:
         '200':
-          description: Health
+          description: Health（runtime/contract/framework 版本、激活 Skill、Sandbox 能力、降级状态）
           content:
             application/json:
               schema:
                 $ref: '../schemas/runtime-capabilities.schema.json'
 components:
+  parameters:
+    InternalToken:
+      name: X-Internal-Token
+      in: header
+      required: true
+      description: 服务到服务共享密钥；由 Secret 注入，不落盘于仓库。
+      schema: { type: string, minLength: 16 }
+    RequestNonce:
+      name: X-Request-Nonce
+      in: header
+      required: true
+      description: 防重放随机数；Runtime 在 300s 窗口内拒绝重复 nonce。
+      schema: { type: string, minLength: 8, maxLength: 128 }
+    RequestTimestamp:
+      name: X-Request-Timestamp
+      in: header
+      required: true
+      description: RFC3339 UTC 时间戳；偏离服务器时间超过 300s 拒绝。
+      schema: { type: string, format: date-time }
+    Traceparent:
+      name: traceparent
+      in: header
+      required: true
+      description: W3C Trace Context，与 ExecutionPlan.traceparent 必须一致。
+      schema: { type: string, pattern: '^00-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$' }
+  responses:
+    Unauthorized:
+      description: 缺失或无效内部认证（不得返回业务成功文本）
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/runtime-error.schema.json'
+    NotFound:
+      description: 目标不存在
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/runtime-error.schema.json'
+    DeadlineExceeded:
+      description: 超过 ExecutionPlan.deadline
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/runtime-error.schema.json'
+    Conflict:
+      description: 幂等冲突（同 key 不同 payload）或重放检测
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/runtime-error.schema.json'
+    InvalidPlan:
+      description: 计划非法、未知字段、契约版本不支持、hash/签名不匹配
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/runtime-error.schema.json'
+    RuntimeUnavailable:
+      description: Runtime 或 Sandbox 不可用（Core 应降级并 fail-closed）
+      content:
+        application/json:
+          schema:
+            $ref: '../schemas/runtime-error.schema.json'
   securitySchemes:
     InternalTokenAuth:
       type: apiKey

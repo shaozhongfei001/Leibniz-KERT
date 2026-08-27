@@ -1,6 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dkws.internal/skill-runtime/v1/execution-result.schema.json",
   "title": "ExecutionResult",
+  "description": "Java Skill Runtime 返回给 Python Core 的结构化执行结果。usable/releaseAllowed 由 Core 最终裁决使用，Runtime 只报告事实。DEGRADED 表示产出可能不完整但可用性由 Core 判断；FAILED 表示不可用。",
   "type": "object",
   "required": [
     "requestId",
@@ -8,73 +10,119 @@
     "status",
     "usable",
     "releaseAllowed",
+    "degraded",
     "result",
+    "errors",
     "startedAt",
-    "completedAt"
+    "completedAt",
+    "toolCallReceipts",
+    "modelCallReceipts",
+    "trace"
   ],
   "properties": {
     "requestId": {
-      "type": "string"
+      "description": "回显 ExecutionPlan.requestId，必须完全一致。",
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128
     },
     "runtimeRequestId": {
-      "type": "string"
+      "description": "Runtime 侧生成的执行实例标识，用于 Runtime 日志定位。",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
     },
     "status": {
       "type": "string",
-      "enum": [
-        "SUCCESS",
-        "PARTIAL",
-        "DEGRADED",
-        "FAILED"
-      ]
+      "enum": ["SUCCESS", "PARTIAL", "DEGRADED", "FAILED"]
     },
     "usable": {
+      "description": "Runtime 判断产出是否结构完整可被下游消费。FAILED 时必须为 false。",
       "type": "boolean"
     },
     "releaseAllowed": {
+      "description": "Runtime 不做业务放行决策；此处仅表示未触发 fail-closed 阻断。最终放行由 Core Gate 决定。",
       "type": "boolean"
     },
     "degraded": {
+      "description": "是否发生降级（模型不可用、Sandbox 不可用、Tool 部分失败等）。为 true 时 degradationReason 必填。",
       "type": "boolean"
     },
     "degradationReason": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "result": {
+      "description": "Skill 业务产出。FAILED 时可为空对象。",
       "type": "object"
     },
     "errors": {
+      "description": "错误列表，元素为 RuntimeError。SUCCESS 时必须为空数组。",
       "type": "array",
-      "items": {
-        "type": "object"
-      }
+      "items": { "$ref": "runtime-error.schema.json" }
     },
-    "startedAt": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "completedAt": {
-      "type": "string",
-      "format": "date-time"
-    },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
     "toolCallReceipts": {
+      "description": "所有工具调用回执，无调用时为空数组。不得用框架日志替代。",
       "type": "array",
-      "items": {
-        "$ref": "tool-call-receipt.schema.json"
-      }
+      "items": { "$ref": "tool-call-receipt.schema.json" }
     },
     "modelCallReceipts": {
+      "description": "所有模型调用回执，无调用时为空数组。",
       "type": "array",
-      "items": {
-        "$ref": "model-call-receipt.schema.json"
-      }
+      "items": { "$ref": "model-call-receipt.schema.json" }
     },
     "trace": {
+      "description": "执行轨迹片段，携带 traceparent/spanId 以支持 Core→Runtime→Sandbox 关联。",
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "required": ["spanId", "name", "startedAt"],
+        "properties": {
+          "spanId": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+          "parentSpanId": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+          "name": { "type": "string", "minLength": 1 },
+          "startedAt": { "type": "string", "format": "date-time" },
+          "completedAt": { "type": "string", "format": "date-time" },
+          "attributes": { "type": "object" }
+        },
+        "additionalProperties": false
       }
     }
   },
+  "allOf": [
+    {
+      "description": "degraded=true 时必须给出原因。",
+      "if": { "properties": { "degraded": { "const": true } }, "required": ["degraded"] },
+      "then": { "required": ["degradationReason"] }
+    },
+    {
+      "description": "FAILED 时不可用且必须有错误。",
+      "if": { "properties": { "status": { "const": "FAILED" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "usable": { "const": false },
+          "releaseAllowed": { "const": false },
+          "errors": { "minItems": 1 }
+        }
+      }
+    },
+    {
+      "description": "SUCCESS 时不得携带错误，且不得同时声明降级。",
+      "if": { "properties": { "status": { "const": "SUCCESS" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "errors": { "maxItems": 0 },
+          "degraded": { "const": false }
+        }
+      }
+    },
+    {
+      "description": "DEGRADED 状态必须与 degraded 标志一致。",
+      "if": { "properties": { "status": { "const": "DEGRADED" } }, "required": ["status"] },
+      "then": { "properties": { "degraded": { "const": true } } }
+    }
+  ],
   "additionalProperties": false
 }

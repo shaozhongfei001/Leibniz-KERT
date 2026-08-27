@@ -1,0 +1,56 @@
+{
+  "kind": "BASELINE_MEASUREMENT",
+  "disclaimer": "本文件仅为基线测量，不构成性能达标声明。Owner 未批准 NFR 前不得据此宣布 PRODUCTION_READY 或性能通过。",
+  "generatedAt": "2026-08-27T04:29:48.335912+00:00",
+  "environment": {
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "python": "3.12.8",
+    "cpuCount": 20
+  },
+  "measurements": {
+    "javaRuntime": {
+      "status": "PARTIAL",
+      "javaVersion": "openjdk version \"21.0.11\" 2026-04-21",
+      "springBootStartupMs": null,
+      "jvmHeapAtIdleBytes": null,
+      "note": "Spring Boot 冷启动、JVM heap、空闲内存需在 Runtime 以生产 profile 独立进程运行时测量；本轮 Runtime 未接入 Core，标记 NOT_EXECUTED。"
+    },
+    "mavenBuild": {
+      "status": "MEASURED",
+      "cleanTestSeconds": 2.735,
+      "testsRun": 9,
+      "testsFailed": 0,
+      "testsSkipped": 0
+    },
+    "osSandbox": {
+      "status": "MEASURED",
+      "backend": "bubblewrap",
+      "sandboxStartupNoop": {
+        "count": 20,
+        "minMs": 24.267,
+        "maxMs": 28.765,
+        "meanMs": 26.011,
+        "p50Ms": 26.173,
+        "p95Ms": 28.087,
+        "p99Ms": 28.765
+      },
+      "sandboxSmallWorkload": {
+        "count": 20,
+        "minMs": 25.221,
+        "maxMs": 32.249,
+        "meanMs": 27.165,
+        "p50Ms": 26.923,
+        "p95Ms": 30.348,
+        "p99Ms": 32.249
+      }
+    }
+  },
+  "notExecuted": {
+    "coreToRuntimeLatency": "BLOCKED: Python Core -> Java Runtime 集成未实现（C-B04 未关闭）",
+    "readSkillLatency": "NOT_EXECUTED: 需要真实模型与运行中的 Runtime 实例",
+    "toolCallLatency": "NOT_EXECUTED: ToolCall receipt 拦截器未实现",
+    "skillRegistryReload": "NOT_EXECUTED: 需要运行中的 Runtime 实例",
+    "maxSafeConcurrency": "NOT_EXECUTED: 未做并发压测，禁止估算",
+    "queueingBehavior": "NOT_EXECUTED: 无异步队列接入"
+  }
+}

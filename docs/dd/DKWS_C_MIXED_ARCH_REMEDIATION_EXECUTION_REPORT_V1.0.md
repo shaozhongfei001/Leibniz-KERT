@@ -22,7 +22,7 @@
 |---|---|
 | C-B01 | DESIGN_CLOSED_PENDING_OWNER（C′ 架构 + ADR-016） |
 | C-B02 | DESIGN_CLOSED_PENDING_CONTRACT_TEST（内部契约已建，双端测试未完成） |
-| C-B03 | MACHINE_TESTS_PASS_PENDING_INDEPENDENT_SECURITY_QA（bwrap smoke 通过，安全负向未完成） |
+| C-B03 | ~~MACHINE_TESTS_PASS_PENDING_INDEPENDENT_SECURITY_QA~~ → **IN_PROGRESS**（2026-08-27 Owner 授权更正，见 CONFLICT C-20；原状态高估：引用的 `sandbox-security-tests.log` 不存在，安全负向用例 0 项执行） |
 | C-B04 | POC_CLOSED_PARTIAL（POC-2 部分通过） |
 | C-B05 | DESIGN_CLOSED_PENDING_OWNER（V2.1/GITS V1.1/supersession 已建） |
 

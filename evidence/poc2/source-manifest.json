@@ -1,0 +1,155 @@
+{
+  "generatedAt": "2026-08-27T04:30:55.773162+00:00",
+  "repositoryRoot": "/home/szf/dev/Leibniz-KERT",
+  "branch": "feature/m2-p2-persistent-worker",
+  "commit": "e98bcae4d9f02a928cba9495453aa257373b75db",
+  "dirty": true,
+  "java": {
+    "label": "poc2-java",
+    "root": "poc/spring-ai-alibaba-skill-runtime",
+    "fileCount": 24,
+    "aggregateHash": "baa45741de813523608de179ac366986aec4568cb62c4c9556a6f47e81708b85",
+    "files": [
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/SkillRuntimeApplication.java",
+        "sha256": "caef56862224c3e4544d429bf80de3f5dd813068a6008a46726a87fc5430e928",
+        "sizeBytes": 337
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/config/AgentConfig.java",
+        "sha256": "f455809bf08c0233f723c4517e1af2031ce74b8e182e44bca5c861135c41fe39",
+        "sizeBytes": 3242
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/controller/AgentChatController.java",
+        "sha256": "ed25ef7200c82826d3db0c66d5da1d2cb71bb250cce16dc1b4c497cac4c3b3bf",
+        "sizeBytes": 929
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/controller/InternalRuntimeController.java",
+        "sha256": "e18b2c6ef1cdfa8ad99a15acab9d0e118cc07d92964ebe2b881312a310f1ddff",
+        "sizeBytes": 840
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/controller/SkillAdminController.java",
+        "sha256": "9cfb6848a8427f85f97c6460fec0a61f1177b8e8388fb4950659cb0e30244582",
+        "sizeBytes": 2388
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/model/ChatRequest.java",
+        "sha256": "80bb58e647d638c356a835ae8059ad69a897afcf93687c69da65a6aa31a1e855",
+        "sizeBytes": 179
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/model/ChatResponse.java",
+        "sha256": "86f1d1c203bf45f49834cb2af63e526b57c35b7a8ef0d86386e751f37f84f271",
+        "sizeBytes": 299
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/model/ExecutionResult.java",
+        "sha256": "cb1e8a6659e4bf608231773323a1d902a2cb771a0d0d8e4a5314db8cba0b2ad6",
+        "sizeBytes": 352
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/model/ModelCallReceipt.java",
+        "sha256": "510ac9d2023be14e2aa58f059edfed473f86d82fdd58d781521760da73478466",
+        "sizeBytes": 195
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/model/RuntimeCapabilities.java",
+        "sha256": "79709d79f990fce48bf11f2f3734ff2f77f21030b254a39371ef2e99eb91984f",
+        "sizeBytes": 348
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/model/SkillInfo.java",
+        "sha256": "ad4dedb9dc142ee4d69f9778c3ec61497acbca7dff7b886b26765196c1be1032",
+        "sizeBytes": 193
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/model/SkillManifest.java",
+        "sha256": "734d787c2cafaee748d804daae6f17c4a30671076bda4334d87796d1d7a30011",
+        "sizeBytes": 221
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/model/SkillUploadResponse.java",
+        "sha256": "558ac9e441d4c738bbe183ab0fa32706a17222b4ad826200f844b3c4ec8f300e",
+        "sizeBytes": 184
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/model/ToolCallReceipt.java",
+        "sha256": "ae1718529d9ecfb5956bceb7800f170e6c31677612a509665719c70803c70676",
+        "sizeBytes": 227
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/security/InternalAuthFilter.java",
+        "sha256": "f203b1ca602b4cf585a0c8ba01e97fc1c3da4a35c3068692aa301f973312754c",
+        "sizeBytes": 1675
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/security/ShellCommandGuard.java",
+        "sha256": "c7d948ffe52f1ec96c849c207f92b6475f328488197285a332a33696e8961e37",
+        "sizeBytes": 744
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/security/ZipSafeExtractor.java",
+        "sha256": "33163323488f641ea6eff0f726f0ee3f5d6b4166d462e513429ea50648c06e70",
+        "sizeBytes": 2325
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/service/SkillExecutionService.java",
+        "sha256": "ac1556ee43a5476af84ab5c172556ce1c099034630587ae2e43defc4f973fb4a",
+        "sizeBytes": 1480
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/service/SkillLifecycleService.java",
+        "sha256": "131489a1d263926687869628e233c7dbdf349e50b676540693256bb69f520286",
+        "sizeBytes": 6859
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/service/SkillToolRegistry.java",
+        "sha256": "b2a6669d78154ae8878145c4b2d9976dd6fa7d9ef10a60a5f0d5d3a9d803a223",
+        "sizeBytes": 1167
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/java/com/dkws/skillruntime/service/SkillUploadService.java",
+        "sha256": "42cbac9da59be6dc546e9f4fbc117a6221994079be265ba231e4c4b0b2fd2555",
+        "sizeBytes": 4100
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/test/java/com/dkws/skillruntime/service/SkillLifecycleServiceTest.java",
+        "sha256": "d4f02cbf73b76b124aa85157b0e24b2202e9ddab8b0f407f8f6d3a86ecb7d05e",
+        "sizeBytes": 1444
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/pom.xml",
+        "sha256": "03003dfc88f2294879038d58af1effca39b1468f4dd6554480f6790480c33da7",
+        "sizeBytes": 4117
+      },
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/src/main/resources/application.yml",
+        "sha256": "e74902c310be92032f780772c2a12cd7953c45d9da9d9c5989e0cedc7dbee293",
+        "sizeBytes": 674
+      }
+    ]
+  },
+  "sandbox": {
+    "label": "poc2-sandbox",
+    "root": "poc/spring-ai-alibaba-skill-runtime",
+    "fileCount": 1,
+    "aggregateHash": "5de322b075254950aa2f4ca4c85d76fc6e3eab727334624279f9d429b811afad",
+    "files": [
+      {
+        "path": "poc/spring-ai-alibaba-skill-runtime/sandbox/bwrap_runner.py",
+        "sha256": "45d58e96321eaf0b5f89ecc7ab39ffb9d32d3ffb25e8245055e3d8d100bc157c",
+        "sizeBytes": 1977
+      }
+    ]
+  },
+  "tests": {
+    "label": "poc2-python-tests",
+    "root": "tests",
+    "fileCount": 0,
+    "aggregateHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "files": []
+  }
+}

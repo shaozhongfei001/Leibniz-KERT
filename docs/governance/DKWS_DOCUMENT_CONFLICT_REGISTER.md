@@ -36,3 +36,9 @@
 | C-17 | GITS A+B 被推迟到 Java Runtime 之后 | 以独立评审为准：A+B 不等 Java Runtime | GITS V1.1 | RESOLVED_CANDIDATE |
 | C-18 | 独立服务边界仍把 Skill 执行全放 Python dkws-server | C′ 将 Java Runtime 作为内部执行器 | 新 C′ 架构 | RESOLVED_CANDIDATE |
 | C-19 | OpenAPI `x-contract-bundle-hash: PENDING_COMPUTE` 与 manifest hash 关系不清 | 以 manifest 为实际 hash，OpenAPI 中改为引用 manifest | 后续修正 | PENDING |
+
+## C-B03 状态高估更正（2026-08-27，Owner 授权）
+
+| ID | 冲突 | 证据位置 | 当前判定 | 处理方式 | 状态 |
+|---|---|---|---|---|---|
+| C-20 | 执行报告 V1.0 将 C-B03 标为 `MACHINE_TESTS_PASS_PENDING_INDEPENDENT_SECURITY_QA`，但（1）`evidence/poc2/sandbox-security-tests.log` 不存在；（2）`POC2_EVIDENCE_MANIFEST.json` 引用的 `build-and-unit-tests.log`、`sandbox-smoke.log` 两文件均不存在（空引用）；（3）报告第十一节 §6 要求的 20 项沙箱安全负向用例 0 项执行 | `docs/dd/DKWS_C_MIXED_ARCH_REMEDIATION_EXECUTION_REPORT_V1.0.md`（原第 25 行）、`evidence/poc2/`（仅 2 文件）、`docs/governance/DKWS_C_MIXED_ARCH_REMEDIATION_MATRIX.md`（C-B03 = IN_PROGRESS） | **原状态高估**。矩阵内 C-B03 一直为 `IN_PROGRESS`，执行报告与矩阵自相矛盾；按施工令第十五节纪律「不用 README 代替机器证据」「不吞掉异常取得 PASS」，`MACHINE_TESTS_PASS` 不成立 | 保留原始表述（删除线）+ 更正为 `IN_PROGRESS`；矩阵 C-B03 增加高估更正注记；同轮补建真实 `sandbox-security-tests.log` 后按实际结果重新定级，仍不得由 Tech Lead 签署独立安全 QA | RESOLVED_CANDIDATE |

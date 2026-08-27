@@ -1,10 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dkws.internal/skill-runtime/v1/execution-plan.schema.json",
   "title": "ExecutionPlan",
+  "description": "Python Core 下发给 Java Skill Runtime 的受控执行计划。Java Runtime 不得自行选择 tenant/scope/policy/prompt/model/tool，全部由本计划决定。未知字段一律拒绝（fail-closed）。",
   "type": "object",
   "required": [
     "contractVersion",
     "requestId",
+    "traceparent",
     "tenantId",
     "customerScope",
     "skillId",
@@ -12,72 +15,155 @@
     "skillHash",
     "activationPlanHash",
     "policyId",
+    "promptPolicyRef",
+    "modelPolicyRef",
     "deadline",
     "idempotencyKey",
     "payloadHash",
-    "allowedToolIds"
+    "allowedToolIds",
+    "knowledgeSourceRefs",
+    "contextPackage"
   ],
   "properties": {
     "contractVersion": {
-      "type": "string"
+      "description": "内部契约版本。Runtime 收到不兼容的 major 版本必须拒绝（CONTRACT_VERSION_UNSUPPORTED）。",
+      "type": "string",
+      "pattern": "^1\\.[0-9]+$"
     },
     "requestId": {
-      "type": "string"
+      "description": "Python Core 生成的请求标识，贯穿 ExecutionResult 与所有 receipt。",
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128
     },
     "traceparent": {
-      "type": "string"
+      "description": "W3C Trace Context traceparent 头值，用于 Core→Runtime→Sandbox 全链路关联。必填以保证 trace 贯通。",
+      "type": "string",
+      "pattern": "^00-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
     },
     "tenantId": {
-      "type": "string"
+      "description": "租户标识，由 Core 鉴权后注入；Runtime 不得推断或改写。",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
     },
     "customerScope": {
-      "type": "object"
+      "description": "客户可见范围与权限约束。Runtime 只能在此范围内读取知识与调用工具。",
+      "type": "object",
+      "required": ["scopeId", "classificationCeiling"],
+      "properties": {
+        "scopeId": { "type": "string", "minLength": 1 },
+        "classificationCeiling": {
+          "description": "本次执行允许触达的最高数据分级；Runtime 不得越级。",
+          "type": "string",
+          "enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"]
+        },
+        "allowedDomains": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
     },
     "skillId": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$"
     },
     "skillVersion": {
-      "type": "string"
+      "description": "语义版本。Runtime 只加载 skillId+skillVersion+skillHash 三元组完全匹配的已激活包。",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
     },
     "skillHash": {
-      "type": "string"
+      "description": "Skill 包内容 SHA-256（小写十六进制）。不匹配必须拒绝执行（SKILL_HASH_MISMATCH）。",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "activationPlanHash": {
-      "type": "string"
+      "description": "控制面激活计划哈希。Runtime 当前激活状态与之不一致时必须 fail-closed。",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "policyId": {
-      "type": "string"
+      "description": "Tool Policy 标识，决定工具准入与 sandbox profile。",
+      "type": "string",
+      "minLength": 1
     },
     "promptPolicyRef": {
-      "type": "string"
+      "description": "Prompt 策略引用（由 Core 权威解析）。Runtime 不得自行选择或改写 Prompt 模板。",
+      "type": "string",
+      "minLength": 1
     },
     "modelPolicyRef": {
-      "type": "string"
+      "description": "模型与预算策略引用（模型、温度上限、token/成本预算）。Runtime 不得自行选择模型或超预算。",
+      "type": "string",
+      "minLength": 1
     },
     "deadline": {
+      "description": "绝对截止时间（RFC3339 UTC）。到期后 Runtime 必须取消执行并返回 DEADLINE_EXCEEDED。",
       "type": "string",
       "format": "date-time"
     },
     "idempotencyKey": {
-      "type": "string"
+      "description": "幂等键。同 key 同 payloadHash 返回既有结果；同 key 不同 payloadHash 必须拒绝（IDEMPOTENCY_KEY_CONFLICT）。",
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128
     },
     "payloadHash": {
-      "type": "string"
+      "description": "contextPackage 规范化后的 SHA-256，用于防重放与幂等冲突检测。",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "allowedToolIds": {
+      "description": "本次执行允许的工具白名单。空数组表示禁止任何工具调用。模型请求白名单外工具必须被拒绝（TOOL_NOT_ALLOWED）。",
       "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
     },
     "knowledgeSourceRefs": {
+      "description": "允许读取的知识源引用（由 Core 解析五层资产后下发）。Runtime 不得直接读取五层工作区或 SQLite。空数组表示不提供知识源。",
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object",
+        "required": ["refId", "kind", "contentHash"],
+        "properties": {
+          "refId": { "type": "string", "minLength": 1 },
+          "kind": {
+            "type": "string",
+            "enum": ["ENTITY", "RELATION", "VIEW", "DOCUMENT", "SNAPSHOT"]
+          },
+          "contentHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        },
+        "additionalProperties": false
       }
     },
     "contextPackage": {
-      "type": "object"
+      "description": "Core 组装好的执行输入。Runtime 只消费，不回写权威源。",
+      "type": "object",
+      "required": ["inputs"],
+      "properties": {
+        "inputs": { "type": "object" },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "contentHash", "sizeBytes"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "contentHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+              "sizeBytes": { "type": "integer", "minimum": 0 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "maxOutputBytes": {
+          "description": "输出大小上限；超限时 Runtime 必须截断并在 receipt 标记 outputTruncated=true。",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

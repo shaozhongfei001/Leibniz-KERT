@@ -1,9 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dkws.internal/skill-runtime/v1/model-call-receipt.schema.json",
   "title": "ModelCallReceipt",
+  "description": "单次模型调用回执。Runtime 不自行选择模型，modelPolicyRef 由 Core 下发；本回执用于 Core 侧成本与审计控制面。",
   "type": "object",
   "required": [
     "model",
+    "modelPolicyRef",
     "promptHash",
     "inputTokens",
     "outputTokens",
@@ -12,40 +15,59 @@
   ],
   "properties": {
     "model": {
-      "type": "string"
+      "description": "实际调用的模型标识。必须落在 modelPolicyRef 允许范围内。",
+      "type": "string",
+      "minLength": 1
+    },
+    "modelPolicyRef": {
+      "description": "回显 ExecutionPlan.modelPolicyRef，证明模型选择来自 Core 授权。",
+      "type": "string",
+      "minLength": 1
     },
     "promptHash": {
-      "type": "string"
+      "description": "最终 Prompt 的 SHA-256。不记录 Prompt 原文，避免敏感内容外泄。",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "paramsHash": {
-      "type": "string"
+      "description": "调用参数（temperature/topP/maxTokens 等）规范化后的 SHA-256。",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
-    "inputTokens": {
-      "type": "integer"
-    },
-    "outputTokens": {
-      "type": "integer"
-    },
+    "inputTokens": { "type": "integer", "minimum": 0 },
+    "outputTokens": { "type": "integer", "minimum": 0 },
     "estimatedCost": {
-      "type": "number"
+      "description": "预估成本（记账单位由 Core 定义）。",
+      "type": "number",
+      "minimum": 0
     },
-    "latencyMs": {
-      "type": "number"
-    },
-    "degraded": {
-      "type": "boolean"
-    },
-    "degradationReason": {
-      "type": "string"
+    "latencyMs": { "type": "number", "minimum": 0 },
+    "degraded": { "type": "boolean" },
+    "degradationReason": { "type": "string", "minLength": 1 },
+    "errorCode": {
+      "description": "非 ok 状态必填，与 RuntimeError.code 对齐（如 MODEL_UNAVAILABLE、BUDGET_EXCEEDED）。",
+      "type": "string",
+      "minLength": 1
     },
     "status": {
       "type": "string",
-      "enum": [
-        "ok",
-        "error",
-        "degraded"
-      ]
+      "enum": ["ok", "error", "degraded"]
     }
   },
+  "allOf": [
+    {
+      "description": "非 ok 状态必须给出 errorCode。",
+      "if": { "properties": { "status": { "enum": ["error", "degraded"] } }, "required": ["status"] },
+      "then": { "required": ["errorCode"] }
+    },
+    {
+      "description": "degraded 状态必须与 degraded 标志及原因一致。",
+      "if": { "properties": { "status": { "const": "degraded" } }, "required": ["status"] },
+      "then": {
+        "required": ["degradationReason"],
+        "properties": { "degraded": { "const": true } }
+      }
+    }
+  ],
   "additionalProperties": false
 }

@@ -1,0 +1,9 @@
+{
+  "code": "TOOL_NOT_ALLOWED",
+  "message": "tool 'shell' is not in ExecutionPlan.allowedToolIds",
+  "retryable": false,
+  "details": {
+    "requestedToolId": "shell",
+    "allowedToolIds": ["read_skill"]
+  }
+}

@@ -1,0 +1,39 @@
+===============================================================================
+DKWS POC-2 EVIDENCE
+===============================================================================
+workstream:       DKWS-C-MIXED-ARCH-REMEDIATION-01
+description:      内部契约 consumer 侧（Python Core 视角）契约测试
+command:          /home/szf/dev/Leibniz-KERT/.venv/bin/python -m pytest tests/contract/test_internal_runtime_contract.py -v --no-header -p no:cacheprovider
+workingDirectory: .
+startedAt:        2026-08-27T04:31:48.476533+00:00
+completedAt:      2026-08-27T04:31:48.640970+00:00
+durationSeconds:  0.164
+exitCode:         4
+verdict:          FAIL
+findings:         C-B02
+repositoryBranch: feature/m2-p2-persistent-worker
+repositoryCommit: e98bcae4d9f02a928cba9495453aa257373b75db
+workingTreeDirty: True
+environment:
+  platform: Linux-6.8.0-47-generic-x86_64-with-glibc2.35
+  python: 3.12.8
+  java: openjdk version "21.0.11" 2026-04-21
+  maven: [1mApache Maven 3.6.3[m
+  bwrap: bubblewrap 0.6.1
+  nsjail: NOT_INSTALLED
+===============================================================================
+RAW STDOUT
+===============================================================================
+============================= test session starts ==============================
+collected 0 items
+
+============================ no tests ran in 0.00s =============================
+
+===============================================================================
+RAW STDERR
+===============================================================================
+ERROR: file or directory not found: tests/contract/test_internal_runtime_contract.py
+
+
+===============================================================================
+EXIT_CODE=4
