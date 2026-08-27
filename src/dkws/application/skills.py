@@ -236,7 +236,15 @@ class SkillExecutionService:
 
     def execute_async(self, skill_id: str, request_id: str | None,
                       request: dict | None) -> str:
-        """异步技能作业（SP-20 长任务）：创建 SKILL job，后台线程执行，结果写 result.json。
+        """异步技能作业（SP-20 长任务）：创建 SKILL job 并返回 job_id。
+
+        两种执行模式：
+
+        - **持久化模式（M2.4，推荐）**：注入 ``runtime_store`` 时仅入队，
+          由独立 Worker 进程（``scripts/run_worker.py``）领取执行。
+          进程崩溃后 Job 不丢失，可被 lease 回收机制重新调度。
+        - **线程模式（M1 兼容）**：未注入 Store 时沿用后台线程立即执行。
+          该模式下进程退出即丢任务，仅适用于开发环境。
 
         返回 job_id；轮询 GET /v1/jobs/{job_id}（完成时含 skill_result）。
         """
@@ -248,9 +256,22 @@ class SkillExecutionService:
         if self.workspace is None:
             raise ValueError("异步执行需要工作区（workspace 未配置）")
         writer = WorkspaceWriter(self.workspace)
+        idem = request_id or f"req-{int(time.time() * 1000)}"
         job = JobController(self.workspace, writer, job_type="SKILL",
-                            requested_by="api",
-                            idempotency_key=request_id or f"req-{int(time.time() * 1000)}")
+                            requested_by="api", idempotency_key=idem,
+                            runtime_store=self._store)
+
+        if self._store is not None:
+            # 持久化模式：把执行入参写入权威表，交由独立 Worker 进程领取。
+            # Job 保持 PENDING（由 JobController 初始登记），不在此处 start()：
+            # 状态推进的所有权归 Worker（claim → RUNNING → COMPLETED/RETRYING）。
+            self._store.set_job_payload(job.job_id, {
+                "skillId": skill_id,
+                "requestId": request_id,
+                "request": request or {},
+            })
+            return job.job_id
+
         job.start()
 
         def _run() -> None:

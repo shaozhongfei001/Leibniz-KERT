@@ -202,8 +202,8 @@ def test_update_job_status_and_result(store):
     updated = store.update_job("J1", status="RUNNING", increment_attempts=True)
     assert updated.status == "RUNNING"
     assert updated.attempts == 1
-    done = store.update_job("J1", status="SUCCEEDED", result={"ok": True})
-    assert done.status == "SUCCEEDED"
+    done = store.update_job("J1", status="COMPLETED", result={"ok": True})
+    assert done.status == "COMPLETED"
     assert done.result == {"ok": True}
 
 
@@ -224,7 +224,7 @@ def test_list_jobs_filter_by_status(store):
     """按状态过滤列出 Job。"""
     store.create_job("J1", "SKILL")
     store.create_job("J2", "SKILL")
-    store.update_job("J2", status="SUCCEEDED")
+    store.update_job("J2", status="COMPLETED")
     pending = store.list_jobs(statuses=["PENDING"])
     assert [j.job_id for j in pending] == ["J1"]
     assert len(store.list_jobs()) == 2

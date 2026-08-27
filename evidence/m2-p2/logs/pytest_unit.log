@@ -1,0 +1,23 @@
+### 命令: python -m pytest tests/unit -v --tb=short -p no:cacheprovider
+### 时间: 2026-08-27T11:39:10+08:00
+### Python: Python 3.12.8
+
+============================= test session starts ==============================
+platform linux -- Python 3.12.8, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/szf/dev/Leibniz-KERT
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 177 items
+
+tests/unit/test_job_queue.py ........................................... [ 24%]
+..                                                                       [ 25%]
+tests/unit/test_markdown.py ...................                          [ 36%]
+tests/unit/test_runtime_config.py ......................                 [ 48%]
+tests/unit/test_runtime_store.py ....................................... [ 70%]
+                                                                         [ 70%]
+tests/unit/test_worker.py ...........................                    [ 85%]
+tests/unit/test_workspace.py .........................                   [100%]
+
+============================= 177 passed in 9.66s ==============================
+
+### 退出码: 0

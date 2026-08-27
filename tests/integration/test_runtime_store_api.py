@@ -184,11 +184,11 @@ def test_completed_jobs_not_touched_by_recovery(ws):
     """恢复过程不影响已完成 Job。"""
     store = RuntimeStore(_db(ws))
     store.create_job("JOB-DONE", "SKILL")
-    store.update_job("JOB-DONE", status="SUCCEEDED", result={"ok": True})
+    store.update_job("JOB-DONE", status="COMPLETED", result={"ok": True})
 
     _client(ws, _store_config())
     job = RuntimeStore(_db(ws)).get_job("JOB-DONE")
-    assert job.status == "SUCCEEDED"
+    assert job.status == "COMPLETED"
     assert job.result == {"ok": True}
 
 

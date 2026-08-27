@@ -1,0 +1,137 @@
+{
+  "task_package": "M2-P2",
+  "scope": "M2.4 持久化异步 Worker",
+  "generated_at": "2026-08-27T11:38:23+0800",
+  "environment": {
+    "python": "3.12.8",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "workspace": "/tmp/dkws-m2p2-e2e-ws"
+  },
+  "checks": [
+    {
+      "name": "schema_version_is_2",
+      "passed": true,
+      "detail": "schema_version=2"
+    },
+    {
+      "name": "lease_retry_columns_present",
+      "passed": true,
+      "detail": "新增 10 列齐备"
+    },
+    {
+      "name": "scheduling_indexes_present",
+      "passed": true,
+      "detail": "调度/回收/dead-letter 索引已建立"
+    },
+    {
+      "name": "crash_worker_claims_job",
+      "passed": true,
+      "detail": "子进程 pid=2518578 领取 J-CRASH，status=RUNNING owner=w-crash attempts=1"
+    },
+    {
+      "name": "worker_killed_with_sigkill",
+      "passed": true,
+      "detail": "kill -9 后退出码=-9（负值表示被信号终止）"
+    },
+    {
+      "name": "lease_not_released_by_crash",
+      "passed": true,
+      "detail": "被强杀进程无机会清理，lease 仍指向已死 Worker"
+    },
+    {
+      "name": "expired_lease_reclaimed",
+      "passed": true,
+      "detail": "回收过期 lease 数=1"
+    },
+    {
+      "name": "crashed_job_reprocessed_to_completion",
+      "passed": true,
+      "detail": "新 Worker 接手后 status=COMPLETED result={'v': 42}"
+    },
+    {
+      "name": "attempt_count_preserved_across_crash",
+      "passed": true,
+      "detail": "attempts=2（崩溃那次 + 恢复那次，未重置）"
+    },
+    {
+      "name": "first_failure_goes_retrying",
+      "passed": true,
+      "detail": "第 1 次失败 → status=RETRYING，next_attempt_at 已设置=True"
+    },
+    {
+      "name": "exhausted_attempts_go_dead_letter",
+      "passed": true,
+      "detail": "额度耗尽 → status=FAILED dead_letter=True reason=重试次数耗尽（2/2）"
+    },
+    {
+      "name": "dead_letter_not_reclaimable",
+      "passed": true,
+      "detail": "dead-letter Job 不再被领取，避免无限重试"
+    },
+    {
+      "name": "dead_letter_avoids_blocked_state",
+      "passed": true,
+      "detail": "dead-letter 用 FAILED+标记位表达，未使用 BLOCKED（§11.1 合规）"
+    },
+    {
+      "name": "dead_letter_requeue_works",
+      "passed": true,
+      "detail": "人工重放后 status=COMPLETED result={'recovered': True}"
+    },
+    {
+      "name": "exponential_backoff_applied",
+      "passed": true,
+      "detail": "退避序列=[2.0, 4.0, 8.0] 秒（base=2 factor=2）"
+    },
+    {
+      "name": "backoff_capped",
+      "passed": true,
+      "detail": "退避序列=[2.0, 4.0, 8.0, 10.0, 10.0]，上限 10 秒生效"
+    },
+    {
+      "name": "sigterm_graceful_shutdown",
+      "passed": true,
+      "detail": "执行中收到 SIGTERM，当前 Job 仍完成：status=COMPLETED"
+    },
+    {
+      "name": "no_dangling_lease_after_shutdown",
+      "passed": true,
+      "detail": "优雅停机后无悬挂 lease"
+    },
+    {
+      "name": "concurrent_claim_no_duplicates",
+      "passed": true,
+      "detail": "8 线程并发领取 30 个 Job：投递 30 次，去重后 30 个"
+    },
+    {
+      "name": "cli_stats_works",
+      "passed": true,
+      "detail": "--stats 退出码=0，输出为合法 JSON 队列概览"
+    },
+    {
+      "name": "cli_list_dead_letters_works",
+      "passed": true,
+      "detail": "--list-dead-letters 退出码=0"
+    },
+    {
+      "name": "cli_requeue_rejects_unknown",
+      "passed": true,
+      "detail": "重放不存在的 Job 返回非零退出码=1"
+    }
+  ],
+  "queue_stats_final": {
+    "by_status": {
+      "COMPLETED": 3,
+      "RETRYING": 2,
+      "RUNNING": 30
+    },
+    "claimable": 2,
+    "dead_letter": 0,
+    "expired_leases": 0
+  },
+  "summary": {
+    "passed": 22,
+    "total": 22,
+    "result": "PASS"
+  }
+}

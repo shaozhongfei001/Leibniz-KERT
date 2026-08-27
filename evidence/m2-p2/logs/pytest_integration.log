@@ -1,0 +1,36 @@
+### 命令: python -m pytest tests/integration -v --tb=short -p no:cacheprovider
+### 时间: 2026-08-27T11:39:20+08:00
+### Python: Python 3.12.8
+
+============================= test session starts ==============================
+platform linux -- Python 3.12.8, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/szf/dev/Leibniz-KERT
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 176 items
+
+tests/integration/test_api.py ........                                   [  4%]
+tests/integration/test_extract_review.py ...............                 [ 13%]
+tests/integration/test_gates.py .....                                    [ 15%]
+tests/integration/test_ingest.py ..............                          [ 23%]
+tests/integration/test_interaction_memory.py .........                   [ 28%]
+tests/integration/test_kuzu_graph.py ......                              [ 32%]
+tests/integration/test_parse_doc.py ........                             [ 36%]
+tests/integration/test_persistent_jobs.py ...................            [ 47%]
+tests/integration/test_process_data.py ........                          [ 52%]
+tests/integration/test_projection.py .....                               [ 55%]
+tests/integration/test_publish.py ........                               [ 59%]
+tests/integration/test_runtime_store_api.py ...................          [ 70%]
+tests/integration/test_service_proposal.py .........                     [ 75%]
+tests/integration/test_services.py ...............                       [ 84%]
+tests/integration/test_skills.py ............................            [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/szf/dev/Leibniz-KERT/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 176 passed, 1 warning in 92.93s (0:01:32) ===================
+
+### 退出码: 0
