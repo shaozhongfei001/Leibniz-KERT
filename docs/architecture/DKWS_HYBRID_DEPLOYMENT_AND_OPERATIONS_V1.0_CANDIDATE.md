@@ -101,10 +101,33 @@ Python Core 的 `DKWS_BIND_HOST` 参与生产 profile 校验：
 
 ## 6. 可观测
 
+> M2.5 已落地，实现细节见 `DKWS_OBSERVABILITY_M2P3.md`。
+
 - 统一 JSON 日志字段：requestId, traceId, tenantId, skillId
-- W3C Trace Context 贯通
-- Metrics：HTTP、Skill、Tool、Model、Sandbox
+  （`DKWS_STRUCTURED_LOGS=true` 启用，生产默认开启）
+- W3C Trace Context 贯通（沿用上游 `traceparent`，畸形值拒绝并新建 trace）
+- Metrics：HTTP（计数/延迟直方图/4xx/5xx）、Job 队列深度、就绪状态、构建信息
 - 告警：Java Runtime down、Sandbox 失败率、磁盘、JVM heap
+
+### 6.1 探针端点
+
+| 端点 | 用途 | 语义 |
+|---|---|---|
+| `/livez` | 存活 | **不检查依赖**；失败通常触发重启 |
+| `/readyz` | 就绪 | 检查工作区与 Runtime Store；未就绪返回 **503**，摘除实例但**不重启** |
+| `/metrics` | 指标 | Prometheus `text/plain; version=0.0.4` |
+| `/v1/health` | 兼容 | 既有端点，附 `runtime` 加固状态 |
+
+三者均在限流豁免与匿名白名单中（`/metrics` 除外，其鉴权由
+`DKWS_METRICS_REQUIRE_ADMIN` 单一决定）。
+
+### 6.2 采集侧要求
+
+- **`/metrics` 需保护**：指标含队列深度、DB schema 版本等内部信息。
+  生产须设 `DKWS_METRICS_REQUIRE_ADMIN=true`，或由网络层限制采集来源。
+- **路径标签为路由模板**（如 `/v1/evidence/{object_id}`），已内建高基数防护。
+- **Worker 进程无 HTTP 端口**，其统计不经 `/metrics` 暴露；
+  跨进程聚合需 textfile collector 或 pushgateway（当前未实现）。
 
 ## 7. 发布与版本
 

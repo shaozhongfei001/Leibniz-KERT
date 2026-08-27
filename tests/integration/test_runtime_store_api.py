@@ -170,14 +170,37 @@ def test_multiple_gate_decisions_accumulate(ws):
 
 # ---------------------------------------------------------------- Job 恢复
 
-def test_stale_running_jobs_recovered_on_startup(ws):
-    """启动时把上次残留的 RUNNING Job 复位为 PENDING。"""
+def test_expired_lease_jobs_reclaimed_on_startup(ws):
+    """启动时回收 lease 已过期的 Job（M2.4 起 create_app 改用 lease 感知回收）。
+
+    M2.3 时 ``create_app`` 调用 ``recover_stale_jobs``（无条件复位所有 RUNNING）；
+    M2.4 改为 ``reclaim_expired_leases``，仅回收 lease 已过期者，
+    以免 API 启动时误抢 Worker 正在正常处理的 Job。
+    """
+    import time
+
     store = RuntimeStore(_db(ws))
-    store.create_job("JOB-STALE", "SKILL")
-    store.update_job("JOB-STALE", status="RUNNING")
+    store.create_job("JOB-STALE", "SKILL", max_attempts=3)
+    # 模拟 Worker 领取后崩溃：lease 早已过期
+    store.claim_job("w-dead", lease_seconds=1, now=time.time() - 100)
 
     _client(ws, _store_config())
-    assert RuntimeStore(_db(ws)).get_job("JOB-STALE").status == "PENDING"
+    job = RuntimeStore(_db(ws)).get_job("JOB-STALE")
+    assert job.status == "RETRYING"
+    assert job.lease_owner is None
+    assert job.error_code == "LEASE_EXPIRED"
+
+
+def test_live_lease_jobs_not_touched_on_startup(ws):
+    """启动时不动 lease 仍有效的 Job（避免误抢正在执行的任务）。"""
+    store = RuntimeStore(_db(ws))
+    store.create_job("JOB-LIVE", "SKILL")
+    store.claim_job("w-alive", lease_seconds=3600)
+
+    _client(ws, _store_config())
+    job = RuntimeStore(_db(ws)).get_job("JOB-LIVE")
+    assert job.status == "RUNNING"
+    assert job.lease_owner == "w-alive"
 
 
 def test_completed_jobs_not_touched_by_recovery(ws):
