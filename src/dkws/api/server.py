@@ -588,4 +588,10 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         return rec
 
+    # ── DSH Web 界面 ──
+    from ..dsh.app import mount_dsh
+    app.state.workspace = ws
+    app.state.knowledge_service = svc
+    mount_dsh(app)
+
     return app

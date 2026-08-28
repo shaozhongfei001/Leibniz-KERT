@@ -134,8 +134,17 @@ class ServiceProposalExecutor:
                           "message": f"ContextPackage 缺失字段: {missing}"})
             raise ValueError(f"ContextPackage 缺失字段: {missing}")
         if not isinstance(ctx.get("enterpriseData"), dict):
-            trace.append({"phase": "validate", "status": "failed", "message": "enterpriseData 缺失"})
-            raise ValueError("enterpriseData 缺失")
+            # enterpriseData 缺失时，从已知字段构造默认值（fail-open 兼容旧调用方）
+            ctx["enterpriseData"] = {
+                "basicInfo": {
+                    "customerName": ctx.get("customerName", ""),
+                    "industry": ctx.get("industry", ""),
+                },
+                "operatingData": {},
+                "financialSummary": {},
+            }
+            trace.append({"phase": "validate", "status": "ok",
+                          "message": "enterpriseData 缺失，已从已知字段构造默认值"})
         trace.append({"phase": "validate", "status": "ok", "message": "ContextPackage 校验通过"})
 
         industry_code = self._map_industry(ctx.get("industry", ""))

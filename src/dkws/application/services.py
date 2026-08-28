@@ -14,12 +14,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import pyarrow as pa
+import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
 from ..domain import ids, timeutil
 from ..domain.errors import AssetNotFoundError, ServiceNotReadyError, UsageError
 from ..domain.rules import dsl
 from ..infrastructure import markdown
+from ..infrastructure.parquet import build_filter
 
 DEFAULT_SERVICE = "product_knowledge"
 
@@ -54,10 +56,15 @@ class KnowledgeService:
     def _version_dir(self) -> Path:
         return self.ws / "04_serve" / self.service_id / f"version={self._active_version()}"
 
-    def _read_table(self, name: str) -> pa.Table:
+    def _read_table(self, name: str, *,
+                     filters: dict | list | None = None) -> pa.Table:
+        """读取投影 Parquet 文件，支持谓词下推。"""
         p = self._version_dir() / name
         if not p.is_file():
             raise AssetNotFoundError(f"投影文件不存在: {name}")
+        filter_expr = build_filter(filters) if filters else None
+        if filter_expr is not None:
+            return pq.read_table(p, filters=filter_expr)
         return pq.read_table(p)
 
     def _meta(self, **extra) -> dict:
@@ -75,11 +82,8 @@ class KnowledgeService:
                    where: dict | None = None, limit: int = 100) -> ServiceResult:
         if limit > 1000:
             raise UsageError("limit 不能超过 1000")
-        table = self._read_table(f"datasets/{dataset}.parquet")
+        table = self._read_table(f"datasets/{dataset}.parquet", filters=where)
         rows = table.to_pylist()
-        if where:
-            rows = [r for r in rows if all(
-                r.get(k) == v for k, v in where.items())]
         if select:
             rows = [{k: r.get(k) for k in select if k in r} for r in rows]
         rows = rows[:limit]
@@ -91,16 +95,17 @@ class KnowledgeService:
     # ---------------- 实体（FR-SRV-004） ----------------
 
     def get_entity(self, entity_id: str, *, as_of: str | None = None) -> ServiceResult:
-        ents = self._read_table("entities.parquet")
-        hits = [r for r in ents.to_pylist() if r["entity_id"] == entity_id]
+        ents = self._read_table("entities.parquet", filters={"entity_id": entity_id})
+        hits = ents.to_pylist()
         if not hits:
             raise AssetNotFoundError(f"实体不存在: {entity_id}")
         entity = hits[0]
-        stmts = self._read_table("statements.parquet").to_pylist()
-        related = [s for s in stmts if s["subject_id"] == entity_id
-                   and (not as_of or _active_on(s, as_of))]
+        stmts = self._read_table("statements.parquet",
+                                  filters={"subject_id": entity_id}).to_pylist()
+        if as_of:
+            stmts = [s for s in stmts if _active_on(s, as_of)]
         return ServiceResult(
-            data={"entity": entity, "statements": related, "statement_count": len(related)},
+            data={"entity": entity, "statements": stmts, "statement_count": len(stmts)},
             meta=self._meta(entity_id=entity_id),
         )
 
@@ -240,10 +245,7 @@ class KnowledgeService:
                filters: dict | None = None) -> ServiceResult:
         if mode not in ("FULLTEXT", "VECTOR", "HYBRID"):
             raise UsageError(f"非法检索模式: {mode!r}")
-        segs = [r for r in self._read_table("segments.parquet").to_pylist()]
-        if filters:
-            for k, v in filters.items():
-                segs = [r for r in segs if r.get(k) == v]
+        segs = self._read_table("segments.parquet", filters=filters).to_pylist()
         if mode in ("FULLTEXT", "HYBRID"):
             ft = _fulltext_score(query, segs)
         else:
@@ -302,17 +304,13 @@ class KnowledgeService:
 
     def segments(self, document_id: str | None = None) -> list[dict]:
         """返回片段全量行（可选按 document_id 过滤），含 content/heading_path 原文。"""
-        rows = self._read_table("segments.parquet").to_pylist()
-        if document_id:
-            rows = [r for r in rows if r.get("document_id") == document_id]
-        return rows
+        filters = {"document_id": document_id} if document_id else None
+        return self._read_table("segments.parquet", filters=filters).to_pylist()
 
     def entities(self, entity_id: str | None = None) -> list[dict]:
         """返回实体全量行（可选按 entity_id 过滤），含 x_* 扩展字段。"""
-        rows = self._read_table("entities.parquet").to_pylist()
-        if entity_id:
-            rows = [r for r in rows if r.get("entity_id") == entity_id]
-        return rows
+        filters = {"entity_id": entity_id} if entity_id else None
+        return self._read_table("entities.parquet", filters=filters).to_pylist()
 
     def relations(self) -> list[dict]:
         """返回关系全量行。"""

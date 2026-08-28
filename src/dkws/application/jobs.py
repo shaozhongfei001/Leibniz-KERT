@@ -19,6 +19,7 @@ M2.4（Owner 决策路线 C′）状态权威变更
 
 from __future__ import annotations
 
+import logging
 import re
 import time
 from pathlib import Path
@@ -28,6 +29,8 @@ from ..domain.errors import ConflictError, UsageError
 from ..infrastructure import logging as logging_mod, markdown
 from ..infrastructure.fs import WorkspaceWriter
 from ..infrastructure.runtime_store import RuntimeStore
+
+_log = logging.getLogger(__name__)
 
 STATUS_HEADINGS = ["当前摘要", "输入输出", "错误与恢复建议"]
 REPORT_HEADINGS = ["执行摘要", "输入与输出", "质量结果", "警告与错误",
@@ -326,7 +329,8 @@ def read_job_status(ws: Path, job_id: str) -> dict:
             import json as _json
             result["skill_result"] = _json.loads(res_file.read_text(encoding="utf-8"))
         except Exception:
-            pass
+            _log.warning("任务结果文件读取失败（job_id=%s）", job_id, exc_info=True
+                         )
     return result
 
 

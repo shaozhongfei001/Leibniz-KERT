@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DKWS 知识架构</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--p:#f5f5f5;--i:#2d3142;--m:#4f5d75;--s:#7a8399;--a:#eb6c36;--l:#2e5aa8;--sans:'Geist',system-ui,sans-serif;--serif:'Instrument Serif',serif;--mono:'Geist Mono',ui-monospace,monospace}
+body{font-family:var(--sans);background:var(--p);color:var(--i);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.f{max-width:1360px;width:100%}
+.e{font-family:var(--mono);font-size:.64rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--m);margin-bottom:.4rem}
+h1{font-family:var(--serif);font-size:clamp(1.2rem,2vw+.5rem,1.7rem);font-weight:400;letter-spacing:-.02em;margin-bottom:.2rem}
+.sub{font-family:var(--mono);font-size:.7rem;color:var(--s);margin-bottom:1rem}
+svg{width:100%;min-width:920px;display:block}
+</style>
+</head>
+<body>
+<div class="f">
+<p class="e">Architecture · Knowledge Map · Catalog · Assets</p>
+<h1>DKWS 知识架构：知识地图 · 知识目录 · 知识资产</h1>
+<p class="sub">文件目录型数据知识服务 — 知识组织、定位与使用全景</p>
+<svg viewBox="0 0 1200 820" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern id="d" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="rgba(45,49,66,.07)"/></pattern>
+<marker id="ar" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#4f5d75"/></marker>
+<marker id="aa" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#eb6c36"/></marker>
+<marker id="al" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#2e5aa8"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#f5f5f5"/>
+<rect width="100%" height="100%" fill="url(#d)" opacity=".5"/>
+
+<!-- ── CONSUMERS ── -->
+<rect x="24" y="16" width="1152" height="76" rx="7" fill="rgba(45,49,66,.02)" stroke="rgba(45,49,66,.10)" stroke-width=".7"/>
+<text x="600" y="26" fill="rgba(45,49,66,.35)" font-size="6.5" font-family="var(--mono)" text-anchor="middle" letter-spacing=".14em">CONSUMERS</text>
+<rect x="40" y="36" width="170" height="44" rx="5" fill="rgba(45,49,66,.03)" stroke="rgba(45,49,66,.28)" stroke-width=".9"/>
+<text x="125" y="58" fill="#2d3142" font-size="10" font-weight="600" font-family="var(--sans)" text-anchor="middle">GITS 客户经理工作台</text>
+<text x="125" y="72" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">execute v1.3</text>
+<rect x="232" y="36" width="140" height="44" rx="5" fill="rgba(45,49,66,.03)" stroke="rgba(45,49,66,.28)" stroke-width=".9"/>
+<text x="302" y="58" fill="#2d3142" font-size="10" font-weight="600" font-family="var(--sans)" text-anchor="middle">DSH 知识面板</text>
+<text x="302" y="72" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">SKILL.md · 报告</text>
+<rect x="394" y="36" width="120" height="44" rx="5" fill="rgba(79,93,117,.10)" stroke="#7a8399" stroke-width=".9"/>
+<text x="454" y="58" fill="#2d3142" font-size="10" font-weight="600" font-family="var(--sans)" text-anchor="middle">CLI / 评测</text>
+<text x="454" y="72" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">/v1/* 知识服务</text>
+
+<!-- ── RUNTIME ── -->
+<rect x="24" y="112" width="1152" height="88" rx="7" fill="rgba(45,49,66,.02)" stroke="rgba(45,49,66,.10)" stroke-width=".7"/>
+<text x="600" y="122" fill="rgba(45,49,66,.35)" font-size="6.5" font-family="var(--mono)" text-anchor="middle" letter-spacing=".14em">RUNTIME SERVICE</text>
+<rect x="40" y="132" width="190" height="56" rx="5" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width="1.1"/>
+<text x="135" y="156" fill="#2d3142" font-size="10" font-weight="600" font-family="var(--sans)" text-anchor="middle">SkillExecutionService</text>
+<text x="135" y="172" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">幂等 · assemblyTrace</text>
+<rect x="252" y="132" width="210" height="56" rx="5" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width="1.1"/>
+<text x="357" y="156" fill="#2d3142" font-size="10" font-weight="600" font-family="var(--sans)" text-anchor="middle">CustomerKnowledgeProvider</text>
+<text x="357" y="172" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">ki_map · entity · supply_chain</text>
+<rect x="484" y="132" width="170" height="56" rx="5" fill="#fff" stroke="#2d3142" stroke-width=".9"/>
+<text x="569" y="156" fill="#2d3142" font-size="10" font-weight="600" font-family="var(--sans)" text-anchor="middle">KnowledgeService</text>
+<text x="569" y="172" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">search · graph · rule</text>
+<rect x="676" y="132" width="140" height="56" rx="5" fill="rgba(45,49,66,.05)" stroke="#4f5d75" stroke-width=".9"/>
+<text x="746" y="156" fill="#2d3142" font-size="10" font-weight="600" font-family="var(--sans)" text-anchor="middle">LLM 适配器</text>
+<text x="746" y="172" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">DeepSeek / 回退</text>
+<rect x="838" y="132" width="140" height="56" rx="5" fill="rgba(45,49,66,.05)" stroke="#4f5d75" stroke-width=".9"/>
+<text x="908" y="156" fill="#2d3142" font-size="10" font-weight="600" font-family="var(--sans)" text-anchor="middle">Kùzu 图后端</text>
+<text x="908" y="172" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">嵌入式 Cypher</text>
+
+<!-- ── KNOWLEDGE MAP (FOCAL) ── -->
+<rect x="24" y="224" width="560" height="280" rx="7" fill="rgba(235,108,54,.03)" stroke="rgba(235,108,54,.22)" stroke-width="1.1"/>
+<text x="304" y="234" fill="rgba(235,108,54,.55)" font-size="6.5" font-family="var(--mono)" text-anchor="middle" letter-spacing=".14em">KNOWLEDGE MAP 知识地图</text>
+<rect x="36" y="244" width="536" height="28" rx="4" fill="rgba(235,108,54,.06)" stroke="rgba(235,108,54,.28)" stroke-width=".7" stroke-dasharray="4,3"/>
+<text x="304" y="262" fill="#2d3142" font-size="9" font-weight="600" font-family="var(--sans)" text-anchor="middle">知识地图 = 场景 × 任务 × KI 条目的编排结构 · 按 skillId 路由</text>
+
+<!-- KM-OUTREACH -->
+<rect x="36" y="284" width="168" height="208" rx="5" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width=".9"/>
+<text x="120" y="302" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">KM-OUTREACH</text>
+<text x="120" y="316" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">外联脚本场景</text>
+<line x1="48" y1="324" x2="192" y2="324" stroke="rgba(45,49,66,.08)" stroke-width=".7"/>
+<text x="52" y="338" fill="#4f5d75" font-size="7" font-family="var(--mono)">TASK-SCRIPT-001</text>
+<text x="52" y="352" fill="#4f5d75" font-size="7" font-family="var(--mono)">TASK-SCRIPT-002</text>
+<line x1="48" y1="360" x2="192" y2="360" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="52" y="374" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-009 客户信息</text>
+<text x="52" y="388" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-FRONT-004 承诺</text>
+<text x="52" y="402" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-FRONT-006 产品</text>
+<line x1="48" y1="412" x2="192" y2="412" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="52" y="426" fill="#7a8399" font-size="6.5" font-family="var(--mono)">定位：按 skillId=</text>
+<text x="52" y="438" fill="#7a8399" font-size="6.5" font-family="var(--mono)"> outreach-script 路由</text>
+<text x="52" y="452" fill="#7a8399" font-size="6.5" font-family="var(--mono)">→ 装配 3 KI + 2 RUL</text>
+<line x1="48" y1="460" x2="192" y2="460" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="52" y="474" fill="#7a8399" font-size="6.5" font-family="var(--mono)">使用：SkillExecution</text>
+<text x="52" y="486" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  → CKP.ki_map()</text>
+
+<!-- KM-MEETING -->
+<rect x="218" y="284" width="168" height="208" rx="5" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width=".9"/>
+<text x="302" y="302" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">KM-MEETING</text>
+<text x="302" y="316" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">会面脚本场景</text>
+<line x1="230" y1="324" x2="374" y2="324" stroke="rgba(45,49,66,.08)" stroke-width=".7"/>
+<text x="234" y="338" fill="#4f5d75" font-size="7" font-family="var(--mono)">TASK-SCRIPT-003</text>
+<text x="234" y="352" fill="#4f5d75" font-size="7" font-family="var(--mono)">TASK-SCRIPT-004</text>
+<line x1="230" y1="360" x2="374" y2="360" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="234" y="374" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-009 客户信息</text>
+<text x="234" y="388" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-FRONT-004 承诺</text>
+<text x="234" y="402" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-FRONT-005 KYC</text>
+<text x="234" y="416" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-FRONT-006 产品</text>
+<line x1="230" y1="426" x2="374" y2="426" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="234" y="440" fill="#7a8399" font-size="6.5" font-family="var(--mono)">定位：按 skillId=</text>
+<text x="234" y="452" fill="#7a8399" font-size="6.5" font-family="var(--mono)"> meeting-script 路由</text>
+<text x="234" y="466" fill="#7a8399" font-size="6.5" font-family="var(--mono)">→ 装配 4 KI + 2 RUL</text>
+<line x1="230" y1="474" x2="374" y2="474" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="234" y="488" fill="#7a8399" font-size="6.5" font-family="var(--mono)">使用：SkillExecution</text>
+
+<!-- KM-PREVISIT -->
+<rect x="400" y="284" width="168" height="208" rx="5" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width=".9"/>
+<text x="484" y="302" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">KM-PREVISIT</text>
+<text x="484" y="316" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">访前报告场景</text>
+<line x1="412" y1="324" x2="556" y2="324" stroke="rgba(45,49,66,.08)" stroke-width=".7"/>
+<text x="416" y="338" fill="#4f5d75" font-size="7" font-family="var(--mono)">TASK-FRONT-000~005</text>
+<line x1="412" y1="348" x2="556" y2="348" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="416" y="362" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-009 客户信息</text>
+<text x="416" y="376" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-FRONT-001 供应链</text>
+<text x="416" y="390" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-FRONT-002 八维</text>
+<text x="416" y="404" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-FRONT-003 变动</text>
+<text x="416" y="418" fill="#eb6c36" font-size="7" font-family="var(--mono)">→ KI-FRONT-004~007 ...</text>
+<line x1="412" y1="428" x2="556" y2="428" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="416" y="442" fill="#7a8399" font-size="6.5" font-family="var(--mono)">定位：按 skillId=</text>
+<text x="416" y="454" fill="#7a8399" font-size="6.5" font-family="var(--mono)"> previsit-report 路由</text>
+<text x="416" y="468" fill="#7a8399" font-size="6.5" font-family="var(--mono)">→ 装配 7 KI + 5 RUL</text>
+<line x1="412" y1="476" x2="556" y2="476" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="416" y="490" fill="#7a8399" font-size="6.5" font-family="var(--mono)">使用：SkillExecution</text>
+
+<!-- ── KNOWLEDGE CATALOG ── -->
+<rect x="608" y="224" width="568" height="280" rx="7" fill="rgba(45,49,66,.02)" stroke="rgba(45,49,66,.10)" stroke-width=".7"/>
+<text x="892" y="234" fill="rgba(45,49,66,.35)" font-size="6.5" font-family="var(--mono)" text-anchor="middle" letter-spacing=".14em">KNOWLEDGE CATALOG 知识目录</text>
+<rect x="620" y="244" width="544" height="28" rx="4" fill="rgba(45,49,66,.03)" stroke="rgba(45,49,66,.18)" stroke-width=".7" stroke-dasharray="4,3"/>
+<text x="892" y="262" fill="#2d3142" font-size="9" font-weight="600" font-family="var(--sans)" text-anchor="middle">知识目录 = 可检索索引 · /v1/catalog · 全文/向量/混合检索</text>
+
+<!-- KI -->
+<rect x="620" y="284" width="168" height="208" rx="5" fill="#fff" stroke="#2d3142" stroke-width=".9"/>
+<text x="704" y="302" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">知识条目 KI</text>
+<text x="704" y="316" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">Knowledge Item</text>
+<line x1="632" y1="324" x2="776" y2="324" stroke="rgba(45,49,66,.08)" stroke-width=".7"/>
+<text x="636" y="338" fill="#4f5d75" font-size="7" font-family="var(--mono)">KI-009 客户基本信息</text>
+<text x="636" y="352" fill="#4f5d75" font-size="7" font-family="var(--mono)">KI-FRONT-001 供应链图谱</text>
+<text x="636" y="366" fill="#4f5d75" font-size="7" font-family="var(--mono)">KI-FRONT-002 八维研判</text>
+<text x="636" y="380" fill="#4f5d75" font-size="7" font-family="var(--mono)">KI-FRONT-003 行内变动</text>
+<text x="636" y="394" fill="#4f5d75" font-size="7" font-family="var(--mono)">KI-FRONT-004 承诺话术</text>
+<text x="636" y="408" fill="#4f5d75" font-size="7" font-family="var(--mono)">KI-FRONT-005 KYC缺口</text>
+<text x="636" y="422" fill="#4f5d75" font-size="7" font-family="var(--mono)">KI-FRONT-006 产品组合</text>
+<text x="636" y="436" fill="#4f5d75" font-size="7" font-family="var(--mono)">KI-FRONT-007 交叉核验</text>
+<line x1="632" y1="446" x2="776" y2="446" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="636" y="460" fill="#7a8399" font-size="6.5" font-family="var(--mono)">定位：最小可检索单元</text>
+<text x="636" y="472" fill="#7a8399" font-size="6.5" font-family="var(--mono)">使用：catalog.search()</text>
+<text x="636" y="484" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  → segments 全文索引</text>
+
+<!-- KE -->
+<rect x="804" y="284" width="168" height="208" rx="5" fill="rgba(45,49,66,.05)" stroke="#4f5d75" stroke-width=".9"/>
+<text x="888" y="302" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">知识要素 KE</text>
+<text x="888" y="316" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">Knowledge Element</text>
+<line x1="816" y1="324" x2="960" y2="324" stroke="rgba(45,49,66,.08)" stroke-width=".7"/>
+<text x="820" y="338" fill="#4f5d75" font-size="7" font-family="var(--mono)">KE-FRONT-001-01~06</text>
+<text x="820" y="352" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  供应链三层要素</text>
+<text x="820" y="368" fill="#4f5d75" font-size="7" font-family="var(--mono)">KE-FRONT-003-01~05</text>
+<text x="820" y="382" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  行内变动五指标</text>
+<text x="820" y="398" fill="#4f5d75" font-size="7" font-family="var(--mono)">KE-FRONT-004-01~04</text>
+<text x="820" y="412" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  承诺提取四要素</text>
+<text x="820" y="428" fill="#4f5d75" font-size="7" font-family="var(--mono)">KE-FRONT-005-01~03</text>
+<text x="820" y="442" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  KYC 缺口三维度</text>
+<line x1="816" y1="452" x2="960" y2="452" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="820" y="466" fill="#7a8399" font-size="6.5" font-family="var(--mono)">定位：KI 的结构化展开</text>
+<text x="820" y="478" fill="#7a8399" font-size="6.5" font-family="var(--mono)">使用：KI→KE 细粒度</text>
+<text x="820" y="490" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  → 图谱遍历</text>
+
+<!-- RUL -->
+<rect x="988" y="284" width="168" height="208" rx="5" fill="rgba(45,49,66,.05)" stroke="#4f5d75" stroke-width=".9"/>
+<text x="1072" y="302" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">规则 RUL</text>
+<text x="1072" y="316" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">Rule</text>
+<line x1="1000" y1="324" x2="1144" y2="324" stroke="rgba(45,49,66,.08)" stroke-width=".7"/>
+<text x="1004" y="338" fill="#4f5d75" font-size="7" font-family="var(--mono)">RUL-FRONT-001</text>
+<text x="1004" y="352" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  供应链完整性</text>
+<text x="1004" y="368" fill="#4f5d75" font-size="7" font-family="var(--mono)">RUL-FRONT-002</text>
+<text x="1004" y="382" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  八维研判阈值</text>
+<text x="1004" y="398" fill="#4f5d75" font-size="7" font-family="var(--mono)">RUL-FRONT-003</text>
+<text x="1004" y="412" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  变动预警触发</text>
+<text x="1004" y="428" fill="#4f5d75" font-size="7" font-family="var(--mono)">RUL-FRONT-004~005</text>
+<text x="1004" y="442" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  承诺/产品约束</text>
+<line x1="1000" y1="452" x2="1144" y2="452" stroke="rgba(45,49,66,.05)" stroke-width=".5"/>
+<text x="1004" y="466" fill="#7a8399" font-size="6.5" font-family="var(--mono)">定位：条件→动作约束</text>
+<text x="1004" y="478" fill="#7a8399" font-size="6.5" font-family="var(--mono)">使用：规则引擎评估</text>
+<text x="1004" y="490" fill="#7a8399" font-size="6.5" font-family="var(--mono)">  → 决策门控</text>
+
+<!-- ── WORKSPACE ── -->
+<rect x="24" y="528" width="1152" height="120" rx="7" fill="rgba(45,49,66,.02)" stroke="rgba(45,49,66,.10)" stroke-width=".7"/>
+<text x="600" y="538" fill="rgba(45,49,66,.35)" font-size="6.5" font-family="var(--mono)" text-anchor="middle" letter-spacing=".14em">WORKSPACE LAYERS 工作空间层</text>
+<rect x="40" y="550" width="130" height="84" rx="5" fill="rgba(79,93,117,.10)" stroke="#7a8399" stroke-width=".9"/>
+<text x="105" y="570" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">01_raw</text>
+<text x="105" y="584" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">原始数据</text>
+<text x="105" y="600" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">CRM·风控·监管</text>
+<text x="105" y="614" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">外部权威源</text>
+<text x="105" y="628" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">ingest</text>
+
+<rect x="188" y="550" width="130" height="84" rx="5" fill="rgba(79,93,117,.10)" stroke="#7a8399" stroke-width=".9"/>
+<text x="253" y="570" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">02_work</text>
+<text x="253" y="584" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">工作副本</text>
+<text x="253" y="600" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">解析·提取·审核</text>
+<text x="253" y="614" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">人工介入层</text>
+<text x="253" y="628" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">parse·extract</text>
+
+<rect x="336" y="550" width="150" height="84" rx="5" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width="1.1"/>
+<text x="411" y="570" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">03_core</text>
+<text x="411" y="584" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">知识核心</text>
+<text x="411" y="600" fill="#eb6c36" font-size="6.5" font-family="var(--mono)" text-anchor="middle">knowledge-map.yaml</text>
+<text x="411" y="614" fill="#eb6c36" font-size="6.5" font-family="var(--mono)" text-anchor="middle">tasks.yaml·rules.yaml</text>
+<text x="411" y="628" fill="#eb6c36" font-size="6.5" font-family="var(--mono)" text-anchor="middle">KI·KE·RUL 定义</text>
+
+<rect x="504" y="550" width="130" height="84" rx="5" fill="rgba(45,49,66,.05)" stroke="#4f5d75" stroke-width=".9"/>
+<text x="569" y="570" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">04_serve</text>
+<text x="569" y="584" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">服务就绪</text>
+<text x="569" y="600" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">发布·版本化</text>
+<text x="569" y="614" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">catalog 索引</text>
+<text x="569" y="628" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">publish</text>
+
+<rect x="652" y="550" width="130" height="84" rx="5" fill="rgba(45,49,66,.05)" stroke="#4f5d75" stroke-width=".9"/>
+<text x="717" y="570" fill="#2d3142" font-size="9.5" font-weight="600" font-family="var(--sans)" text-anchor="middle">90_control</text>
+<text x="717" y="584" fill="#4f5d75" font-size="7.5" font-family="var(--mono)" text-anchor="middle">控制面</text>
+<text x="717" y="600" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">SKILL.md 契约</text>
+<text x="717" y="614" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">activation-contract</text>
+<text x="717" y="628" fill="#7a8399" font-size="6.5" font-family="var(--mono)" text-anchor="middle">govern</text>
+
+<!-- ── FLOW ARROWS ── -->
+<!-- Consumer → Runtime -->
+<line x1="125" y1="80" x2="125" y2="132" stroke="#2e5aa8" stroke-width="1.1" marker-end="url(#al)"/>
+<line x1="302" y1="80" x2="302" y2="132" stroke="#2e5aa8" stroke-width="1.1" marker-end="url(#al)"/>
+
+<!-- Runtime → Knowledge Map -->
+<path d="M135,188 V210 H120 V224" fill="none" stroke="#eb6c36" stroke-width="1.3" marker-end="url(#aa)"/>
+<path d="M357,188 V210 H302 V224" fill="none" stroke="#eb6c36" stroke-width="1.3" marker-end="url(#aa)"/>
+
+<!-- Runtime → Catalog -->
+<path d="M569,188 V210 H704 V224" fill="none" stroke="#4f5d75" stroke-width="1" marker-end="url(#ar)"/>
+<path d="M746,188 V210 H888 V224" fill="none" stroke="#4f5d75" stroke-width="1" marker-end="url(#ar)"/>
+
+<!-- Knowledge Map → Workspace -->
+<path d="M120,492 V510 H411 V528" fill="none" stroke="#eb6c36" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#aa)"/>
+<path d="M302,492 V510 H411 V528" fill="none" stroke="#eb6c36" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#aa)"/>
+<path d="M484,492 V510 H411 V528" fill="none" stroke="#eb6c36" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#aa)"/>
+
+<!-- Catalog → Workspace -->
+<path d="M704,492 V510 H569 V528" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#ar)"/>
+<path d="M888,492 V510 H569 V528" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#ar)"/>
+<path d="M1072,492 V510 H569 V528" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#ar)"/>
+
+<!-- ── LIFECYCLE FLOW ── -->
+<rect x="24" y="668" width="1152" height="56" rx="7" fill="rgba(45,49,66,.02)" stroke="rgba(45,49,66,.10)" stroke-width=".7"/>
+<text x="600" y="678" fill="rgba(45,49,66,.35)" font-size="6.5" font-family="var(--mono)" text-anchor="middle" letter-spacing=".14em">ASSET LIFECYCLE 知识资产生命周期</text>
+
+<!-- Lifecycle flow arrows -->
+<line x1="100" y1="700" x2="220" y2="700" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#aa)"/>
+<line x1="280" y1="700" x2="400" y2="700" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#aa)"/>
+<line x1="460" y1="700" x2="580" y2="700" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#aa)"/>
+<line x1="640" y1="700" x2="760" y2="700" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#aa)"/>
+<line x1="820" y1="700" x2="940" y2="700" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#aa)"/>
+<line x1="1000" y1="700" x2="1120" y2="700" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#aa)"/>
+
+<!-- Lifecycle nodes -->
+<rect x="40" y="688" width="60" height="24" rx="4" fill="rgba(79,93,117,.10)" stroke="#7a8399" stroke-width=".8"/>
+<text x="70" y="704" fill="#2d3142" font-size="8" font-weight="600" font-family="var(--sans)" text-anchor="middle">ingest</text>
+
+<rect x="220" y="688" width="60" height="24" rx="4" fill="rgba(79,93,117,.10)" stroke="#7a8399" stroke-width=".8"/>
+<text x="250" y="704" fill="#2d3142" font-size="8" font-weight="600" font-family="var(--sans)" text-anchor="middle">parse</text>
+
+<rect x="400" y="688" width="60" height="24" rx="4" fill="rgba(79,93,117,.10)" stroke="#7a8399" stroke-width=".8"/>
+<text x="430" y="704" fill="#2d3142" font-size="8" font-weight="600" font-family="var(--sans)" text-anchor="middle">extract</text>
+
+<rect x="580" y="688" width="60" height="24" rx="4" fill="rgba(79,93,117,.10)" stroke="#7a8399" stroke-width=".8"/>
+<text x="610" y="704" fill="#2d3142" font-size="8" font-weight="600" font-family="var(--sans)" text-anchor="middle">review</text>
+
+<rect x="760" y="688" width="60" height="24" rx="4" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width=".8"/>
+<text x="790" y="704" fill="#2d3142" font-size="8" font-weight="600" font-family="var(--sans)" text-anchor="middle">publish</text>
+
+<rect x="940" y="688" width="60" height="24" rx="4" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width=".8"/>
+<text x="970" y="704" fill="#2d3142" font-size="8" font-weight="600" font-family="var(--sans)" text-anchor="middle">project</text>
+
+<rect x="1120" y="688" width="60" height="24" rx="4" fill="rgba(45,49,66,.05)" stroke="#4f5d75" stroke-width=".8"/>
+<text x="1150" y="704" fill="#2d3142" font-size="8" font-weight="600" font-family="var(--sans)" text-anchor="middle">serve</text>
+
+<!-- Lifecycle layer labels -->
+<text x="70" y="724" fill="#7a8399" font-size="6" font-family="var(--mono)" text-anchor="middle">01_raw</text>
+<text x="250" y="724" fill="#7a8399" font-size="6" font-family="var(--mono)" text-anchor="middle">02_work</text>
+<text x="430" y="724" fill="#7a8399" font-size="6" font-family="var(--mono)" text-anchor="middle">02_work</text>
+<text x="610" y="724" fill="#7a8399" font-size="6" font-family="var(--mono)" text-anchor="middle">02_work</text>
+<text x="790" y="724" fill="#7a8399" font-size="6" font-family="var(--mono)" text-anchor="middle">03_core</text>
+<text x="970" y="724" fill="#7a8399" font-size="6" font-family="var(--mono)" text-anchor="middle">03_core</text>
+<text x="1150" y="724" fill="#7a8399" font-size="6" font-family="var(--mono)" text-anchor="middle">04_serve</text>
+
+<!-- ── LEGEND ── -->
+<line x1="24" y1="748" x2="1176" y2="748" stroke="rgba(45,49,66,.08)" stroke-width=".7"/>
+<text x="40" y="764" fill="#4f5d75" font-size="7" font-family="var(--mono)" letter-spacing=".14em">LEGEND</text>
+
+<rect x="40" y="776" width="12" height="9" rx="2" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width=".8"/>
+<text x="58" y="784" fill="#4f5d75" font-size="7.5" font-family="var(--sans)">知识地图/核心层（FOCAL）</text>
+
+<rect x="240" y="776" width="12" height="9" rx="2" fill="#fff" stroke="#2d3142" stroke-width=".8"/>
+<text x="258" y="784" fill="#4f5d75" font-size="7.5" font-family="var(--sans)">知识条目 KI</text>
+
+<rect x="380" y="776" width="12" height="9" rx="2" fill="rgba(45,49,66,.05)" stroke="#4f5d75" stroke-width=".8"/>
+<text x="398" y="784" fill="#4f5d75" font-size="7.5" font-family="var(--sans)">知识要素 KE / 规则 RUL</text>
+
+<rect x="580" y="776" width="12" height="9" rx="2" fill="rgba(79,93,117,.10)" stroke="#7a8399" stroke-width=".8"/>
+<text x="598" y="784" fill="#4f5d75" font-size="7.5" font-family="var(--sans)">外部/原始层</text>
+
+<line x1="740" y1="781" x2="768" y2="781" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#aa)"/>
+<text x="776" y="784" fill="#4f5d75" font-size="7.5" font-family="var(--sans)">主数据流</text>
+
+<line x1="870" y1="781" x2="898" y2="781" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#ar)"/>
+<text x="906" y="784" fill="#4f5d75" font-size="7.5" font-family="var(--sans)">数据源映射</text>
+
+<line x1="1020" y1="781" x2="1048" y2="781" stroke="#2e5aa8" stroke-width="1.1" marker-end="url(#al)"/>
+<text x="1056" y="784" fill="#4f5d75" font-size="7.5" font-family="var(--sans)">HTTP 请求</text>
+
+<!-- ── KEY INSIGHTS ── -->
+<rect x="24" y="800" width="1152" height="16" rx="3" fill="rgba(235,108,54,.04)"/>
+<text x="600" y="812" fill="#4f5d75" font-size="7" font-family="var(--mono)" text-anchor="middle" letter-spacing=".04em">知识地图定义「用什么」→ 知识目录定义「怎么找」→ 知识资产定义「是什么」→ 工作空间定义「放哪里」→ 生命周期定义「怎么流转」</text>
+
+</svg>
+</div>
+</body>
+</html>

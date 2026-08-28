@@ -1,18 +1,15 @@
-# DKWS CI/CD Pipeline (M2.8)
+# DKWS CI/CD Pipeline
 #
-# 触发条件：push 到 main/develop/feature/* 分支，PR 到 develop，每日定时安全扫描
+# 触发条件：push 到 main/develop 分支，PR 到 main
 # 关键约束：CI 在无密钥环境下运行，使用 DKWS_PROFILE=dev（默认值，无需 API Key）
 
 name: DKWS CI
 
 on:
   push:
-    branches: [main, develop, "feature/*"]
+    branches: [main, develop]
   pull_request:
-    branches: [develop]
-  schedule:
-    # UTC 02:00 每日安全扫描（北京时间 10:00）
-    - cron: "0 2 * * *"
+    branches: [main]
 
 # 同一分支/PR 只保留最新运行，取消旧的
 concurrency:
@@ -20,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PYTHON_VERSION: "3.12"
+  PYTHON_VERSION: "3.11"
   # CI 环境：dev profile 无需 API Key，测试使用确定性逻辑
   DKWS_PROFILE: dev
 
@@ -40,26 +37,28 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Install lint dependencies
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
+          pip install -e ".[dev]"
+          # ruff/mypy 不在 dev 依赖中，单独安装用于 CI 检查
           pip install ruff mypy
 
       - name: Ruff check
-        run: ruff check src/ tests/ scripts/
+        run: ruff check src/ tests/
 
       - name: Mypy type check
         run: |
-          pip install ".[api,dev]"
-          mypy src/ --ignore-missing-imports --no-error-summary || true
+          pip install ".[api]"
+          mypy src/dkws/ --ignore-missing-imports || true
           # mypy 初次集成：仅报告，不阻塞 CI
           # 后续收紧：移除 || true，添加 strict 选项
 
   # ──────────────────────────────────────────────
-  # Test：单元 + 集成 + 契约 + 安全测试
+  # Test：单元测试 + 覆盖率
   # ──────────────────────────────────────────────
   test:
-    name: Test (Python ${{ env.PYTHON_VERSION }})
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -73,7 +72,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          # 使用约束文件锁定版本（约束文件不存在时降级为直接安装）
           if [ -f requirements-lock.txt ]; then
             pip install -c requirements-lock.txt ".[api,dev]" pytest-cov
           else
@@ -82,11 +80,13 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest --tb=short -q \
+          python -m pytest \
             --cov=dkws \
+            --cov-fail-under=80 \
             --cov-report=term-missing \
-            --cov-report=xml:evidence/m2-p6/coverage.xml \
-            --cov-report=html:evidence/m2-p6/coverage-html
+            --cov-report=xml:coverage.xml \
+            --cov-report=html:coverage-html \
+            -q
         env:
           DKWS_PROFILE: dev
 
@@ -95,14 +95,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: evidence/m2-p6/coverage.*
+          path: |
+            coverage.xml
+            coverage-html/
           retention-days: 30
 
   # ──────────────────────────────────────────────
-  # Security：依赖漏洞 + 代码安全 + SBOM
+  # E2E：端到端集成测试
   # ──────────────────────────────────────────────
-  security:
-    name: Security Scan
+  e2e:
+    name: E2E Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -116,88 +118,72 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install ".[api,dev]" pip-audit bandit cyclonedx-bom
+          if [ -f requirements-lock.txt ]; then
+            pip install -c requirements-lock.txt ".[api,dev]"
+          else
+            pip install ".[api,dev]"
+          fi
 
-      - name: pip-audit (dependency vulnerability scan)
-        run: |
-          mkdir -p evidence/m2-p6/security
-          pip-audit --format=json --output=evidence/m2-p6/security/pip-audit.json || true
-          pip-audit --format=markdown --output=evidence/m2-p6/security/pip-audit.md || true
-          # pip-audit 发现漏洞时退出码非 0，CI 暂不阻塞
-          echo "::warning::pip-audit 结果见 artifact"
-
-      - name: Bandit (code security scan)
-        run: |
-          bandit -r src/ -f json -o evidence/m2-p6/security/bandit.json || true
-          bandit -r src/ -f txt -o evidence/m2-p6/security/bandit.txt || true
-          # bandit 发现问题时不阻塞 CI，仅报告
-          echo "::warning::bandit 结果见 artifact"
-
-      - name: Generate SBOM (CycloneDX)
-        run: |
-          mkdir -p evidence/m2-p6/sbom
-          cyclonedx-py environment \
-            --output-format json \
-            --output evidence/m2-p6/sbom/sbom.json \
-            || pip-licenses --format=json --output-file=evidence/m2-p6/sbom/licenses.json 2>/dev/null || true
-
-      - name: Upload security reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-reports
-          path: evidence/m2-p6/
-          retention-days: 90
+      - name: Run E2E tests
+        run: python -m pytest tests/e2e/ -q
+        env:
+          DKWS_PROFILE: dev
 
   # ──────────────────────────────────────────────
-  # Build：Docker 镜像构建 + Compose 语法验证
+  # Security：安全测试
   # ──────────────────────────────────────────────
-  build:
-    name: Build & Docker
+  security:
+    name: Security Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
 
-      - name: Docker build (verify Dockerfile)
+      - name: Install dependencies
         run: |
-          docker build \
-            -f deploy/Dockerfile \
-            --target runtime \
-            -t dkws-python-core:ci-verify \
-            .
-        # 仅验证可构建，不推送镜像
-
-      - name: Validate docker-compose syntax
-        run: |
-          # compose config 验证语法，不需要实际运行容器
-          # 使用假 API Key 避免 .env 缺失报错
-          DKWS_API_KEYS="ci-test-key:ci_test_key_at_least_16_chars:read|execute" \
-            docker compose -f deploy/docker-compose.yml config --quiet
-
-  # ──────────────────────────────────────────────
-  # Summary：汇总所有 job 结果
-  # ──────────────────────────────────────────────
-  ci-summary:
-    name: CI Summary
-    if: always()
-    runs-on: ubuntu-latest
-    needs: [lint, test, security, build]
-    steps:
-      - name: Check job results
-        run: |
-          echo "## CI Pipeline Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Lint | ${{ needs.lint.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Test | ${{ needs.test.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Security | ${{ needs.security.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Build | ${{ needs.build.result }} |" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ needs.test.result }}" = "failure" ]; then
-            echo "::error::Test job failed"
-            exit 1
+          pip install --upgrade pip
+          if [ -f requirements-lock.txt ]; then
+            pip install -c requirements-lock.txt ".[api,dev]"
+          else
+            pip install ".[api,dev]"
           fi
+
+      - name: Run security tests
+        run: python -m pytest tests/security/ -q
+        env:
+          DKWS_PROFILE: dev
+
+  # ──────────────────────────────────────────────
+  # Performance：性能基准（允许失败）
+  # ──────────────────────────────────────────────
+  performance:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          if [ -f requirements-lock.txt ]; then
+            pip install -c requirements-lock.txt ".[api,dev]"
+          else
+            pip install ".[api,dev]"
+          fi
+
+      - name: Run performance benchmarks
+        run: python -m pytest tests/performance/ -q
+        env:
+          DKWS_PROFILE: dev

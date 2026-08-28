@@ -548,6 +548,25 @@ def job_cmd(
         )
 
 
+@app.command("serve")
+def serve_cmd(
+    workspace_path: Path = typer.Option(..., "--workspace", "-w"),
+    host: str = typer.Option("127.0.0.1", "--host", help="监听地址"),
+    port: int = typer.Option(8900, "--port", "-p", help="监听端口"),
+    service: str = typer.Option("product_knowledge", "--service", help="服务 ID"),
+    reload: bool = typer.Option(False, "--reload", help="开发模式自动重载"),
+):
+    """启动 DKWS HTTP 服务（含 DSH Web 界面）。"""
+    import uvicorn
+
+    from ..api.server import create_app
+
+    app = create_app(Path(workspace_path), service_id=service)
+    typer.echo(f"DKWS 服务启动: http://{host}:{port}")
+    typer.echo(f"DSH Web 界面: http://{host}:{port}/dsh/")
+    uvicorn.run(app, host=host, port=port, log_level="info")
+
+
 @app.command("recover")
 def recover_cmd(
     workspace_path: Path = typer.Option(..., "--workspace", "-w"),

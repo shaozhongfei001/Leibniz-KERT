@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import hashlib
-import io
 
 try:
     import pyarrow as pa

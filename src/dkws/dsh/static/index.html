@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSH — 知识服务平台</title>
+  <link rel="stylesheet" href="/dsh/static/style.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>DSH</h1>
+      <span class="subtitle">知识服务平台</span>
+    </div>
+    <ul class="nav-list">
+      <li><a href="#" data-view="dashboard" class="nav-link active">仪表盘</a></li>
+      <li><a href="#" data-view="skills" class="nav-link">技能管理</a></li>
+      <li><a href="#" data-view="knowledge" class="nav-link">知识浏览</a></li>
+      <li><a href="#" data-view="jobs" class="nav-link">任务监控</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <span id="version-info">DKWS v—</span>
+    </div>
+  </nav>
+
+  <main class="content">
+    <!-- 仪表盘 -->
+    <section id="view-dashboard" class="view active">
+      <h2>工作区仪表盘</h2>
+      <div class="card-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-entities">—</div>
+          <div class="stat-label">实体</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-relations">—</div>
+          <div class="stat-label">关系</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-statements">—</div>
+          <div class="stat-label">声明</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-rules">—</div>
+          <div class="stat-label">规则</div>
+        </div>
+        <div class="stat-card accent">
+          <div class="stat-value" id="stat-skills">—</div>
+          <div class="stat-label">已注册技能</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-jobs-running">—</div>
+          <div class="stat-label">运行中任务</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-jobs-completed">—</div>
+          <div class="stat-label">已完成任务</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-jobs-failed">—</div>
+          <div class="stat-label">失败任务</div>
+        </div>
+      </div>
+      <div class="info-bar" id="workspace-info">加载中…</div>
+    </section>
+
+    <!-- 技能管理 -->
+    <section id="view-skills" class="view">
+      <h2>技能管理</h2>
+      <div class="toolbar">
+        <input type="text" id="skill-search" placeholder="搜索技能…" class="search-input">
+      </div>
+      <div id="skill-list" class="list-container">加载中…</div>
+      <div id="skill-exec-panel" class="exec-panel hidden">
+        <h3>执行技能</h3>
+        <div class="form-group">
+          <label>技能 ID</label>
+          <input type="text" id="exec-skill-id" readonly class="form-input">
+        </div>
+        <div class="form-group">
+          <label>请求 ID（可选）</label>
+          <input type="text" id="exec-request-id" placeholder="自动生成" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>请求参数（JSON）</label>
+          <textarea id="exec-request" rows="4" class="form-input">{}</textarea>
+        </div>
+        <button id="exec-btn" class="btn btn-primary">执行</button>
+        <div id="exec-result" class="result-box hidden"></div>
+      </div>
+    </section>
+
+    <!-- 知识浏览 -->
+    <section id="view-knowledge" class="view">
+      <h2>知识浏览</h2>
+      <div class="toolbar">
+        <div class="tab-bar">
+          <button class="tab active" data-asset="entities">实体</button>
+          <button class="tab" data-asset="relations">关系</button>
+          <button class="tab" data-asset="statements">声明</button>
+          <button class="tab" data-asset="rules">规则</button>
+        </div>
+      </div>
+      <div id="knowledge-list" class="list-container">选择资产类型后加载</div>
+    </section>
+
+    <!-- 任务监控 -->
+    <section id="view-jobs" class="view">
+      <h2>任务监控</h2>
+      <div class="toolbar">
+        <select id="job-filter" class="form-input">
+          <option value="">全部状态</option>
+          <option value="RUNNING">运行中</option>
+          <option value="COMPLETED">已完成</option>
+          <option value="FAILED">失败</option>
+          <option value="BLOCKED">阻塞</option>
+        </select>
+        <button id="job-refresh" class="btn">刷新</button>
+      </div>
+      <div id="job-list" class="list-container">加载中…</div>
+    </section>
+  </main>
+
+  <script src="/dsh/static/app.js"></script>
+</body>
+</html>

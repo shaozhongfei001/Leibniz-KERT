@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import time
 import urllib.request
@@ -15,6 +16,8 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 from ...domain.errors import UsageError
+
+_log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -95,7 +98,7 @@ class DeterministicLlmAdapter(LlmAdapter):
             profile = (payload.get("structuredFacts") or {}).get("profile") or {}
             customer = profile.get("name") or payload.get("customerId") or customer
         except Exception:
-            pass
+            _log.debug("确定性适配器：提取客户标识失败，使用默认值", exc_info=True)
         t0 = time.monotonic()
         data = self._sample(customer, user)
         return LlmResult(
@@ -112,6 +115,7 @@ class DeterministicLlmAdapter(LlmAdapter):
                 content = payload.get("interactionContent") or ""
                 existing = payload.get("existingMemories") or []
             except Exception:
+                _log.debug("确定性适配器：解析 memory 输入失败，使用默认值", exc_info=True)
                 content, existing = "", []
             # 取纪要前 40 字作为候选内容，便于与 existingMemories 相似度比对
             snippet = (content or "客户希望调整合作方式")[:40]
@@ -143,6 +147,7 @@ class DeterministicLlmAdapter(LlmAdapter):
                 cname = payload.get("chapterName") or cid
                 industry = payload.get("industry") or "制造业"
             except Exception:
+                _log.debug("确定性适配器：解析 proposal 输入失败，使用默认值", exc_info=True)
                 cid, cname, industry = "CH01", "企业概况", "制造业"
             return {
                 "chapterId": cid,

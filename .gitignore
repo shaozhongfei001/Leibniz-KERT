@@ -28,6 +28,22 @@ target/
 # OS
 .DS_Store
 
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+
+# Node
+node_modules/
+package.json
+package-lock.json
+
+# Temp/editor
+*.swp
+*.swo
+*~
+.~*.pptx
+
 # Workspace data (if appears inside dkws)
 demo_workspace/
 bank_front_ws/

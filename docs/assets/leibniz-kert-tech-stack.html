@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leibniz-KERT 技术栈架构</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f5f5f5; --paper-2: #ececec; --ink: #2d3142;
+    --muted: #4f5d75; --soft: #7a8399; --rule: rgba(45,49,66,0.12);
+    --accent: #eb6c36; --accent-tint: rgba(235,108,54,0.08);
+    --link: #2e5aa8; --sans: 'Geist', system-ui, sans-serif;
+    --mono: 'Geist Mono', 'SF Mono', monospace; --serif: 'Instrument Serif', Georgia, serif;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 32px 16px 64px; }
+  h1 { font-family: var(--serif); font-size: 1.75rem; font-weight: 400; margin-bottom: 4px; }
+  .subtitle { font-family: var(--mono); font-size: 0.7rem; color: var(--soft); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 24px; }
+  svg { max-width: 1100px; width: 100%; height: auto; }
+  .layer-label { font-family: var(--mono); font-size: 7px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; }
+  .layer-name { font-family: var(--sans); font-size: 13px; font-weight: 600; }
+  .layer-sub { font-family: var(--mono); font-size: 8px; fill: var(--soft); }
+  .tech-name { font-family: var(--sans); font-size: 10px; font-weight: 600; }
+  .tech-detail { font-family: var(--mono); font-size: 7px; fill: var(--soft); }
+  .tech-ver { font-family: var(--mono); font-size: 6.5px; fill: var(--soft); opacity: 0.7; }
+  .section-tag { font-family: var(--mono); font-size: 6px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<h1>Leibniz-KERT 技术栈架构</h1>
+<p class="subtitle">Technology Stack Architecture · DKWS C′ 混合架构</p>
+
+<svg viewBox="0 0 1100 920" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="11" cy="11" r="0.6" fill="rgba(45,49,66,0.08)"/>
+    </pattern>
+    <marker id="arr" viewBox="0 0 8 6" refX="8" refY="3" markerWidth="6" markerHeight="5" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="var(--muted)" stroke-width="0.8"/>
+    </marker>
+  </defs>
+
+  <!-- background -->
+  <rect width="1100" height="920" fill="var(--paper)"/>
+  <rect width="1100" height="920" fill="url(#dots)"/>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- L1 · 运行时平台层                                          -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="28" width="1020" height="108" rx="6" fill="var(--paper-2)" stroke="var(--rule)" stroke-width="0.8"/>
+  <text x="56" y="46" class="layer-label" fill="var(--accent)">L1</text>
+  <text x="80" y="46" class="layer-name" fill="var(--ink)">运行时平台</text>
+  <text x="1040" y="46" class="layer-sub" text-anchor="end">Runtime Platform</text>
+
+  <!-- Python Runtime -->
+  <rect x="56" y="56" width="300" height="68" rx="4" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="0.8"/>
+  <text x="72" y="74" class="tech-name" fill="var(--ink)">Python 3.12+</text>
+  <text x="72" y="86" class="tech-detail">核心运行时 · 唯一公共入口</text>
+  <text x="72" y="98" class="tech-detail">FastAPI + Uvicorn ASGI</text>
+  <text x="72" y="110" class="tech-ver">pyproject.toml · PEP 621</text>
+
+  <!-- Docker -->
+  <rect x="372" y="56" width="200" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="388" y="74" class="tech-name" fill="var(--ink)">Docker / Compose</text>
+  <text x="388" y="86" class="tech-detail">容器化部署</text>
+  <text x="388" y="98" class="tech-detail">多阶段构建 · 非特权运行</text>
+  <text x="388" y="110" class="tech-ver">deploy/docker-compose.yml</text>
+
+  <!-- Systemd -->
+  <rect x="588" y="56" width="200" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="604" y="74" class="tech-name" fill="var(--ink)">Systemd</text>
+  <text x="604" y="86" class="tech-detail">裸金属服务管理</text>
+  <text x="604" y="98" class="tech-detail">dkws-api.service</text>
+  <text x="604" y="110" class="tech-ver">deploy/dkws-api.service</text>
+
+  <!-- OS -->
+  <rect x="804" y="56" width="240" height="68" rx="4" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="0.8"/>
+  <text x="820" y="74" class="tech-name" fill="var(--ink)">Linux (x86_64)</text>
+  <text x="820" y="86" class="tech-detail">生产部署目标</text>
+  <text x="820" y="98" class="tech-detail">Makefile · CI/CD GitHub Actions</text>
+  <text x="820" y="110" class="tech-ver">.github/workflows/</text>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- L2 · Web 框架层                                            -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="148" width="1020" height="108" rx="6" fill="var(--paper-2)" stroke="var(--rule)" stroke-width="0.8"/>
+  <text x="56" y="166" class="layer-label" fill="var(--accent)">L2</text>
+  <text x="80" y="166" class="layer-name" fill="var(--ink)">Web 框架与中间件</text>
+  <text x="1040" y="166" class="layer-sub" text-anchor="end">Web Framework &amp; Middleware</text>
+
+  <!-- FastAPI -->
+  <rect x="56" y="176" width="240" height="68" rx="4" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="0.8"/>
+  <text x="72" y="194" class="tech-name" fill="var(--ink)">FastAPI</text>
+  <text x="72" y="206" class="tech-detail">异步 Web 框架</text>
+  <text x="72" y="218" class="tech-detail">10 个 /v1/* 端点</text>
+  <text x="72" y="230" class="tech-ver">OpenAPI 3.1 自动生成</text>
+
+  <!-- Pydantic -->
+  <rect x="312" y="176" width="200" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="328" y="194" class="tech-name" fill="var(--ink)">Pydantic v2</text>
+  <text x="328" y="206" class="tech-detail">数据校验与序列化</text>
+  <text x="328" y="218" class="tech-detail">请求/响应模型</text>
+  <text x="328" y="230" class="tech-ver">严格模式 · 类型安全</text>
+
+  <!-- Uvicorn -->
+  <rect x="528" y="176" width="200" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="544" y="194" class="tech-name" fill="var(--ink)">Uvicorn</text>
+  <text x="544" y="206" class="tech-detail">ASGI 服务器</text>
+  <text x="544" y="218" class="tech-detail">uvloop 事件循环</text>
+  <text x="544" y="230" class="tech-ver">生产级并发</text>
+
+  <!-- Middleware -->
+  <rect x="744" y="176" width="300" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="760" y="194" class="tech-name" fill="var(--ink)">中间件栈</text>
+  <text x="760" y="206" class="tech-detail">slowapi 限流 · API Key 认证</text>
+  <text x="760" y="218" class="tech-detail">OTel 链路追踪 · 脱敏</text>
+  <text x="760" y="230" class="tech-ver">CORS · 异常处理 · 请求大小限制</text>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- L3 · 领域引擎层                                            -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="268" width="1020" height="128" rx="6" fill="var(--paper-2)" stroke="var(--rule)" stroke-width="0.8"/>
+  <text x="56" y="286" class="layer-label" fill="var(--accent)">L3</text>
+  <text x="80" y="286" class="layer-name" fill="var(--ink)">领域引擎</text>
+  <text x="1040" y="286" class="layer-sub" text-anchor="end">Domain Engine · DDD 分层</text>
+
+  <!-- Knowledge Service -->
+  <rect x="56" y="296" width="220" height="88" rx="4" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="0.8"/>
+  <text x="72" y="314" class="tech-name" fill="var(--ink)">知识服务</text>
+  <text x="72" y="326" class="tech-detail">KnowledgeService</text>
+  <text x="72" y="338" class="tech-detail">知识地图 · 知识目录</text>
+  <text x="72" y="350" class="tech-detail">KI/KE/RUL 生命周期</text>
+  <text x="72" y="362" class="tech-detail">接入→提取→审核→发布→服务</text>
+  <text x="72" y="374" class="tech-ver">src/dkws/application/</text>
+
+  <!-- Skill Execution -->
+  <rect x="292" y="296" width="200" height="88" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="308" y="314" class="tech-name" fill="var(--ink)">技能执行</text>
+  <text x="308" y="326" class="tech-detail">SkillExecutionService</text>
+  <text x="308" y="338" class="tech-detail">激活契约 (SP-20/21)</text>
+  <text x="308" y="350" class="tech-detail">客户知识提供者</text>
+  <text x="308" y="362" class="tech-detail">服务方案生成</text>
+  <text x="308" y="374" class="tech-ver">src/dkws/application/skills.py</text>
+
+  <!-- Gate System -->
+  <rect x="508" y="296" width="200" height="88" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="524" y="314" class="tech-name" fill="var(--ink)">门禁体系</text>
+  <text x="524" y="326" class="tech-detail">GateReporter</text>
+  <text x="524" y="338" class="tech-detail">质量门禁 · 证据链</text>
+  <text x="524" y="350" class="tech-detail">校验 · 回滚 · 投影</text>
+  <text x="524" y="362" class="tech-detail">备份恢复 · 运行报告</text>
+  <text x="524" y="374" class="tech-ver">src/dkws/application/gates.py</text>
+
+  <!-- Domain Models -->
+  <rect x="724" y="296" width="320" height="88" rx="4" fill="rgba(130,87,229,0.06)" stroke="rgba(130,87,229,0.40)" stroke-width="0.8"/>
+  <text x="740" y="314" class="tech-name" fill="var(--ink)">领域模型 (Python dataclass)</text>
+  <text x="740" y="326" class="tech-detail">Knowledge · Workspace · Rules</text>
+  <text x="740" y="338" class="tech-detail">Contracts · States · Paths</text>
+  <text x="740" y="350" class="tech-detail">Extraction · Graph · Hashing</text>
+  <text x="740" y="362" class="tech-detail">Ids · Errors · 值对象</text>
+  <text x="740" y="374" class="tech-ver">src/dkws/domain/</text>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- L4 · AI 与检索层                                           -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="408" width="1020" height="108" rx="6" fill="var(--paper-2)" stroke="var(--rule)" stroke-width="0.8"/>
+  <text x="56" y="426" class="layer-label" fill="var(--accent)">L4</text>
+  <text x="80" y="426" class="layer-name" fill="var(--ink)">AI 与智能检索</text>
+  <text x="1040" y="426" class="layer-sub" text-anchor="end">AI &amp; Intelligent Retrieval</text>
+
+  <!-- LLM -->
+  <rect x="56" y="436" width="240" height="68" rx="4" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="0.8"/>
+  <text x="72" y="454" class="tech-name" fill="var(--ink)">DeepSeek 大模型</text>
+  <text x="72" y="466" class="tech-detail">LLMAdapter · OpenAI 兼容协议</text>
+  <text x="72" y="478" class="tech-detail">故障关闭 · 确定性回退</text>
+  <text x="72" y="490" class="tech-ver">deepseek-chat · api.deepseek.com</text>
+
+  <!-- Graph DB -->
+  <rect x="312" y="436" width="200" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="328" y="454" class="tech-name" fill="var(--ink)">Kùzu 图数据库</text>
+  <text x="328" y="466" class="tech-detail">嵌入式图引擎</text>
+  <text x="328" y="478" class="tech-detail">BFS 遍历 · 故障开放</text>
+  <text x="328" y="490" class="tech-ver">客户/实体/KI/KE 节点</text>
+
+  <!-- Search -->
+  <rect x="528" y="436" width="240" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="544" y="454" class="tech-name" fill="var(--ink)">混合检索引擎</text>
+  <text x="544" y="466" class="tech-detail">Whoosh 全文检索</text>
+  <text x="544" y="478" class="tech-detail">NumPy + Sklearn 向量检索</text>
+  <text x="544" y="490" class="tech-ver">Hybrid 混合 · 分词 · 目录索引</text>
+
+  <!-- Embedding -->
+  <rect x="784" y="436" width="260" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="800" y="454" class="tech-name" fill="var(--ink)">向量化与分词</text>
+  <text x="800" y="466" class="tech-detail">TF-IDF (sklearn)</text>
+  <text x="800" y="478" class="tech-detail">Cosine 相似度</text>
+  <text x="800" y="490" class="tech-ver">jieba / 内置分词器</text>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- L5 · 存储与持久化层                                        -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="528" width="1020" height="108" rx="6" fill="var(--paper-2)" stroke="var(--rule)" stroke-width="0.8"/>
+  <text x="56" y="546" class="layer-label" fill="var(--accent)">L5</text>
+  <text x="80" y="546" class="layer-name" fill="var(--ink)">存储与持久化</text>
+  <text x="1040" y="546" class="layer-sub" text-anchor="end">Storage &amp; Persistence</text>
+
+  <!-- SQLite -->
+  <rect x="56" y="556" width="220" height="68" rx="4" fill="rgba(45,49,66,0.05)" stroke="var(--muted)" stroke-width="0.8"/>
+  <text x="72" y="574" class="tech-name" fill="var(--ink)">SQLite (WAL)</text>
+  <text x="72" y="586" class="tech-detail">运行时状态存储</text>
+  <text x="72" y="598" class="tech-detail">作业 · 幂等 · 证据 · 门禁</text>
+  <text x="72" y="610" class="tech-ver">RuntimeStore · WAL 模式</text>
+
+  <!-- Parquet -->
+  <rect x="292" y="556" width="200" height="68" rx="4" fill="rgba(45,49,66,0.05)" stroke="var(--muted)" stroke-width="0.8"/>
+  <text x="308" y="574" class="tech-name" fill="var(--ink)">Parquet</text>
+  <text x="308" y="586" class="tech-detail">列式投影存储</text>
+  <text x="308" y="598" class="tech-detail">知识资产分析导出</text>
+  <text x="308" y="610" class="tech-ver">pyarrow · ProjectionBuilder</text>
+
+  <!-- File System -->
+  <rect x="508" y="556" width="240" height="68" rx="4" fill="rgba(45,49,66,0.05)" stroke="var(--muted)" stroke-width="0.8"/>
+  <text x="524" y="574" class="tech-name" fill="var(--ink)">文件系统 (工作空间)</text>
+  <text x="524" y="586" class="tech-detail">01_raw → 02_work → 03_core</text>
+  <text x="524" y="598" class="tech-detail">→ 04_serve → 90_control</text>
+  <text x="524" y="610" class="tech-ver">YAML/JSON/MD 知识资产</text>
+
+  <!-- JSON Lines -->
+  <rect x="764" y="556" width="280" height="68" rx="4" fill="rgba(45,49,66,0.05)" stroke="var(--muted)" stroke-width="0.8"/>
+  <text x="780" y="574" class="tech-name" fill="var(--ink)">结构化日志与证据</text>
+  <text x="780" y="586" class="tech-detail">JSON Lines 证据链</text>
+  <text x="780" y="598" class="tech-detail">SHA-256 哈希 · 签名</text>
+  <text x="780" y="610" class="tech-ver">99_evidence/ · 可审计</text>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- L6 · 安全与治理层                                          -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="648" width="1020" height="108" rx="6" fill="var(--paper-2)" stroke="var(--rule)" stroke-width="0.8"/>
+  <text x="56" y="666" class="layer-label" fill="var(--accent)">L6</text>
+  <text x="80" y="666" class="layer-name" fill="var(--ink)">安全与治理</text>
+  <text x="1040" y="666" class="layer-sub" text-anchor="end">Security &amp; Governance</text>
+
+  <!-- Auth -->
+  <rect x="56" y="676" width="200" height="68" rx="4" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="0.8" stroke-dasharray="4,4"/>
+  <text x="72" y="694" class="tech-name" fill="var(--ink)">API Key 认证</text>
+  <text x="72" y="706" class="tech-detail">ApiKeyAuth 中间件</text>
+  <text x="72" y="718" class="tech-detail">请求级身份校验</text>
+  <text x="72" y="730" class="tech-ver">DKWS_API_KEYS 环境变量</text>
+
+  <!-- Classification -->
+  <rect x="272" y="676" width="200" height="68" rx="4" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="0.8" stroke-dasharray="4,4"/>
+  <text x="288" y="694" class="tech-name" fill="var(--ink)">分级管控</text>
+  <text x="288" y="706" class="tech-detail">ClassificationAdapter</text>
+  <text x="288" y="718" class="tech-detail">公开/内部/机密/绝密</text>
+  <text x="288" y="730" class="tech-ver">按分级过滤可见性</text>
+
+  <!-- Redaction -->
+  <rect x="488" y="676" width="200" height="68" rx="4" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="0.8" stroke-dasharray="4,4"/>
+  <text x="504" y="694" class="tech-name" fill="var(--ink)">数据脱敏</text>
+  <text x="504" y="706" class="tech-detail">Redaction 中间件</text>
+  <text x="504" y="718" class="tech-detail">响应级字段遮蔽</text>
+  <text x="504" y="730" class="tech-ver">正则匹配 · 模式替换</text>
+
+  <!-- PathSafety -->
+  <rect x="704" y="676" width="160" height="68" rx="4" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="0.8" stroke-dasharray="4,4"/>
+  <text x="720" y="694" class="tech-name" fill="var(--ink)">路径安全</text>
+  <text x="720" y="706" class="tech-detail">PathSafety 校验</text>
+  <text x="720" y="718" class="tech-detail">防目录遍历</text>
+  <text x="720" y="730" class="tech-ver">故障关闭默认</text>
+
+  <!-- Dependency Check -->
+  <rect x="880" y="676" width="164" height="68" rx="4" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="0.8" stroke-dasharray="4,4"/>
+  <text x="896" y="694" class="tech-name" fill="var(--ink)">依赖安全扫描</text>
+  <text x="896" y="706" class="tech-detail">OWASP dep-check</text>
+  <text x="896" y="718" class="tech-detail">CVE 漏洞检测</text>
+  <text x="896" y="730" class="tech-ver">Makefile dependency-check</text>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- L7 · 可观测与 DevOps 层                                    -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="768" width="1020" height="108" rx="6" fill="var(--paper-2)" stroke="var(--rule)" stroke-width="0.8"/>
+  <text x="56" y="786" class="layer-label" fill="var(--accent)">L7</text>
+  <text x="80" y="786" class="layer-name" fill="var(--ink)">可观测与 DevOps</text>
+  <text x="1040" y="786" class="layer-sub" text-anchor="end">Observability &amp; DevOps</text>
+
+  <!-- structlog -->
+  <rect x="56" y="796" width="200" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="72" y="814" class="tech-name" fill="var(--ink)">structlog</text>
+  <text x="72" y="826" class="tech-detail">结构化日志</text>
+  <text x="72" y="838" class="tech-detail">JSON 输出 · 上下文绑定</text>
+  <text x="72" y="850" class="tech-ver">生产级日志框架</text>
+
+  <!-- OTel -->
+  <rect x="272" y="796" width="200" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="288" y="814" class="tech-name" fill="var(--ink)">OpenTelemetry</text>
+  <text x="288" y="826" class="tech-detail">链路追踪 + 指标</text>
+  <text x="288" y="838" class="tech-detail">Span · Metric · Baggage</text>
+  <text x="288" y="850" class="tech-ver">opentelemetry-api/sdk</text>
+
+  <!-- Prometheus -->
+  <rect x="488" y="796" width="200" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="504" y="814" class="tech-name" fill="var(--ink)">Prometheus</text>
+  <text x="504" y="826" class="tech-detail">指标暴露与采集</text>
+  <text x="504" y="838" class="tech-detail">prometheus_client</text>
+  <text x="504" y="850" class="tech-ver">/metrics 端点</text>
+
+  <!-- GitHub Actions -->
+  <rect x="704" y="796" width="340" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
+  <text x="720" y="814" class="tech-name" fill="var(--ink)">CI/CD 流水线</text>
+  <text x="720" y="826" class="tech-detail">GitHub Actions · Makefile</text>
+  <text x="720" y="838" class="tech-detail">lint → test → security → build</text>
+  <text x="720" y="850" class="tech-ver">NFR 基准 · SBOM · 安全扫描</text>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- 左侧方向指示器                                             -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <line x1="24" y1="136" x2="24" y2="876" stroke="var(--muted)" stroke-width="0.6" marker-end="url(#arr)"/>
+  <text x="24" y="130" class="layer-label" fill="var(--soft)" text-anchor="middle" font-size="5.5">抽象</text>
+  <text x="24" y="890" class="layer-label" fill="var(--soft)" text-anchor="middle" font-size="5.5">运维</text>
+
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <!-- 右侧关键洞察                                               -->
+  <!-- ════════════════════════════════════════════════════════════ -->
+  <rect x="40" y="890" width="1020" height="1" fill="var(--rule)"/>
+  <text x="56" y="908" font-family="var(--serif)" font-size="11" font-style="italic" fill="var(--muted)">
+    C′ 混合架构：Python Core 为唯一公共入口与控制面，Java Skill Runtime 为内部可替换执行器，GITS 仅通过 Python Core HTTP 调用
+  </text>
+
+</svg>
+</body>
+</html>

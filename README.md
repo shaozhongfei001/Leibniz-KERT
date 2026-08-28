@@ -2,12 +2,42 @@
 
 依据 DKWS-SPEC-001 V1.0（`文件目录型数据知识服务模拟平台_详细需求与详细设计_V1.0.md`，状态 `DRAFT_CANDIDATE`）在 DSH 底座上实现的知识服务平台。
 
+## 文档索引
+
+| 文档 | 说明 |
+|------|------|
+| [START_HERE.md](START_HERE.md) | 快速上手指南 |
+| [API 参考](docs/API.md) | HTTP API 端点 + CLI 命令完整参考 |
+| [部署指南](docs/DEPLOYMENT.md) | 安装、配置、启动、Docker/Systemd 部署 |
+| [架构说明](docs/architecture.md) | 系统架构图（分层/运行时/时序/部署拓扑） |
+| [开发规范](docs/development/) | Agent 角色、流程、规则、Python/Java 标准 |
+| [SKILL_PLATFORM_ARCH.md](SKILL_PLATFORM_ARCH.md) | Skill 平台架构设计 |
+| [ADR.md](ADR.md) | 架构决策记录 |
+| [REQUIREMENTS_MATRIX.md](REQUIREMENTS_MATRIX.md) | 需求追踪矩阵 |
+
 ## 定位
 
 - 不依赖数据库、消息队列、分布式平台的**单工作区文件系统模拟平台**；
 - 权威源为**契约化 Markdown**（`01_raw`/`02_work`/`03_core`/`04_serve`/`90_control` 五层）；
 - 批量投影为 **Parquet**，服务交换为 **JSON**，原始事件日志为 `.log`；
 - CLI 为强制接口（`dkws`），HTTP API 为可选薄层。
+
+## 核心功能
+
+| 功能 | 说明 |
+|------|------|
+| 工作区管理 | 五层目录结构（01_raw→02_work→03_core→04_serve，90_control 治理） |
+| 数据接入 | CSV/JSON 接入、哈希校验、幂等控制、对账拒绝 |
+| 结构化数据清洗 | 字段映射、Parquet 投影、血缘追踪 |
+| 文档处理 | PDF/DOCX/TXT 解析、规范化、稳定切片 |
+| 知识抽取与审核 | 候选抽取、同名/矛盾检测、审核消歧、规则 DSL |
+| Core 发布 | Release+CURRENT 指针、版本回滚 |
+| Serve 投影 | 实体/关系/声明/片段/向量/规则/数据集/图谱投影 |
+| 知识服务 | 全文/向量/混合检索、数据查询、图谱查询、规则评估、证据溯源 |
+| Skill 平台 | 外联脚本/会面脚本/服务建议书/交互记忆抽取等可插拔 Skill |
+| Kùzu 图谱 | 嵌入式图数据库投影，Cypher 查询加速，自动回退内存 BFS |
+| LLM 集成 | 可插拔 LLM 适配器（OpenAI 兼容），未配置时确定性回退 |
+| 运行时加固 | API Key 认证、限流、并发控制、数据脱敏、可观测性 |
 
 ## 环境
 

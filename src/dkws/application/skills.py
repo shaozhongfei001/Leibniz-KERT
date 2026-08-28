@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 import re
 import time
@@ -23,6 +24,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from ..domain import timeutil
+
+_log = logging.getLogger(__name__)
 from ..infrastructure.adapters import llm as llm_mod
 from ..infrastructure.classification import detect_value_patterns, redact_for_llm
 
@@ -368,6 +371,7 @@ class SkillExecutionService:
             else:
                 self._store.complete(IDEMPOTENCY_SCOPE, result.request_id, payload)
         except Exception:
+            _log.warning("幂等记录写入失败（request_id=%s）", result.request_id, exc_info=True)
             return
 
     # ---------------- 模型与解析 ----------------
@@ -703,6 +707,7 @@ class SkillExecutionService:
             try:
                 self._store.record_gate(customer_id, gate, decision, decided_by, reason)
             except Exception:
+                _log.warning("门控记录持久化失败（customer=%s, gate=%s）", customer_id, gate, exc_info=True)
                 pass
         return {"recorded": True, **rec}
 
