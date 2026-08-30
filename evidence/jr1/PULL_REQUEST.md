@@ -144,13 +144,39 @@ Owner 已就 JR-1 上报的 5 项作出决策，逐项落实状态如下。
 
 ### 8.1 PR 创建（决策 1）— 仍需 Owner 执行
 
-本机 `gh` 已安装但未认证，`GH_TOKEN` / `GITHUB_TOKEN` 均为空，
-`origin` 为 SSH-only（`git@github.com:...`），无 HTTPS API 凭据。
-属「缺凭据」类硬阻塞，Feature Pilot 不绕过。
+本机 `gh` 已安装（v2.4.0）但未认证，`GH_TOKEN` / `GITHUB_TOKEN` /
+`GH_ENTERPRISE_TOKEN` 均为空，无 `~/.config/gh`、`~/.git-credentials`、
+`~/.netrc`，`credential.helper` 未配置，`origin` 为 SSH-only
+（`git@github.com:...`）。
 
-分支已推送且与远程一致，直接创建即可：
+GitHub 创建 PR 必须走 HTTPS API —— **SSH 只能推送分支，不能创建 PR**
+（该能力属 GitLab / Gerrit，GitHub 不支持）。故属「缺凭据」类硬阻塞，
+Feature Pilot 不绕过、不伪造完成。
+
+两个分支均已推送并与远程一致：
+
+| 分支 | HEAD | 相对 `develop` |
+|------|------|---------------|
+| `feature/dkws-java-runtime-integration` | `12b5cce` | 1 个提交 |
+| `feature/jr1-internal-contract-dual-tests` | `a554a9b` | 8 个提交 |
+
+**已备好一条命令完成两个 PR**（含正确顺序、已评审正文、幂等保护）：
+
+```bash
+export GH_TOKEN=<token>              # 需 repo 权限
+bash scripts/create_jr1_prs.sh       # 先基线 PR，再 JR-1 PR
+bash scripts/create_jr1_prs.sh --dry-run   # 可先预演
+```
+
+脚本行为已实测：`--dry-run` 正常输出两条待执行命令；
+无凭据时**明确报错并以退出码 1 终止**，不静默跳过；
+若目标 PR 已存在则跳过创建（幂等）。
+
+或在浏览器手工创建（正文分别取自 `evidence/jr1/PULL_REQUEST_BASELINE.md`
+与 `evidence/jr1/PULL_REQUEST.md`）：
 
 ```text
+https://github.com/shaozhongfei001/Leibniz-KERT/pull/new/feature/dkws-java-runtime-integration
 https://github.com/shaozhongfei001/Leibniz-KERT/pull/new/feature/jr1-internal-contract-dual-tests
 ```
 
@@ -187,14 +213,10 @@ Owner 决策「先合入作为受控基线」。Feature Pilot **不可自行 mer
 > （契约当前仅 `1.0.0-candidate` 单版本，无第二版本可比对）。
 > 建议在契约出现 `v2` 时以独立任务包补齐，避免此刻造出假证据。
 
-**建议执行方式**（保持基线可追溯，与 JR-1 解耦）：
-先将 `feature/dkws-java-runtime-integration` 单独 PR 合入 `develop`，
-再合 JR-1 PR。两者无文件重叠，顺序不影响，但**先合基线**更符合
-「受控基线先于实现」的权威顺序。
-
-```text
-https://github.com/shaozhongfei001/Leibniz-KERT/pull/new/feature/dkws-java-runtime-integration
-```
+**执行方式**：基线 PR 正文已备于 `evidence/jr1/PULL_REQUEST_BASELINE.md`，
+由 `scripts/create_jr1_prs.sh` 按「基线先、JR-1 后」顺序自动创建
+（见 8.1）。两者无文件重叠，但**先合基线**符合「受控基线先于实现」
+的权威顺序。
 
 Feature Pilot 未自行创建该分支的副本分支，以免产生重复提交与冲突源。
 
