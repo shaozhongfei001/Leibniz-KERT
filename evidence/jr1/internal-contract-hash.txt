@@ -1,0 +1,15 @@
+# DKWS 内部契约 bundle 哈希（JR-1 §6.4）
+# 生成命令: python scripts/internal_contract_hash.py
+# 契约版本: 1.0.0-candidate
+schema=dkws-internal-contract-bundle/v1
+base_dir=docs/contracts/internal
+bundle_hash=64b9b432d6ee9fc9e017436171f05e1198ab920121202266c835c471ff2c4550
+
+# 分项文件哈希（sha256）
+839e8e7e8e6a348591d8374467c3cc48a1a3e6cc7a9021e510197c302b5d8d54  openapi/dkws-skill-runtime-internal-v1.yaml
+84d009ad3d58276315a1595250ef1bf3c4410fc4399b814bd9b581b18e0fb191  schemas/execution-plan.schema.json
+70f51249b4a1bdfcbbf6ea76558a0667f02a52f05a67f9b16eba1a54d114bb37  schemas/execution-result.schema.json
+fb2655cc90768bd497f4adfb0df688d3ced3979118907b02243ad285711a688a  schemas/model-call-receipt.schema.json
+575289a269084eea6142f8284aac7e4da721d1d154af77c45faa0d608d94cd24  schemas/runtime-capabilities.schema.json
+ac2943cf291555b543c295f73ecdb7f994326beaff8cfde337d88988b26ddb79  schemas/runtime-error.schema.json
+c5174b22634bf3ddf8940a419189adbe8832ddc822343389115411444aa90392  schemas/tool-call-receipt.schema.json
