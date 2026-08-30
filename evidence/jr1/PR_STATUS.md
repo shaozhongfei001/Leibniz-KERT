@@ -50,23 +50,53 @@ c608954 feat(m3-p0): complete Phase 0 prerequisites ...
 
 ### 2.3 修正方式（二选一，均由 Owner 执行）
 
-**方式 A：改 base（推荐，保留现有 PR 编号与讨论）**
+**方式 A：网页改 base（推荐，保留现有 PR 编号与讨论）**
 
-在 PR 页面点击 base 分支下拉框，由 `main` 改为 `develop`。
-两个 PR 都要改。改后差异应收敛为：
+对 #1 和 #2 各做一次，每个约 20 秒：
 
-- #1 → 1 个提交、2 份文档、+302 行
-- #2 → 9 个提交（JR-1 全部内容）
+1. 打开 PR 页面
+   - #1 https://github.com/shaozhongfei001/Leibniz-KERT/pull/1
+   - #2 https://github.com/shaozhongfei001/Leibniz-KERT/pull/2
+2. 标题下方有一行分支指示：`shaozhongfei001 wants to merge N commits into
+   **main** from <源分支>`
+3. 点击其中的 **`main`**（它是下拉按钮，不是纯文本）
+4. 在下拉中选择 **`develop`**
+5. GitHub 弹出确认框 **Change base branch?** → 点击 **Change base**
 
-**方式 B：关闭重建**
+改完后页面提交数应收敛：
 
-关闭 #1、#2，改用脚本创建（脚本已硬编码 `--base develop`，
-不受仓库默认分支影响）：
+| PR | 改前（→ main） | 改后（→ develop） |
+|----|---------------|------------------|
+| #1 | 20 commits | **1 commit** |
+| #2 | 28 commits | **9 commits** |
+
+> 若下拉中看不到 `develop`：确认你是仓库 write 权限账号；
+> `develop` 确实存在于远程（`git ls-remote --heads origin develop`）。
+
+**方式 B：命令行（需 token，可一次处理两个）**
 
 ```bash
-export GH_TOKEN=<token>
-bash scripts/create_jr1_prs.sh
+export GH_TOKEN=<token>          # 需 repo 权限
+bash scripts/create_jr1_prs.sh   # 检测到 base 不符会自动 gh pr edit --base develop
 ```
+
+或直接用 API（不依赖 gh 版本）：
+
+```bash
+for n in 1 2; do
+  curl -s -X PATCH \
+    -H "Authorization: Bearer $GH_TOKEN" \
+    -H "Accept: application/vnd.github+json" \
+    "https://api.github.com/repos/shaozhongfei001/Leibniz-KERT/pulls/$n" \
+    -d '{"base":"develop"}' >/dev/null && echo "PR #$n base -> develop"
+done
+```
+
+**方式 C：关闭重建**
+
+关闭 #1、#2，再用 `bash scripts/create_jr1_prs.sh` 重建
+（脚本硬编码 `--base develop`，不受仓库默认分支影响）。
+缺点是丢失现有 PR 编号与讨论，故列为最后选择。
 
 ### 2.4 校验方法
 

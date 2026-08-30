@@ -15,7 +15,7 @@
 | 文件 | 说明 |
 |------|------|
 | `README.md` | 本证据清单 |
-| `PR_STATUS.md` | PR 创建后状态核实 + **必须修正项（base 指向 `main`）** |
+| `PR_STATUS.md` | PR 创建后状态核实 + **必须修正项（base 指向 `main`）**；校验命令 `bash scripts/check_pr_base.sh` |
 | `PULL_REQUEST.md` | JR-1 PR 正文 + Owner 决策落实明细（第 8 节） |
 | `PULL_REQUEST_BASELINE.md` | 基线 PR 正文（两份计划文档合入 `develop`） |
 | `internal-contract-hash.txt` | 契约 bundle hash + 7 份受控文件分项 sha256 |
