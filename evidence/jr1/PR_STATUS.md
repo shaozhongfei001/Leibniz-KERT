@@ -1,20 +1,37 @@
-# PR 状态核实与必须修正项
+# PR 状态核实与修正记录
 
 - 首次核实：2026-08-31
 - 复查更新：2026-08-31（发现新增 PR #3，并修正本文件早前的提交数错误）
-
-Owner 已手工创建 PR。Feature Pilot 通过 GitHub 公开 API 核实实际状态
-（本机无凭据，只读匿名查询）后发现**一处必须修正的问题**。
+- **修正完成：2026-08-31（Owner 提供凭据后，#1/#2 的 base 已改为 `develop`，标题与正文已注入）**
 
 ---
 
-## 1. 当前开启中的 PR（共 3 个）
+## 0. 当前结论（已修正）
+
+`bash scripts/check_pr_base.sh` → **EXIT=0，全部 feature PR base 正确**。
+
+| PR | 源分支 → base | 标题 | 正文 | 提交数 | 判定 |
+|----|--------------|------|------|--------|------|
+| [#1](https://github.com/shaozhongfei001/Leibniz-KERT/pull/1) | `feature/dkws-java-runtime-integration` → **`develop`** | 已设为 `docs(arch): merge Java Runtime integration plan into controlled baseline` | 2146 字符 | **1** | 就绪待审 |
+| [#2](https://github.com/shaozhongfei001/Leibniz-KERT/pull/2) | `feature/jr1-internal-contract-dual-tests` → **`develop`** | 已设为 `test(contract): JR-1 internal contract dual-side tests (Python 117 + Java 73)` | 8083 字符 | **12** | 就绪待审 |
+| [#3](https://github.com/shaozhongfei001/Leibniz-KERT/pull/3) | `develop` → `main` | `Develop change` | **0 字符** | 19 | 正常发布 PR，**建议补正文** |
+
+修正手段：`gh api --method PATCH repos/.../pulls/N -f base=develop`。
+
+**为何不用 `gh pr edit`**：本机 `gh` 为 2.4.0，其 `pr` 子命令走 GraphQL 并查询
+已被 GitHub 废弃的 Projects classic 字段，报错
+`GraphQL: Projects (classic) is being deprecated ... (repository.pullRequest.projectCards)`
+而 base 并未改动。REST (`gh api`) 路径不受影响。
+
+---
+
+## 1. 修正前的问题（历史记录，已解决）
 
 | PR | 源分支 → base | 性质 | 判定 |
 |----|--------------|------|------|
-| [#1](https://github.com/shaozhongfei001/Leibniz-KERT/pull/1) | `feature/dkws-java-runtime-integration` → **`main`** | 基线文档 | **需修正 base 为 `develop`** |
-| [#2](https://github.com/shaozhongfei001/Leibniz-KERT/pull/2) | `feature/jr1-internal-contract-dual-tests` → **`main`** | JR-1 实现 | **需修正 base 为 `develop`** |
-| [#3](https://github.com/shaozhongfei001/Leibniz-KERT/pull/3) | `develop` → `main` | 集成/发布 | **正常，无需修正** |
+| #1 | `feature/dkws-java-runtime-integration` → **`main`** | 基线文档 | 需修正 base |
+| #2 | `feature/jr1-internal-contract-dual-tests` → **`main`** | JR-1 实现 | 需修正 base |
+| #3 | `develop` → `main` | 集成/发布 | 正常，无需修正 |
 
 PR #3（`Develop change`，创建于 2026-08-30T18:34Z）是 `develop → main`
 的发布型 PR，属正常集成流程，**不是** base 配错。已核实其范围为
@@ -30,7 +47,7 @@ bash scripts/check_pr_base.sh                     # 直接给 PASS/FAIL
 curl -s "https://api.github.com/repos/shaozhongfei001/Leibniz-KERT/pulls?state=all"
 ```
 
-## 2. 必须修正：#1 / #2 的 base 应为 `develop`，当前为 `main`
+## 2. 原问题分析：base 为 `main` 的后果
 
 ### 2.1 为什么这是问题
 
@@ -140,49 +157,69 @@ PR #3（`develop → main`）本身正常，但它与 #1/#2 存在**顺序耦合
 
 无论哪种，**#1 必须早于 #2**（受控基线先于实现）。
 
-## 4. 次要项：PR 正文未使用已备文本
+## 4. PR 正文与标题（#1/#2 已注入，#3 待补）
 
-当前正文长度：#1 为 29 字符，#2 为 41 字符，#3 为 0 字符；
-标题均为 GitHub 自动生成（如 `Feature/jr1 internal contract dual tests`）。
+修正前，#1/#2 的正文为 GitHub 自动生成的占位（29 / 41 字符），
+标题亦为自动生成（如 `Feature/jr1 internal contract dual tests`），
+审查者无法据此判断验收依据。
 
-已备好的正文与建议标题：
+已注入（`gh api --method PATCH ... -F body=@<file>`）：
 
-| PR | 正文文件 | 建议标题 |
-|----|----------|----------|
-| #1 | `evidence/jr1/PULL_REQUEST_BASELINE.md` | `docs(arch): merge Java Runtime integration plan into controlled baseline` |
-| #2 | `evidence/jr1/PULL_REQUEST.md` | `test(contract): JR-1 internal contract dual-side tests (Python 117 + Java 73)` |
+| PR | 正文来源 | 注入后长度 | 标题 |
+|----|----------|-----------|------|
+| #1 | `evidence/jr1/PULL_REQUEST_BASELINE.md` | 2146 字符 | `docs(arch): merge Java Runtime integration plan into controlled baseline` |
+| #2 | `evidence/jr1/PULL_REQUEST.md` | 8083 字符 | `test(contract): JR-1 internal contract dual-side tests (Python 117 + Java 73)` |
 
 正文含验收依据、测试复现命令、漂移负向验证结论、Owner 决策落实与非声明，
-建议粘贴以便审查者无需翻仓库即可判断。此项不阻断合并，但影响可审计性。
+审查者无需翻仓库即可判断。
 
-PR #3 的正文为空。它将把 19 个提交（含 `v0.1.0` 发布）推入 `main`，
-建议至少写明范围与风险，由 Owner / Tech Lead 补充。
+**待补**：PR #3 正文仍为空（0 字符），却将把 19 个提交
+（含 `v0.1.0` 发布）推入 `main`。建议由 Owner / Tech Lead 补充范围与风险说明。
+Feature Pilot 未改动 #3，因其属发布决策范围。
 
 ## 5. 本文件的自我修正记录
 
-首版曾给出错误的提交数（`#2 → 28/9`、`#1 → 20/1`）。原因：
-JR-1 分支在首次统计后又新增了 3 个 PR 文档/脚本提交，
-复述时未重新计算。已按当前远程状态重算并更正为
-`#2 → 30/11`、`#1 → 10/1`。核对命令：
+**（a）提交数曾报错。** 首版给出 `#2 → 28/9`、`#1 → 20/1`，实际为
+`#2 → 30/11`、`#1 → 10/1`。原因：JR-1 分支在首次统计后又新增了 3 个
+PR 文档/脚本提交，复述时未重新计算。已按远程状态重算更正。核对命令：
 
 ```bash
 git fetch origin --prune
 git rev-list --count origin/main..origin/feature/jr1-internal-contract-dual-tests   # 30
-git rev-list --count origin/develop..origin/feature/jr1-internal-contract-dual-tests # 11
+git rev-list --count origin/develop..origin/feature/jr1-internal-contract-dual-tests # 11（改 base 后又 +1 = 12）
 git rev-list --count origin/main..origin/feature/dkws-java-runtime-integration        # 10
 git rev-list --count origin/develop..origin/feature/dkws-java-runtime-integration     # 1
 ```
 
+**（b）`create_jr1_prs.sh` 曾谎报成功。** 该脚本用 `gh pr edit` 改 base，
+遇 GraphQL Projects classic 废弃报错后 **base 实际未变，却仍打印
+「两个 PR 处理完成」**。这是最危险的失败模式：看似成功、实则未改。
+
+已修复为：
+- 改用 `gh api`（REST）而非 `gh pr view/edit`（GraphQL），绕开旧版 gh 缺陷
+- 改完后**回读 `base.ref` 验证**，不以命令退出码判定成功
+- 失败时置 `FAILED=1`，脚本以退出码 1 结束并提示改用网页操作
+- 幂等复跑已实测：base 已正确时输出「无需改动」，EXIT=0
+
 ## 6. 合并顺序
 
-见第 3 节。核心约束：**#1 早于 #2**；且 **base 未改前不要先合 #1/#2**。
+见第 3 节。核心约束：**#1 早于 #2**。
+由于 base 已修正，「base 未改前不要先合 #1/#2」的风险已消除。
 
-## 7. Feature Pilot 未做的事
+## 7. Feature Pilot 做了 / 未做的事
 
-- 未修改 PR base（无凭据，且改 base 属 Owner 决策范围）。
-- 未关闭或重建任何 PR。
-- 未 merge 任何 PR。
-- 未向 `main` 推送任何内容。
+已做（Owner 提供凭据后，属修正既有 PR 元数据，不涉及代码与合并）：
+
+- 将 #1 / #2 的 base 由 `main` 改为 `develop`
+- 为 #1 / #2 注入已备正文与规范标题
+- 修复 `create_jr1_prs.sh` 的谎报缺陷
+
+未做：
+
+- 未修改 PR #3（`develop → main`）的任何内容
+- 未 merge 任何 PR
+- 未向 `main` 推送任何内容
+- 未 approve 或代替他人签署
 
 ## 8. 非声明
 

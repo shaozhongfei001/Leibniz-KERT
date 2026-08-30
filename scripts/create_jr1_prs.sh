@@ -76,29 +76,47 @@ create_pr() {
 
   # 先查是否已有开启中的 PR（不限 base）：Owner 可能已手工创建，
   # 且 GitHub 创建页默认以仓库默认分支为 base，容易误指向 main。
+  #
+  # 注意：统一使用 `gh api`（REST）而非 `gh pr view/edit`（GraphQL）。
+  # 旧版 gh（如 2.4.0）的 pr 子命令会查询已废弃的 Projects classic 字段，
+  # 导致 GraphQL 报错；REST 路径不受影响。
   local existing existing_base
-  existing=$(gh pr list --repo "$REPO" --head "$branch" --state open \
-               --json number --jq '.[0].number' 2>/dev/null || true)
+  existing=$(gh api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$branch" \
+               --jq '.[0].number // empty' 2>/dev/null || true)
 
-  if [[ -n "$existing" && "$existing" != "null" ]]; then
-    existing_base=$(gh pr view "$existing" --repo "$REPO" \
-                      --json baseRefName --jq .baseRefName 2>/dev/null || true)
+  if [[ -n "$existing" ]]; then
+    existing_base=$(gh api "repos/$REPO/pulls/$existing" --jq .base.ref 2>/dev/null || true)
     echo "  已存在开启中的 PR #$existing（base=$existing_base）"
 
-    if [[ "$existing_base" != "$BASE" ]]; then
-      echo "  !! base 不是 $BASE，需修正（否则会把 $BASE 的存量提交一并带入 $existing_base）"
-      if [[ $DRY_RUN -eq 1 ]]; then
-        echo "  [dry-run] gh pr edit $existing --repo $REPO --base $BASE"
-      else
-        gh pr edit "$existing" --repo "$REPO" --base "$BASE" \
-          && echo "  已将 PR #$existing 的 base 改为 $BASE"
-      fi
-    else
-      echo "  base 正确，跳过创建（幂等）"
+    if [[ "$existing_base" == "$BASE" ]]; then
+      echo "  base 正确，无需改动（幂等）"
+      echo "  https://github.com/$REPO/pull/$existing"
+      return 0
     fi
 
-    gh pr view "$existing" --repo "$REPO" --json url --jq .url 2>/dev/null || true
-    return 0
+    echo "  !! base 不是 $BASE（否则会把 $BASE 的存量提交一并带入 $existing_base）"
+    if [[ $DRY_RUN -eq 1 ]]; then
+      echo "  [dry-run] gh api --method PATCH repos/$REPO/pulls/$existing -f base=$BASE"
+      return 0
+    fi
+
+    # 改 base，并**回读实际结果**验证，不以命令退出码当作成功
+    gh api --method PATCH "repos/$REPO/pulls/$existing" -f base="$BASE" >/dev/null 2>&1 || true
+
+    local after
+    after=$(gh api "repos/$REPO/pulls/$existing" --jq .base.ref 2>/dev/null || true)
+    if [[ "$after" == "$BASE" ]]; then
+      local n_commits
+      n_commits=$(gh api "repos/$REPO/pulls/$existing" --jq .commits 2>/dev/null || echo "?")
+      echo "  已将 PR #$existing 的 base 改为 $BASE（现含 $n_commits 个提交）"
+      echo "  https://github.com/$REPO/pull/$existing"
+      return 0
+    fi
+
+    echo "  ** 修正失败：base 仍为 '$after'" >&2
+    echo "  ** 请改用网页操作：打开 PR -> 点 base 分支名 -> 选 $BASE -> Change base" >&2
+    FAILED=1
+    return 1
   fi
 
   if [[ $DRY_RUN -eq 1 ]]; then
@@ -108,16 +126,22 @@ create_pr() {
   fi
 
   gh pr create --repo "$REPO" --base "$BASE" --head "$branch" \
-    --title "$title" --body-file "$body_file"
+    --title "$title" --body-file "$body_file" || { FAILED=1; return 1; }
 }
 
+FAILED=0
+
 # 顺序固定：受控基线先于实现
-create_pr "$BASELINE_BRANCH" "$BASELINE_TITLE" "$BASELINE_BODY" "1/2 基线 PR"
-create_pr "$JR1_BRANCH"      "$JR1_TITLE"      "$JR1_BODY"      "2/2 JR-1 PR"
+create_pr "$BASELINE_BRANCH" "$BASELINE_TITLE" "$BASELINE_BODY" "1/2 基线 PR" || true
+create_pr "$JR1_BRANCH"      "$JR1_TITLE"      "$JR1_BODY"      "2/2 JR-1 PR" || true
 
 echo
 if [[ $DRY_RUN -eq 1 ]]; then
   echo "dry-run 结束，未创建任何 PR。"
+elif [[ $FAILED -ne 0 ]]; then
+  echo "存在未完成项，请按上方提示处理后重跑。" >&2
+  echo "可用 bash scripts/check_pr_base.sh 独立校验（匿名，无需凭据）。" >&2
+  exit 1
 else
   echo "两个 PR 处理完成。请由 Owner / Tech Lead 审查与 merge。"
   echo "注意：合并顺序应为 基线 PR -> JR-1 PR。"
