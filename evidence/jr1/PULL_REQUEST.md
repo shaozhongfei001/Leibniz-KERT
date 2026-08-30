@@ -130,29 +130,93 @@ cd ~/dev/Leibniz-KERT
 4. 示例文件不计入契约 hash 的决策是否认可
    （由 `test_examples_not_in_hash_scope` 守护）。
 
-## 8. 待 Owner / Tech Lead 处理
+## 8. Owner 决策与落实（2026-08-31）
 
-1. **PR 需人工创建**：本机 `gh` 未认证（无 `GH_TOKEN` / `GITHUB_TOKEN`），
-   Feature Pilot 无法创建 PR。分支已推送，可直接访问：
-   https://github.com/shaozhongfei001/Leibniz-KERT/pull/new/feature/jr1-internal-contract-dual-tests
+Owner 已就 JR-1 上报的 5 项作出决策，逐项落实状态如下。
 
-2. **两份任务书引用的文档不在 `develop`**：
-   `docs/architecture/DKWS_JAVA_RUNTIME_INTEGRATION_PLAN_V1.0.md` 与
-   `DKWS_SPRING_AI_ALIBABA_INTEGRATION_STATUS_V1.0.md` 仅存在于未合并分支
-   `origin/feature/dkws-java-runtime-integration`。本次已从该分支读取参考，
-   但请确认这两份文档是否应先合入 `develop` 作为受控基线。
+| # | 事项 | Owner 决策 | 落实状态 |
+|---|------|-----------|----------|
+| 1 | PR 创建 | 凭据由 Owner 侧提供 | **仍阻塞**：本机无凭据，见下 8.1 |
+| 2 | 两份计划文档不在 `develop` | **先合入作为受控基线** | 已完成合入前验证，见 8.2 |
+| 3 | `feature/poc2-contract-sandbox` | 仅作测试草稿，**不引入** | 已遵守（本 PR 零引用），见 8.3 |
+| 4 | 公共契约 `PENDING_COMPUTE`（C-19） | **不改动** | 已遵守（未触碰），见 8.4 |
+| 5 | `--skip-java` 记为 FAIL | **保留严格策略** | 已保留（无需改动），见 8.5 |
 
-3. **存在未合并的前序契约分支** `feature/poc2-contract-sandbox`（`ef5d5b3`），
-   其中含另一套内部契约与测试草稿。本 PR 严格基于 `origin/develop` 实现，
-   未引入该分支内容。**请 Tech Lead 决策该分支的取舍**，避免后续冲突。
+### 8.1 PR 创建（决策 1）— 仍需 Owner 执行
 
-4. **公共契约仍有 `PENDING_COMPUTE`**：
-   `docs/contracts/openapi/dkws-openapi-v2.yaml` 的
-   `x-contract-bundle-hash: PENDING_COMPUTE` 属已登记冲突 C-19，
-   位于**对外**契约，不在 JR-1 内部契约范围内，未擅自改动。
+本机 `gh` 已安装但未认证，`GH_TOKEN` / `GITHUB_TOKEN` 均为空，
+`origin` 为 SSH-only（`git@github.com:...`），无 HTTPS API 凭据。
+属「缺凭据」类硬阻塞，Feature Pilot 不绕过。
 
-5. **`--skip-java` 语义**：脚本将其显式记为 FAIL，防止「跳过 Java 却宣称
-   双端通过」。若 CI 环境无 Maven，请确认此严格策略是否保留。
+分支已推送且与远程一致，直接创建即可：
+
+```text
+https://github.com/shaozhongfei001/Leibniz-KERT/pull/new/feature/jr1-internal-contract-dual-tests
+```
+
+### 8.2 两份计划文档合入 `develop`（决策 2）— 已完成合入前验证
+
+Owner 决策「先合入作为受控基线」。Feature Pilot **不可自行 merge**，
+故仅完成合入前验证并给出执行方案。
+
+源分支：`origin/feature/dkws-java-runtime-integration`（`12b5cce`）
+
+验证结论：
+
+| 检查项 | 结果 |
+|--------|------|
+| 该分支相对 `develop` 的差异 | **仅 2 份文档，+302 行，零代码改动** |
+| 独有提交数 | **1 个**（`12b5cce docs(arch): add Java Runtime integration plan and update C' status`） |
+| 与 `develop` 合并冲突 | **无冲突**（真实试合并 `--no-commit --no-ff` 通过，随后 abort 复原） |
+| 是否需要更新登记表 | **不需要**：`DKWS_STATUS_BASELINE_CANDIDATE.yaml` 是状态/能力视图，不含受控文档清单；两份文档也未在 `DKWS_DOCUMENT_CONFLICT_REGISTER.md` 中 |
+| 与 JR-1 事实是否矛盾 | **不矛盾**，且互相印证（见下） |
+
+内容印证：`DKWS_JAVA_RUNTIME_INTEGRATION_PLAN_V1.0.md` 的 **WP1「内部契约双端化」**
+正是本任务包 JR-1，其交付要求与本 PR 逐条对应：
+
+| WP1 要求 | 本 PR 对应交付 |
+|----------|---------------|
+| Python consumer/provider contract tests | `tests/contract/internal/` 117 项 |
+| Java consumer/provider contract tests | Java `contract/` 包 73 项 |
+| 契约 hash 双端一致 | hash 四方比对（Java 独立重算） |
+| 未知字段测试 | 未知字段策略双闸门（反序列化 + Schema） |
+| 同 key 不同 payload 测试 | 幂等冲突语义 + `RuntimeStore` 行为对齐 |
+
+> 一处差异供 Tech Lead 留意：WP1 未要求「版本不兼容」测试，
+> 而 `INTEGRATION_STATUS` 文档提到该项。本 PR **未覆盖版本不兼容矩阵**
+> （契约当前仅 `1.0.0-candidate` 单版本，无第二版本可比对）。
+> 建议在契约出现 `v2` 时以独立任务包补齐，避免此刻造出假证据。
+
+**建议执行方式**（保持基线可追溯，与 JR-1 解耦）：
+先将 `feature/dkws-java-runtime-integration` 单独 PR 合入 `develop`，
+再合 JR-1 PR。两者无文件重叠，顺序不影响，但**先合基线**更符合
+「受控基线先于实现」的权威顺序。
+
+```text
+https://github.com/shaozhongfei001/Leibniz-KERT/pull/new/feature/dkws-java-runtime-integration
+```
+
+Feature Pilot 未自行创建该分支的副本分支，以免产生重复提交与冲突源。
+
+### 8.3 前序契约分支不引入（决策 3）— 已遵守
+
+`feature/poc2-contract-sandbox`（`ef5d5b3`）仅作测试草稿，不引入。
+本 PR 严格基于 `origin/develop`，未引用、未 cherry-pick 其任何内容。
+
+### 8.4 公共契约 `PENDING_COMPUTE` 不改动（决策 4）— 已遵守
+
+`docs/contracts/openapi/dkws-openapi-v2.yaml` 的
+`x-contract-bundle-hash: PENDING_COMPUTE` 属冲突登记册 C-19（状态 `PENDING`），
+位于**对外**契约，不在 JR-1 范围，未触碰。
+
+内部契约侧无占位符残留，由
+`test_internal_contract_hash.py::test_no_pending_compute_placeholder` 守护。
+
+### 8.5 `--skip-java` 严格策略保留（决策 5）— 已保留
+
+`scripts/verify_jr1_internal_contract.py` 将 `--skip-java` 显式记为 **FAIL**
+并附「跳过即视为未验证，不得据此宣称双端通过」。该行为已是当前实现，
+无需改动。CI 若无 Maven，将如实呈现为未验证而非假绿。
 
 ## 9. 非声明
 

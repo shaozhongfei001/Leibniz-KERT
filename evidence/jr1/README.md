@@ -15,6 +15,7 @@
 | 文件 | 说明 |
 |------|------|
 | `README.md` | 本证据清单 |
+| `PULL_REQUEST.md` | PR 正文 + Owner 决策落实明细（第 8 节） |
 | `internal-contract-hash.txt` | 契约 bundle hash + 7 份受控文件分项 sha256 |
 | `e2e-verification-report.md` | 端到端验证报告（8 项检查逐项结论） |
 | `python-contract-test.log` | Python 契约测试日志（`tests/contract`，170 passed） |
@@ -169,7 +170,23 @@ DTO 补齐仅作用于**内部 Runtime 边界**，未改动任何对外公共 AP
 `--skip-java` / `--no-logs` / `--report`。`--skip-java` 显式记为 FAIL，
 避免「跳过 Java 却宣称双端通过」。
 
-## 7. 合规自检
+## 7. Owner 决策落实（2026-08-31）
+
+| # | 事项 | Owner 决策 | 落实状态 |
+|---|------|-----------|----------|
+| 1 | PR 创建 | 凭据由 Owner 侧提供 | 仍阻塞（本机无凭据，分支已推送） |
+| 2 | 两份计划文档合入 `develop` 作受控基线 | 先合入 | 合入前验证完成：仅 2 文档 / +302 行 / 零代码 / 无冲突；Feature Pilot 不自行 merge |
+| 3 | `feature/poc2-contract-sandbox` | 仅测试草稿，不引入 | 已遵守（零引用） |
+| 4 | 公共契约 `PENDING_COMPUTE`（C-19） | 不改动 | 已遵守（未触碰） |
+| 5 | `--skip-java` 记为 FAIL | 保留严格策略 | 已保留（当前实现即如此） |
+
+详见 `PULL_REQUEST.md` 第 8 节（含合入前验证明细与执行建议）。
+
+已知覆盖缺口（如实记录，不造假证据）：**版本不兼容矩阵未覆盖**。
+契约当前仅 `1.0.0-candidate` 单版本，无第二版本可比对；
+建议契约出现 `v2` 时以独立任务包补齐。
+
+## 8. 合规自检
 
 | 约束 | 状态 |
 |------|------|
@@ -182,7 +199,7 @@ DTO 补齐仅作用于**内部 Runtime 边界**，未改动任何对外公共 AP
 | 先记录失败再修复 | 遵守（`FAILURES.md` 2 条） |
 | Java Runtime 不对外暴露 | 由 `test_internal_openapi_alignment.py` 断言路径限 `/internal/`、服务器限回环 |
 
-## 8. 非声明
+## 9. 非声明
 
 - 本次**不**代表 DKWS 已生产就绪。
 - 本次**不**代表 GITS UAT 已通过。
