@@ -21,6 +21,8 @@
         <java.version>21</java.version>
         <!-- 以 Spring AI Alibaba 官方 1.1.2.0 文档为准，如 BOM 坐标不同请调整 -->
         <spring-ai-alibaba.version>1.1.2.0</spring-ai-alibaba.version>
+        <!-- JR-1 内部契约测试用：JSON Schema Draft 2020-12 校验器（仅 test 作用域） -->
+        <json-schema-validator.version>1.5.7</json-schema-validator.version>
     </properties>
 
     <dependencyManagement>
@@ -99,6 +101,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+          JR-1 内部契约测试：直接加载 docs/contracts/internal/schemas/ 下的真实
+          JSON Schema 校验 Java 侧 DTO 序列化结果，避免手写断言与契约脱节。
+          仅 test 作用域，不进入运行时。
+        -->
+        <dependency>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${json-schema-validator.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
