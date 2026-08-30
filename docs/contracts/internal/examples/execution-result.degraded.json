@@ -1,0 +1,34 @@
+{
+  "requestId": "req-2026-08-30-0003",
+  "runtimeRequestId": "rt-9e1c3a7d-5b2f-4c80-8d1e-6a3f9c5b2d71",
+  "status": "DEGRADED",
+  "usable": true,
+  "releaseAllowed": false,
+  "degraded": true,
+  "degradationReason": "SANDBOX_UNAVAILABLE",
+  "result": {
+    "answer": "沙箱不可用，已使用只读知识回答，结果不可放行。"
+  },
+  "errors": [
+    {
+      "code": "SANDBOX_UNAVAILABLE",
+      "message": "GraalVM polyglot sandbox is disabled in this runtime profile",
+      "retryable": false
+    }
+  ],
+  "startedAt": "2026-08-30T10:20:00Z",
+  "completedAt": "2026-08-30T10:20:03Z",
+  "toolCallReceipts": [],
+  "modelCallReceipts": [
+    {
+      "model": "deepseek-chat",
+      "promptHash": "ff6677889900aa11bb22cc33dd44ee55ff6677889900aa11bb22cc33dd44ee55",
+      "inputTokens": 640,
+      "outputTokens": 88,
+      "latencyMs": 2210.0,
+      "degraded": true,
+      "degradationReason": "TOOL_CHAIN_SKIPPED",
+      "status": "degraded"
+    }
+  ]
+}

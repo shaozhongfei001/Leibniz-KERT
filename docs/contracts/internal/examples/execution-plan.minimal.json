@@ -1,0 +1,15 @@
+{
+  "contractVersion": "1.0.0-candidate",
+  "requestId": "req-2026-08-30-0002",
+  "tenantId": "tenant-huaxin",
+  "customerScope": {},
+  "skillId": "bank-front-precheck",
+  "skillVersion": "1.4.0",
+  "skillHash": "5f2b1c9e8a7d4f30b6c1e5a9d3f78b240c5e91a7d84f6b23c0e7a5d9f1b3c682",
+  "activationPlanHash": "9c3e7a1d5b8f204c6e9a3d7f1b5c8e02a4d6f9b1c3e5a7d9f0b2c4e6a8d0f2b4",
+  "policyId": "POL-SKILL-EXEC-002",
+  "deadline": "2026-08-30T10:15:30Z",
+  "idempotencyKey": "idem-6f1a9c2e-4b7d-4a10-9c3e-8d5f2b7a1c05",
+  "payloadHash": "1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+  "allowedToolIds": []
+}

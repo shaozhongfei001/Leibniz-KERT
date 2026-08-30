@@ -1,0 +1,11 @@
+{
+  "model": "deepseek-chat",
+  "promptHash": "5566778899001122334455667788990011223344556677889900112233445566",
+  "paramsHash": "6677889900112233445566778899001122334455667788990011223344556677",
+  "inputTokens": 1820,
+  "outputTokens": 264,
+  "estimatedCost": 0.0031,
+  "latencyMs": 4120.5,
+  "degraded": false,
+  "status": "ok"
+}

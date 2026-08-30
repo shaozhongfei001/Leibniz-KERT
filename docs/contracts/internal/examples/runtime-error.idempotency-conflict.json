@@ -1,0 +1,10 @@
+{
+  "code": "IDEMPOTENCY_CONFLICT",
+  "message": "Idempotency key reused with a different payloadHash",
+  "retryable": false,
+  "details": {
+    "idempotencyKey": "idem-6f1a9c2e-4b7d-4a10-9c3e-8d5f2b7a1c04",
+    "expectedPayloadHash": "1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+    "actualPayloadHash": "99887766554433221100ffeeddccbbaa99887766554433221100ffeeddccbbaa"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "contractVersion": "1.0.0-candidate",
+  "requestId": "req-2026-08-30-0001",
+  "traceparent": "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+  "tenantId": "tenant-huaxin",
+  "customerScope": {
+    "customerId": "CUST-000123",
+    "scopeType": "SINGLE_CUSTOMER"
+  },
+  "skillId": "bank-front-precheck",
+  "skillVersion": "1.4.0",
+  "skillHash": "5f2b1c9e8a7d4f30b6c1e5a9d3f78b240c5e91a7d84f6b23c0e7a5d9f1b3c682",
+  "activationPlanHash": "9c3e7a1d5b8f204c6e9a3d7f1b5c8e02a4d6f9b1c3e5a7d9f0b2c4e6a8d0f2b4",
+  "policyId": "POL-SKILL-EXEC-002",
+  "promptPolicyRef": "prompt-policy/bank-front/v3",
+  "modelPolicyRef": "model-policy/deepseek-chat/v2",
+  "deadline": "2026-08-30T10:15:30Z",
+  "idempotencyKey": "idem-6f1a9c2e-4b7d-4a10-9c3e-8d5f2b7a1c04",
+  "payloadHash": "1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f809",
+  "allowedToolIds": [
+    "tool.customer_profile_reader",
+    "tool.credit_limit_calculator"
+  ],
+  "knowledgeSourceRefs": [
+    "knowledge/bank-front/precheck-map@1.4.0",
+    "knowledge/bank-front/risk-rules@2.1.0"
+  ],
+  "contextPackage": {
+    "locale": "zh-CN",
+    "channel": "RM_WORKBENCH",
+    "facts": {
+      "customerSegment": "SME",
+      "lastVisitAt": "2026-08-21T02:30:00Z"
+    }
+  }
+}
