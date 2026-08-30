@@ -1,0 +1,22 @@
+{
+  "toolId": "tool.credit_limit_calculator",
+  "toolVersion": "2.0.1",
+  "skillId": "bank-front-precheck",
+  "skillVersion": "1.4.0",
+  "inputHash": "1122334455667788990011223344556677889900112233445566778899001122",
+  "policyDecisionId": "PDP-2026-08-30-77124",
+  "sandboxProfileHash": "2233445566778899001122334455667788990011223344556677889900112233",
+  "startedAt": "2026-08-30T10:15:23Z",
+  "completedAt": "2026-08-30T10:15:25Z",
+  "exitCode": 0,
+  "cpuTime": 1.15,
+  "memoryPeak": 104857600,
+  "outputHash": "3344556677889900112233445566778899001122334455667788990011223344",
+  "outputTruncated": false,
+  "networkUsed": false,
+  "sideEffectReceipt": {
+    "kind": "NONE",
+    "detail": "pure computation"
+  },
+  "status": "ok"
+}

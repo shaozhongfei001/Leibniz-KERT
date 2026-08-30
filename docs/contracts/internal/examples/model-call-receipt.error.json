@@ -1,0 +1,10 @@
+{
+  "model": "deepseek-chat",
+  "promptHash": "7788990011223344556677889900112233445566778899001122334455667788",
+  "inputTokens": 512,
+  "outputTokens": 0,
+  "latencyMs": 30000.0,
+  "degraded": true,
+  "degradationReason": "MODEL_TIMEOUT",
+  "status": "error"
+}

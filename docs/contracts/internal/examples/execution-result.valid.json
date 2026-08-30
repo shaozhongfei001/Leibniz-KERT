@@ -1,0 +1,61 @@
+{
+  "requestId": "req-2026-08-30-0001",
+  "runtimeRequestId": "rt-7d3f9a1c-2e5b-4680-9a1d-3c7e5f9b2d40",
+  "status": "SUCCESS",
+  "usable": true,
+  "releaseAllowed": true,
+  "degraded": false,
+  "result": {
+    "answer": "客户 CUST-000123 满足预检条件，建议进入额度复核。",
+    "confidence": 0.87,
+    "citations": [
+      "knowledge/bank-front/precheck-map@1.4.0#KI-FRONT-003"
+    ]
+  },
+  "errors": [],
+  "startedAt": "2026-08-30T10:15:20Z",
+  "completedAt": "2026-08-30T10:15:27Z",
+  "toolCallReceipts": [
+    {
+      "toolId": "tool.customer_profile_reader",
+      "toolVersion": "1.2.0",
+      "skillId": "bank-front-precheck",
+      "skillVersion": "1.4.0",
+      "inputHash": "aa11bb22cc33dd44ee55ff6677889900aa11bb22cc33dd44ee55ff6677889900",
+      "policyDecisionId": "PDP-2026-08-30-77123",
+      "sandboxProfileHash": "bb22cc33dd44ee55ff6677889900aa11bb22cc33dd44ee55ff6677889900aa11",
+      "startedAt": "2026-08-30T10:15:21Z",
+      "completedAt": "2026-08-30T10:15:22Z",
+      "exitCode": 0,
+      "cpuTime": 0.42,
+      "memoryPeak": 51380224,
+      "outputHash": "cc33dd44ee55ff6677889900aa11bb22cc33dd44ee55ff6677889900aa11bb22",
+      "outputTruncated": false,
+      "networkUsed": false,
+      "status": "ok"
+    }
+  ],
+  "modelCallReceipts": [
+    {
+      "model": "deepseek-chat",
+      "promptHash": "dd44ee55ff6677889900aa11bb22cc33dd44ee55ff6677889900aa11bb22cc33",
+      "paramsHash": "ee55ff6677889900aa11bb22cc33dd44ee55ff6677889900aa11bb22cc33dd44",
+      "inputTokens": 1820,
+      "outputTokens": 264,
+      "estimatedCost": 0.0031,
+      "latencyMs": 4120.5,
+      "degraded": false,
+      "status": "ok"
+    }
+  ],
+  "trace": [
+    {
+      "step": "plan.validate",
+      "at": "2026-08-30T10:15:20Z"
+    },
+    {
+      "step": "agent.call",
+      "at": "2026-08-30T10:15:21Z"
+    }
+  ]
+}

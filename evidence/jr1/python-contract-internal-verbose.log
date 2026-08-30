@@ -1,0 +1,18 @@
+$ .venv/bin/python -m pytest tests/contract/internal -v
+
+============================= test session starts ==============================
+platform linux -- Python 3.12.8, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/szf/dev/Leibniz-KERT
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collected 117 items
+
+tests/contract/internal/test_internal_contract_hash.py ............      [ 10%]
+tests/contract/internal/test_internal_contract_negative.py ............. [ 21%]
+........................                                                 [ 41%]
+tests/contract/internal/test_internal_contract_schemas.py .............. [ 53%]
+.......................................                                  [ 87%]
+tests/contract/internal/test_internal_openapi_alignment.py ............. [ 98%]
+..                                                                       [100%]
+
+============================= 117 passed in 0.35s ==============================

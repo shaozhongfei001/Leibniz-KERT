@@ -1,0 +1,13 @@
+{
+  "runtimeVersion": "0.0.1-poc2",
+  "contractVersion": "1.0.0-candidate",
+  "contractHash": "64b9b432d6ee9fc9e017436171f05e1198ab920121202266c835c471ff2c4550",
+  "frameworkVersion": "spring-ai-alibaba-1.1.2.0",
+  "activatedSkills": [
+    "demo-skill",
+    "data-skill"
+  ],
+  "sandboxCapability": "disabled",
+  "degraded": false,
+  "status": "ok"
+}

@@ -1,0 +1,13 @@
+{
+  "toolId": "tool.shell_exec",
+  "toolVersion": "0.9.0",
+  "skillId": "bank-front-precheck",
+  "skillVersion": "1.4.0",
+  "inputHash": "4455667788990011223344556677889900112233445566778899001122334455",
+  "policyDecisionId": "PDP-2026-08-30-77125",
+  "startedAt": "2026-08-30T10:15:26Z",
+  "completedAt": "2026-08-30T10:15:26Z",
+  "networkUsed": false,
+  "status": "blocked",
+  "errorCode": "TOOL_NOT_ALLOWED"
+}
