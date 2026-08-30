@@ -15,6 +15,7 @@
 | 文件 | 说明 |
 |------|------|
 | `README.md` | 本证据清单 |
+| `PR_STATUS.md` | PR 创建后状态核实 + **必须修正项（base 指向 `main`）** |
 | `PULL_REQUEST.md` | JR-1 PR 正文 + Owner 决策落实明细（第 8 节） |
 | `PULL_REQUEST_BASELINE.md` | 基线 PR 正文（两份计划文档合入 `develop`） |
 | `internal-contract-hash.txt` | 契约 bundle hash + 7 份受控文件分项 sha256 |
@@ -175,7 +176,7 @@ DTO 补齐仅作用于**内部 Runtime 边界**，未改动任何对外公共 AP
 
 | # | 事项 | Owner 决策 | 落实状态 |
 |---|------|-----------|----------|
-| 1 | PR 创建 | 凭据由 Owner 侧提供 | 仍阻塞（本机无凭据）。两分支已推送；正文与 `scripts/create_jr1_prs.sh` 已就绪，有凭据后一条命令创建 |
+| 1 | PR 创建 | 凭据由 Owner 侧提供 | Owner 已手工创建 PR [#1](https://github.com/shaozhongfei001/Leibniz-KERT/pull/1)、[#2](https://github.com/shaozhongfei001/Leibniz-KERT/pull/2)。**但两者 base 均为 `main` 而非 `develop`，需修正** —— 详见 `PR_STATUS.md` |
 | 2 | 两份计划文档合入 `develop` 作受控基线 | 先合入 | 合入前验证完成：仅 2 文档 / +302 行 / 零代码 / 无冲突；Feature Pilot 不自行 merge |
 | 3 | `feature/poc2-contract-sandbox` | 仅测试草稿，不引入 | 已遵守（零引用） |
 | 4 | 公共契约 `PENDING_COMPUTE`（C-19） | 不改动 | 已遵守（未触碰） |

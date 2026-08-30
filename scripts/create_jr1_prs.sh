@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
-# 创建 JR-1 相关的两个 PR（基线 PR + JR-1 PR）。
+# 创建 JR-1 相关的两个 PR（基线 PR + JR-1 PR），并在必要时修正 base。
 #
 # 为什么需要本脚本：GitHub 创建 PR 必须走 HTTPS API，SSH 只能推分支。
 # 本机 origin 为 SSH-only 且无 GitHub token，故 Feature Pilot 无法创建 PR。
 # 一旦提供凭据，执行本脚本即可按正确顺序、用已评审的正文创建两个 PR。
 #
+# 本脚本硬编码 --base develop。这一点很关键：仓库默认分支是 main，
+# GitHub 的「pull/new/<branch>」网页创建入口会默认以 main 为 base，
+# 从而把 develop 的存量提交一并带入 main。脚本对已存在的 PR 也会检查
+# base 并在不符时改正。
+#
 # 用法：
 #   export GH_TOKEN=<token>            # 需 repo 权限；不要回显该值
-#   bash scripts/create_jr1_prs.sh          # 创建两个 PR
+#   bash scripts/create_jr1_prs.sh          # 创建（或修正 base）
 #   bash scripts/create_jr1_prs.sh --dry-run # 只打印将执行的动作
 #
 # 顺序：先基线 PR（受控基线先于实现），再 JR-1 PR。
@@ -69,11 +74,29 @@ create_pr() {
   echo
   echo "== [$label] $branch -> $BASE =="
 
-  local existing
-  existing=$(gh pr list --repo "$REPO" --head "$branch" --base "$BASE" \
-               --state open --json number --jq '.[0].number' 2>/dev/null || true)
+  # 先查是否已有开启中的 PR（不限 base）：Owner 可能已手工创建，
+  # 且 GitHub 创建页默认以仓库默认分支为 base，容易误指向 main。
+  local existing existing_base
+  existing=$(gh pr list --repo "$REPO" --head "$branch" --state open \
+               --json number --jq '.[0].number' 2>/dev/null || true)
+
   if [[ -n "$existing" && "$existing" != "null" ]]; then
-    echo "  已存在开启中的 PR #$existing，跳过创建（幂等）"
+    existing_base=$(gh pr view "$existing" --repo "$REPO" \
+                      --json baseRefName --jq .baseRefName 2>/dev/null || true)
+    echo "  已存在开启中的 PR #$existing（base=$existing_base）"
+
+    if [[ "$existing_base" != "$BASE" ]]; then
+      echo "  !! base 不是 $BASE，需修正（否则会把 $BASE 的存量提交一并带入 $existing_base）"
+      if [[ $DRY_RUN -eq 1 ]]; then
+        echo "  [dry-run] gh pr edit $existing --repo $REPO --base $BASE"
+      else
+        gh pr edit "$existing" --repo "$REPO" --base "$BASE" \
+          && echo "  已将 PR #$existing 的 base 改为 $BASE"
+      fi
+    else
+      echo "  base 正确，跳过创建（幂等）"
+    fi
+
     gh pr view "$existing" --repo "$REPO" --json url --jq .url 2>/dev/null || true
     return 0
   fi
