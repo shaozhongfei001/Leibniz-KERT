@@ -7,7 +7,6 @@ E2E 链路: GITS Frontend → GITS Backend → KERT Skill Execution
 from __future__ import annotations
 
 import httpx
-import pytest
 
 
 class TestKnowledgeGraph:

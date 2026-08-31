@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import re
-from pathlib import Path
 
 import pytest
 
@@ -14,7 +12,6 @@ from dkws.application.review import ReviewService
 from dkws.application import validation
 from dkws.domain.contracts import specs
 from dkws.domain.contracts.base import validate_contract
-from dkws.domain.errors import UsageError
 from dkws.domain.rules import dsl
 
 

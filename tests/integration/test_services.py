@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import pytest
@@ -64,7 +63,7 @@ class TestDataQuery:
 class TestEntity:
     def test_get_entity_with_statements(self, served_workspace, proj_version):
         svc = KnowledgeService(served_workspace)
-        ents = svc.data_query("product", limit=1)
+        svc.data_query("product", limit=1)
         # 取实体投影中的第一个实体
         import pyarrow.parquet as pq
         t = pq.read_table(Path(served_workspace) / "04_serve" / "product_knowledge"
@@ -83,7 +82,6 @@ class TestGraph:
     def test_neighbors(self, served_workspace, proj_version):
         svc = KnowledgeService(served_workspace)
         import pyarrow.parquet as pq
-        from pathlib import Path as P
         ents = pq.read_table(Path(served_workspace) / "04_serve" / "product_knowledge"
                              / f"version={proj_version(served_workspace)}" / "entities.parquet")
         names = ents.column("name").to_pylist()
@@ -147,7 +145,6 @@ class TestTrace:
 
     def test_served_only_active_projection(self, served_workspace):
         """FR-SRV-008：注入 Work 候选不改变正式查询。"""
-        from dkws.application.review import ReviewService
         svc = KnowledgeService(served_workspace)
         before = len(svc.search("产品A").data["hits"])
         # 注入一个未发布候选实体（直接写 Work candidates 目录）

@@ -145,8 +145,8 @@ class Ingestor:
 
             # 8. 血缘起点
             manifest_rel = f"{final_base}/MANIFEST.md"
-            lineage_rel = self._write_lineage(batch_id, job.job_id, input_refs,
-                                              manifest_rel, writer)
+            self._write_lineage(batch_id, job.job_id, input_refs,
+                                manifest_rel, writer)
             # 9. 完成
             out_refs = [{"path": manifest_rel, "version": "1.0",
                          "content_hash": hashing.sha256_file(

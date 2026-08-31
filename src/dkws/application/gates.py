@@ -16,10 +16,9 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from ..domain import hashing, ids, timeutil
+from ..domain import hashing, timeutil
 from ..domain.contracts import specs
 from ..domain.contracts.base import validate_contract
-from ..domain.errors import UsageError
 from ..infrastructure import markdown
 from ..infrastructure.fs import WorkspaceWriter
 

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import sys
 import uuid
 from pathlib import Path
 
@@ -15,9 +14,7 @@ from ..domain.errors import (
     DKWSException,
     EXIT_CONFLICT,
     EXIT_INTERNAL,
-    EXIT_OK,
     EXIT_QUALITY_GATE,
-    EXIT_USAGE,
 )
 from ..infrastructure import locks as locks_mod
 

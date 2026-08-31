@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import re
-from pathlib import Path
 
 import pytest
 
@@ -15,7 +13,7 @@ from dkws.application.review import ReviewService
 from dkws.application.rollback import RollbackService
 from dkws.domain.contracts import specs
 from dkws.domain.contracts.base import validate_contract
-from dkws.domain.errors import QualityGateError, UsageError
+from dkws.domain.errors import QualityGateError
 
 
 @pytest.fixture
@@ -123,8 +121,8 @@ class TestRollback:
         pub = Publisher(ws)
         r1 = pub.publish("product", run_id=approved_set["run_id"])
         # 第二次发布（显式新版本）
-        r2 = pub.publish("product", run_id=approved_set["run_id"],
-                         release_version="2099.01.01.1")
+        pub.publish("product", run_id=approved_set["run_id"],
+                    release_version="2099.01.01.1")
         cur = (ws / "03_core" / "product" / "CURRENT.md").read_text(encoding="utf-8")
         assert validate_contract(cur, specs.CURRENT_SPEC).front_matter[
             "target_version"] == "2099.01.01.1"

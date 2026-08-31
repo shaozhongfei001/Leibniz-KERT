@@ -228,7 +228,7 @@ def test_graph_benchmark(tmp_path: Path, n: int) -> None:
     ws = _setup_workspace(tmp_path, n)
     svc = KnowledgeService(ws, SERVICE, VERSION)
 
-    start_id = f"ENT-000000"
+    start_id = "ENT-000000"
 
     t0 = time.perf_counter()
     result = svc.graph([start_id], max_depth=2, max_nodes=50)

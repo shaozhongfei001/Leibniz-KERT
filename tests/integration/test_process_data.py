@@ -10,7 +10,6 @@ import pytest
 
 from dkws.application.ingest import Ingestor
 from dkws.application.process_data import DataProcessor
-from dkws.domain import hashing
 from dkws.domain.errors import UsageError
 
 

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
 
 import pyarrow.parquet as pq
 import pytest
@@ -14,7 +12,6 @@ from dkws.application.parse_doc import DocumentParserService
 from dkws.application.projection import ProjectionBuilder
 from dkws.application.publish import Publisher
 from dkws.application.review import ReviewService
-from dkws.domain import hashing
 from dkws.domain.contracts import specs
 from dkws.domain.contracts.base import validate_contract
 
