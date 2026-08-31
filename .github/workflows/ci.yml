@@ -1,6 +1,6 @@
 # DKWS CI/CD Pipeline
 #
-# 触发条件：push 到 main/develop 分支，PR 到 main
+# 触发条件：push 到 main/develop 分支，PR 到 main/develop
 # 关键约束：CI 在无密钥环境下运行，使用 DKWS_PROFILE=dev（默认值，无需 API Key）
 
 name: DKWS CI
@@ -9,7 +9,9 @@ on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [main]
+    # 必须含 develop：feature 分支按流程 PR 到 develop，
+    # 若只监听 main，则所有 feature PR 在合并前都不会被 CI 验证。
+    branches: [main, develop]
 
 # 同一分支/PR 只保留最新运行，取消旧的
 concurrency:
