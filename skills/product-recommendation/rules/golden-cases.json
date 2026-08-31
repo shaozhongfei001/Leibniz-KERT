@@ -1,0 +1,387 @@
+{
+  "schemaVersion": "1.0.0",
+  "ruleBundleRef": "RB-PR-20260831-0001",
+  "ruleBundleVersion": "1.0.0-candidate",
+  "docStatus": "CANDIDATE",
+  "frozen": "NO",
+  "implemented": "NO",
+  "realE2EPass": "NO",
+  "generatedAt": "2026-08-31",
+  "coverageNotes": [
+    "8 组正反样例映射 TC-PR-001 ~ TC-PR-008（三段式第一段硬约束业务用例）。",
+    "必覆盖硬失败不可绕过：TC-PR-002（监管禁止→INELIGIBLE）、TC-PR-004（版本失效→FAIL_CLOSED）、TC-PR-008（高分不能覆盖 INELIGIBLE）。",
+    "材料规则 PR-MAT-001 与销售边界规则 PR-SALES-001 的 FAIL/REVIEW_REQUIRED 负分支由各自规则文件结论表承载（§13.2 规则单元测试），未单列 TC-PR 业务用例。"
+  ],
+  "cases": [
+    {
+      "caseId": "GC-PR-001",
+      "tcPrId": "TC-PR-001",
+      "polarity": "POSITIVE",
+      "name": "产品有效、客户准入满足 → ELIGIBLE 并有完整规则证据",
+      "description": "ACTIVE 产品 + 非禁止行业 + 准入要素齐全，六条硬规则全部 PASS，进入第二段匹配排序。",
+      "input": {
+        "customerFactSnapshotId": "CFS-20260831-0001",
+        "asOf": "2026-08-31T09:00:00+08:00",
+        "customer": {
+          "customerId": "CUST-001",
+          "enterpriseType": "GENERAL_LEGAL_PERSON",
+          "industry": "MANUFACTURING",
+          "region": "CN-310000",
+          "scale": "LARGE",
+          "rating": "AA",
+          "hasAccount": true,
+          "holdings": []
+        },
+        "products": [
+          {
+            "productId": "PROD-FIN-WC-001",
+            "productVersion": "2.2",
+            "productStatus": "ACTIVE",
+            "effectiveFrom": "2026-01-01",
+            "effectiveTo": "2027-12-31",
+            "applicableInstitutions": ["CN-HQ"],
+            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "prerequisiteProductIds": [],
+            "mutexProductIds": [],
+            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+          }
+        ]
+      },
+      "expected": {
+        "eligibility": "ELIGIBLE",
+        "runStatus": "HARD_FILTERING",
+        "ruleResults": [
+          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD", "EV-SRC-FIN-001"] },
+          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "INDUSTRY_NOT_PROHIBITED", "inputFactRefs": ["FACT-IND-CUST-001"], "evidenceRefs": ["EV-REG-POLICY", "EV-CUST-IND"] },
+          { "ruleId": "PR-ELIG-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "CUSTOMER_TYPE_ALLOWED", "inputFactRefs": ["FACT-CUST-001"], "evidenceRefs": ["EV-SRC-FIN-002", "EV-CUST-FACT"] },
+          { "ruleId": "PR-PRMUTEX-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PREREQUISITE_SATISFIED", "inputFactRefs": ["FACT-HOLD-CUST-001"], "evidenceRefs": ["EV-HOLDING"] },
+          { "ruleId": "PR-MAT-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "MATERIAL_COMPLETE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-MAT-CHECKLIST"] },
+          { "ruleId": "PR-SALES-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "WITHIN_SALES_BOUNDARY", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-BOUNDARY-POLICY", "EV-PROD-CARD"] }
+        ],
+        "invariants": ["INV-01", "INV-04"]
+      }
+    },
+    {
+      "caseId": "GC-PR-002",
+      "tcPrId": "TC-PR-002",
+      "polarity": "NEGATIVE",
+      "name": "命中监管禁止规则 → INELIGIBLE，不可进入排序",
+      "description": "客户行业为房地产（禁止行业），PR-REG-001 FAIL FORBIDDEN_INDUSTRY，产品被硬排除。",
+      "input": {
+        "customerFactSnapshotId": "CFS-20260831-0002",
+        "asOf": "2026-08-31T09:00:00+08:00",
+        "customer": {
+          "customerId": "CUST-002",
+          "enterpriseType": "GENERAL_LEGAL_PERSON",
+          "industry": "REAL_ESTATE",
+          "region": "CN-310000",
+          "scale": "LARGE",
+          "rating": "AA",
+          "hasAccount": true,
+          "holdings": []
+        },
+        "products": [
+          {
+            "productId": "PROD-FIN-WC-001",
+            "productVersion": "2.2",
+            "productStatus": "ACTIVE",
+            "effectiveFrom": "2026-01-01",
+            "effectiveTo": "2027-12-31",
+            "applicableInstitutions": ["CN-HQ"],
+            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "prerequisiteProductIds": [],
+            "mutexProductIds": [],
+            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+          }
+        ]
+      },
+      "expected": {
+        "eligibility": "INELIGIBLE",
+        "runStatus": "HARD_FILTERING",
+        "ruleResults": [
+          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
+          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "FORBIDDEN_INDUSTRY", "inputFactRefs": ["FACT-IND-CUST-002"], "evidenceRefs": ["EV-REG-POLICY", "EV-CUST-IND"] }
+        ],
+        "downstream": "不得进入排序；fitResults 中该产品 fitScore 必须为 null",
+        "invariants": ["INV-02"]
+      }
+    },
+    {
+      "caseId": "GC-PR-003",
+      "tcPrId": "TC-PR-003",
+      "polarity": "NEGATIVE",
+      "name": "缺少必须准入事实 → UNKNOWN，生成核实问题",
+      "description": "企业类型（enterpriseType）缺失，PR-ELIG-001 UNKNOWN，不进入正式排序。",
+      "input": {
+        "customerFactSnapshotId": "CFS-20260831-0003",
+        "asOf": "2026-08-31T09:00:00+08:00",
+        "customer": {
+          "customerId": "CUST-003",
+          "industry": "MANUFACTURING",
+          "region": "CN-310000",
+          "scale": "LARGE",
+          "rating": "AA",
+          "hasAccount": true,
+          "holdings": []
+        },
+        "products": [
+          {
+            "productId": "PROD-FIN-WC-001",
+            "productVersion": "2.2",
+            "productStatus": "ACTIVE",
+            "effectiveFrom": "2026-01-01",
+            "effectiveTo": "2027-12-31",
+            "applicableInstitutions": ["CN-HQ"],
+            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "prerequisiteProductIds": [],
+            "mutexProductIds": [],
+            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+          }
+        ]
+      },
+      "expected": {
+        "eligibility": "UNKNOWN",
+        "runStatus": "HARD_FILTERING",
+        "ruleResults": [
+          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
+          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "INDUSTRY_NOT_PROHIBITED", "inputFactRefs": ["FACT-IND-CUST-003"], "evidenceRefs": ["EV-REG-POLICY"] },
+          { "ruleId": "PR-ELIG-001", "ruleVersion": "1.0.0-candidate", "result": "UNKNOWN", "reasonCode": "CUSTOMER_TYPE_MISSING", "inputFactRefs": [], "evidenceRefs": ["EV-SRC-FIN-002"] }
+        ],
+        "unknowns": [
+          { "question": "客户企业类型缺失，无法判定准入", "relatedFactRef": "FACT-CUST-003", "suggestedAction": "生成核实任务，补齐企业类型" }
+        ],
+        "downstream": "不进入正式排序；不得按 ELIGIBLE 处理",
+        "invariants": ["INV-03"]
+      }
+    },
+    {
+      "caseId": "GC-PR-004",
+      "tcPrId": "TC-PR-004",
+      "polarity": "NEGATIVE",
+      "name": "产品版本已失效 → 该产品 INELIGIBLE 且整轮 FAIL_CLOSED",
+      "description": "PROD-FIN-WC-001 v1.9 已 RETIRED 且失效时间早于 asOf，PR-VALID-001 FAIL；该产品无有效版本，整轮 FAIL_CLOSED。",
+      "input": {
+        "customerFactSnapshotId": "CFS-20260831-0001",
+        "asOf": "2026-08-31T09:00:00+08:00",
+        "customer": {
+          "customerId": "CUST-001",
+          "enterpriseType": "GENERAL_LEGAL_PERSON",
+          "industry": "MANUFACTURING",
+          "region": "CN-310000",
+          "scale": "LARGE",
+          "rating": "AA",
+          "hasAccount": true,
+          "holdings": []
+        },
+        "products": [
+          {
+            "productId": "PROD-FIN-WC-001",
+            "productVersion": "1.9",
+            "productStatus": "RETIRED",
+            "effectiveFrom": "2024-01-01",
+            "effectiveTo": "2026-06-30",
+            "applicableInstitutions": ["CN-HQ"],
+            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "prerequisiteProductIds": [],
+            "mutexProductIds": [],
+            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+          }
+        ]
+      },
+      "expected": {
+        "eligibility": "INELIGIBLE",
+        "runStatus": "FAILED_CLOSED",
+        "ruleResults": [
+          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "PRODUCT_VERSION_EXPIRED", "inputFactRefs": ["FACT-PROD-WC-001-1.9"], "evidenceRefs": ["EV-PROD-CARD", "EV-SRC-FIN-001"] }
+        ],
+        "downstream": "该产品无 ACTIVE 有效版本 → 整轮不得产出可批准方案",
+        "invariants": ["INV-01", "INV-08"]
+      }
+    },
+    {
+      "caseId": "GC-PR-005",
+      "tcPrId": "TC-PR-005",
+      "polarity": "NEGATIVE",
+      "name": "两产品互斥 → 组合被拒绝并解释原因",
+      "description": "客户已持有 PROD-FIN-WC-002，与候选 PROD-FIN-WC-001 互斥，PR-PRMUTEX-001 FAIL MUTEX_CONFLICT。",
+      "input": {
+        "customerFactSnapshotId": "CFS-20260831-0005",
+        "asOf": "2026-08-31T09:00:00+08:00",
+        "customer": {
+          "customerId": "CUST-001",
+          "enterpriseType": "GENERAL_LEGAL_PERSON",
+          "industry": "MANUFACTURING",
+          "region": "CN-310000",
+          "scale": "LARGE",
+          "rating": "AA",
+          "hasAccount": true,
+          "holdings": ["PROD-FIN-WC-002"]
+        },
+        "products": [
+          {
+            "productId": "PROD-FIN-WC-001",
+            "productVersion": "2.2",
+            "productStatus": "ACTIVE",
+            "effectiveFrom": "2026-01-01",
+            "effectiveTo": "2027-12-31",
+            "applicableInstitutions": ["CN-HQ"],
+            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "prerequisiteProductIds": [],
+            "mutexProductIds": ["PROD-FIN-WC-002"],
+            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+          }
+        ]
+      },
+      "expected": {
+        "eligibility": "INELIGIBLE",
+        "runStatus": "HARD_FILTERING",
+        "ruleResults": [
+          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
+          { "ruleId": "PR-PRMUTEX-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "MUTEX_CONFLICT", "inputFactRefs": ["FACT-HOLD-CUST-001"], "evidenceRefs": ["EV-HOLDING", "EV-SRC-FIN-003"] }
+        ],
+        "downstream": "组合被拒绝并解释原因（存量持有 PROD-FIN-WC-002 与候选互斥）",
+        "invariants": ["INV-02"]
+      }
+    },
+    {
+      "caseId": "GC-PR-006",
+      "tcPrId": "TC-PR-006",
+      "polarity": "NEGATIVE",
+      "name": "产品存在前置产品 → 形成有顺序的组合或待办",
+      "description": "候选 PROD-FIN-SC-001 要求先持有基础结算账户 PROD-FIN-DEP-001，客户未持有 → 转组合依赖。",
+      "input": {
+        "customerFactSnapshotId": "CFS-20260831-0006",
+        "asOf": "2026-08-31T09:00:00+08:00",
+        "customer": {
+          "customerId": "CUST-004",
+          "enterpriseType": "GENERAL_LEGAL_PERSON",
+          "industry": "MANUFACTURING",
+          "region": "CN-310000",
+          "scale": "LARGE",
+          "rating": "AA",
+          "hasAccount": false,
+          "holdings": []
+        },
+        "products": [
+          {
+            "productId": "PROD-FIN-SC-001",
+            "productVersion": "3.0",
+            "productStatus": "ACTIVE",
+            "effectiveFrom": "2026-01-01",
+            "effectiveTo": "2027-12-31",
+            "applicableInstitutions": ["CN-HQ"],
+            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "prerequisiteProductIds": ["PROD-FIN-DEP-001"],
+            "mutexProductIds": [],
+            "requiredMaterials": ["SUPPLY_CHAIN_CONTRACT"]
+          }
+        ]
+      },
+      "expected": {
+        "eligibility": "REVIEW_REQUIRED",
+        "runStatus": "HARD_FILTERING",
+        "ruleResults": [
+          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-SC-001-3.0"], "evidenceRefs": ["EV-PROD-CARD"] },
+          { "ruleId": "PR-PRMUTEX-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "PREREQUISITE_MISSING", "inputFactRefs": ["FACT-HOLD-CUST-004"], "evidenceRefs": ["EV-HOLDING", "EV-SRC-FIN-003"] }
+        ],
+        "downstream": "排除或转组合依赖：形成「先开立 PROD-FIN-DEP-001 → 再申请 PROD-FIN-SC-001」的有顺序组合/待办",
+        "invariants": []
+      }
+    },
+    {
+      "caseId": "GC-PR-007",
+      "tcPrId": "TC-PR-007",
+      "polarity": "NEGATIVE",
+      "name": "客户事实冲突 → 不进入正式排序，先事实对账",
+      "description": "行业事实存在两个冲突来源（制造业 vs 房地产），PR-REG-001 UNKNOWN（INV-10 禁止确定性解读）。",
+      "input": {
+        "customerFactSnapshotId": "CFS-20260831-0007",
+        "asOf": "2026-08-31T09:00:00+08:00",
+        "customer": {
+          "customerId": "CUST-005",
+          "enterpriseType": "GENERAL_LEGAL_PERSON",
+          "industry": "CONFLICT",
+          "industrySources": [
+            { "sourceId": "SRC-CRM", "value": "MANUFACTURING" },
+            { "sourceId": "SRC-EXT", "value": "REAL_ESTATE" }
+          ],
+          "region": "CN-310000",
+          "scale": "LARGE",
+          "rating": "AA",
+          "hasAccount": true,
+          "holdings": []
+        },
+        "products": [
+          {
+            "productId": "PROD-FIN-WC-001",
+            "productVersion": "2.2",
+            "productStatus": "ACTIVE",
+            "effectiveFrom": "2026-01-01",
+            "effectiveTo": "2027-12-31",
+            "applicableInstitutions": ["CN-HQ"],
+            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "prerequisiteProductIds": [],
+            "mutexProductIds": [],
+            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+          }
+        ]
+      },
+      "expected": {
+        "eligibility": "UNKNOWN",
+        "runStatus": "HARD_FILTERING",
+        "ruleResults": [
+          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
+          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "UNKNOWN", "reasonCode": "FACT_CONFLICT_NO_DETERMINISTIC_RESULT", "inputFactRefs": ["FACT-IND-CUST-005"], "evidenceRefs": ["EV-REG-POLICY", "EV-CUST-IND"] }
+        ],
+        "downstream": "不进入正式排序，先完成事实对账（禁止确定性解读）",
+        "invariants": ["INV-03", "INV-10"]
+      }
+    },
+    {
+      "caseId": "GC-PR-008",
+      "tcPrId": "TC-PR-008",
+      "polarity": "NEGATIVE",
+      "name": "高分产品硬规则失败 → 仍被排除，分数不可覆盖",
+      "description": "客户行业为房地产（禁止行业），即使匹配器给出 fitScore=0.90，PR-REG-001 FAIL 仍使产品 INELIGIBLE，fitScore 必须为 null。",
+      "input": {
+        "customerFactSnapshotId": "CFS-20260831-0002",
+        "asOf": "2026-08-31T09:00:00+08:00",
+        "customer": {
+          "customerId": "CUST-002",
+          "enterpriseType": "GENERAL_LEGAL_PERSON",
+          "industry": "REAL_ESTATE",
+          "region": "CN-310000",
+          "scale": "LARGE",
+          "rating": "AA",
+          "hasAccount": true,
+          "holdings": []
+        },
+        "products": [
+          {
+            "productId": "PROD-FIN-WC-001",
+            "productVersion": "2.2",
+            "productStatus": "ACTIVE",
+            "effectiveFrom": "2026-01-01",
+            "effectiveTo": "2027-12-31",
+            "applicableInstitutions": ["CN-HQ"],
+            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "prerequisiteProductIds": [],
+            "mutexProductIds": [],
+            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+          }
+        ],
+        "bypassAttempt": { "note": "假设匹配器给出高分", "fitScore": 0.9 }
+      },
+      "expected": {
+        "eligibility": "INELIGIBLE",
+        "runStatus": "HARD_FILTERING",
+        "ruleResults": [
+          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
+          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "FORBIDDEN_INDUSTRY", "inputFactRefs": ["FACT-IND-CUST-002"], "evidenceRefs": ["EV-REG-POLICY", "EV-CUST-IND"] }
+        ],
+        "downstream": "硬失败不可被绕过：fitScore 不得为 0.90，必须为 null（INV-02）；高分不能覆盖 INELIGIBLE",
+        "invariants": ["INV-02"]
+      }
+    }
+  ]
+}

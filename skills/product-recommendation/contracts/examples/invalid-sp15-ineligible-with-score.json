@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1.0.0",
+  "runId": "REC-20260831-0002",
+  "skillId": "SP-15",
+  "skillVersion": "2.0.0-candidate",
+  "productKnowledgeSnapshotRef": "PKS-20260831-0001",
+  "ruleExecutionRef": "RULE-RUN-20260831-0002",
+  "evidenceBundleId": "EVB-20260831-0002",
+  "contentHash": "sha256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
+  "traceId": "TRACE-20260831-0002",
+  "eligibilityResults": [
+    {
+      "productId": "PROD-FIN-DISALLOWED-001",
+      "productVersion": "1.9",
+      "eligibility": "INELIGIBLE",
+      "ruleResults": [
+        {
+          "ruleId": "PR-REG-002",
+          "ruleVersion": "2.0",
+          "result": "FAIL",
+          "reasonCode": "FORBIDDEN_INDUSTRY",
+          "inputFactRefs": ["FACT-CUST-002"],
+          "evidenceRefs": ["EV-REG-002"]
+        }
+      ],
+      "unknowns": [],
+      "reviewRequirements": []
+    }
+  ],
+  "fitResults": [
+    {
+      "productId": "PROD-FIN-DISALLOWED-001",
+      "productVersion": "1.9",
+      "rank": 1,
+      "fitScore": 0.74,
+      "dimensionMatches": [
+        {
+          "dimension": "CORE_NEED_FIT",
+          "result": "STRONG",
+          "rationale": "（违反 INV-02 的反例：该产品为 INELIGIBLE，却仍被计算了 fitScore）",
+          "evidenceRefs": ["EV-NEED-001"]
+        }
+      ],
+      "matchedNeeds": [
+        {
+          "needId": "NEED-001",
+          "needStatus": "VERIFIED_FACT",
+          "evidenceRefs": ["EV-NEED-001"]
+        }
+      ],
+      "recommendationReasons": [
+        {
+          "text": "（违反 INV-04：该理由来自被排除产品，不应作为推荐理由）",
+          "evidenceRefs": ["EV-NEED-001"],
+          "sourceType": "FACT"
+        }
+      ],
+      "conditions": [],
+      "materialGaps": [],
+      "riskNotes": [],
+      "salesBoundaries": []
+    }
+  ],
+  "portfolioCandidates": [],
+  "needProfile": [
+    {
+      "needId": "NEED-001",
+      "needStatus": "VERIFIED_FACT",
+      "evidenceRefs": ["EV-NEED-001"]
+    }
+  ],
+  "unknowns": [],
+  "conflicts": [],
+  "generatedAt": "2026-08-31T09:00:00+08:00"
+}
