@@ -98,7 +98,7 @@ def _request(
         except json.JSONDecodeError:
             parsed = raw
         return e.code, parsed, elapsed
-    except Exception as e:
+    except Exception:
         elapsed = (time.monotonic() - start) * 1000
         return 0, None, elapsed
 
@@ -396,7 +396,6 @@ def test_skill_execute(base_url: str, vr: ValidationResult) -> None:
                 r.notes = f"业务状态: {actual_status} (期望: {expect_status})"
             else:
                 # 提取关键信息
-                data = r.response_body.get("data", {})
                 errors = r.response_body.get("errors", [])
                 model_calls = r.response_body.get("modelCalls", [])
                 total_latency = sum(m.get("latencyMs", 0) for m in model_calls)

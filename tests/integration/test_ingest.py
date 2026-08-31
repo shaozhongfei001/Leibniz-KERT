@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 
 import pytest
 
@@ -100,7 +99,7 @@ class TestIngest:
         assert not prod_dir.exists() or not list(prod_dir.iterdir())
 
     def test_lineage_written(self, ws, source_file):
-        r = Ingestor(ws).ingest("product", [source_file()], "ingest-lg")
+        Ingestor(ws).ingest("product", [source_file()], "ingest-lg")
         lineage_files = list((ws / "90_control" / "lineage" / "ingest").glob("*.md"))
         assert len(lineage_files) == 1
         text = lineage_files[0].read_text(encoding="utf-8")

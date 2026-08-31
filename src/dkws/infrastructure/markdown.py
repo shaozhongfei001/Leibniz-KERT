@@ -21,7 +21,6 @@ from dataclasses import dataclass, field
 
 import yaml
 
-from ..domain.errors import SchemaValidationError
 
 FRONT_MATTER_RE = re.compile(r"^---[ \t]*\r?\n(.*?)\r?\n---[ \t]*\r?\n", re.DOTALL)
 

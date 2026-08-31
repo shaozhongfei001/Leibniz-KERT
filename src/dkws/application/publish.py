@@ -19,7 +19,7 @@ from pathlib import Path
 from ..domain import hashing, ids, timeutil
 from ..domain.contracts import specs
 from ..domain.contracts.base import validate_contract
-from ..domain.errors import QualityGateError, UsageError, VersionNotFoundError
+from ..domain.errors import QualityGateError, UsageError
 from ..infrastructure import locks as locks_mod, markdown
 from ..infrastructure.fs import WorkspaceWriter
 from . import validation as val_mod
@@ -219,7 +219,6 @@ class Publisher:
 
     def _run_g3_gate(self, assets, writer) -> dict:
         errors: list[str] = []
-        decision_ids: list[str] = []
         ents: dict = {}
         rels: list[dict] = []
         stmts: list[dict] = []

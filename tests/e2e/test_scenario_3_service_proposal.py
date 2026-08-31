@@ -9,7 +9,6 @@ from __future__ import annotations
 import uuid
 
 import httpx
-import pytest
 
 
 class TestServiceProposal:
@@ -72,8 +71,6 @@ class TestServiceProposal:
         content = body.get("content", {})
         draft = content.get("proposalDraft", "")
         # 事实标签嵌入在 proposalDraft 文本中，格式如 [F] [C] 等
-        fact_label_markers = ["[F]", "[C]", "[F]", "【F】", "【C】", "事实", "推断"]
-        has_fact_labels = any(marker in draft for marker in fact_label_markers)
         # 如果没有显式标签，验证 draft 内容非空即可（标签可能在内部版本中）
         assert len(draft) > 100, (
             f"建议书内容过短（{len(draft)}字符），可能生成异常"

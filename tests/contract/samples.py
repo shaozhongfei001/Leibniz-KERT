@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import yaml
 
-from dkws.domain.contracts import specs
 
 ZERO_SHA = "0" * 64
 FAKE_SHA = "a" * 64

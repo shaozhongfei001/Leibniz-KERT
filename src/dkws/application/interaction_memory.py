@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import json
 import re
-import time
 from dataclasses import dataclass
 
 from ..infrastructure.adapters import llm as llm_mod
@@ -85,7 +84,6 @@ class InteractionMemoryExecutor:
                                                  "content": m.get("content"),
                                                  "category": m.get("category")} for m in existing]},
                           ensure_ascii=False)
-        t0 = time.monotonic()
         adapter = llm_mod.create_llm_adapter("memory")
         res = adapter.complete(SYSTEM_PROMPT, user)
         model_call = {"model": res.model_id, "inputTokens": res.input_tokens,

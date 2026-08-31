@@ -20,7 +20,6 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-import pytest
 
 from dkws.infrastructure.locks import WorkspaceLock
 from dkws.infrastructure.runtime_store import RuntimeStore

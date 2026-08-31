@@ -2,17 +2,14 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 
 import pytest
 
 from dkws.application.extract import KnowledgeExtractor
 from dkws.application.ingest import Ingestor
 from dkws.application.parse_doc import DocumentParserService
-from dkws.application.process_data import DataProcessor
 from dkws.application.publish import Publisher
 from dkws.application.review import ReviewService
-from dkws.domain.errors import QualityGateError
 
 
 @pytest.fixture

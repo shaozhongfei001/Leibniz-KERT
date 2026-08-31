@@ -14,10 +14,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import pyarrow as pa
-import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
-from ..domain import ids, timeutil
+from ..domain import timeutil
 from ..domain.errors import AssetNotFoundError, ServiceNotReadyError, UsageError
 from ..domain.rules import dsl
 from ..infrastructure import markdown
@@ -211,7 +210,6 @@ class KnowledgeService:
                         nodes[eid] = {"entity_id": eid, "name": name,
                                       "entity_type": etype, "depth": d}
                 # 单跳边（兼容 edges 字段）
-                one = f"-[:Rel]{arrow}" if direction != "BOTH" else "-[:Rel]-"
                 edge_rows = con.execute(
                     f"MATCH (a:Company {{eid:$s}})-[r:Rel]{arrow}(b:Company) "
                     "RETURN b.eid, r.relation_type, r.relation_id, r.statement_id",
@@ -268,7 +266,6 @@ class KnowledgeService:
         elif mode == "VECTOR":
             hits = vs
         else:
-            ft_map = {s: s for s, _ in ft}
             # 归一化融合：0.5 全文 + 0.5 向量（ranking_policy_version 记录）
             merged: dict[str, float] = {}
             max_ft = max((x for _, x in ft), default=1.0) or 1.0
@@ -332,7 +329,7 @@ class KnowledgeService:
             try:
                 when = json.loads(rule["when"])
                 result = dsl.evaluate(when, facts)
-            except (json.JSONDecodeError, UsageError) as exc:
+            except (json.JSONDecodeError, UsageError):
                 continue
             is_match = result.value is True
             trace = [t for t in result.trace]

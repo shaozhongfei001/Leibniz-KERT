@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 # CLI 退出码（规格 §12.1）
 EXIT_OK = 0

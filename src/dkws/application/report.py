@@ -348,13 +348,6 @@ def render_generic_report(payload: dict) -> str:
 <pre>{_esc(body)}</pre></body></html>"""
 
 
-def render_report(result) -> str:
-    payload = result.as_dict()
-    if getattr(result, "skill_id", "") == "bank-front-supply-chain-graph":
-        return render_supply_chain_report(result, payload)
-    return render_generic_report(payload)
-
-
 # ---------------- SP-20 服务建议书报告（v1.4） ----------------
 
 LABEL_CN = {"F": "已核验事实", "C": "推断结论", "B": "行为事实", "H": "假设", "P": "计划承诺", "A": "已批准"}

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -18,7 +17,6 @@ from dkws.application.review import ReviewService
 from dkws.application.rollback import RollbackService
 from dkws.application.services import KnowledgeService
 from dkws.application import validation
-from dkws.domain import hashing
 from dkws.domain.contracts import specs
 from dkws.domain.contracts.base import validate_contract
 
@@ -110,9 +108,6 @@ class TestGoldenScenario:
         assert any(f.code == "CONFLICTING_STATEMENT" for f in conflict)
 
         # 5. 注入文本未改变控制流程（§18.3 预期 11）
-        injected = [s for s in [validate_contract((ws / c["path"]).read_text(encoding="utf-8"),
-                                                  specs.SEGMENT_SPEC).front_matter
-                                for c in []] ]
         assert True  # 确定性抽取器以片段为数据，注入文本仅成为片段内容
         seg_texts = []
         for sf in (ws / "02_work" / "product" / f"run={pr.run_id}" / "segments").rglob("*.md"):
@@ -197,8 +192,8 @@ class TestGoldenScenario:
         # 11. 回滚后关键查询恢复旧版本（§18.3 预期 12）
         rb = RollbackService(ws)
         # 先发布第二版再回滚
-        pub2 = Publisher(ws).publish("product", run_id=pr.run_id,
-                                     release_version="2099.12.31.1")
+        Publisher(ws).publish("product", run_id=pr.run_id,
+                              release_version="2099.12.31.1")
         assert validate_contract(
             (ws / "03_core" / "product" / "CURRENT.md").read_text(encoding="utf-8"),
             specs.CURRENT_SPEC).front_matter["target_version"] == "2099.12.31.1"

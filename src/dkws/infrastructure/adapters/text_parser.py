@@ -27,14 +27,12 @@ class CsvTextParserAdapter(DocumentParserAdapter):
 
     def parse(self, path: Path) -> ParsedDocument:
         import csv
-        import io
 
         rows = []
         with open(path, "r", encoding="utf-8", newline="") as f:
             reader = csv.reader(f)
             for row in reader:
                 rows.append(row)
-        table = "\n".join("| " + " | ".join(cell for cell in row) + " |" for row in rows)
         return ParsedDocument(
             title=path.stem,
             pages=[Page(number=1, text="", tables=[rows])],

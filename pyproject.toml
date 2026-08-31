@@ -20,7 +20,14 @@ dependencies = [
 
 [project.optional-dependencies]
 api = ["fastapi>=0.110", "uvicorn>=0.29"]
-dev = ["pytest>=8.0"]
+# httpx 是测试依赖：tests/e2e 直接使用 httpx，
+# tests/integration 经 starlette.testclient.TestClient 间接依赖它
+# （TestClient 缺 httpx 会抛 RuntimeError 而非 ImportError）。
+# 此前 httpx 仅出现在 requirements-lock.txt，未在任何 extra 中声明；
+# 而 `pip install -c requirements-lock.txt ".[api,dev]"` 中的 -c 是**约束**
+# 而非安装指令，只钉版本、不会安装未被依赖声明引入的包，
+# 因此 CI 缺 httpx，导致 e2e / integration 用例收集失败。
+dev = ["pytest>=8.0", "httpx>=0.27"]
 
 [project.scripts]
 dkws = "dkws.cli.main:app"
@@ -31,3 +38,20 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+# 显式声明规则集，不依赖 ruff 的默认值。
+# 原因：CI 此前用 `pip install ruff`（未锁版本），而 ruff 的默认规则集
+# 随版本扩张（0.16 起默认已含 B/BLE/PLE/UP/FURB/PERF/S 等规则族）。
+# 依赖默认值会让工具升级凭空引入红灯，与代码改动无关。
+# 当前基线 = ruff 早期默认集，即团队引入 Lint 时的隐含预期强度。
+# 收紧计划见 evidence/jr1/TASK_PACKAGE_LINT_BASELINE.md（JR1-LINT-BASELINE），
+# 其中 PLE1205（19 处日志参数不匹配）为运行时真实缺陷，优先修复。
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+# 测试模块需要在 import 前做路径/环境准备，E402 在此为有意为之
+"tests/**" = ["E402"]

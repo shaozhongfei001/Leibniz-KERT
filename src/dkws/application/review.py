@@ -14,7 +14,6 @@ from pathlib import Path
 
 from ..domain import ids, states, timeutil
 from ..domain.contracts import specs
-from ..domain.contracts.base import validate_contract
 from ..domain.errors import AssetNotFoundError, UsageError
 from ..infrastructure import locks as locks_mod, markdown
 from ..infrastructure.fs import WorkspaceWriter

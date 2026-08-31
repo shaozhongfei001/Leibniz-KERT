@@ -76,8 +76,15 @@ def _make_relation_table(n: int) -> pa.Table:
 SIZES = [100, 1_000, 10_000]
 WRITE_THRESHOLD_MS = 500  # 单次写入 10K 行 < 500ms
 READ_THRESHOLD_MS = 200   # 单次读取 10K 行 < 200ms
-READ_MIN_THRESHOLD_MS = 50  # 最小读取阈值（含 I/O 固定开销）
 HASH_THRESHOLD_MS = 300   # 逻辑哈希 10K 行 < 300ms
+
+# 最小阈值：pyarrow 调用开销、内存分配与解释器抖动不随行数缩放，
+# 小数据量下由固定开销主导。若仅按行数线性缩放，100 行的阈值会被算成
+# 3~5ms 这类物理上不可达的值，导致基准恒定失败（见 FAIL-JR1-05 F-2）。
+# NFR-005 的真实约束是 10K 行那一档，小数据量不应设不可达门槛。
+WRITE_MIN_THRESHOLD_MS = 50  # 最小写入阈值（含压缩与落盘固定开销）
+READ_MIN_THRESHOLD_MS = 50   # 最小读取阈值（含 I/O 固定开销）
+HASH_MIN_THRESHOLD_MS = 100  # 最小哈希阈值（含 pyarrow 序列化固定开销）
 
 
 @pytest.mark.parametrize("n", SIZES, ids=lambda n: f"{n}_rows")
@@ -90,7 +97,7 @@ def test_write_parquet_benchmark(tmp_path: Path, n: int) -> None:
     pq.write_table(table, out_file, compression="zstd")
     elapsed_ms = (time.perf_counter() - t0) * 1000
 
-    threshold = WRITE_THRESHOLD_MS * (n / 10_000) if n < 10_000 else WRITE_THRESHOLD_MS
+    threshold = max(WRITE_MIN_THRESHOLD_MS, WRITE_THRESHOLD_MS * (n / 10_000))
     assert elapsed_ms < threshold, (
         f"write_parquet {n} rows: {elapsed_ms:.1f}ms > {threshold:.0f}ms threshold"
     )
@@ -124,7 +131,7 @@ def test_parquet_logical_hash_benchmark(n: int) -> None:
     elapsed_ms = (time.perf_counter() - t0) * 1000
 
     assert h, "逻辑哈希不应为空"
-    threshold = HASH_THRESHOLD_MS * (n / 10_000) if n < 10_000 else HASH_THRESHOLD_MS
+    threshold = max(HASH_MIN_THRESHOLD_MS, HASH_THRESHOLD_MS * (n / 10_000))
     assert elapsed_ms < threshold, (
         f"logical_hash {n} rows: {elapsed_ms:.1f}ms > {threshold:.0f}ms threshold"
     )
@@ -140,7 +147,7 @@ def test_write_relation_parquet_benchmark(tmp_path: Path, n: int) -> None:
     pq.write_table(table, out_file, compression="zstd")
     elapsed_ms = (time.perf_counter() - t0) * 1000
 
-    threshold = WRITE_THRESHOLD_MS * (n / 10_000) if n < 10_000 else WRITE_THRESHOLD_MS
+    threshold = max(WRITE_MIN_THRESHOLD_MS, WRITE_THRESHOLD_MS * (n / 10_000))
     assert elapsed_ms < threshold, (
         f"write_relation_parquet {n} rows: {elapsed_ms:.1f}ms > {threshold:.0f}ms threshold"
     )
@@ -159,8 +166,9 @@ def test_in_memory_parquet_roundtrip_benchmark(n: int) -> None:
     elapsed_ms = (time.perf_counter() - t0) * 1000
 
     assert result.num_rows == n
-    threshold = (WRITE_THRESHOLD_MS + READ_THRESHOLD_MS) * (n / 10_000) if n < 10_000 else (
-        WRITE_THRESHOLD_MS + READ_THRESHOLD_MS
+    threshold = max(
+        WRITE_MIN_THRESHOLD_MS + READ_MIN_THRESHOLD_MS,
+        (WRITE_THRESHOLD_MS + READ_THRESHOLD_MS) * (n / 10_000),
     )
     assert elapsed_ms < threshold, (
         f"roundtrip {n} rows: {elapsed_ms:.1f}ms > {threshold:.0f}ms threshold"

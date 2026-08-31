@@ -383,17 +383,13 @@ def test_parquet_read_with_vs_without_filter(tmp_path: Path, n: int) -> None:
     pq.write_table(table, path)
 
     # 方式1：全量读取 + Python 过滤（优化前）
-    t0 = time.perf_counter()
     full_table = pq.read_table(path)
     python_filtered = [r for r in full_table.to_pylist() if r["entity_type"] == "PRODUCT"]
-    python_ms = (time.perf_counter() - t0) * 1000
 
     # 方式2：谓词下推（优化后）
-    t0 = time.perf_counter()
     filter_expr = build_filter({"entity_type": "PRODUCT"})
     pushdown_table = pq.read_table(path, filters=filter_expr)
     pushdown_filtered = pushdown_table.to_pylist()
-    pushdown_ms = (time.perf_counter() - t0) * 1000
 
     # 结果一致
     assert len(python_filtered) == len(pushdown_filtered)

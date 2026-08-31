@@ -20,7 +20,7 @@ import pyarrow as pa
 from ..domain import hashing, ids, timeutil
 from ..domain.contracts import specs
 from ..domain.contracts.base import validate_contract
-from ..domain.errors import QualityGateError, ServiceNotReadyError, UsageError
+from ..domain.errors import QualityGateError, ServiceNotReadyError
 from ..infrastructure import locks as locks_mod, markdown
 from ..infrastructure.fs import WorkspaceWriter
 from .jobs import JobController
@@ -432,7 +432,6 @@ def _fill_typed_value(row: dict, fm: dict) -> None:
 
 def _build_vectors(segments: list[dict]) -> pa.Table:
     """确定性嵌入（无外部模型时）：由内容哈希派生伪随机但稳定的 float32 向量。"""
-    import struct
 
     dim = DEFAULT_EMBED_DIM
     rows = []

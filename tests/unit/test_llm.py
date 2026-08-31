@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import json
-import os
 
 import pytest
 
 from dkws.domain.errors import UsageError
 from dkws.infrastructure.adapters.llm import (
     DeterministicLlmAdapter,
-    LlmAdapter,
     LlmResult,
     OpenAiCompatibleLlmAdapter,
     create_llm_adapter,

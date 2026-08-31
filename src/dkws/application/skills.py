@@ -24,10 +24,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from ..domain import timeutil
-
-_log = logging.getLogger(__name__)
 from ..infrastructure.adapters import llm as llm_mod
 from ..infrastructure.classification import detect_value_patterns, redact_for_llm
+
+_log = logging.getLogger(__name__)
 
 IDEMPOTENCY_TTL_S = 600
 #: Runtime Store 中 Skill 执行幂等记录的作用域（M2.3）
@@ -398,7 +398,6 @@ class SkillExecutionService:
             if hits:
                 trace.append({"phase": "llm_redaction", "status": "ok",
                               "message": f"出站提示词已脱敏：{','.join(hits)}"})
-        started = time.monotonic()
         try:
             res = adapter.complete(outbound_system, outbound_user)
         except Exception as exc:
