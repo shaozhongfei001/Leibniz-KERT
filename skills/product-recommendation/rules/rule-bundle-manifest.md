@@ -23,18 +23,28 @@ REAL_E2E_PASS=NO
 | status | `CANDIDATE` |
 | schemaVersion | `1.0.0` |
 
-## 2. 规则清单（6 条硬规则种子）
+## 2. 规则清单（6 条规则种子）
 
-> 顺序号沿用 `rules/README.md`「硬约束执行顺序」。顺序 1（权限与数据用途 → `FAIL_CLOSED`）由 `AC-PRODUCT-RECOMMEND-001` 与 SP-15 执行前置覆盖，不在本规则包内。
+> 顺序 1（权限与数据用途 → `FAIL_CLOSED`）由 `AC-PRODUCT-RECOMMEND-001` 与 SP-15 执行前置覆盖，不在本规则包内。
+> 下表「README 顺序」列逐字对齐 `rules/README.md`「硬约束执行顺序」(1-7)。材料规则**不在**该硬约束顺序内，单列于 §2.2（非阻断，不占用 README 序号）。
 
-| 顺序 | 规则类型 | ruleId | ruleVersion | 文件 | 失败策略 |
+### 2.1 硬约束规则（对齐 `rules/README.md` 顺序 2~7）
+
+| README 顺序 | 规则类型 | ruleId | ruleVersion | 文件 | 失败策略 |
 |---|---|---|---|---|---|
 | 2 | 有效性规则 | `PR-VALID-001` | `1.0.0-candidate` | `PR-VALID-001.md` | 产品级 `INELIGIBLE`；无有效版本 → 整轮 `FAIL_CLOSED` |
 | 3 | 监管禁止规则 | `PR-REG-001` | `1.0.0-candidate` | `PR-REG-001.md` | `INELIGIBLE`（`FAIL_CLOSED`） |
 | 4 | 客户准入规则 | `PR-ELIG-001` | `1.0.0-candidate` | `PR-ELIG-001.md` | FAIL → `INELIGIBLE`；缺失 → `UNKNOWN` |
-| 5 | 前置与互斥规则 | `PR-PRMUTEX-001` | `1.0.0-candidate` | `PR-PRMUTEX-001.md` | 排除 / 转组合依赖 / `INELIGIBLE` / `REVIEW_REQUIRED` |
-| 6 | 材料规则 | `PR-MAT-001` | `1.0.0-candidate` | `PR-MAT-001.md` | 缺口生成（不硬阻断 `ELIGIBLE`） |
+| 5 + 6 | 前置与互斥规则 | `PR-PRMUTEX-001` | `1.0.0-candidate` | `PR-PRMUTEX-001.md` | 前置: 排除 / 转组合依赖（顺序 5）；互斥/存量冲突: `INELIGIBLE` 或 `REVIEW_REQUIRED`（顺序 6） |
 | 7 | 销售边界规则 | `PR-SALES-001` | `1.0.0-candidate` | `PR-SALES-001.md` | 保留边界 + 强制 HumanGate |
+
+> 注：本包将 README 硬约束第 5 步（产品前置条件）与第 6 步（产品互斥与存量冲突）合并为单一规则文件 `PR-PRMUTEX-001`，其 `executionOrder: [5, 6]` 显式覆盖两步，不对 README 序号作一对一宣称。
+
+### 2.2 非硬约束规则（不在 `rules/README.md` 硬约束顺序 1-7 内）
+
+| 规则类型 | ruleId | ruleVersion | 文件 | 执行方式 | 失败策略 |
+|---|---|---|---|---|---|
+| 材料规则 | `PR-MAT-001` | `1.0.0-candidate` | `PR-MAT-001.md` | 规则 + 缺口生成（`NON_BLOCKING`） | 缺口生成，不硬阻断 `ELIGIBLE`（记入 `fitResults[].materialGaps` / 待办） |
 
 ## 3. 测试集引用
 
@@ -52,3 +62,4 @@ REAL_E2E_PASS=NO
 - 全部规则为 `CANDIDATE`，`FROZEN=NO`，未实现、未接运行时。
 - 规则 EvidenceRef 指向的源材料（`SRC-FIN-*` / `REG-FIN-*`）当前为 `PENDING_SOURCE`（材料待上传、条款号待 Owner 核定），故本包**不可作生产发布**（`INV-05` 无证据不得发布硬规则）。
 - 产品 ID 与条款号待公司金融产品 Owner（`OQ-02`）裁决后回填。
+- **跨包集成待办（WP2-3）**：WP2-3 执行器 `src/dkws/application/product_recommendation/eligibility.py` 的 `RULE_CATALOG` 目前使用 `PR-ELIG-001(标 VALIDITY)/PR-REG-001/PR-ADM-004/PR-PRE-001/PR-MAT-001/PR-BND-001`，与本清单 `PR-VALID-001/PR-REG-001/PR-ELIG-001/PR-PRMUTEX-001/PR-MAT-001/PR-SALES-001` 不一致（`PR-ADM-004/PR-PRE-001/PR-BND-001` 在本包不存在）。WP2-3 需改为消费本清单的 `ruleId/ruleVersion` 消除 ID 漂移，并据此加载 `golden-cases.json` 逐组断言 `expected.eligibility/ruleResults`。

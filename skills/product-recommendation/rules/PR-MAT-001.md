@@ -5,8 +5,9 @@ ruleVersion: 1.0.0-candidate
 category: material
 owner: 公司金融产品管理部
 ruleBundleRef: RB-PR-20260831-0001
-enforcement: BLOCKING
-executionOrder: 6
+enforcement: NON_BLOCKING
+executionOrder: []
+executionOrderNote: 材料规则不在 rules/README.md「硬约束执行顺序」(1-7) 内；执行方式为「规则+缺口生成」，不硬阻断 ELIGIBLE
 status: CANDIDATE
 frozen: "NO"
 implemented: "NO"
@@ -42,6 +43,8 @@ REAL_E2E_PASS=NO
 ## 1. 触发条件
 
 检查必供材料（合同 / 订单 / 报表）是否齐备（规则 + 缺口生成）。
+
+> 本规则为**非阻断**规则（`enforcement: NON_BLOCKING`），**不在** `rules/README.md`「硬约束执行顺序」(1-7) 内；材料缺口不硬阻断 `ELIGIBLE`，仅记入 `fitResults[].materialGaps` / 待办。
 
 ## 2. 结论（result → reasonCode → 下游）
 

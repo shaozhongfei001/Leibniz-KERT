@@ -6,7 +6,8 @@ category: prerequisite-mutex
 owner: 公司金融产品管理部
 ruleBundleRef: RB-PR-20260831-0001
 enforcement: BLOCKING
-executionOrder: 5
+executionOrder: [5, 6]
+executionOrderNote: 覆盖 rules/README.md 硬约束顺序第 5 步（产品前置条件）与第 6 步（产品互斥与存量冲突）；本包将两步合并为单一规则文件，不对 README 序号作一对一宣称
 status: CANDIDATE
 frozen: "NO"
 implemented: "NO"
@@ -68,5 +69,6 @@ REAL_E2E_PASS=NO
 
 ## 4. 不变量
 
-- 组合中的任一硬失败产品必须移除，不能以整体分数掩盖。
+- 前置条件未满足 → 排除或转组合依赖（`rules/README.md` 硬约束顺序 5）。
 - 互斥/存量冲突 → `INELIGIBLE` 或 `REVIEW_REQUIRED`（`rules/README.md` 硬约束顺序 6）。
+- 组合中的任一硬失败产品必须移除，不能以整体分数掩盖。

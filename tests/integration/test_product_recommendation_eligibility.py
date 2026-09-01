@@ -91,11 +91,30 @@ def test_closed_sets_match_contract():
     assert len(RULE_CATALOG) == 6
 
 
+def test_rule_catalog_ids_and_versions_align_with_manifest():
+    """FO-01：执行器 RULE_CATALOG 的 ruleId/ruleVersion 与规则清单一致（无 ID 漂移）。
+
+    语义映射锁定：有效性→PR-VALID-001、监管→PR-REG-001、准入→PR-ELIG-001、
+    前置互斥→PR-PRMUTEX-001、材料→PR-MAT-001、销售边界→PR-SALES-001。
+    不再引用清单外的 PR-ADM-004 / PR-PRE-001 / PR-BND-001。
+    """
+    assert [r["ruleId"] for r in RULE_CATALOG] == [
+        "PR-VALID-001",
+        "PR-REG-001",
+        "PR-ELIG-001",
+        "PR-PRMUTEX-001",
+        "PR-MAT-001",
+        "PR-SALES-001",
+    ]
+    for r in RULE_CATALOG:
+        assert r["ruleVersion"] == "1.0.0-candidate"
+
+
 def test_aggregate_precedence_fail_over_review_over_unknown():
     rules = [
-        RuleResult("PR-REG-001", "2.0", "FAIL", "FORBIDDEN_INDUSTRY"),
-        RuleResult("PR-PRE-001", "1.0", "REVIEW_REQUIRED", "MUTUAL_EXCLUSION_CONFLICT"),
-        RuleResult("PR-ADM-004", "2.0", "UNKNOWN", "CUSTOMER_TYPE_MISSING"),
+        RuleResult("PR-REG-001", "1.0.0-candidate", "FAIL", "FORBIDDEN_INDUSTRY"),
+        RuleResult("PR-PRMUTEX-001", "1.0.0-candidate", "REVIEW_REQUIRED", "MUTUAL_EXCLUSION_CONFLICT"),
+        RuleResult("PR-ELIG-001", "1.0.0-candidate", "UNKNOWN", "CUSTOMER_TYPE_MISSING"),
     ]
     # FAIL 优先级最高：即使同时存在 REVIEW_REQUIRED 与 UNKNOWN，仍为 INELIGIBLE
     assert aggregate_eligibility(rules) == "INELIGIBLE"
@@ -179,7 +198,7 @@ def test_tc_pr_003_missing_fact_is_unknown_not_eligible():
         resolution.universe, facts, as_of=AS_OF)
     er = result.results[0]
     assert er.eligibility == "UNKNOWN"
-    adm = _results_by_rule(er)["PR-ADM-004"]
+    adm = _results_by_rule(er)["PR-ELIG-001"]
     assert adm.result == "UNKNOWN"
     assert adm.reasonCode == "CUSTOMER_TYPE_MISSING"
     # UNKNOWN 不得按 ELIGIBLE 处理（不进入第二段）
@@ -256,7 +275,7 @@ def test_tc_pr_005_mutual_exclusion_is_review_required():
         resolution.universe, facts, as_of=AS_OF)
     er = result.results[0]
     assert er.eligibility == "REVIEW_REQUIRED"
-    pre = _results_by_rule(er)["PR-PRE-001"]
+    pre = _results_by_rule(er)["PR-PRMUTEX-001"]
     assert pre.result == "REVIEW_REQUIRED"
     assert pre.reasonCode == "MUTUAL_EXCLUSION_CONFLICT"
     assert er.reviewRequirements

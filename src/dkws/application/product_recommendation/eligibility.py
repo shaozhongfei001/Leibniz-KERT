@@ -49,14 +49,24 @@ KERT_EVIDENCE_INCOMPLETE = "KERT_EVIDENCE_INCOMPLETE"
 
 # ---------------------------------------------------------------------------
 # 规则目录（6 类，固定执行顺序；规则版本为候选 RuleBundle 默认值，可被覆盖）
+#
+# FO-01（KERT 规则 ID 对齐）：ruleId 全部改为消费规则清单（rule-bundle-manifest.md）
+# 真实 ID，消除执行器与规则清单的 ID 漂移；语义映射：
+#   有效性       → PR-VALID-001（原 PR-ELIG-001 标 VALIDITY）
+#   监管禁止     → PR-REG-001（不变）
+#   客户准入     → PR-ELIG-001（原 PR-ADM-004）
+#   前置互斥     → PR-PRMUTEX-001（原 PR-PRE-001）
+#   材料         → PR-MAT-001（不变）
+#   销售边界     → PR-SALES-001（原 PR-BND-001）
+# ruleVersion 一律对齐清单 `1.0.0-candidate`。
 # ---------------------------------------------------------------------------
 RULE_CATALOG = (
-    {"ruleId": "PR-ELIG-001", "category": "VALIDITY", "ruleVersion": "1.3"},
-    {"ruleId": "PR-REG-001", "category": "REGULATORY", "ruleVersion": "2.0"},
-    {"ruleId": "PR-ADM-004", "category": "ADMISSION", "ruleVersion": "2.0"},
-    {"ruleId": "PR-PRE-001", "category": "PREREQUISITE_EXCLUSION", "ruleVersion": "1.0"},
-    {"ruleId": "PR-MAT-001", "category": "MATERIAL", "ruleVersion": "1.0"},
-    {"ruleId": "PR-BND-001", "category": "SALES_BOUNDARY", "ruleVersion": "1.0"},
+    {"ruleId": "PR-VALID-001", "category": "VALIDITY", "ruleVersion": "1.0.0-candidate"},
+    {"ruleId": "PR-REG-001", "category": "REGULATORY", "ruleVersion": "1.0.0-candidate"},
+    {"ruleId": "PR-ELIG-001", "category": "ADMISSION", "ruleVersion": "1.0.0-candidate"},
+    {"ruleId": "PR-PRMUTEX-001", "category": "PREREQUISITE_EXCLUSION", "ruleVersion": "1.0.0-candidate"},
+    {"ruleId": "PR-MAT-001", "category": "MATERIAL", "ruleVersion": "1.0.0-candidate"},
+    {"ruleId": "PR-SALES-001", "category": "SALES_BOUNDARY", "ruleVersion": "1.0.0-candidate"},
 )
 
 _DEFAULT_RULE_BUNDLE = {r["ruleId"]: r["ruleVersion"] for r in RULE_CATALOG}
