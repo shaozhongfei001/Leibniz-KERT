@@ -39,11 +39,18 @@
             "productStatus": "ACTIVE",
             "effectiveFrom": "2026-01-01",
             "effectiveTo": "2027-12-31",
-            "applicableInstitutions": ["CN-HQ"],
-            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "applicableInstitutions": [
+              "CN-HQ"
+            ],
+            "prohibitedIndustries": [
+              "REAL_ESTATE",
+              "GAMBLING"
+            ],
             "prerequisiteProductIds": [],
             "mutexProductIds": [],
-            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+            "requiredMaterials": [
+              "FINANCIAL_STATEMENT"
+            ]
           }
         ]
       },
@@ -51,14 +58,87 @@
         "eligibility": "ELIGIBLE",
         "runStatus": "HARD_FILTERING",
         "ruleResults": [
-          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD", "EV-SRC-FIN-001"] },
-          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "INDUSTRY_NOT_PROHIBITED", "inputFactRefs": ["FACT-IND-CUST-001"], "evidenceRefs": ["EV-REG-POLICY", "EV-CUST-IND"] },
-          { "ruleId": "PR-ELIG-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "CUSTOMER_TYPE_ALLOWED", "inputFactRefs": ["FACT-CUST-001"], "evidenceRefs": ["EV-SRC-FIN-002", "EV-CUST-FACT"] },
-          { "ruleId": "PR-PRMUTEX-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PREREQUISITE_SATISFIED", "inputFactRefs": ["FACT-HOLD-CUST-001"], "evidenceRefs": ["EV-HOLDING"] },
-          { "ruleId": "PR-MAT-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "MATERIAL_COMPLETE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-MAT-CHECKLIST"] },
-          { "ruleId": "PR-SALES-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "WITHIN_SALES_BOUNDARY", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-BOUNDARY-POLICY", "EV-PROD-CARD"] }
+          {
+            "ruleId": "PR-VALID-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "PRODUCT_VERSION_ACTIVE",
+            "inputFactRefs": [
+              "FACT-PROD-WC-001-2.2"
+            ],
+            "evidenceRefs": [
+              "EV-PROD-CARD",
+              "EV-SRC-FIN-001"
+            ]
+          },
+          {
+            "ruleId": "PR-REG-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "INDUSTRY_NOT_PROHIBITED",
+            "inputFactRefs": [
+              "FACT-IND-CUST-001"
+            ],
+            "evidenceRefs": [
+              "EV-REG-POLICY",
+              "EV-CUST-IND"
+            ]
+          },
+          {
+            "ruleId": "PR-ELIG-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "CUSTOMER_TYPE_ALLOWED",
+            "inputFactRefs": [
+              "FACT-CUST-001"
+            ],
+            "evidenceRefs": [
+              "EV-SRC-FIN-002",
+              "EV-CUST-FACT"
+            ]
+          },
+          {
+            "ruleId": "PR-PRMUTEX-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "PREREQUISITE_SATISFIED",
+            "inputFactRefs": [
+              "FACT-HOLD-CUST-001"
+            ],
+            "evidenceRefs": [
+              "EV-HOLDING"
+            ]
+          },
+          {
+            "ruleId": "PR-MAT-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "MATERIAL_COMPLETE",
+            "inputFactRefs": [
+              "FACT-PROD-WC-001-2.2"
+            ],
+            "evidenceRefs": [
+              "EV-MAT-CHECKLIST"
+            ]
+          },
+          {
+            "ruleId": "PR-SALES-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "WITHIN_SALES_BOUNDARY",
+            "inputFactRefs": [
+              "FACT-PROD-WC-001-2.2"
+            ],
+            "evidenceRefs": [
+              "EV-BOUNDARY-POLICY",
+              "EV-PROD-CARD"
+            ]
+          }
         ],
-        "invariants": ["INV-01", "INV-04"]
+        "invariants": [
+          "INV-01",
+          "INV-04"
+        ]
       }
     },
     {
@@ -87,11 +167,18 @@
             "productStatus": "ACTIVE",
             "effectiveFrom": "2026-01-01",
             "effectiveTo": "2027-12-31",
-            "applicableInstitutions": ["CN-HQ"],
-            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "applicableInstitutions": [
+              "CN-HQ"
+            ],
+            "prohibitedIndustries": [
+              "REAL_ESTATE",
+              "GAMBLING"
+            ],
             "prerequisiteProductIds": [],
             "mutexProductIds": [],
-            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+            "requiredMaterials": [
+              "FINANCIAL_STATEMENT"
+            ]
           }
         ]
       },
@@ -99,11 +186,36 @@
         "eligibility": "INELIGIBLE",
         "runStatus": "HARD_FILTERING",
         "ruleResults": [
-          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
-          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "FORBIDDEN_INDUSTRY", "inputFactRefs": ["FACT-IND-CUST-002"], "evidenceRefs": ["EV-REG-POLICY", "EV-CUST-IND"] }
+          {
+            "ruleId": "PR-VALID-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "PRODUCT_VERSION_ACTIVE",
+            "inputFactRefs": [
+              "FACT-PROD-WC-001-2.2"
+            ],
+            "evidenceRefs": [
+              "EV-PROD-CARD"
+            ]
+          },
+          {
+            "ruleId": "PR-REG-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "FAIL",
+            "reasonCode": "FORBIDDEN_INDUSTRY",
+            "inputFactRefs": [
+              "FACT-IND-CUST-002"
+            ],
+            "evidenceRefs": [
+              "EV-REG-POLICY",
+              "EV-CUST-IND"
+            ]
+          }
         ],
         "downstream": "不得进入排序；fitResults 中该产品 fitScore 必须为 null",
-        "invariants": ["INV-02"]
+        "invariants": [
+          "INV-02"
+        ]
       }
     },
     {
@@ -131,11 +243,23 @@
             "productStatus": "ACTIVE",
             "effectiveFrom": "2026-01-01",
             "effectiveTo": "2027-12-31",
-            "applicableInstitutions": ["CN-HQ"],
-            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "applicableInstitutions": [
+              "CN-HQ"
+            ],
+            "prohibitedIndustries": [
+              "REAL_ESTATE",
+              "GAMBLING"
+            ],
             "prerequisiteProductIds": [],
             "mutexProductIds": [],
-            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+            "requiredMaterials": [
+              "FINANCIAL_STATEMENT"
+            ],
+            "admissionCriteria": {
+              "customerTypes": [
+                "GENERAL_LEGAL_PERSON"
+              ]
+            }
           }
         ]
       },
@@ -143,15 +267,52 @@
         "eligibility": "UNKNOWN",
         "runStatus": "HARD_FILTERING",
         "ruleResults": [
-          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
-          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "INDUSTRY_NOT_PROHIBITED", "inputFactRefs": ["FACT-IND-CUST-003"], "evidenceRefs": ["EV-REG-POLICY"] },
-          { "ruleId": "PR-ELIG-001", "ruleVersion": "1.0.0-candidate", "result": "UNKNOWN", "reasonCode": "CUSTOMER_TYPE_MISSING", "inputFactRefs": [], "evidenceRefs": ["EV-SRC-FIN-002"] }
+          {
+            "ruleId": "PR-VALID-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "PRODUCT_VERSION_ACTIVE",
+            "inputFactRefs": [
+              "FACT-PROD-WC-001-2.2"
+            ],
+            "evidenceRefs": [
+              "EV-PROD-CARD"
+            ]
+          },
+          {
+            "ruleId": "PR-REG-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "INDUSTRY_NOT_PROHIBITED",
+            "inputFactRefs": [
+              "FACT-IND-CUST-003"
+            ],
+            "evidenceRefs": [
+              "EV-REG-POLICY"
+            ]
+          },
+          {
+            "ruleId": "PR-ELIG-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "UNKNOWN",
+            "reasonCode": "CUSTOMER_TYPE_MISSING",
+            "inputFactRefs": [],
+            "evidenceRefs": [
+              "EV-SRC-FIN-002"
+            ]
+          }
         ],
         "unknowns": [
-          { "question": "客户企业类型缺失，无法判定准入", "relatedFactRef": "FACT-CUST-003", "suggestedAction": "生成核实任务，补齐企业类型" }
+          {
+            "question": "客户企业类型缺失，无法判定准入",
+            "relatedFactRef": "FACT-CUST-003",
+            "suggestedAction": "生成核实任务，补齐企业类型"
+          }
         ],
         "downstream": "不进入正式排序；不得按 ELIGIBLE 处理",
-        "invariants": ["INV-03"]
+        "invariants": [
+          "INV-03"
+        ]
       }
     },
     {
@@ -180,22 +341,44 @@
             "productStatus": "RETIRED",
             "effectiveFrom": "2024-01-01",
             "effectiveTo": "2026-06-30",
-            "applicableInstitutions": ["CN-HQ"],
-            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "applicableInstitutions": [
+              "CN-HQ"
+            ],
+            "prohibitedIndustries": [
+              "REAL_ESTATE",
+              "GAMBLING"
+            ],
             "prerequisiteProductIds": [],
             "mutexProductIds": [],
-            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+            "requiredMaterials": [
+              "FINANCIAL_STATEMENT"
+            ]
           }
         ]
       },
       "expected": {
-        "eligibility": "INELIGIBLE",
+        "eligibility": "EXCLUDED",
         "runStatus": "FAILED_CLOSED",
         "ruleResults": [
-          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "PRODUCT_VERSION_EXPIRED", "inputFactRefs": ["FACT-PROD-WC-001-1.9"], "evidenceRefs": ["EV-PROD-CARD", "EV-SRC-FIN-001"] }
+          {
+            "ruleId": "PR-VALID-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "FAIL",
+            "reasonCode": "PRODUCT_VERSION_EXPIRED",
+            "inputFactRefs": [
+              "FACT-PROD-WC-001-1.9"
+            ],
+            "evidenceRefs": [
+              "EV-PROD-CARD",
+              "EV-SRC-FIN-001"
+            ]
+          }
         ],
         "downstream": "该产品无 ACTIVE 有效版本 → 整轮不得产出可批准方案",
-        "invariants": ["INV-01", "INV-08"]
+        "invariants": [
+          "INV-01",
+          "INV-08"
+        ]
       }
     },
     {
@@ -215,7 +398,9 @@
           "scale": "LARGE",
           "rating": "AA",
           "hasAccount": true,
-          "holdings": ["PROD-FIN-WC-002"]
+          "holdings": [
+            "PROD-FIN-WC-002"
+          ]
         },
         "products": [
           {
@@ -224,23 +409,57 @@
             "productStatus": "ACTIVE",
             "effectiveFrom": "2026-01-01",
             "effectiveTo": "2027-12-31",
-            "applicableInstitutions": ["CN-HQ"],
-            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "applicableInstitutions": [
+              "CN-HQ"
+            ],
+            "prohibitedIndustries": [
+              "REAL_ESTATE",
+              "GAMBLING"
+            ],
             "prerequisiteProductIds": [],
-            "mutexProductIds": ["PROD-FIN-WC-002"],
-            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+            "mutexProductIds": [
+              "PROD-FIN-WC-002"
+            ],
+            "requiredMaterials": [
+              "FINANCIAL_STATEMENT"
+            ]
           }
         ]
       },
       "expected": {
-        "eligibility": "INELIGIBLE",
+        "eligibility": "REVIEW_REQUIRED",
         "runStatus": "HARD_FILTERING",
         "ruleResults": [
-          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
-          { "ruleId": "PR-PRMUTEX-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "MUTEX_CONFLICT", "inputFactRefs": ["FACT-HOLD-CUST-001"], "evidenceRefs": ["EV-HOLDING", "EV-SRC-FIN-003"] }
+          {
+            "ruleId": "PR-VALID-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "PRODUCT_VERSION_ACTIVE",
+            "inputFactRefs": [
+              "FACT-PROD-WC-001-2.2"
+            ],
+            "evidenceRefs": [
+              "EV-PROD-CARD"
+            ]
+          },
+          {
+            "ruleId": "PR-PRMUTEX-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "FAIL",
+            "reasonCode": "MUTEX_CONFLICT",
+            "inputFactRefs": [
+              "FACT-HOLD-CUST-001"
+            ],
+            "evidenceRefs": [
+              "EV-HOLDING",
+              "EV-SRC-FIN-003"
+            ]
+          }
         ],
         "downstream": "组合被拒绝并解释原因（存量持有 PROD-FIN-WC-002 与候选互斥）",
-        "invariants": ["INV-02"]
+        "invariants": [
+          "INV-02"
+        ]
       }
     },
     {
@@ -269,20 +488,52 @@
             "productStatus": "ACTIVE",
             "effectiveFrom": "2026-01-01",
             "effectiveTo": "2027-12-31",
-            "applicableInstitutions": ["CN-HQ"],
-            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
-            "prerequisiteProductIds": ["PROD-FIN-DEP-001"],
+            "applicableInstitutions": [
+              "CN-HQ"
+            ],
+            "prohibitedIndustries": [
+              "REAL_ESTATE",
+              "GAMBLING"
+            ],
+            "prerequisiteProductIds": [
+              "PROD-FIN-DEP-001"
+            ],
             "mutexProductIds": [],
-            "requiredMaterials": ["SUPPLY_CHAIN_CONTRACT"]
+            "requiredMaterials": [
+              "SUPPLY_CHAIN_CONTRACT"
+            ]
           }
         ]
       },
       "expected": {
-        "eligibility": "REVIEW_REQUIRED",
+        "eligibility": "INELIGIBLE",
         "runStatus": "HARD_FILTERING",
         "ruleResults": [
-          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-SC-001-3.0"], "evidenceRefs": ["EV-PROD-CARD"] },
-          { "ruleId": "PR-PRMUTEX-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "PREREQUISITE_MISSING", "inputFactRefs": ["FACT-HOLD-CUST-004"], "evidenceRefs": ["EV-HOLDING", "EV-SRC-FIN-003"] }
+          {
+            "ruleId": "PR-VALID-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "PRODUCT_VERSION_ACTIVE",
+            "inputFactRefs": [
+              "FACT-PROD-SC-001-3.0"
+            ],
+            "evidenceRefs": [
+              "EV-PROD-CARD"
+            ]
+          },
+          {
+            "ruleId": "PR-PRMUTEX-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "FAIL",
+            "reasonCode": "PREREQUISITE_MISSING",
+            "inputFactRefs": [
+              "FACT-HOLD-CUST-004"
+            ],
+            "evidenceRefs": [
+              "EV-HOLDING",
+              "EV-SRC-FIN-003"
+            ]
+          }
         ],
         "downstream": "排除或转组合依赖：形成「先开立 PROD-FIN-DEP-001 → 再申请 PROD-FIN-SC-001」的有顺序组合/待办",
         "invariants": []
@@ -302,8 +553,14 @@
           "enterpriseType": "GENERAL_LEGAL_PERSON",
           "industry": "CONFLICT",
           "industrySources": [
-            { "sourceId": "SRC-CRM", "value": "MANUFACTURING" },
-            { "sourceId": "SRC-EXT", "value": "REAL_ESTATE" }
+            {
+              "sourceId": "SRC-CRM",
+              "value": "MANUFACTURING"
+            },
+            {
+              "sourceId": "SRC-EXT",
+              "value": "REAL_ESTATE"
+            }
           ],
           "region": "CN-310000",
           "scale": "LARGE",
@@ -318,11 +575,18 @@
             "productStatus": "ACTIVE",
             "effectiveFrom": "2026-01-01",
             "effectiveTo": "2027-12-31",
-            "applicableInstitutions": ["CN-HQ"],
-            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "applicableInstitutions": [
+              "CN-HQ"
+            ],
+            "prohibitedIndustries": [
+              "REAL_ESTATE",
+              "GAMBLING"
+            ],
             "prerequisiteProductIds": [],
             "mutexProductIds": [],
-            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+            "requiredMaterials": [
+              "FINANCIAL_STATEMENT"
+            ]
           }
         ]
       },
@@ -330,11 +594,37 @@
         "eligibility": "UNKNOWN",
         "runStatus": "HARD_FILTERING",
         "ruleResults": [
-          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
-          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "UNKNOWN", "reasonCode": "FACT_CONFLICT_NO_DETERMINISTIC_RESULT", "inputFactRefs": ["FACT-IND-CUST-005"], "evidenceRefs": ["EV-REG-POLICY", "EV-CUST-IND"] }
+          {
+            "ruleId": "PR-VALID-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "PRODUCT_VERSION_ACTIVE",
+            "inputFactRefs": [
+              "FACT-PROD-WC-001-2.2"
+            ],
+            "evidenceRefs": [
+              "EV-PROD-CARD"
+            ]
+          },
+          {
+            "ruleId": "PR-REG-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "UNKNOWN",
+            "reasonCode": "FACT_CONFLICT_NO_DETERMINISTIC_RESULT",
+            "inputFactRefs": [
+              "FACT-IND-CUST-005"
+            ],
+            "evidenceRefs": [
+              "EV-REG-POLICY",
+              "EV-CUST-IND"
+            ]
+          }
         ],
         "downstream": "不进入正式排序，先完成事实对账（禁止确定性解读）",
-        "invariants": ["INV-03", "INV-10"]
+        "invariants": [
+          "INV-03",
+          "INV-10"
+        ]
       }
     },
     {
@@ -363,24 +653,59 @@
             "productStatus": "ACTIVE",
             "effectiveFrom": "2026-01-01",
             "effectiveTo": "2027-12-31",
-            "applicableInstitutions": ["CN-HQ"],
-            "prohibitedIndustries": ["REAL_ESTATE", "GAMBLING"],
+            "applicableInstitutions": [
+              "CN-HQ"
+            ],
+            "prohibitedIndustries": [
+              "REAL_ESTATE",
+              "GAMBLING"
+            ],
             "prerequisiteProductIds": [],
             "mutexProductIds": [],
-            "requiredMaterials": ["FINANCIAL_STATEMENT"]
+            "requiredMaterials": [
+              "FINANCIAL_STATEMENT"
+            ]
           }
         ],
-        "bypassAttempt": { "note": "假设匹配器给出高分", "fitScore": 0.9 }
+        "bypassAttempt": {
+          "note": "假设匹配器给出高分",
+          "fitScore": 0.9
+        }
       },
       "expected": {
         "eligibility": "INELIGIBLE",
         "runStatus": "HARD_FILTERING",
         "ruleResults": [
-          { "ruleId": "PR-VALID-001", "ruleVersion": "1.0.0-candidate", "result": "PASS", "reasonCode": "PRODUCT_VERSION_ACTIVE", "inputFactRefs": ["FACT-PROD-WC-001-2.2"], "evidenceRefs": ["EV-PROD-CARD"] },
-          { "ruleId": "PR-REG-001", "ruleVersion": "1.0.0-candidate", "result": "FAIL", "reasonCode": "FORBIDDEN_INDUSTRY", "inputFactRefs": ["FACT-IND-CUST-002"], "evidenceRefs": ["EV-REG-POLICY", "EV-CUST-IND"] }
+          {
+            "ruleId": "PR-VALID-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "PASS",
+            "reasonCode": "PRODUCT_VERSION_ACTIVE",
+            "inputFactRefs": [
+              "FACT-PROD-WC-001-2.2"
+            ],
+            "evidenceRefs": [
+              "EV-PROD-CARD"
+            ]
+          },
+          {
+            "ruleId": "PR-REG-001",
+            "ruleVersion": "1.0.0-candidate",
+            "result": "FAIL",
+            "reasonCode": "FORBIDDEN_INDUSTRY",
+            "inputFactRefs": [
+              "FACT-IND-CUST-002"
+            ],
+            "evidenceRefs": [
+              "EV-REG-POLICY",
+              "EV-CUST-IND"
+            ]
+          }
         ],
         "downstream": "硬失败不可被绕过：fitScore 不得为 0.90，必须为 null（INV-02）；高分不能覆盖 INELIGIBLE",
-        "invariants": ["INV-02"]
+        "invariants": [
+          "INV-02"
+        ]
       }
     }
   ]

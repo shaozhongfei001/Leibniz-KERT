@@ -49,6 +49,7 @@ def map_product(p: dict) -> dict:
         "prerequisites": p.get("prerequisiteProductIds", []),
         "mutualExclusions": p.get("mutexProductIds", []),
         "requiredMaterials": p.get("requiredMaterials", []),
+        "admissionCriteria": p.get("admissionCriteria"),
         "owner": "公司金融产品管理部",
         "source": "golden-case",
         "evidenceRefs": ["EV-PROD-CARD"],
@@ -101,6 +102,15 @@ def main():
             target = c["input"]["products"][0]["productId"]
             hit = next((e for e in elig if e.get("productId") == target), None)
             actual = hit.get("eligibility") if hit else "NO_PRODUCT"
+            # D1 已裁决：期望 EXCLUDED 时，universe 排除（NO_PRODUCT）即通过（fail-closed）
+            if expected_status == "EXCLUDED":
+                row["actual"] = actual
+                row["pass"] = (actual == "NO_PRODUCT")
+                row["detail"] = "universe 排除=fail-closed（D1 已裁决）"
+                results.append(row)
+                if row["pass"]:
+                    passed += 1
+                continue
             row["actual"] = actual
             row["pass"] = (actual == expected_status)
             row["detail"] = f"ruleHits={len(hit.get('ruleResults', [])) if hit else 0} reasonCodes={[r.get('reasonCode') for r in (hit.get('ruleResults') or [])][:3] if hit else []}"
