@@ -57,6 +57,9 @@ paths:
                   - skillId: SP-21
                     name: 交互记忆抽取
                     version: "1.0.0"
+                  - skillId: SP-15
+                    name: 产品适配与综合方案
+                    version: "2.0.0-candidate"
 
   /api/skill/health:
     get:
@@ -1018,6 +1021,14 @@ components:
             - GATE_CHECK_FAILED: 闸门检查失败
             - JOB_NOT_FOUND: Job 不存在
             - INTERNAL_ERROR: 内部错误
+            - KERT_PERMISSION_DENIED: 权限不允许
+            - KERT_CONTEXT_INSUFFICIENT: 必须事实不足
+            - KERT_PRODUCT_KNOWLEDGE_STALE: 产品知识版本失效
+            - KERT_RULE_VERSION_MISSING: 规则不可复现
+            - KERT_EXECUTION_TIMEOUT: 技术超时
+            - KERT_CONTRACT_MISMATCH: 输入/输出不符合合同
+            - KERT_EVIDENCE_INCOMPLETE: 结果缺乏必要证据
+            - KERT_INTERNAL_ERROR: 未分类技术错误
         message:
           type: string
         detail:
