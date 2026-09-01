@@ -63,6 +63,20 @@ class SkillExecuteResult:
         }
 
 
+class SkillError(Exception):
+    """Skill 执行失败，携带业务错误码（如 SP-15 的 KERT_* 码）。
+
+    由执行器在 fail-closed 时抛出，``execute`` 捕获后透传为 ``errors[].code``，
+    与通用异常（映射为 ``SKILL_EXECUTION_FAILED``）区分开。
+    """
+
+    def __init__(self, code: str, message: str, *, detail: dict | None = None):
+        super().__init__(message)
+        self.code = code
+        self.message = message
+        self.detail = detail or {}
+
+
 def _is_external_adapter(adapter) -> bool:
     """判断适配器是否会把提示词发往**外部**服务。
 
@@ -116,6 +130,7 @@ class SkillExecutionService:
                                               service_id=customer_knowledge_service_id)
         self._sp20 = None  # SP-20 执行器（懒加载）
         self._sp21 = None  # SP-21 执行器（懒加载）
+        self._sp15 = None  # SP-15 执行器（懒加载，WP6-2 注册）
 
     # ---------------- 外部 Skill 包加载（SKILL.md + output-schema.md）----------------
 
@@ -155,6 +170,12 @@ class SkillExecutionService:
             SkillInfo("SP-20", "对公客户服务建议书生成", "1.0.0"),
             SkillInfo("SP-21", "交互记忆抽取", "1.0.0"),
         ]
+        # WP6-2：SP-15 产品适配与综合方案（三段式推荐）。SP-15 依赖工作区解析产品/规则
+        # 知识快照（productKnowledgeSnapshotRef / ruleBundleRef），故仅在有工作区（真实部署
+        # /集成测试经 create_app 注入 ws）时注册；无工作区的裸服务不列出（test_skills.py
+        # 既有 TestRegistry 断言依赖此行为，避免无知识上下文的空转注册）。
+        if self.workspace is not None:
+            base.append(SkillInfo("SP-15", "产品适配与综合方案", "2.0.0-candidate"))
         for name, p in self._packages.items():
             base.append(SkillInfo(name, p.get("name", name), p.get("version", "1.0.0")))
         return base
@@ -222,6 +243,14 @@ class SkillExecutionService:
             result = SkillExecuteResult(
                 request_id=request_id, status="ok", data=data,
                 assembly_trace=trace, model_calls=[model_call], skill_id=skill_id)
+        except SkillError as exc:
+            # SP-15 等契约码透传：errors[].code 使用执行器声明的 KERT_* 码（fail-closed）
+            trace.append({"phase": "compose", "status": "failed",
+                          "message": exc.message})
+            result = SkillExecuteResult(
+                request_id=request_id, status="skill_error",
+                errors=[{"code": exc.code, "message": exc.message}],
+                assembly_trace=trace, skill_id=skill_id)
         except Exception as exc:
             trace.append({"phase": "compose", "status": "failed",
                           "message": str(exc)})
@@ -476,6 +505,9 @@ class SkillExecutionService:
         if skill_id == "SP-21":
             # Phase 3：交互记忆抽取（LLM + 确定性比对；DKWS 不存记忆）
             return self._run_interaction_memory
+        if skill_id == "SP-15":
+            # WP6-2：产品适配与综合方案（三段式推荐，确定性流水线，无 LLM）
+            return self._run_sp15
         if skill_id in self._packages:
             if skill_id == "bank-front-supply-chain-graph":
                 # v1.3：供应链图谱从客户知识库构建（不依赖 GITS 传 markdown）
@@ -677,6 +709,35 @@ class SkillExecutionService:
         if self._sp21 is None:
             self._sp21 = InteractionMemoryExecutor()
         return self._sp21.execute(request, trace)
+
+    def _run_sp15(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
+        """SP-15 产品适配与综合方案（WP6-2）：接入三段式确定性流水线（无 LLM）。
+
+        WP6-1 的 :class:`Sp15SkillExecutor` 返回自包含结果对象（含 fail-closed 的
+        KERT_* 错误码），此处适配为 Skill 平台执行器契约 ``(data, model_call)``：
+        成功返回 ``{"skillId": "SP-15", "result": <ProductRecommendationResult>}``
+        （reportUrl 由 api/server.py 追加）；失败抛 :class:`SkillError` 携带 KERT_* 码。
+        """
+        from ..application.product_recommendation.sp15_skill import Sp15SkillExecutor
+
+        if self._sp15 is None:
+            self._sp15 = Sp15SkillExecutor()
+        res = self._sp15.execute(request)
+        # 把 SP-15 的步骤轨迹并入总装配轨迹（phase 加 sp15: 前缀，避免与主流程混淆）
+        for step in res.assembly_trace:
+            trace.append({
+                "phase": f"sp15:{step.get('phase', 'step')}",
+                "status": step.get("status", "ok"),
+                "message": step.get("message", ""),
+            })
+        if not res.ok:
+            err = (res.errors or [{}])[0]
+            code = err.get("code") or "KERT_INTERNAL_ERROR"
+            raise SkillError(code, err.get("message", "SP-15 执行失败（fail-closed）"),
+                             detail=err.get("detail"))
+        return {"skillId": "SP-15", "result": res.data}, {
+            "model": "library", "inputTokens": 0, "outputTokens": 0, "latencyMs": 0.0,
+        }
 
     def sp20_gate_checklist(self, customer_id: str = "") -> list[dict]:
         """GATE-BIZ-* 闸门清单资产（权威清单在 DKWS 资产，推进权威在 GITS）。"""
