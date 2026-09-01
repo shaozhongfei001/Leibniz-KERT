@@ -313,8 +313,8 @@ def test_product_loader_from_assets():
         assert p["owner"]
         assert p["source"]
         assert p["evidenceRefs"], f"{p['productId']} 缺少证据引用"
-    # 试点资产为 CANDIDATE，不得进入生产全集（INV-01）
-    assert all(p["status"] == "CANDIDATE" for p in products)
+    # OQ-02：试点资产已激活为 ACTIVE，进入生产推荐全集
+    assert all(p["status"] == "ACTIVE" for p in products)
 
 
 def test_rule_loader_missing_dir_error():

@@ -4,24 +4,41 @@ product_id: PROD-FIN-003
 name: 订单融资
 product_family: FINANCING
 product_family_name: 流动资金融资
-version: 1.0.0-candidate
-status: CANDIDATE
+version: 1.0.0
+status: ACTIVE
 effective_from: "2026-09-01T00:00:00+08:00"
 effective_to: null
 owner: 公司金融产品管理部
-reviewer: 待指定（公司金融产品 Owner 裁决，OQ-02）
-published_at: "2026-08-31T00:00:00+08:00"
-content_hash: "sha256:f24d57c847ad25bb5f45512de0455c3df12354292232ed766293165ccd451942"
+reviewer: 公司金融产品管理部（产品 Owner，OQ-02 批准）
+published_at: "2026-09-01T00:00:00+08:00"
+content_hash: "sha256:d511fc4c629fd99c56d377ad24778b528987fc6bbf4d65ca6a7570b3afb70241"
+institutions: [CN-HZ]
+prohibited_industries: [REAL_ESTATE, SECURITIES_INVESTMENT]
+prohibited_regions: []
+prohibited_uses: [EQUITY_INVESTMENT, SECURITIES_INVESTMENT, REAL_ESTATE_INVESTMENT, REPAY_OTHER_BANK_LOAN]
+prerequisite_product_ids: [SETTLEMENT_ACCOUNT]
+mutex_product_ids: []
+required_materials: [ORDER_CONTRACT, BUYER_CREDIT_MATERIAL, PROCUREMENT_PLAN, BUSINESS_LICENSE, FINANCIAL_STATEMENT]
+admission_criteria:
+  customerTypes: [GENERAL_LEGAL_PERSON]
+  minScale: SMALL
+  minRating: BBB
+  requiredAccountRelationship: SETTLEMENT_ACCOUNT
+capabilities: [ORDER_FINANCING, WORKING_CAPITAL]
+applicable_scenarios: [LARGE_ORDER_FULFILLMENT]
+risk_notes: [ORDER_AUTHENTICITY, BUYER_REJECTION]
+complementary_products: [SETTLEMENT_ACCOUNT, ORDER_RECEIVABLE_CLOSED_ACCOUNT]
 ---
 
 # 产品卡：订单融资（PROD-FIN-003）
 
 > 状态块：
-> - **CANDIDATE**
-> - **FROZEN=NO**
+> - **ACTIVE**
+> - **FROZEN=YES**
 > - **IMPLEMENTED=NO**
 >
-> 本卡为 WP2-1 试点产品资产样例；权威制度/条款号待 Owner 核定，源材料待上传，**未进入生产推荐全集**。
+> 本卡经 OQ-02 产品 Owner 批准自 CANDIDATE 激活为 ACTIVE（reviewer 已指定、EvidenceRef 已登记），
+> 进入生产推荐全集。权威制度/条款号仍待核定补齐；FROZEN=YES 表示版本内容冻结，后续修订须新建版本目录。
 
 ## 1. 产品概览与客户价值
 
@@ -91,4 +108,4 @@ content_hash: "sha256:f24d57c847ad25bb5f45512de0455c3df12354292232ed766293165ccd
 
 ## 12. 不可变版本语义
 
-本卡 `version=1.0.0-candidate`、`status=CANDIDATE`。正式发布成为 ACTIVE 版本（经 `PRODUCT_VERSION_ACTIVE` 规则判定）后内容不可变，只可退役；内容变更需新建版本目录，本卡文件不改写。
+本卡 `version=1.0.0`、`status=ACTIVE`（OQ-02 批准）。ACTIVE 版本内容不可变（FROZEN=YES），只可退役；内容变更需新建版本目录，本卡文件不改写。

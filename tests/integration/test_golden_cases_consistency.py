@@ -32,7 +32,8 @@ MANIFEST_PATH = RULES_DIR / "rule-bundle-manifest.md"
 README_PATH = RULES_DIR / "README.md"
 
 RESULT_CLOSED_SET = {"PASS", "FAIL", "UNKNOWN", "REVIEW_REQUIRED"}
-ELIGIBILITY_CLOSED_SET = {"ELIGIBLE", "INELIGIBLE", "UNKNOWN", "REVIEW_REQUIRED"}
+# D1 裁决：全集排除（fail-closed）以 EXCLUDED 表达（非资格结果，是全集解析阶段的受控排除标记）
+ELIGIBILITY_CLOSED_SET = {"ELIGIBLE", "INELIGIBLE", "UNKNOWN", "REVIEW_REQUIRED", "EXCLUDED"}
 
 
 def _load_golden() -> dict:
@@ -104,10 +105,10 @@ def test_golden_cases_cover_hard_fail_not_bypassable():
                and r["reasonCode"] == "FORBIDDEN_INDUSTRY"
                for r in c002["expected"]["ruleResults"])
 
-    # TC-PR-004：版本失效 → FAIL_CLOSED
+    # TC-PR-004：版本失效 → FAIL_CLOSED（D1：全集排除 → EXCLUDED）
     c004 = by_tc["TC-PR-004"]
     assert c004["expected"]["runStatus"] == "FAILED_CLOSED"
-    assert c004["expected"]["eligibility"] == "INELIGIBLE"
+    assert c004["expected"]["eligibility"] == "EXCLUDED"
     assert any(r["ruleId"] == "PR-VALID-001" and r["result"] == "FAIL"
                and r["reasonCode"] == "PRODUCT_VERSION_EXPIRED"
                for r in c004["expected"]["ruleResults"])

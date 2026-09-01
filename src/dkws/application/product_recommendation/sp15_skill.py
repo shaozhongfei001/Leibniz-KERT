@@ -149,6 +149,10 @@ def _default_assets_dir() -> Path:
     return _repo_root() / "examples" / "product-recommendation-assets"
 
 
+def _default_customer_facts_dir() -> Path:
+    return _repo_root() / "examples" / "product-recommendation-assets" / "03_core" / "customer-facts"
+
+
 def _parse_frontmatter(text: str) -> dict:
     m = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
     if not m:
@@ -373,14 +377,53 @@ class ProductKnowledgeLoader:
         return self.load_dir(assets_dir)
 
 
+class CustomerFactSnapshotLoader:
+    """从 customerFactSnapshotId 解析客户事实快照（best-effort）。
+
+    解析失败 / 文件缺失 → 返回空 facts（不 fail-closed；由下游硬约束规则
+    以 UNKNOWN/INSTITUTION_UNKNOWN 等受控表达事实缺失）。文件为 Markdown，
+    事实字段置于 front matter（见 customer-facts/CFS-*.md）。
+    """
+
+    def __init__(self, facts_dir: Path | None = None):
+        self.facts_dir = Path(facts_dir) if facts_dir else _default_customer_facts_dir()
+
+    def load_by_ref(self, snapshot_id) -> dict:
+        if not snapshot_id:
+            return {}
+        path = self.facts_dir / f"{snapshot_id}.md"
+        if not path.is_file():
+            return {}
+        fm = _parse_frontmatter(path.read_text(encoding="utf-8"))
+        return {k: v for k, v in (fm or {}).items() if not k.startswith("schema")}
+
+
 def parse_product_card_markdown(path: Path) -> dict:
-    """把 Markdown 产品卡（front matter + 正文）投影为结构化产品 dict（确定性）。"""
+    """把 Markdown 产品卡（front matter + 正文）投影为结构化产品 dict（确定性）。
+
+    除基本身份字段外，同时读取硬约束/匹配所需的结构化字段（OQ-02 激活后进入生产推荐全集）：
+    institutions / prohibitedIndustries / prohibitedRegions / prohibitedUses /
+    prerequisites / mutualExclusions / requiredMaterials / admissionCriteria /
+    capabilities / applicableScenarios / riskNotes / complementaryProducts。
+    缺失字段按空语义处理（不影响 vacuous PASS 之外的判定）。
+    """
     text = path.read_text(encoding="utf-8")
     fm = _parse_frontmatter(text)
     try:
         rel = path.resolve().relative_to(_repo_root())
     except ValueError:
         rel = path
+
+    def _lst(*keys) -> list[str]:
+        for k in keys:
+            v = fm.get(k)
+            if v is not None:
+                return _as_str_list(v)
+        return []
+
+    admission = fm.get("admission_criteria") or fm.get("admissionCriteria") or {}
+    if not isinstance(admission, dict):
+        admission = {}
     return {
         "productId": fm.get("product_id") or fm.get("productId") or path.stem,
         "productVersion": fm.get("version") or fm.get("product_version") or "",
@@ -395,6 +438,18 @@ def parse_product_card_markdown(path: Path) -> dict:
         "contentHash": fm.get("content_hash") or fm.get("contentHash"),
         "source": f"src://{rel}",
         "evidenceRefs": _extract_evidence_refs(text),
+        "institutions": _lst("institutions"),
+        "prohibitedIndustries": _lst("prohibited_industries", "prohibitedIndustries"),
+        "prohibitedRegions": _lst("prohibited_regions", "prohibitedRegions"),
+        "prohibitedUses": _lst("prohibited_uses", "prohibitedUses"),
+        "prerequisites": _lst("prerequisite_product_ids", "prerequisiteProductIds", "prerequisites"),
+        "mutualExclusions": _lst("mutex_product_ids", "mutexProductIds", "mutualExclusions"),
+        "requiredMaterials": _lst("required_materials", "requiredMaterials"),
+        "admissionCriteria": admission,
+        "capabilities": _lst("capabilities"),
+        "applicableScenarios": _lst("applicable_scenarios", "applicableScenarios", "scenarios"),
+        "riskNotes": _lst("risk_notes", "riskNotes"),
+        "complementaryProducts": _lst("complementary_products", "complementaryProducts"),
     }
 
 
@@ -808,6 +863,9 @@ class Sp15SkillExecutor:
             return None
 
         facts = _unwrap_facts(context.get("customerFactSnapshot") or context.get("facts"))
+        if not facts:
+            # OQ-02：无内联快照时按 customerFactSnapshotId 从客户事实目录解析（best-effort）
+            facts = CustomerFactSnapshotLoader().load_by_ref(context.get("customerFactSnapshotId"))
         claims = list(context.get("claims") or [])
         interactions = list(context.get("interactions") or [])
         need_version_ids = _as_str_list(context.get("needVersionIds"))
