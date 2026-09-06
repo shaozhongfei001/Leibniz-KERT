@@ -1,0 +1,127 @@
+{
+  "fragmentCount": 15,
+  "fragments": [
+    {
+      "contentSha256": "5765af50d58bd1d2aaf3dd066ea8866157fb9aec0e85a5b3a667940f6cada647",
+      "contentText": "**第一条** 为规范集团客户资金集中管理的风险识别、计量与控制，防范集团授信联动风险与资金混同风险，制定本政策。",
+      "fragmentId": "FRG-SRCCM003-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "b158ed57e4b7b3a5096cd3678241fc40b2ef93bc7b596d38367544f1e85534a2",
+      "contentText": "**第二条** 本政策适用于纳入 DEMO-BANK 现金池管理的集团客户及其成员单位。",
+      "fragmentId": "FRG-SRCCM003-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "e1cb2c9ba156d4eb46c4e246ce5f491a064dfdada51e53d71cb5cd1093ca0ca6",
+      "contentText": "**第三条** 申请资金集中管理的集团客户，应当提供集团股权结构图、合并财务报表及成员单位清单，并由本行完成集团客户关系认定。",
+      "fragmentId": "FRG-SRCCM003-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "e4ff4fd94830df92e26bf0ff7875770ff775dc3376e1d53cca2ed4978588cedd",
+      "contentText": "**第四条** 集团客户本部内部评级不低于 BBB 级；成员单位中评级低于 B 级的数量占比不得超过百分之三十。",
+      "fragmentId": "FRG-SRCCM003-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "36f5341d7b0bddedbf384d89e83ec74082998a397cecd67046abfc243b81e682",
+      "contentText": "**第五条** 集团客户应当在《现金管理业务管理办法（演示文本）》基础之上，先行完成现金池主账户开立，方可申请资金集中管理服务。",
+      "fragmentId": "FRG-SRCCM003-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "b1e6f605a112aaadff317f491682b7749e7aee428891c7f052fda44d5c75972d",
+      "contentText": "**第六条** 集团现金池主账户每日最低留存余额为人民币 100 万元，高于单一客户现金池标准，以覆盖集团层面的流动性缓冲需求。",
+      "fragmentId": "FRG-SRCCM003-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "e122946ad90f7822a916b08c30e97c92d8b0701cb65b19dc30434ff15644cc2d",
+      "contentText": "**第七条** 成员单位向主账户的归集频率不得超过每日一次，且归集指令应当保留完整审计轨迹。",
+      "fragmentId": "FRG-SRCCM003-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "7bb996c592b4670660d720bc1dde323b62bbd8051bc3dba03d40c66da8399092",
+      "contentText": "**第八条** 集团内部资金往来应当遵循真实交易背景原则，严禁以资金归集为名变相调剂授信资金用途。",
+      "fragmentId": "FRG-SRCCM003-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "086ad1d3a5c02463d3525986bf65fb6a71a990e4f236a2c64267ff0d1185196f",
+      "contentText": "**第九条** 集团客户资金集中管理应当与集团统一授信衔接，归集形成的资金占用纳入集团授信额度统一管理。",
+      "fragmentId": "FRG-SRCCM003-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "00b1f7bd337ce343273f0c0cc7f177cf45dbedeb25c6f1d2d667e09e31be3eaa",
+      "contentText": "**第十条** 成员单位之间的资金往来应当建立风险隔离安排，单一成员单位的违约不得直接触发其他成员单位的自动代偿。",
+      "fragmentId": "FRG-SRCCM003-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "bf0cde07506cc2bcb49f6b6498c693e1bee537f62c72fce95c17c5fca78b469a",
+      "contentText": "**第十一条** 集团客户出现重大信用风险事件的，本行有权暂停资金归集并要求成员单位账户独立管理。",
+      "fragmentId": "FRG-SRCCM003-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "7a60ac460f2aee9a0d7519ef790b2f4125ac3c3ff1fd5a2d02a4ba5556a8f4d9",
+      "contentText": "**第十二条** 集团客户资金集中管理应当符合《现金管理暂行条例》及人民币银行结算账户管理相关规定，落实客户身份识别与受益所有人识别要求。",
+      "fragmentId": "FRG-SRCCM003-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "865280a6205e471333775251110043a779e20a98dce14968f807fa89eb0c4041",
+      "contentText": "**第十三条** 涉及跨境资金集中管理的，还应当符合跨境人民币结算与外汇管理的相关规定，履行真实性审核与报送义务。",
+      "fragmentId": "FRG-SRCCM003-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "47365d377bc574b0c4c2b7782635eb21bec2046cc813437fa2e7b15978812dad",
+      "contentText": "**第十四条** 经办行应当按季度对集团客户资金集中管理情况开展风险排查，并形成书面报告报一级分行风险管理部。",
+      "fragmentId": "FRG-SRCCM003-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    },
+    {
+      "contentSha256": "8dae59fff324217e6a50f5a49c650e3e57b4c8e2ac365f35112151db07e81feb",
+      "contentText": "**第十五条** 本政策由 DEMO-BANK 风险管理部负责解释，自发布之日起施行。",
+      "fragmentId": "FRG-SRCCM003-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    }
+  ],
+  "sourceId": "SRC-CM-003",
+  "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+}
