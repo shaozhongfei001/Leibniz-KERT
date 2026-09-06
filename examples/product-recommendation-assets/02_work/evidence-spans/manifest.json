@@ -1,0 +1,11 @@
+{
+  "assertionCount": 14,
+  "bySource": {
+    "SRC-CM-001": 12,
+    "SRC-CM-002": 7,
+    "SRC-CM-003": 10
+  },
+  "evidenceCount": 29,
+  "extractionRunId": "RUN-20260906-9d34c845",
+  "generatedAt": "2026-09-06T12:00:00+08:00"
+}
