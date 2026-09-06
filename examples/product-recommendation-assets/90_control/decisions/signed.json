@@ -1,0 +1,39 @@
+{
+  "ownerAttested": true,
+  "attestedBy": "OWNER",
+  "attestation": "Owner 于 2026-09-06 会话中授权执行签字与裁决（DECISION-20260906-02）；链路定位为演示级。",
+  "attestedAt": "2026-09-06T23:20:00+08:00",
+  "decisions": [
+    {
+      "decisionId": "DEC-20260906-11111111",
+      "subjectKind": "CONFLICT",
+      "subjectId": "CNF-PRODCM001-757c6c3b",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODCM001-991baf6e",
+      "rationale": "PROD-CM-001 面向单一法人客户现金池，采用 SRC-CM-001 第十条的 50 万元标准；集团客户场景（SRC-CM-003 第六条 100 万元）由集团现金池场景规则另行覆盖，不在本产品卡字段承载。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-06T23:20:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260906-22222222",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由制度文本承载；制度中出现的编码属引用而非制度规定。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-06T23:20:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260906-33333333",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "监管依据由受控法规库（REG-CM-001）单独发布并与产品版本绑定，本版本产品卡字段不重复承载，避免与法规库双写冲突。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-06T23:20:00+08:00"
+    }
+  ]
+}

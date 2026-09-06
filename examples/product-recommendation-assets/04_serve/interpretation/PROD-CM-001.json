@@ -1,0 +1,142 @@
+{
+  "bundleHash": "8e99d77020851965c810a98e240cee73d71f1cf71991e759f10406f8923f8268",
+  "generatedAt": "2026-09-06T12:00:00+08:00",
+  "isStale": false,
+  "lifecycleState": "PUBLISHED",
+  "productId": "PROD-CM-001",
+  "provenanceState": "DEMO",
+  "purposeAllowed": {
+    "INTERPRETATION": true,
+    "RECOMMENDATION": false
+  },
+  "releaseId": "RLS-2026.09.06.1",
+  "sourceVersions": [
+    "SV-SRCCM001-20260906-5879e814",
+    "SV-SRCCM002-20260906-984fe6cd",
+    "SV-SRCCM003-20260906-b4599dd1"
+  ],
+  "staleReason": null,
+  "views": {
+    "ELIGIBILITY": [
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "eligibility.customerSegment",
+        "knowledgeState": "UNKNOWN"
+      },
+      {
+        "conflictId": "CNF-PRODCM001-757c6c3b",
+        "displayValue": "50 万元",
+        "evidenceSummaries": [
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM001-7d3f83e8",
+            "locatorHint": "第十条",
+            "quoteExcerpt": "现金池主账户每日最低留存余额为人民币 50 万元，成员账户最低留存余额为人民币 10 万元。",
+            "sourceId": "SRC-CM-001",
+            "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+          },
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM001-b92956e2",
+            "locatorHint": "第十一条",
+            "quoteExcerpt": "连续三十个自然日低于最低留存余额的，本行有权暂停资金自动归集功能，并通知客户补足。",
+            "sourceId": "SRC-CM-001",
+            "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+          },
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM001-b8dc5f5f",
+            "locatorHint": "第十二条",
+            "quoteExcerpt": "客户申请调整最低留存余额的，应当向开户行提交书面申请，由一级分行交易银行部审批。",
+            "sourceId": "SRC-CM-001",
+            "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+          },
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM003-4302d512",
+            "locatorHint": "第六条",
+            "quoteExcerpt": "集团现金池主账户每日最低留存余额为人民币 100 万元，高于单一客户现金池标准，以覆盖集团层面的流动性缓冲需求。",
+            "sourceId": "SRC-CM-003",
+            "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+          },
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM001-7d3f83e8",
+            "locatorHint": "第十条",
+            "quoteExcerpt": "现金池主账户每日最低留存余额为人民币 50 万元，成员账户最低留存余额为人民币 10 万元。",
+            "sourceId": "SRC-CM-001",
+            "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+          },
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM001-b8dc5f5f",
+            "locatorHint": "第十二条",
+            "quoteExcerpt": "客户申请调整最低留存余额的，应当向开户行提交书面申请，由一级分行交易银行部审批。",
+            "sourceId": "SRC-CM-001",
+            "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+          },
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM001-b92956e2",
+            "locatorHint": "第十一条",
+            "quoteExcerpt": "连续三十个自然日低于最低留存余额的，本行有权暂停资金自动归集功能，并通知客户补足。",
+            "sourceId": "SRC-CM-001",
+            "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+          },
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM003-4302d512",
+            "locatorHint": "第六条",
+            "quoteExcerpt": "集团现金池主账户每日最低留存余额为人民币 100 万元，高于单一客户现金池标准，以覆盖集团层面的流动性缓冲需求。",
+            "sourceId": "SRC-CM-003",
+            "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+          },
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM001-7d3f83e8",
+            "locatorHint": "第十条",
+            "quoteExcerpt": "现金池主账户每日最低留存余额为人民币 50 万元，成员账户最低留存余额为人民币 10 万元。",
+            "sourceId": "SRC-CM-001",
+            "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+          }
+        ],
+        "fieldPath": "eligibility.minAccountBalance",
+        "knowledgeState": "SUPPORTED"
+      },
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "eligibility.prerequisiteProducts",
+        "knowledgeState": "UNKNOWN"
+      }
+    ],
+    "OVERVIEW": [
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "identity.productCode",
+        "knowledgeState": "NOT_APPLICABLE"
+      },
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "compliance.regulatoryBasis",
+        "knowledgeState": "NOT_APPLICABLE"
+      }
+    ],
+    "PRICING": [
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "pricing.serviceFee",
+        "knowledgeState": "UNKNOWN"
+      }
+    ]
+  }
+}

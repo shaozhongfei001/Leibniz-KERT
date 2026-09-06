@@ -1,0 +1,12 @@
+{
+  "blockedAt": "2026-09-06T12:00:00+08:00",
+  "lifecycleState": "DRAFT",
+  "minimumRequest": [
+    "对冲突 CNF 的择定（decisionId / resolvedAssertionId / rationale）",
+    "对 UNKNOWN 的 REQUIRED_HARD 字段是否 NOT_APPLICABLE 的裁决",
+    "attestedBy（自然人 Owner 标识）与 ownerAttested=true"
+  ],
+  "reason": "缺少 Owner 签署的 ReviewDecision，Release 不得 PUBLISHED",
+  "releaseId": "RLS-2026.09.06.1",
+  "unblockCommand": "python3 tools/l13_publish_release.py --decisions 90_control/decisions/signed.json"
+}
