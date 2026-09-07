@@ -118,7 +118,11 @@ def main():
     a_hash = sha256_text("|".join(assertion_manifest))
     e_hash = sha256_text("|".join(evidence_manifest))
     c_hash = sha256_text(json.dumps(card, sort_keys=True, ensure_ascii=False))
-    r_hash = sha256_text("RULEPACKAGE:EMPTY")  # L13 未引入规则包，显式占位
+    rule_pkg = BASE / "04_serve" / "rule-packages" / f"{PRODUCT_ID}.rule-package.json"
+    # 规则包已依 ADR-PK-PRODUCT-RULES-ASSET 路径 A 建资产并落容器文件；
+    # 内容仍为 NOT_BUILT，哈希只代表容器，不代表规则已生效。
+    r_hash = (sha256_text(rule_pkg.read_text(encoding="utf-8"))
+              if rule_pkg.exists() else sha256_text("RULEPACKAGE:EMPTY"))
     bundle = sha256_text(a_hash + e_hash + c_hash + r_hash)
     quality_run = "QR-" + date_compact + "-" + sha256_text(bundle)[:8]
 
