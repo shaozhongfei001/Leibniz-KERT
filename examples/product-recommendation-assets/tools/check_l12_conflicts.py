@@ -110,6 +110,33 @@ def main():
                 check(f"{a['assertionId']} CONFLICT => supersedes 非空（INV-ASM-06）",
                       a.get("supersedes") is not None, str(a.get("supersedes")))
 
+    # ---- INV-ASM-09：SUPPORTED 保留 conflictId 时必须与裁决一致 ----
+    cnf_by_id = {c["conflictId"]: c
+                 for p in CNF_DIR.glob("*.conflicts.json")
+                 for c in load_json(p)["conflicts"]}
+    asm_all = [a for items in asm_by_field.values() for a in items]
+    for a in asm_all:
+        if a["knowledgeState"] != "SUPPORTED" or not a.get("conflictId"):
+            continue
+        aid = a["assertionId"]
+        c = cnf_by_id.get(a["conflictId"])
+        check(f"{aid} INV-ASM-09 冲突存在", c is not None, str(a["conflictId"]))
+        if not c:
+            continue
+        check(f"{aid} INV-ASM-09 冲突已 RESOLVED", c.get("status") == "RESOLVED",
+              str(c.get("status")))
+        check(f"{aid} INV-ASM-09 裁决 ID 与断言一致",
+              (c.get("resolution") or {}).get("decisionId") == a.get("reviewDecisionId"),
+              f"冲突 {((c.get('resolution') or {}).get('decisionId'))} vs "
+              f"断言 {a.get('reviewDecisionId')}")
+        # 采信证据 ∩ 被否决证据 = ∅
+        resolved_id = (c.get("resolution") or {}).get("resolvedAssertionId")
+        rejected = {e for x in asm_all
+                    if x["assertionId"] in c["assertionIds"] and x["assertionId"] != resolved_id
+                    for e in x["evidenceIds"]}
+        overlap = sorted(set(a["evidenceIds"]) & rejected)
+        check(f"{aid} INV-ASM-09 不得含被否决证据", not overlap, str(overlap))
+
     # ---- 体检报告 ----
     for p in sorted(RPT_DIR.glob("*.health.json")):
         d = load_json(p)
