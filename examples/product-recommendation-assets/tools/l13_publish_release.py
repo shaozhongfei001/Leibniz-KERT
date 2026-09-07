@@ -214,6 +214,21 @@ def main():
     for a in asm["assertions"]:
         asm_by_field.setdefault(a["fieldPath"], []).append(a)
 
+    # 当前有效断言（状态优先级取末端）：避免把历史/被取代断言的证据重复带出。
+    # F-L13-06：此前遍历该字段全部断言，导致 CONFLICT 与 SUPPORTED 的证据叠加，
+    # 9 条摘要实为 4 个去重 evidenceId。
+    STATE_ORDER = {"SUPPORTED": 5, "REVIEWED": 4, "NOT_APPLICABLE": 3,
+                   "CONFLICT": 2, "STALE": 2, "CANDIDATE": 1, "UNKNOWN": 0}
+
+    def _active(field):
+        items = asm_by_field.get(field, [])
+        if not items:
+            return None
+        superseded = {a.get("supersedes") for a in items if a.get("supersedes")}
+        alive = [a for a in items if a["assertionId"] not in superseded] or items
+        return sorted(alive, key=lambda a: (STATE_ORDER.get(a["knowledgeState"], 0),
+                                            a.get("createdAt", ""), a["assertionId"]))[-1]
+
     views = {}
     for view, fps in VIEW_FIELDS.items():
         items = []
@@ -235,22 +250,26 @@ def main():
                 elif val is not None:
                     display = str(val)
             summaries = []
+            active = _active(fp)
+            seen_eids = set()
             if state not in ("UNKNOWN", "CONFLICT", "STALE"):
-                for a in asm_by_field.get(fp, []):
-                    for eid in a["evidenceIds"]:
-                        ev = evs.get(eid)
-                        if not ev:
-                            continue
-                        loc = ev["locator"]
-                        hint = loc.get("clause") or f"p.{loc.get('page', '?')}"
-                        summaries.append({
-                            "evidenceId": ev["evidenceId"],
-                            "sourceId": ev["sourceId"],
-                            "sourceVersionId": ev["sourceVersionId"],
-                            "authorityLevel": ev["authorityLevel"],
-                            "locatorHint": hint,
-                            "quoteExcerpt": ev["quote"][:200],
-                        })
+                for eid in (active or {}).get("evidenceIds", []):
+                    if eid in seen_eids:
+                        continue
+                    seen_eids.add(eid)
+                    ev = evs.get(eid)
+                    if not ev:
+                        continue
+                    loc = ev["locator"]
+                    hint = loc.get("clause") or f"p.{loc.get('page', '?')}"
+                    summaries.append({
+                        "evidenceId": ev["evidenceId"],
+                        "sourceId": ev["sourceId"],
+                        "sourceVersionId": ev["sourceVersionId"],
+                        "authorityLevel": ev["authorityLevel"],
+                        "locatorHint": hint,
+                        "quoteExcerpt": ev["quote"][:200],
+                    })
             items.append({
                 "fieldPath": fp,
                 "displayValue": display,
