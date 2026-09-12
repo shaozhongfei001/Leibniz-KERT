@@ -100,7 +100,8 @@ class DeterministicLlmAdapter(LlmAdapter):
         except Exception:
             _log.debug("确定性适配器：提取客户标识失败，使用默认值", exc_info=True)
         t0 = time.monotonic()
-        data = self._sample(customer, user)
+        # system 一并传入：外部技能包需要从中读取该技能的 output-schema 以生成符合结构
+        data = self._sample(customer, user, system)
         return LlmResult(
             text=json.dumps(data, ensure_ascii=False),
             input_tokens=0, output_tokens=0,
@@ -108,7 +109,88 @@ class DeterministicLlmAdapter(LlmAdapter):
             model_id=self.model_id,
         )
 
-    def _sample(self, customer: str, user: str = "") -> dict:
+    @staticmethod
+    def _schema_keys_from_system(system: str) -> list[str]:
+        """从 system 提示的【输出 JSON 结构参考】中解析顶层键。
+
+        技能包的 output-schema.md 已由 _load_packages 抽取为 JSON 片段注入 system。
+        本方法将其解析为顶层键列表，供确定性适配器生成**符合该技能结构**的输出。
+        """
+        import re as _re
+        m = _re.search(r"【输出 JSON 结构参考】\n([\s\S]*?)(?:\n【|\Z)", system or "")
+        if not m:
+            return []
+        snippet = m.group(1).strip()
+        # 优先整体解析
+        try:
+            obj = json.loads(snippet)
+            if isinstance(obj, dict):
+                return list(obj.keys())
+        except Exception:
+            _log.debug("确定性适配器：schema 片段非完整 JSON，改用键名抽取", exc_info=True)
+        # 退路：抽取形如 "key": 的顶层键
+        keys = _re.findall(r'^\s{0,4}"([A-Za-z_][\w]*)"\s*:', snippet, _re.M)
+        out: list[str] = []
+        for k in keys:
+            if k not in out:
+                out.append(k)
+        return out
+
+    def _sample_package(self, customer: str, system: str) -> dict:
+        """技能包确定性输出：结构取自该技能自身 output-schema 的顶层键。
+
+        诚实性约束：本输出为**确定性占位**，无分析依据。
+        故在 warnings 中显式声明，避免被误读为真实分析结论。
+        """
+        keys = self._schema_keys_from_system(system)
+        if not keys:
+            # 无 schema 可用时不得臆造结构
+            return {
+                "schemaVersion": "deterministic/1.0",
+                "status": "SCHEMA_UNAVAILABLE",
+                "warnings": [
+                    "该技能包未提供可解析的 output-schema，确定性适配器不臆造输出结构。"
+                ],
+            }
+
+        # 该技能自身的 skillId（system 中含技能指令；取不到则留空）
+        skill_id = ""
+        m = __import__("re").search(r"【技能指令】[\s\S]{0,400}?"
+                                    r"(bank-front-[a-z-]+|skill-customer-[a-z-]+)", system or "")
+        if m:
+            skill_id = m.group(1)
+
+        out: dict = {}
+        for k in keys:
+            if k == "schemaVersion":
+                out[k] = "deterministic/1.0"
+            elif k == "skillId":
+                out[k] = skill_id or "unknown"
+            elif k in ("customerId", "entityId"):
+                out[k] = customer if customer != "示例客户" else "SIM-UNKNOWN"
+            elif k in ("generatedAt", "asOf"):
+                out[k] = time.strftime("%Y-%m-%d", time.gmtime())
+            elif k == "status":
+                out[k] = "DETERMINISTIC_PLACEHOLDER"
+            elif k == "warnings":
+                out[k] = [
+                    "确定性适配器输出：结构符合本技能 output-schema，"
+                    "但内容为占位，**不构成分析结论**，不得据此作业务判断。"
+                ]
+            elif k.endswith("s") or k.endswith("Refs") or k.endswith("Gaps"):
+                out[k] = []          # 集合类：空集合，并在 warnings 中声明
+            else:
+                out[k] = {}          # 结构化字段：空对象占位
+        if "warnings" in out:
+            out["warnings"].append(
+                "集合字段为空表示『确定性适配器未生成条目』，不代表『无此事项』。"
+            )
+        return out
+
+    def _sample(self, customer: str, user: str = "", system: str = "") -> dict:
+        # 外部技能包：按该技能自身的 output-schema 生成符合结构的确定性输出
+        if self.kind.startswith("pkg:"):
+            return self._sample_package(customer, system)
         if self.kind == "memory":
             try:
                 payload = json.loads(user)

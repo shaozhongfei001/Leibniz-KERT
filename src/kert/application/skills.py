@@ -161,14 +161,27 @@ class SkillExecutionService:
             # output-schema 提取 JSON 示例（生成约束）
             schema_md = skill_dir / "references" / "output-schema.md"
             schema_hint = ""
+            schema_keys: list = []
             if schema_md.is_file():
                 m = _re.search(r"```json\n([\s\S]*?)\n```", schema_md.read_text(encoding="utf-8"))
                 if m:
-                    schema_hint = m.group(1)[:2000]
+                    snippet = m.group(1)[:2000]
+                    schema_hint = snippet
+                    # 抽取该技能 output-schema 的**顶层必含键**，
+                    # 用于执行后结构校验（fail-closed）。
+                    try:
+                        import json as _json
+                        _obj = _json.loads(m.group(1))
+                        if isinstance(_obj, dict):
+                            schema_keys = list(_obj.keys())
+                    except Exception:
+                        _keys = _re.findall(r'^\s{0,4}"([A-Za-z_]\w*)"\s*:', snippet, _re.M)
+                        schema_keys = list(dict.fromkeys(_keys))
             self._packages[name] = {
                 "name": name, "version": version, "description": description,
                 "instruction": (body or "")[:3000],
                 "schema_hint": schema_hint,
+                "schema_keys": schema_keys,
             }
 
     # ---------------- 注册表 ----------------
@@ -538,12 +551,26 @@ class SkillExecutionService:
                     + (f"【输出 JSON 结构参考】\n{schema_hint}\n" if schema_hint else "")
                 )
                 user = json.dumps(request.get("input", request), ensure_ascii=False)
-                text, model_call = self._call_model("generic", system, user, trace)
+                # 传入技能专属 kind，使适配器按**该技能自身**的 output-schema 生成输出
+                text, model_call = self._call_model(f"pkg:{skill_id}", system, user, trace)
                 data = self._parse_json(text)
                 if not data:
                     trace.append({"phase": "parse", "status": "failed",
                                   "message": "输出结构校验失败"})
                     raise ValueError("输出结构校验失败（fail-closed）")
+
+                # 结构契约校验（fail-closed）：
+                # 输出必须包含该技能 output-schema 声明的顶层键。
+                # 校验缺失即拒绝返回，避免"调用成功但不符合自身语义契约"的输出流出。
+                expected = pkg.get("schema_keys") or []
+                missing = [k for k in expected if k not in data]
+                if missing:
+                    trace.append({"phase": "schema", "status": "failed",
+                                  "message": f"输出缺少 schema 顶层键: {missing}"})
+                    raise ValueError(
+                        f"输出结构不符合 {skill_id} 的 output-schema（缺 {missing}）；"
+                        "fail-closed 拒绝返回。")
+
                 return {"skillId": skill_id, "result": data}, model_call
 
             return run_pkg
