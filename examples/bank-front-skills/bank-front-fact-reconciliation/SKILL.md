@@ -58,7 +58,7 @@ usage_scope: "仅云端使用"
    - **逻辑矛盾**：如"用电量上升 30% 但营收下降 20%"；
    - **信号背离**：如代发薪持续下滑但结算量大幅上升；
    - **数据异常**：如授信使用率超过合理区间、结算量环比剧烈波动。
-5. **生成冲突清单**：逐项列出冲突项、涉及数据源、触发规则编号（RUL-FRONT-001-xxx），并给出建议的核实问题。
+5. **生成冲突清单**：逐项列出冲突实例标识（`id`）、冲突项、涉及数据源、**具体**触发规则编号（如 RUL-FRONT-001-003；**禁占位符**），并给出建议的核实问题。
 6. **标注数据缺口**：显式列出缺失指标（如授信使用率/代发薪/结算量/用电量等）的数据缺口清单，不得仅列可得指标。
 7. **生成输出**：按 references/output-schema.md 组装指标列表 + 冲突清单 + 数据缺口清单。
 8. **自检与交付**：对照"交付标准"checklist 自检，通过后交付访前报告组装（SK-FRONT-001）或直接交付客户经理。
@@ -83,7 +83,7 @@ usage_scope: "仅云端使用"
 | 信号背离 | 代发薪持续下滑但结算量大幅上升 | 列为冲突，提示用工与资金活跃度背离 |
 | 数据异常 | 授信使用率 > 100% 或结算量环比剧烈波动 | 列为异常，建议核实数据口径 |
 
-每条冲突标注规则编号（RUL-FRONT-001-xxx），便于追溯。
+每条冲突标注**具体**规则编号（如 RUL-FRONT-001-003）与冲突实例标识（`id`），便于追溯；**禁止使用 `xxx` 占位符**。
 
 ### 5.3 显性呈现原则
 
@@ -97,7 +97,7 @@ usage_scope: "仅云端使用"
 
 ## 输出要求
 
-输出遵循 ```references/output-schema.md```：指标列表（含数值、口径、数据时点、来源）+ 冲突清单（冲突项、涉及数据源、规则编号、核实问题）+ 数据缺口清单（缺失指标显式列出）。
+输出遵循 ```references/output-schema.md```：**执行状态** + 指标列表（含数值、口径、数据时点、来源）+ 冲突清单（冲突实例标识、涉及数据源、规则编号、核实问题）+ 数据缺口清单（缺失指标显式列出）。
 
 输出模板：
 
@@ -106,7 +106,11 @@ usage_scope: "仅云端使用"
   "schemaVersion": "1.0",
   "skillId": "SK-FRONT-004",
   "customerId": "<customerId>",
+  "taskId": "<本次任务标识>",
+  "asOf": "<数据截止时点，ISO-8601>",
   "generatedAt": "<ISO-8601>",
+  "executionStatus": "SUCCESS | PARTIAL | NOT_RUN | FAILED",
+  "executionStatusReason": "<非 SUCCESS 时必填>",
   "indicators": [
     {
       "elementId": "KE-FRONT-003-01",
@@ -121,8 +125,9 @@ usage_scope: "仅云端使用"
   ],
   "conflicts": [
     {
+      "id": "CFL-001",
       "issue": "<冲突描述，如：用电量同比+30%，但近半年营收同比-5%>",
-      "ruleId": "RUL-FRONT-001-xxx",
+      "ruleId": "RUL-FRONT-001-003",
       "involvedSources": ["<数据源1>", "<数据源2>"],
       "suggestion": "<建议的核实问题>"
     }
@@ -133,6 +138,14 @@ usage_scope: "仅云端使用"
   "warnings": []
 }
 ```
+
+> **`executionStatus` 是本技能的关键结论字段**：
+> 它声明"本次对账到底查到了什么程度"。
+> **`NOT_RUN` 的含义是"没查"，不得用于"查了没发现"** ——
+> 「查了且无冲突」应记 `SUCCESS` 且 `conflicts: []`；「没查」必须记 `NOT_RUN`。
+> 下游 KYC 缺口核验（SK-FRONT-006）据此判定其 `coverageStatus`，
+> **二者混同会导致下游把"没查"输出成"无缺口"**。
+> 取值定义见 [references/output-schema.md](references/output-schema.md)。
 
 ## 风险与边界
 
@@ -150,9 +163,13 @@ usage_scope: "仅云端使用"
 
 ## 交付标准
 
+- [ ] **`executionStatus` 已如实标注**（必填）；非 `SUCCESS` 时 `executionStatusReason` 已填写。
+- [ ] **`executionStatus` 未误用**：`indicators` 为空或全为 `missing` 时**未**标 `SUCCESS`（须为 `NOT_RUN`）。
+- [ ] `taskId` 与 `asOf` 已填写；`generatedAt` / `asOf` 为合法 ISO-8601。
 - [ ] 五类指标（营收/授信使用率/用电量/代发薪/结算量）均有条目，缺失指标在 ```dataGaps``` 显式列出。
 - [ ] 每条指标标注数值、口径、数据时点、来源与状态（verified/pending/missing）。
-- [ ] 冲突清单逐项含冲突描述、规则编号（RUL-FRONT-001-xxx）、涉及数据源、核实问题。
+- [ ] 冲突清单逐项含 **`id`**、冲突描述、**具体规则编号**（如 RUL-FRONT-001-003）、涉及数据源、核实问题。
+- [ ] **`ruleId` 无占位符**：不含 `xxx`、不为空（占位符使下游无法追溯）。
 - [ ] 冲突、异常、数据缺口未被删除或弱化。
 - [ ] 未经确认数据全部标注"待核实"，用电量标注"需客户授权"。
 - [ ] 输出符合 references/output-schema.md 结构。

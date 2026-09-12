@@ -46,12 +46,17 @@ usage_scope: "仅云端使用"
 ## 何时不要使用
 
 - 无触发源（无事实对账冲突、无行业信号、无 KYC 要素缺失）时：输出"无缺口"占位，不强行制造缺口。
+  **但此时仍须如实标注 `coverageStatus`** ——
+  若因**上游未执行**而无触发源 → `NOT_RUN`（**"无从判断"，不是"无缺口"**）；
+  若因**覆盖不完整**而无触发源 → `PARTIAL`。
+  **不得**一律标 `SUCCESS`。
 - 仅需查询客户 KYC 档案（不缺信息）时。
 - 需要出具正式 KYC 合规结论时（本技能输出为访前核验准备，最终结论以合规确认为准）。
 
 ## 默认工作流
 
-1. **确认输入**：校验 ```customerId```（必填）与 ```conflicts```（事实对账冲突清单，可选但强烈建议）。
+1. **确认输入**：校验 ```customerId```（必填）、```conflicts```（事实对账冲突清单，可选但强烈建议）
+   与 ```upstreamStatus```（上游执行状态，可选但强烈建议 —— 用于区分"没查"与"查了没发现"）。
 2. **对照 KYC 要素清单核验（KI-RULE-001）**：按 KYC 核验制度（客户身份识别、受益所有人、风险等级划分等，源自 SRC-KYC-001 KYC问题库）核验已得数据，识别缺失/存疑要素。
 3. **缺口识别（T-LLM-001）**：基于触发源（事实对账冲突原文 / 行业信号）识别信息缺口，生成**缺口描述**（KE-FRONT-005-01）：精准、具体、可回答，避免泛泛提问；如"扩产项目的资金来源是否已通过股东注资解决？"。
 4. **优先级排序（RUL-FRONT-002）**：按三类优先级规则标注处理优先级：
@@ -70,7 +75,7 @@ usage_scope: "仅云端使用"
 | 要素 | 内容 | 类型 |
 | --- | --- | --- |
 | KE-FRONT-005-01 | 缺口描述：精准、具体、可回答的待核实问题清单 | 规则（K-Type-R） |
-| KE-FRONT-005-02 | 触发源：引用事实对账冲突/异常项原文，关联规则编号（RUL-FRONT-001-xxx） | 事实（K-Type-F） |
+| KE-FRONT-005-02 | 触发源：引用事实对账冲突/异常项原文，关联**具体**规则编号（如 RUL-FRONT-001-003） | 事实（K-Type-F） |
 | KE-FRONT-005-03 | 核实话术：引用事实依据 + 具体提问内容 + 核实目标 | 流程（K-Type-P） |
 | KE-FRONT-005-04 | 核实目标及行动计划：核实目标 + 核实时机 + 核实路径 | 流程（K-Type-P） |
 
@@ -90,7 +95,10 @@ usage_scope: "仅云端使用"
 
 ## 输入要求
 
-输入遵循 ```references/input-schema.md```，最低可用输入为 ```customerId```；```conflicts```（事实对账冲突清单）为建议输入，提供后可显著提升缺口识别的针对性。示例见 ```assets/example-input.json```，模拟输入见 ```references/mock-input-data.json```。
+输入遵循 ```references/input-schema.md```，最低可用输入为 ```customerId```；```conflicts```（事实对账冲突清单）与 **```upstreamStatus```**（上游执行状态）为建议输入，提供后可显著提升缺口识别的针对性，**并使"没查"与"查了没发现"可区分**。示例见 ```assets/example-input.json```，模拟输入见 ```references/mock-input-data.json```。
+
+> **```upstreamStatus``` 由上游 `SK-FRONT-004` 输出中的 `executionStatus` 直接传入，不得改写。**
+> 它是本技能判定 `coverageStatus` 的关键依据：缺省时须按"上游状态未知"处理。
 
 ## 输出要求
 
@@ -104,11 +112,14 @@ usage_scope: "仅云端使用"
   "skillId": "SK-FRONT-006",
   "customerId": "<customerId>",
   "generatedAt": "<ISO-8601>",
+  "coverageStatus": "SUCCESS | PARTIAL | NOT_RUN | FAILED",
+  "coverageStatusReason": "<coverageStatus 非 SUCCESS 时必填；说明原因>",
   "kycGaps": [
     {
       "gapId": "KG-001",
       "description": "<精准、可回答的缺口描述>",
-      "trigger": "<触发源原文，关联 RUL-FRONT-001-xxx>",
+      "trigger": "<触发源原文，关联 RUL-FRONT-001-003>",
+      "status": "OPEN | PENDING | CLOSED",
       "priority": "high | medium | general",
       "priorityCategory": "资金安全 | 合规风险 | 经营决策",
       "verifyScript": {
@@ -127,28 +138,51 @@ usage_scope: "仅云端使用"
 }
 ```
 
+> **`coverageStatus` 是本技能最重要的结论字段之一**：
+> 它声明"本次识别在多大程度上可以代表实际缺口情况"。
+> **「没查」与「查了且没有缺口」在结论层必须可区分** ——
+> 二者都可能 `kycGaps: []`，但前者**不得**被读作"无缺口"。
+> **禁止**把该区分只写在 `warnings` 里（`warnings` 是自由文本，不构成结论）。
+> 取值定义见 [references/output-schema.md](references/output-schema.md)。
+
 ## 风险与边界
 
 - **免责声明**：本技能输出为访前 KYC 核验准备，不构成正式 KYC 合规结论；最终以行内合规确认为准。
 - **禁止行为**：禁止无触发源强行制造缺口；禁止生成泛泛、不可回答的缺口描述；禁止删除优先级标注。
-- **待核验标注**：触发源引用必须关联规则编号（RUL-FRONT-001-xxx）便于审计追溯；未经确认信息标注"待核验"。
+- **禁止行为（覆盖状态）**：
+  - 禁止在上游未执行（`upstreamStatus ∈ {NOT_RUN, FAILED}`）时把 `coverageStatus` 标为 `SUCCESS`；
+  - 禁止把"没查"的结论伪装成"无缺口"——`coverageStatus` 是结论字段，必须如实承载该区分；
+  - **禁止把该区分只写在 `warnings` 里**（`warnings` 是自由文本，不构成结论，下游与审计方都不会读它作结论）；
+  - 禁止在无核实证据时把缺口 `status` 标为 `CLOSED`。
+- **待核验标注**：触发源引用必须关联**具体**规则编号（如 RUL-FRONT-001-003）便于审计追溯；未经确认信息标注"待核验"。
 - **合规边界**：KYC 信息处理须遵守反洗钱与客户信息保护规定。
 
 ## 信息不足时的处理
 
 - 无 ```customerId```：请求补充客户编号或客户名称；无法提供则终止。
-- 无 ```conflicts``` 触发源：按行业信号 / KYC 要素缺失识别缺口；仍无触发源则输出"无缺口"占位。
-- KYC 要素无法核验：缺口标注"待核验"，核实路径给出补数动作。
-- 数据不足无法识别缺口：输出说明 + 建议补充数据源。
+- **无 ```upstreamStatus```**：**不得**假定上游已执行。按"上游状态未知"处理，
+  输出 `coverageStatus = "PARTIAL"`（而非 `SUCCESS`）。
+- **```upstreamStatus ∈ {NOT_RUN, FAILED}```**：上游事实对账未执行/失败 →
+  **本技能无从判断是否存在缺口** → 输出 `coverageStatus = "NOT_RUN"`，
+  `kycGaps` 可为空，**但须在 `coverageStatusReason` 写明确切原因**。
+  **不得**因 `kycGaps` 为空而暗示"无缺口"。
+- 无 ```conflicts``` 触发源：按行业信号 / KYC 要素缺失识别缺口；
+  仍无触发源则输出"无缺口"占位，**且 `coverageStatus` 不得标为 `SUCCESS`**。
+- KYC 要素无法核验：缺口标 `status = "PENDING"`（或 `OPEN`），核实路径给出补数动作。
+  **未经证据支撑的假设不得标 `CLOSED`。**
+- 数据不足无法识别缺口：输出说明 + 建议补充数据源，`coverageStatus` 标 `PARTIAL`。
 
 ## 交付标准
 
+- [ ] **`coverageStatus` 已如实标注**（必填）；非 `SUCCESS` 时 `coverageStatusReason` 已填写。
+- [ ] **`coverageStatus` 未在上游未执行时误标为 `SUCCESS`**（上游 `upstreamStatus ∈ {NOT_RUN, FAILED}` → 本技能须标 `NOT_RUN`）。
 - [ ] 每个缺口含精准、可回答的缺口描述（非泛泛提问）。
-- [ ] 每个缺口含触发源引用（关联规则编号 RUL-FRONT-001-xxx，可追溯）。
+- [ ] 每个缺口含触发源引用（关联具体规则编号 RUL-FRONT-001-003，可追溯）。
+- [ ] 每个缺口含 `status`（OPEN/PENDING/CLOSED）；未获证据支撑的假设**未**标 `CLOSED`。
 - [ ] 每个缺口按 RUL-FRONT-002 标注优先级（高/中/一般）与优先级类别（资金安全/合规风险/经营决策）。
 - [ ] 每个缺口含核实话术（事实依据 + 提问内容 + 核实目标）。
 - [ ] 每个缺口含核实行动计划（目标 + 时机 + 路径）。
-- [ ] 无触发源时不强行制造缺口。
+- [ ] 无触发源时不强行制造缺口，**且 `coverageStatus` 已据此如实降级**。
 - [ ] 输出符合 references/output-schema.md 结构。
 
 ## 参考资料与模板
