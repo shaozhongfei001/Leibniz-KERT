@@ -6,8 +6,8 @@ import sqlite3
 
 import pytest
 
-from dkws.domain.errors import ConflictError, IdempotencyConflictError
-from dkws.infrastructure.runtime_store import (
+from kert.domain.errors import ConflictError, IdempotencyConflictError
+from kert.infrastructure.runtime_store import (
     MIGRATIONS,
     SCHEMA_VERSION,
     RuntimeStore,

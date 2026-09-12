@@ -6,17 +6,17 @@ import re
 
 import pytest
 
-from dkws.application.ingest import Ingestor
-from dkws.application.parse_doc import (
+from kert.application.ingest import Ingestor
+from kert.application.parse_doc import (
     DocumentParserService,
     chunk_document,
     document_id_for,
     segment_id_for,
 )
-from dkws.domain import hashing
-from dkws.domain.contracts import specs
-from dkws.domain.contracts.base import validate_contract
-from dkws.infrastructure.adapters.base import Page, ParsedDocument
+from kert.domain import hashing
+from kert.domain.contracts import specs
+from kert.domain.contracts.base import validate_contract
+from kert.infrastructure.adapters.base import Page, ParsedDocument
 
 
 @pytest.fixture

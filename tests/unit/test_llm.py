@@ -6,8 +6,8 @@ import json
 
 import pytest
 
-from dkws.domain.errors import UsageError
-from dkws.infrastructure.adapters.llm import (
+from kert.domain.errors import UsageError
+from kert.infrastructure.adapters.llm import (
     DeterministicLlmAdapter,
     LlmResult,
     OpenAiCompatibleLlmAdapter,
@@ -126,22 +126,22 @@ class TestOpenAiCompatibleLlmAdapter:
 
 class TestCreateLlmAdapter:
     def test_no_env_returns_deterministic(self, monkeypatch):
-        monkeypatch.delenv("DKWS_LLM_BASE_URL", raising=False)
-        monkeypatch.delenv("DKWS_LLM_API_KEY", raising=False)
-        monkeypatch.delenv("DKWS_LLM_MODEL", raising=False)
+        monkeypatch.delenv("KERT_LLM_BASE_URL", raising=False)
+        monkeypatch.delenv("KERT_LLM_API_KEY", raising=False)
+        monkeypatch.delenv("KERT_LLM_MODEL", raising=False)
         a = create_llm_adapter("memory")
         assert isinstance(a, DeterministicLlmAdapter)
 
     def test_with_env_returns_openai(self, monkeypatch):
-        monkeypatch.setenv("DKWS_LLM_BASE_URL", "http://api.test.com")
-        monkeypatch.setenv("DKWS_LLM_API_KEY", "key123")
-        monkeypatch.setenv("DKWS_LLM_MODEL", "gpt-4")
+        monkeypatch.setenv("KERT_LLM_BASE_URL", "http://api.test.com")
+        monkeypatch.setenv("KERT_LLM_API_KEY", "key123")
+        monkeypatch.setenv("KERT_LLM_MODEL", "gpt-4")
         a = create_llm_adapter("memory")
         assert isinstance(a, OpenAiCompatibleLlmAdapter)
 
     def test_partial_env_returns_deterministic(self, monkeypatch):
-        monkeypatch.setenv("DKWS_LLM_BASE_URL", "http://api.test.com")
-        monkeypatch.delenv("DKWS_LLM_API_KEY", raising=False)
-        monkeypatch.delenv("DKWS_LLM_MODEL", raising=False)
+        monkeypatch.setenv("KERT_LLM_BASE_URL", "http://api.test.com")
+        monkeypatch.delenv("KERT_LLM_API_KEY", raising=False)
+        monkeypatch.delenv("KERT_LLM_MODEL", raising=False)
         a = create_llm_adapter("memory")
         assert isinstance(a, DeterministicLlmAdapter)

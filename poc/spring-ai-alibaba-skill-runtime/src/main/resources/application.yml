@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: dkws-skill-runtime-poc
+    name: kert-skill-runtime-poc
   ai:
     openai:
       base-url: "${DEEPSEEK_BASE_URL:https://api.deepseek.com}"
@@ -15,7 +15,7 @@ spring:
 
 skill-runtime:
   user-skills-dir: ./user-skills
-  internal-token: "${DKWS_INTERNAL_TOKEN:poc-internal-token}"
+  internal-token: "${KERT_INTERNAL_TOKEN:poc-internal-token}"
   max-skill-zip-size: 20MB
   max-skill-files: 200
   sandbox:

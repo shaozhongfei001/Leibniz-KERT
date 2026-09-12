@@ -14,13 +14,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from dkws.application.product_recommendation.eligibility import (
+from kert.application.product_recommendation.eligibility import (
     KERT_CONTEXT_INSUFFICIENT,
     KERT_PERMISSION_DENIED,
     KERT_PRODUCT_KNOWLEDGE_STALE,
     KERT_RULE_VERSION_MISSING,
 )
-from dkws.application.product_recommendation.sp15_skill import (
+from kert.application.product_recommendation.sp15_skill import (
     CONTENT_HASH_PREFIX,
     RESULT_REQUIRED_FIELDS,
     SKILL_ID,

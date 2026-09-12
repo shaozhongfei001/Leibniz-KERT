@@ -23,12 +23,12 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.application.product_recommendation.eligibility import (
+from kert.application.product_recommendation.eligibility import (
     HardEligibilityRuleExecutor,
     ProductUniverseResolver,
     eligible_for_fit,
 )
-from dkws.application.product_recommendation.matcher import (
+from kert.application.product_recommendation.matcher import (
     DIMENSION_CLOSED_SET,
     DIMENSION_RESULT_CLOSED_SET,
     NEED_STATUS_CLOSED_SET,
@@ -38,7 +38,7 @@ from dkws.application.product_recommendation.matcher import (
     NeedCapabilityMatcher,
     Reason,
 )
-from dkws.application.product_recommendation.ranker import (
+from kert.application.product_recommendation.ranker import (
     DEFAULT_WEIGHTS,
     CandidateRanker,
 )

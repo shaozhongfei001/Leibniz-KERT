@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://dkws.local/contracts/schemas/sp21.schema.json",
+  "$id": "https://kert.local/contracts/schemas/sp21.schema.json",
   "title": "InteractionMemoryResult",
   "type": "object",
   "required": [

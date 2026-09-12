@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# poll_job.sh — 轮询 DKWS 异步 Job 状态
+# poll_job.sh — 轮询 KERT 异步 Job 状态
 #
 # 用法：
 #   ./poll_job.sh JOB_ID [BASE_URL] [INTERVAL_SEC] [TIMEOUT_SEC]
@@ -9,7 +9,7 @@
 #   ./poll_job.sh JOB-SKILL-20260828-001 http://192.168.1.100:8106 5 300
 #
 # 环境变量：
-#   DKWS_API_KEY — API Key（可选）
+#   KERT_API_KEY — API Key（可选）
 
 set -euo pipefail
 
@@ -17,7 +17,7 @@ JOB_ID="${1:?Usage: $0 JOB_ID [BASE_URL] [INTERVAL_SEC] [TIMEOUT_SEC]}"
 BASE_URL="${2:-http://127.0.0.1:8106}"
 INTERVAL="${3:-3}"
 TIMEOUT="${4:-180}"
-API_KEY="${DKWS_API_KEY:-}"
+API_KEY="${KERT_API_KEY:-}"
 
 HEADERS=(-H "Accept: application/json")
 if [[ -n "$API_KEY" ]]; then

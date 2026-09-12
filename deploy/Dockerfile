@@ -1,11 +1,11 @@
-# DKWS Python Core 容器镜像（M2.7）
+# KERT Python Core 容器镜像（M2.7）
 #
 # 设计要点：
 # - 多阶段构建：builder 装依赖，runtime 只带运行所需，缩小攻击面与体积
 # - 非 root 运行：容器逃逸后权限受限
 # - 不含凭据：API Key 一律经环境变量或挂载的配置文件注入，绝不 COPY 进镜像
 # - 工作区经 volume 挂载：知识资产是权威源，不应随镜像不可变化
-# - TLS 由外层网关终止（见 DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS §2）
+# - TLS 由外层网关终止（见 KERT_HYBRID_DEPLOYMENT_AND_OPERATIONS §2）
 
 # ---------- builder ----------
 FROM python:3.12-slim AS builder
@@ -30,28 +30,28 @@ FROM python:3.12-slim AS runtime
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/* \
-    && groupadd --gid 10001 dkws \
-    && useradd --uid 10001 --gid dkws --create-home --shell /usr/sbin/nologin dkws
+    && groupadd --gid 10001 kert \
+    && useradd --uid 10001 --gid kert --create-home --shell /usr/sbin/nologin kert
 
 COPY --from=builder /opt/venv /opt/venv
-COPY --chown=dkws:dkws src /app/src
-COPY --chown=dkws:dkws scripts /app/scripts
-COPY --chown=dkws:dkws skills /app/skills
+COPY --chown=kert:kert src /app/src
+COPY --chown=kert:kert scripts /app/scripts
+COPY --chown=kert:kert skills /app/skills
 
 ENV PATH="/opt/venv/bin:$PATH" \
     PYTHONPATH=/app/src \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    DKWS_PROFILE=prod \
-    DKWS_BIND_HOST=0.0.0.0 \
-    DKWS_WORKSPACE=/data/workspace
+    KERT_PROFILE=prod \
+    KERT_BIND_HOST=0.0.0.0 \
+    KERT_WORKSPACE=/data/workspace
 
 # 工作区与备份挂载点，属主为运行用户
 RUN mkdir -p /data/workspace /data/backups \
-    && chown -R dkws:dkws /data
+    && chown -R kert:kert /data
 
 WORKDIR /app
-USER dkws
+USER kert
 EXPOSE 8106
 
 # 就绪探针用 /readyz：未就绪返回 503，容器编排据此摘除流量而不重启

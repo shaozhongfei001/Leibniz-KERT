@@ -1,8 +1,8 @@
-# DKWS API 参考文档
+# KERT API 参考文档
 
-> 版本：0.1.0 | 源码：`src/dkws/api/server.py`、`src/dkws/cli/main.py`
+> 版本：0.1.0 | 源码：`src/kert/api/server.py`、`src/kert/cli/main.py`
 
-本文档列出 DKWS 平台所有 HTTP API 端点和 CLI 命令，按功能分组。
+本文档列出 KERT 平台所有 HTTP API 端点和 CLI 命令，按功能分组。
 
 ---
 
@@ -57,13 +57,13 @@ HTTP API 基于 FastAPI 实现，为 CLI 的可选薄层。启动方式：
 
 #### `GET /readyz`
 
-就绪探针（Kubernetes 兼容），匿名可访问。当 `DKWS_READINESS_REQUIRE_STORE=true`（默认）时，Runtime Store 可连接性作为硬性就绪条件。
+就绪探针（Kubernetes 兼容），匿名可访问。当 `KERT_READINESS_REQUIRE_STORE=true`（默认）时，Runtime Store 可连接性作为硬性就绪条件。
 
 **响应**：`200 OK` | `503 Service Unavailable`
 
 #### `GET /metrics`
 
-Prometheus 格式指标（需配置 `DKWS_METRICS_ENABLED=true`）。默认不要求 admin 作用域，生产建议开启 `DKWS_METRICS_REQUIRE_ADMIN=true`。
+Prometheus 格式指标（需配置 `KERT_METRICS_ENABLED=true`）。默认不要求 admin 作用域，生产建议开启 `KERT_METRICS_REQUIRE_ADMIN=true`。
 
 #### `GET /v1/catalog`
 
@@ -383,16 +383,16 @@ Skill 平台健康检查，匿名可访问。返回已注册 Skill 列表。
 
 ## CLI 命令
 
-CLI 为强制接口，通过 `dkws` 命令调用。所有命令均需 `--workspace W` 指定工作区路径。
+CLI 为强制接口，通过 `kert` 命令调用。所有命令均需 `--workspace W` 指定工作区路径。
 
 ### 工作区管理
 
-#### `dkws init`
+#### `kert init`
 
 初始化工作区目录结构（五层 + 控制目录）。
 
 ```bash
-dkws init --workspace W [--force]
+kert init --workspace W [--force]
 ```
 
 | 参数 | 说明 |
@@ -400,24 +400,24 @@ dkws init --workspace W [--force]
 | `--workspace` | 工作区路径（必填） |
 | `--force` | 强制重新初始化（覆盖已有结构） |
 
-#### `dkws inspect`
+#### `kert inspect`
 
 查看工作区概览（目录、版本指针、过期锁）。
 
 ```bash
-dkws inspect --workspace W [--output json]
+kert inspect --workspace W [--output json]
 ```
 
 | 参数 | 说明 |
 |------|------|
 | `--output` | 输出格式：`text`（默认）或 `json` |
 
-#### `dkws validate`
+#### `kert validate`
 
 工作区一致性校验。
 
 ```bash
-dkws validate --workspace W --mode full
+kert validate --workspace W --mode full
 ```
 
 | 参数 | 说明 |
@@ -428,12 +428,12 @@ dkws validate --workspace W --mode full
 
 ### 数据接入
 
-#### `dkws ingest`
+#### `kert ingest`
 
 接入原始数据文件到 `01_raw` 层。
 
 ```bash
-dkws ingest --workspace W --domain product --source f.csv --idempotency-key k
+kert ingest --workspace W --domain product --source f.csv --idempotency-key k
 ```
 
 | 参数 | 说明 |
@@ -442,12 +442,12 @@ dkws ingest --workspace W --domain product --source f.csv --idempotency-key k
 | `--source` | 源文件路径 |
 | `--idempotency-key` | 幂等键（防止重复接入） |
 
-#### `dkws process-data`
+#### `kert process-data`
 
 结构化数据清洗与 Parquet 投影（`01_raw` → `02_work`）。
 
 ```bash
-dkws process-data --workspace W --domain product --batch B --schema product \
+kert process-data --workspace W --domain product --batch B --schema product \
   --mapping-json '{"key_policy":"product_id","field_mappings":[...]}'
 ```
 
@@ -462,12 +462,12 @@ dkws process-data --workspace W --domain product --batch B --schema product \
 
 ### 文档处理
 
-#### `dkws parse-doc`
+#### `kert parse-doc`
 
 文档登记/规范化/稳定切片（PDF/DOCX/TXT 适配器）。
 
 ```bash
-dkws parse-doc --workspace W --domain product --batch B
+kert parse-doc --workspace W --domain product --batch B
 ```
 
 | 参数 | 说明 |
@@ -479,12 +479,12 @@ dkws parse-doc --workspace W --domain product --batch B
 
 ### 知识抽取与审核
 
-#### `dkws extract`
+#### `kert extract`
 
 知识候选抽取。
 
 ```bash
-dkws extract --workspace W --domain product --batch B --run-id R
+kert extract --workspace W --domain product --batch B --run-id R
 ```
 
 | 参数 | 说明 |
@@ -493,12 +493,12 @@ dkws extract --workspace W --domain product --batch B --run-id R
 | `--batch` | 批次标识 |
 | `--run-id` | 运行标识 |
 
-#### `dkws review`
+#### `kert review`
 
 审核消歧（候选 → 确认/拒绝）。
 
 ```bash
-dkws review --workspace W --domain product --objects <候选路径> \
+kert review --workspace W --domain product --objects <候选路径> \
   --decision APPROVE --reason 说明
 ```
 
@@ -512,28 +512,28 @@ dkws review --workspace W --domain product --objects <候选路径> \
 
 ### 发布与投影
 
-#### `dkws publish`
+#### `kert publish`
 
 发布知识到 Core 层（Release + CURRENT 指针）。
 
 ```bash
-dkws publish --workspace W --domain product --run-id R
+kert publish --workspace W --domain product --run-id R
 ```
 
-#### `dkws build-projection`
+#### `kert build-projection`
 
 构建 Serve 层投影（实体/关系/声明/片段/向量/规则/数据集/图谱）。
 
 ```bash
-dkws build-projection --workspace W --domain product
+kert build-projection --workspace W --domain product
 ```
 
-#### `dkws rollback`
+#### `kert rollback`
 
 回滚到指定版本。
 
 ```bash
-dkws rollback --workspace W --scope product --to-version V --reason 原因
+kert rollback --workspace W --scope product --to-version V --reason 原因
 ```
 
 | 参数 | 说明 |
@@ -546,36 +546,36 @@ dkws rollback --workspace W --scope product --to-version V --reason 原因
 
 ### 服务查询
 
-#### `dkws query-data`
+#### `kert query-data`
 
 结构化数据查询。
 
 ```bash
-dkws query-data --workspace W --service <服务名> --filters-json '{}'
+kert query-data --workspace W --service <服务名> --filters-json '{}'
 ```
 
-#### `dkws search`
+#### `kert search`
 
 全文/向量/混合检索。
 
 ```bash
-dkws search --workspace W --service <服务名> --query <检索词> --mode fulltext
+kert search --workspace W --service <服务名> --query <检索词> --mode fulltext
 ```
 
-#### `dkws get-entity`
+#### `kert get-entity`
 
 获取实体详情。
 
 ```bash
-dkws get-entity --workspace W --id <实体ID>
+kert get-entity --workspace W --id <实体ID>
 ```
 
-#### `dkws graph`
+#### `kert graph`
 
 知识图谱查询（Kùzu Cypher 后端）。
 
 ```bash
-dkws graph --workspace W --start <实体ID> --depth 3 --mode paths
+kert graph --workspace W --start <实体ID> --depth 3 --mode paths
 ```
 
 | 参数 | 说明 |
@@ -584,32 +584,32 @@ dkws graph --workspace W --start <实体ID> --depth 3 --mode paths
 | `--depth` | 遍历深度（上限 10） |
 | `--mode` | 查询模式：`neighbor` / `closure` / `paths` |
 
-#### `dkws evaluate-rule`
+#### `kert evaluate-rule`
 
 规则评估。
 
 ```bash
-dkws evaluate-rule --workspace W --service <服务名> --rule-id <规则ID> --facts-json '{}'
+kert evaluate-rule --workspace W --service <服务名> --rule-id <规则ID> --facts-json '{}'
 ```
 
-#### `dkws trace`
+#### `kert trace`
 
 证据溯源。
 
 ```bash
-dkws trace --workspace W --id <证据ID>
+kert trace --workspace W --id <证据ID>
 ```
 
 ---
 
 ### 任务控制
 
-#### `dkws job`
+#### `kert job`
 
 查询异步任务状态。
 
 ```bash
-dkws job --job-id JOB-...
+kert job --job-id JOB-...
 ```
 
 ---
@@ -628,9 +628,9 @@ dkws job --job-id JOB-...
 
 ### 认证
 
-生产 profile（`DKWS_PROFILE=prod`）强制启用 API Key 认证：
+生产 profile（`KERT_PROFILE=prod`）强制启用 API Key 认证：
 
-- 请求头：`X-API-Key: <密钥>`（可通过 `DKWS_AUTH_HEADER` 自定义）
+- 请求头：`X-API-Key: <密钥>`（可通过 `KERT_AUTH_HEADER` 自定义）
 - 匿名白名单：`/v1/health`、`/api/skill/health`、`/livez`、`/readyz`
 - Admin 作用域：闸门审计端点（`/api/skill/gates/audit`）要求 `admin` 作用域
 

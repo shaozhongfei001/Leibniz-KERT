@@ -16,7 +16,7 @@ STATUS=CANDIDATE / FROZEN=NO / IMPLEMENTED=NO
 """
 from __future__ import annotations
 
-from dkws.application.product_recommendation.need_profile import (
+from kert.application.product_recommendation.need_profile import (
     NEED_STATUS_CLOSED_SET,
     RANKABLE_NEED_STATUSES,
     NeedProfileResolver,

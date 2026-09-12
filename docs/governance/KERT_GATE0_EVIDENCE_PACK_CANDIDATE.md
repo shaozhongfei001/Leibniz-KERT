@@ -19,23 +19,23 @@
 ### 0.1 取证基线（必须从固定 commit 复现）
 
 - 本包对**源码、测试、契约 schema、ADR、README/状态基线**的取证，全部落在 HEAD `0625afbf` 已提交内容上。经 `git status -s` 核验，下列取证文件在 HEAD 均**无未提交改动**（工作区 == HEAD）：
-  `src/dkws/**`（server.py/middleware.py/skills.py/errors.py/workspace.py/publish.py/jobs.py/observability.py/backup.py/runtime_config.py）、`tests/**`、`docs/contracts/schemas/*.json`、`docs/adr/ADR-013/ADR-016`、`docs/skill-execute-api-contract-v1.4.md`、`docs/governance/DKWS_STATUS_BASELINE_CANDIDATE.yaml`、`README.md`、`ADR.md`、`pyproject.toml`。
-- **唯一例外（如实声明）**：`specs/dkws-openapi-v1.yaml` 存在**未提交工作区改动**，`skills/product-recommendation/` 为**未跟踪新目录**（详见 §2.1/§2.2 与 §10）。本包对这两处的引用**已显式标注为「未提交工作区版本」**，并同时给出 HEAD 基线内容，保证可复现：凡引用 OpenAPI 已提交事实时一律给 HEAD 行号，凡引用 SP-15 增量时一律标注「HEAD 无此内容」。
+  `src/kert/**`（server.py/middleware.py/skills.py/errors.py/workspace.py/publish.py/jobs.py/observability.py/backup.py/runtime_config.py）、`tests/**`、`docs/contracts/schemas/*.json`、`docs/adr/ADR-013/ADR-016`、`docs/skill-execute-api-contract-v1.4.md`、`docs/governance/KERT_STATUS_BASELINE_CANDIDATE.yaml`、`README.md`、`ADR.md`、`pyproject.toml`。
+- **唯一例外（如实声明）**：`specs/kert-openapi-v1.yaml` 存在**未提交工作区改动**，`skills/product-recommendation/` 为**未跟踪新目录**（详见 §2.1/§2.2 与 §10）。本包对这两处的引用**已显式标注为「未提交工作区版本」**，并同时给出 HEAD 基线内容，保证可复现：凡引用 OpenAPI 已提交事实时一律给 HEAD 行号，凡引用 SP-15 增量时一律标注「HEAD 无此内容」。
 
 ### 0.2 实际读取的文件
 
 | 类别 | 文件 | 基线 |
 |---|---|---|
 | 项目 | `README.md`、`pyproject.toml`、`ADR.md` | HEAD |
-| 契约 | `specs/dkws-openapi-v1.yaml`（v1.4.0） | HEAD + 标注未提交 delta |
+| 契约 | `specs/kert-openapi-v1.yaml`（v1.4.0） | HEAD + 标注未提交 delta |
 | 契约 | `docs/skill-execute-api-contract-v1.4.md` | HEAD |
 | 契约 | `docs/contracts/schemas/{context-package,evidence-bundle,assembly-trace}.schema.json` | HEAD |
-| 鉴权 | `src/dkws/api/middleware.py`、`src/dkws/infrastructure/runtime_config.py` | HEAD |
-| 执行 | `src/dkws/api/server.py`、`src/dkws/application/skills.py` | HEAD |
-| 错误 | `src/dkws/domain/errors.py` | HEAD |
-| 存储 | `src/dkws/domain/workspace.py`、`src/dkws/application/publish.py`、`src/dkws/application/jobs.py` | HEAD |
-| 可观测 | `src/dkws/infrastructure/observability.py`、`src/dkws/infrastructure/backup.py` | HEAD |
-| 治理 | `docs/governance/DKWS_STATUS_BASELINE_CANDIDATE.yaml` | HEAD |
+| 鉴权 | `src/kert/api/middleware.py`、`src/kert/infrastructure/runtime_config.py` | HEAD |
+| 执行 | `src/kert/api/server.py`、`src/kert/application/skills.py` | HEAD |
+| 错误 | `src/kert/domain/errors.py` | HEAD |
+| 存储 | `src/kert/domain/workspace.py`、`src/kert/application/publish.py`、`src/kert/application/jobs.py` | HEAD |
+| 可观测 | `src/kert/infrastructure/observability.py`、`src/kert/infrastructure/backup.py` | HEAD |
+| 治理 | `docs/governance/KERT_STATUS_BASELINE_CANDIDATE.yaml` | HEAD |
 | ADR | `docs/adr/ADR-013-service-authentication.md`、`docs/adr/ADR-016-controlled-hybrid-skill-runtime.md` | HEAD |
 | Skill 资产 | `skills/product-recommendation/{SP-15.md,contracts/recommendation-result.md,activation-contracts/AC-PRODUCT-RECOMMEND-001.md,product-cards/README.md,rules/README.md}` | **未跟踪（非 HEAD）** |
 | 测试 | `tests/integration/test_skills.py`、`tests/e2e/test_all_skills_execution.py` | HEAD |
@@ -48,14 +48,14 @@
 | 项 | 值 | 证据（HEAD） |
 |---|---|---|
 | 仓库名 | `Leibniz-KERT` | `git remote -v` → `origin = git@github.com:shaozhongfei001/Leibniz-KERT.git` |
-| 包/项目名 | `dkws`（Data Knowledge Workspace Service） | `pyproject.toml` `[project] name = "dkws"` |
-| 正式项目标识 | `DKWS-SPEC-001`，「文件目录型数据知识服务模拟平台」 | `README.md` 第 1 行、`docs/governance/DKWS_STATUS_BASELINE_CANDIDATE.yaml` `project.id` |
-| 版本/阶段 | `baseline_state = DRAFT_CANDIDATE`、`production_ready = false`、`uat_pass = false` | `DKWS_STATUS_BASELINE_CANDIDATE.yaml` 第 9-13 行 |
-| License | Proprietary | `pyproject.toml` 第 11 行、`specs/dkws-openapi-v1.yaml` `info.license` |
+| 包/项目名 | `kert`（Data Knowledge Workspace Service） | `pyproject.toml` `[project] name = "kert"` |
+| 正式项目标识 | `KERT-SPEC-001`，「文件目录型数据知识服务模拟平台」 | `README.md` 第 1 行、`docs/governance/KERT_STATUS_BASELINE_CANDIDATE.yaml` `project.id` |
+| 版本/阶段 | `baseline_state = DRAFT_CANDIDATE`、`production_ready = false`、`uat_pass = false` | `KERT_STATUS_BASELINE_CANDIDATE.yaml` 第 9-13 行 |
+| License | Proprietary | `pyproject.toml` 第 11 行、`specs/kert-openapi-v1.yaml` `info.license` |
 | 代码 Owner（git） | `shaozhongfei001` | `git log -1 --format='%an'` → `shaozhongfei001` |
 | 业务 Owner（Skill 域） | SP-02=客户经营Owner、SP-05=KYC知识Owner、SP-07=evidence_owner、SP-15=公司金融产品管理部 | GITS `specs/knowledge-architecture/skills/*.json`（只读引用，见 §6.2） |
 
-> 说明：`DKWS_STATUS_BASELINE_CANDIDATE.yaml`（HEAD）第 21-24 行仍记 `dkws_git_repo: false`、`dkws_git_commit_anchor: null`、`dkws_source_path: /home/szf/dev/deepseek_harness/data_knowledge_ws/dkws`，与本仓库已具 git remote + 固定 HEAD 的现状不一致，属**状态基线陈旧**（该文件生成于 2026-08-26，早于本仓库 git 化）。本包以实际 `git rev-parse HEAD = 0625afbf` 为权威锚点。
+> 说明：`KERT_STATUS_BASELINE_CANDIDATE.yaml`（HEAD）第 21-24 行仍记 `kert_git_repo: false`、`kert_git_commit_anchor: null`、`kert_source_path: /home/szf/dev/deepseek_harness/data_knowledge_ws/kert`，与本仓库已具 git remote + 固定 HEAD 的现状不一致，属**状态基线陈旧**（该文件生成于 2026-08-26，早于本仓库 git 化）。本包以实际 `git rev-parse HEAD = 0625afbf` 为权威锚点。
 
 **判定：PRESENT_AND_CONTROLLED**（仓库、包名、提交锚点均可取证；工程级 Owner 未在 KERT 仓库内以「单一负责人」字段固化，而是分散在 GITS 侧 skill 描述符的 `owner` 字段，属轻微缺口，不影响 Gate 0）。
 
@@ -65,12 +65,12 @@
 
 ### 2.1 OpenAPI 基线（HEAD 0625afbf）
 
-- 权威文件：`specs/dkws-openapi-v1.yaml`，`info.version = "1.4.0"`（HEAD 第 11 行）。
+- 权威文件：`specs/kert-openapi-v1.yaml`，`info.version = "1.4.0"`（HEAD 第 11 行）。
 - 权威契约文档：`docs/skill-execute-api-contract-v1.4.md`（spec 内 `info.description` 引用，HEAD 第 10 行）。
 - 已登记端点（`paths`，HEAD）：`GET /v1/health`、`GET /api/skill/health`、`GET /v1/skills`、`POST /api/skill/execute`、`GET /api/skill/report/{requestId}`、`GET /api/skill/gates/{customerId}`、`POST /api/skill/gates/audit`、`GET /v1/jobs/{jobId}`、`GET /livez`、`GET /readyz`、`GET /metrics`。
 - `components.securitySchemes.ApiKeyAuth`（HEAD 第 445-447 行）：`type: apiKey`、`in: header`、`name: X-API-Key`、描述「API Key 认证（演示环境可省略）」。
 
-> **未提交 delta 声明（如实）**：`git diff specs/dkws-openapi-v1.yaml` 显示，工作区相对 HEAD 新增两处、均为**并行任务未提交产物**，**HEAD 中不存在**：
+> **未提交 delta 声明（如实）**：`git diff specs/kert-openapi-v1.yaml` 显示，工作区相对 HEAD 新增两处、均为**并行任务未提交产物**，**HEAD 中不存在**：
 > 1. `+/v1/health` 示例末尾新增 `SP-15 产品适配与综合方案 2.0.0-candidate`（工作区第 60-62 行；HEAD 该示例只到 SP-21，HEAD 第 50-58 行）；
 > 2. `+ErrorDetail.code` 描述末尾新增 8 个 `KERT_*` 错误码（工作区第 1024-1031 行；HEAD 该描述止于 `INTERNAL_ERROR`，HEAD 第 1020 行）。
 >
@@ -78,7 +78,7 @@
 
 ### 2.2 错误码清单（三层）
 
-**（1）领域/传输层错误码（运行时权威）** — `src/dkws/domain/errors.py` `ERROR_CODES`（HEAD 第 24-44 行，共 19 项）：
+**（1）领域/传输层错误码（运行时权威）** — `src/kert/domain/errors.py` `ERROR_CODES`（HEAD 第 24-44 行，共 19 项）：
 
 | 错误码 | HTTP | retryable |
 |---|---|---|
@@ -104,14 +104,14 @@
 
 > 微瑕备注（不影响判定）：`JOB_ORPHANED`/`RULE_CONFLICT` 两条的 `ErrorCode(code=...)` 内嵌字符串分别为 `"INTERNAL_ERROR"`/`"INVALID_REQUEST"`（`errors.py` 第 42-43 行，疑为复制粘贴遗留）；HTTP 状态码取值不受影响（`http_status()` 用 dict 键查表），但 `ERROR_CODES[k].code` 会返回错误字符串。属低危一致性缺陷，如实记录。
 
-**（2）Skill 层错误码（运行时真实发出）** — `src/dkws/application/skills.py`：
+**（2）Skill 层错误码（运行时真实发出）** — `src/kert/application/skills.py`：
 
 - `UNKNOWN_SKILL`（未知 skillId，`skills.py` 第 193 行；`server.py` 第 555-559 行映射 HTTP 404）
 - `SKILL_EXECUTION_FAILED`（执行器抛异常，fail-closed；`skills.py` 第 230 行）
 
 **（3）KERT_* 失败码 —— 仅「未提交文档」，运行时代码未实现（如实标注 UNCONTROLLED）**：
 
-- 来源一：`specs/dkws-openapi-v1.yaml` 工作区**未提交**版本 `ErrorDetail.code`（工作区第 1024-1031 行），HEAD 无此内容。
+- 来源一：`specs/kert-openapi-v1.yaml` 工作区**未提交**版本 `ErrorDetail.code`（工作区第 1024-1031 行），HEAD 无此内容。
 - 来源二：`skills/product-recommendation/SP-15.md` 第 82 行（**未跟踪**文件）列出 8 个 `KERT_*`：`KERT_PERMISSION_DENIED / KERT_CONTEXT_INSUFFICIENT / KERT_PRODUCT_KNOWLEDGE_STALE / KERT_RULE_VERSION_MISSING / KERT_EXECUTION_TIMEOUT / KERT_CONTRACT_MISMATCH / KERT_EVIDENCE_INCOMPLETE / KERT_INTERNAL_ERROR`。
 - **实测**：`grep "KERT_" src` 命中 = 0；`grep` 证实运行时代码仅发出 `UNKNOWN_SKILL`/`SKILL_EXECUTION_FAILED`。KERT_* 系列失败码当前**无任何运行时代码抛出/返回**，且其两份文档来源**均未提交**；属 SP-15（未实现，见 §6）的「文档先行、实现未落地」。
 
@@ -162,8 +162,8 @@
 
 ### 4.1 X-API-Key 已实现（可选启用）
 
-- 认证中间件：`src/dkws/api/middleware.py` `ApiKeyAuthMiddleware`（第 120-176 行）。
-- 配置：`AuthConfig.header_name = "X-API-Key"`（`runtime_config.py` 第 82 行），可通过 `DKWS_AUTH_HEADER` 覆盖。
+- 认证中间件：`src/kert/api/middleware.py` `ApiKeyAuthMiddleware`（第 120-176 行）。
+- 配置：`AuthConfig.header_name = "X-API-Key"`（`runtime_config.py` 第 82 行），可通过 `KERT_AUTH_HEADER` 覆盖。
 - 密钥存储：仅 SHA-256 摘要 + 常量时间比较（`runtime_config.py` `_digest`/`verify` 第 51-53、91-99 行），明文不落盘、不进日志。
 - 作用域：`read`/`execute`/`admin`（`runtime_config.py` 第 42-44 行）；`/api/skill/gates/audit` 属 admin 路径前缀（第 40 行）。
 - 白名单：`/v1/health`、`/api/skill/health`、`/livez`、`/readyz` 匿名放行（`DEFAULT_PUBLIC_PATHS`，第 32-33 行）。
@@ -171,7 +171,7 @@
 ### 4.2 演示/当前环境状态
 
 - **默认 `auth.enabled = False`**（`AuthConfig.enabled` 默认 `False`，`runtime_config.py` 第 81 行）——dev 便利模式，全部放行。
-- 状态基线：`docs/governance/DKWS_STATUS_BASELINE_CANDIDATE.yaml` 第 35-40 行记录 `listen_host: 0.0.0.0`、`listen_port: 8106`、`auth_enabled: false`、`tls_enabled: false`、`rate_limit_enabled: false`、`request_size_limit_enabled: false`。
+- 状态基线：`docs/governance/KERT_STATUS_BASELINE_CANDIDATE.yaml` 第 35-40 行记录 `listen_host: 0.0.0.0`、`listen_port: 8106`、`auth_enabled: false`、`tls_enabled: false`、`rate_limit_enabled: false`、`request_size_limit_enabled: false`。
 - OpenAPI `securitySchemes.ApiKeyAuth` 描述亦写明「演示环境可省略」（HEAD 第 447 行）。
 
 ### 4.3 生产强约束（fail-fast）
@@ -199,7 +199,7 @@
 ### 5.3 执行轨迹（assemblyTrace）
 
 - 运行时已实现：`SkillExecuteResult.assembly_trace`（`skills.py` 第 51 行），以 **数组** 返回 `assemblyTrace`（`skills.py` 第 61 行）。
-- 候选 schema：`docs/contracts/schemas/assembly-trace.schema.json`（HEAD），描述**单步** `AssemblyTraceStep`，`phase` 枚举 `resolve/idempotency/validate/dkws/evidence/model/parse/compose/tool`。
+- 候选 schema：`docs/contracts/schemas/assembly-trace.schema.json`（HEAD），描述**单步** `AssemblyTraceStep`，`phase` 枚举 `resolve/idempotency/validate/kert/evidence/model/parse/compose/tool`。
 - 不一致：实际代码额外产生 `phase=llm_redaction`（`skills.py` 第 399 行），不在 schema 枚举内；且 OpenAPI 把 `assemblyTrace` 声明为 `type: object` 而非数组（见 §2.3）。
 
 **判定：**
@@ -211,7 +211,7 @@
 
 ## 6. f) Skill 注册表（SP-02 / SP-05 / SP-07 / SP-15 真实状态与版本）
 
-### 6.1 运行时真实注册表（权威在 `src/dkws/application/skills.py` `registry()` 第 150-160 行 + 外部包加载）
+### 6.1 运行时真实注册表（权威在 `src/kert/application/skills.py` `registry()` 第 150-160 行 + 外部包加载）
 
 **内置 5 个（版本均 1.0.0）：**
 
@@ -253,10 +253,10 @@
 
 ### 7.1 五层工作区（平台机制已实现，HEAD）
 
-- 目录定义：`src/dkws/domain/workspace.py` `TOP_LEVEL_DIRS = ("01_raw","02_work","03_core","04_serve","90_control")`（第 14 行）。
-- 权威源：`03_core` 为唯一权威源（`README.md`、未跟踪 `skills/product-recommendation/rules/README.md` 亦声明「规则资产落 DKWS 五层工作区（01_raw → 03_core → 04_serve），03_core 为唯一权威源」）。
+- 目录定义：`src/kert/domain/workspace.py` `TOP_LEVEL_DIRS = ("01_raw","02_work","03_core","04_serve","90_control")`（第 14 行）。
+- 权威源：`03_core` 为唯一权威源（`README.md`、未跟踪 `skills/product-recommendation/rules/README.md` 亦声明「规则资产落 KERT 五层工作区（01_raw → 03_core → 04_serve），03_core 为唯一权威源」）。
 
-### 7.2 发布机制（`src/dkws/application/publish.py` `Publisher.publish` 第 61 行起，HEAD）
+### 7.2 发布机制（`src/kert/application/publish.py` `Publisher.publish` 第 61 行起，HEAD）
 
 1. 收集 APPROVED 候选（+证据闭包）→ 2. G3 门禁 → 3-4. 临时版本目录 + `RELEASE.md`（含 SHA-256 清单）→ 5. 全量重读校验 → 6. 原子提交 `03_core/<domain>/version=<ver>/` → 7. 原子更新 `03_core/<domain>/CURRENT.md` 指针（失败保留旧指针）。
 - 回滚仅切换指针、不删除版本（`application/rollback.py`；`publish.py` 第 323-346 行 `_write_current`）。
@@ -294,7 +294,7 @@
 - 执行结果报告缓存：TTL ≈ **10 分钟**（`server.py` 第 565 行、`application/report.py` 第 8 行；源自幂等缓存 600s）。
 - 闸门审计镜像：追加 `90_control/audit/gates.jsonl`（`skills.py` `record_gate_audit` 第 689-711 行）+ 可选 Runtime Store `gate_audit` 表；**无保留期/无清理逻辑**。
 - Job 状态文件：`90_control/jobs/{job_id}/STATUS.md` + `RUN_REPORT.md`（`jobs.py`，未见清理）。
-- **统一审计保留策略 = 缺失**：`infrastructure/backup.py` 第 13、268 行明确「RPO/RTO 与备份频率、保留策略属 Owner 决策，本清单不预设业务默认值」；状态基线 `backup_recovery_sop: MISSING`（`DKWS_STATUS_BASELINE_CANDIDATE.yaml` 第 90-91 行）。仓库中无审计保留周期、清理/归档 SOP 定义。
+- **统一审计保留策略 = 缺失**：`infrastructure/backup.py` 第 13、268 行明确「RPO/RTO 与备份频率、保留策略属 Owner 决策，本清单不预设业务默认值」；状态基线 `backup_recovery_sop: MISSING`（`KERT_STATUS_BASELINE_CANDIDATE.yaml` 第 90-91 行）。仓库中无审计保留周期、清理/归档 SOP 定义。
 
 **判定：健康检查 + 可观测 = PRESENT_AND_CONTROLLED（有代码与测试：`tests/integration/test_observability_endpoints.py`、`tests/unit/test_observability.py`）；审计保留策略 = UNCONTROLLED/缺失（无保留周期与清理 SOP）。**
 
@@ -311,17 +311,17 @@ KERT 可执行主体（Skill 平台 + 五层工作区 + 发布/投影 + 可观�
 | # | 项 | 判定 | 关键证据路径 |
 |---|---|---|---|
 | a | 项目名/仓库/Owner | PRESENT_AND_CONTROLLED | `pyproject.toml`、`README.md`、git remote `Leibniz-KERT`、HEAD `0625afbf` |
-| b | Skill 执行 OpenAPI + 错误码 | **PRESENT（但契约漂移；KERT_* 未实现且未提交）** | `specs/dkws-openapi-v1.yaml`（HEAD）、`src/dkws/domain/errors.py`、`src/dkws/application/skills.py` |
-| c | 同步/异步/轮询（无回调） | PRESENT_AND_CONTROLLED | `src/dkws/api/server.py`、`src/dkws/application/skills.py`、`src/dkws/application/jobs.py` |
-| d | 鉴权（X-API-Key） | **PRESENT_BUT_UNCONTROLLED（演示）** | `src/dkws/api/middleware.py`、`src/dkws/infrastructure/runtime_config.py`、`DKWS_STATUS_BASELINE_CANDIDATE.yaml` |
-| e | ContextPackage / EvidenceBundle / 执行轨迹 | **部分 UNCONTROLLED / EvidenceBundle ABSENT** | `docs/contracts/schemas/*.schema.json`、`specs/dkws-openapi-v1.yaml` |
-| f | Skill 注册表（SP-02/05/07/15） | **注册表 PRESENT；SP-02/05/07 ABSENT，SP-15 CANDIDATE 未实现** | `src/dkws/application/skills.py`、未跟踪 `skills/product-recommendation/SP-15.md` |
-| g | 产品/规则资产存储发布机制 | **机制 PRESENT；产品卡/规则包本体 ABSENT** | `src/dkws/application/publish.py`、未跟踪 `skills/product-recommendation/{product-cards,rules}/README.md` |
-| h | 健康/可观测/审计保留 | **健康+可观测 PRESENT；审计保留策略 UNCONTROLLED/缺失** | `src/dkws/infrastructure/observability.py`、`src/dkws/infrastructure/backup.py` |
+| b | Skill 执行 OpenAPI + 错误码 | **PRESENT（但契约漂移；KERT_* 未实现且未提交）** | `specs/kert-openapi-v1.yaml`（HEAD）、`src/kert/domain/errors.py`、`src/kert/application/skills.py` |
+| c | 同步/异步/轮询（无回调） | PRESENT_AND_CONTROLLED | `src/kert/api/server.py`、`src/kert/application/skills.py`、`src/kert/application/jobs.py` |
+| d | 鉴权（X-API-Key） | **PRESENT_BUT_UNCONTROLLED（演示）** | `src/kert/api/middleware.py`、`src/kert/infrastructure/runtime_config.py`、`KERT_STATUS_BASELINE_CANDIDATE.yaml` |
+| e | ContextPackage / EvidenceBundle / 执行轨迹 | **部分 UNCONTROLLED / EvidenceBundle ABSENT** | `docs/contracts/schemas/*.schema.json`、`specs/kert-openapi-v1.yaml` |
+| f | Skill 注册表（SP-02/05/07/15） | **注册表 PRESENT；SP-02/05/07 ABSENT，SP-15 CANDIDATE 未实现** | `src/kert/application/skills.py`、未跟踪 `skills/product-recommendation/SP-15.md` |
+| g | 产品/规则资产存储发布机制 | **机制 PRESENT；产品卡/规则包本体 ABSENT** | `src/kert/application/publish.py`、未跟踪 `skills/product-recommendation/{product-cards,rules}/README.md` |
+| h | 健康/可观测/审计保留 | **健康+可观测 PRESENT；审计保留策略 UNCONTROLLED/缺失** | `src/kert/infrastructure/observability.py`、`src/kert/infrastructure/backup.py` |
 
 ### 9.1 UNCONTROLLED / 缺失清单（必须闭环）
 
-1. **鉴权演示关闭**：当前 `auth_enabled=false`、无 TLS、无限流（`DKWS_STATUS_BASELINE_CANDIDATE.yaml` 第 37-40 行）；ADR-013 仍 `CANDIDATE_AWAITING_OWNER`。→ 生产前需启用认证+TLS+限流并获 Owner 批准。
+1. **鉴权演示关闭**：当前 `auth_enabled=false`、无 TLS、无限流（`KERT_STATUS_BASELINE_CANDIDATE.yaml` 第 37-40 行）；ADR-013 仍 `CANDIDATE_AWAITING_OWNER`。→ 生产前需启用认证+TLS+限流并获 Owner 批准。
 2. **SP-15 CANDIDATE 未实现**：未跟踪 `skills/product-recommendation/SP-15.md` 有 `status: CANDIDATE`、`version: 2.0.0-candidate`，但未注册、无执行器、无测试。
 3. **SP-02 / SP-05 / SP-07 ABSENT**：KERT 仓库无任何资产/执行器，仅 GITS 侧 `specs/knowledge-architecture/skills/*.json` 描述符。
 4. **KERT_* 失败码未落地且未提交**：`grep "KERT_" src` = 0；仅在未提交工作区 OpenAPI 与未跟踪 `SP-15.md` 中定义，HEAD 无。
@@ -348,7 +348,7 @@ KERT 可执行主体（Skill 平台 + 五层工作区 + 发布/投影 + 可观�
 |---|---|---|
 | ` M evidence/jr1/DISPATCH_E2E_SKIP.md` | 其他并行任务（JR1 E2E-skip 派工前置核验） | **否** |
 | ` M skills/service-proposal/templates/ch07-product-recommendation.md` | 其他并行任务（SP-20 CH07 产品推荐章节模板改造） | **否** |
-| ` M specs/dkws-openapi-v1.yaml` | 其他并行任务（SP-15 OpenAPI 增量：+SP-15 health 示例、+8 KERT_* 错误码） | **否** |
+| ` M specs/kert-openapi-v1.yaml` | 其他并行任务（SP-15 OpenAPI 增量：+SP-15 health 示例、+8 KERT_* 错误码） | **否** |
 | `?? docs/governance/KERT_GATE0_EVIDENCE_PACK_CANDIDATE.md` | **WP0-2（本交付物）** | **是** |
 | `?? skills/product-recommendation/`（5 文件：SP-15.md、contracts/recommendation-result.md、activation-contracts/AC-PRODUCT-RECOMMEND-001.md、product-cards/README.md、rules/README.md） | 其他并行任务（SP-15 候选资产） | **否** |
 
@@ -357,4 +357,4 @@ KERT 可执行主体（Skill 平台 + 五层工作区 + 发布/投影 + 可观�
 - **WP0-2 自身唯一新增的文件 = `docs/governance/KERT_GATE0_EVIDENCE_PACK_CANDIDATE.md`。**
 - 工作区中另存在 **3 个既有文件被修改** 与 **1 个新目录（skills/product-recommendation/，5 文件）**，均为**其他并行任务**产物，非本任务造成；本任务未改动这些文件，也未以任何方式让它们「看起来」由本任务产生。
 - 更正：**本任务不再声称「git status 确认只新增本文件」**——该表述与事实不符，已撤回。准确的取证记录是：`git status -s` 显示除本交付物外还有上述 3 个 `M` + 1 个 `??` 目录。
-- 与 Gate 0 可复现性关系：本包全部可复现证据锚定 HEAD `0625afbf`；`specs/dkws-openapi-v1.yaml` 的 SP-15 增量与 `skills/product-recommendation/` 均为未提交内容，本包已显式标注「非 HEAD 基线」，因此 Gate 0 证据可从固定 commit `0625afbf` 复现，不受并行任务未提交改动影响。
+- 与 Gate 0 可复现性关系：本包全部可复现证据锚定 HEAD `0625afbf`；`specs/kert-openapi-v1.yaml` 的 SP-15 增量与 `skills/product-recommendation/` 均为未提交内容，本包已显式标注「非 HEAD 基线」，因此 Gate 0 证据可从固定 commit `0625afbf` 复现，不受并行任务未提交改动影响。

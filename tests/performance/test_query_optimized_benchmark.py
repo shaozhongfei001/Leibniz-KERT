@@ -28,8 +28,8 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from dkws.application.services import KnowledgeService
-from dkws.infrastructure.parquet import build_filter, read_table
+from kert.application.services import KnowledgeService
+from kert.infrastructure.parquet import build_filter, read_table
 
 
 # ---------- helpers ----------

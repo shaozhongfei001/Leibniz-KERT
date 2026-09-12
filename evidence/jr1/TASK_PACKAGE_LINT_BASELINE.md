@@ -41,7 +41,7 @@ PR #4 已完成两件事：
 Tech Lead 已核实，**这 19 处不是缺陷**：
 
 ```text
-src/dkws/application/{extract,ingest,jobs,parse_doc,process_data,
+src/kert/application/{extract,ingest,jobs,parse_doc,process_data,
                       projection,publish,review,rollback}.py
 ```
 
@@ -53,7 +53,7 @@ job.logger.info("EXTRACT_START", "知识抽取开始",
 ```
 
 `job.logger` 并非标准库 `logging.Logger`，而是项目自定义的结构化
-logger（`src/dkws/infrastructure/logging.py:66`）：
+logger（`src/kert/infrastructure/logging.py:66`）：
 
 ```python
 def info(self, code: str, message: str, **kv):

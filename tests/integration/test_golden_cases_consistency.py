@@ -214,7 +214,7 @@ def test_executor_rule_catalog_is_subset_of_manifest():
     （原 PR-ADM-004 / PR-PRE-001 / PR-BND-001 已映射到真实规则），
     且 ruleVersion 统一为清单候选版本 `1.0.0-candidate`。
     """
-    from dkws.application.product_recommendation.eligibility import RULE_CATALOG
+    from kert.application.product_recommendation.eligibility import RULE_CATALOG
 
     manifest_ids = _manifest_rule_ids()
     catalog_ids = {r["ruleId"] for r in RULE_CATALOG}

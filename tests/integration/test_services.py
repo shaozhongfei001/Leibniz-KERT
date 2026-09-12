@@ -6,15 +6,15 @@ from pathlib import Path
 
 import pytest
 
-from dkws.application.extract import KnowledgeExtractor
-from dkws.application.ingest import Ingestor
-from dkws.application.parse_doc import DocumentParserService
-from dkws.application.process_data import DataProcessor
-from dkws.application.projection import ProjectionBuilder
-from dkws.application.publish import Publisher
-from dkws.application.review import ReviewService
-from dkws.application.services import KnowledgeService
-from dkws.domain.errors import AssetNotFoundError, ServiceNotReadyError
+from kert.application.extract import KnowledgeExtractor
+from kert.application.ingest import Ingestor
+from kert.application.parse_doc import DocumentParserService
+from kert.application.process_data import DataProcessor
+from kert.application.projection import ProjectionBuilder
+from kert.application.publish import Publisher
+from kert.application.review import ReviewService
+from kert.application.services import KnowledgeService
+from kert.domain.errors import AssetNotFoundError, ServiceNotReadyError
 
 
 @pytest.fixture
@@ -148,7 +148,7 @@ class TestTrace:
         svc = KnowledgeService(served_workspace)
         before = len(svc.search("产品A").data["hits"])
         # 注入一个未发布候选实体（直接写 Work candidates 目录）
-        from dkws.infrastructure.fs import WorkspaceWriter
+        from kert.infrastructure.fs import WorkspaceWriter
         w = WorkspaceWriter(served_workspace)
         w.write_text("02_work/product/run=INJECT/candidates/entities/ENT-INJ.md",
                      "# 注入候选\n")

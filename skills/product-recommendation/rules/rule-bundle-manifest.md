@@ -62,4 +62,4 @@ REAL_E2E_PASS=NO
 - 全部规则为 `CANDIDATE`，`FROZEN=NO`，未实现、未接运行时。
 - 规则 EvidenceRef 指向的源材料（`SRC-FIN-*` / `REG-FIN-*`）当前为 `PENDING_SOURCE`（材料待上传、条款号待 Owner 核定），故本包**不可作生产发布**（`INV-05` 无证据不得发布硬规则）。
 - 产品 ID 与条款号待公司金融产品 Owner（`OQ-02`）裁决后回填。
-- **跨包集成待办（WP2-3）**：WP2-3 执行器 `src/dkws/application/product_recommendation/eligibility.py` 的 `RULE_CATALOG` 目前使用 `PR-ELIG-001(标 VALIDITY)/PR-REG-001/PR-ADM-004/PR-PRE-001/PR-MAT-001/PR-BND-001`，与本清单 `PR-VALID-001/PR-REG-001/PR-ELIG-001/PR-PRMUTEX-001/PR-MAT-001/PR-SALES-001` 不一致（`PR-ADM-004/PR-PRE-001/PR-BND-001` 在本包不存在）。WP2-3 需改为消费本清单的 `ruleId/ruleVersion` 消除 ID 漂移，并据此加载 `golden-cases.json` 逐组断言 `expected.eligibility/ruleResults`。
+- **跨包集成待办（WP2-3）**：WP2-3 执行器 `src/kert/application/product_recommendation/eligibility.py` 的 `RULE_CATALOG` 目前使用 `PR-ELIG-001(标 VALIDITY)/PR-REG-001/PR-ADM-004/PR-PRE-001/PR-MAT-001/PR-BND-001`，与本清单 `PR-VALID-001/PR-REG-001/PR-ELIG-001/PR-PRMUTEX-001/PR-MAT-001/PR-SALES-001` 不一致（`PR-ADM-004/PR-PRE-001/PR-BND-001` 在本包不存在）。WP2-3 需改为消费本清单的 `ruleId/ruleVersion` 消除 ID 漂移，并据此加载 `golden-cases.json` 逐组断言 `expected.eligibility/ruleResults`。

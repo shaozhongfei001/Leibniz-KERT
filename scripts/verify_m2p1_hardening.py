@@ -59,21 +59,21 @@ def _prod_env(workspace: Path, extra: dict[str, str] | None = None) -> dict[str,
     env = dict(os.environ)
     env.update({
         "PYTHONPATH": str(SRC),
-        "DKWS_PROFILE": "prod",
-        "DKWS_BIND_HOST": "127.0.0.1",
-        "DKWS_API_KEYS": (f"svc:{VALID_KEY}:read|execute,"
+        "KERT_PROFILE": "prod",
+        "KERT_BIND_HOST": "127.0.0.1",
+        "KERT_API_KEYS": (f"svc:{VALID_KEY}:read|execute,"
                           f"ops:{ADMIN_KEY}:read|execute|admin"),
-        "DKWS_RATE_LIMIT_ENABLED": "true",
-        "DKWS_RATE_LIMIT_RPM": "60",
-        "DKWS_RATE_LIMIT_BURST": "3",
-        "DKWS_SIZE_LIMIT_ENABLED": "true",
-        "DKWS_MAX_REQUEST_BYTES": "2048",
-        "DKWS_CONCURRENCY_ENABLED": "true",
-        "DKWS_MAX_IN_FLIGHT": "8",
-        "DKWS_RUNTIME_STORE_ENABLED": "true",
-        "DKWS_LLM_BASE_URL": "",
+        "KERT_RATE_LIMIT_ENABLED": "true",
+        "KERT_RATE_LIMIT_RPM": "60",
+        "KERT_RATE_LIMIT_BURST": "3",
+        "KERT_SIZE_LIMIT_ENABLED": "true",
+        "KERT_MAX_REQUEST_BYTES": "2048",
+        "KERT_CONCURRENCY_ENABLED": "true",
+        "KERT_MAX_IN_FLIGHT": "8",
+        "KERT_RUNTIME_STORE_ENABLED": "true",
+        "KERT_LLM_BASE_URL": "",
     })
-    env.pop("DKWS_LLM_API_KEY", None)
+    env.pop("KERT_LLM_API_KEY", None)
     if extra:
         env.update(extra)
     return env
@@ -82,7 +82,7 @@ def _prod_env(workspace: Path, extra: dict[str, str] | None = None) -> dict[str,
 def _init_workspace(root: Path) -> Path:
     """初始化一个真实工作区。"""
     sys.path.insert(0, str(SRC))
-    from dkws.domain import workspace as ws_mod
+    from kert.domain import workspace as ws_mod
 
     if root.exists():
         shutil.rmtree(root)
@@ -142,9 +142,9 @@ def _lower_headers(headers) -> dict[str, str]:
 def check_fail_fast(report: dict, workspace: Path, log_dir: Path) -> None:
     """场景 1：生产 profile 缺少认证/限流应拒绝启动。"""
     env = dict(os.environ)
-    env.update({"PYTHONPATH": str(SRC), "DKWS_PROFILE": "prod",
-                "DKWS_BIND_HOST": "127.0.0.1"})
-    env.pop("DKWS_API_KEYS", None)
+    env.update({"PYTHONPATH": str(SRC), "KERT_PROFILE": "prod",
+                "KERT_BIND_HOST": "127.0.0.1"})
+    env.pop("KERT_API_KEYS", None)
     proc = subprocess.run(
         [sys.executable, str(REPO / "scripts" / "serve_skill_service.py"),
          "--workspace", str(workspace), "--port", str(PORT + 1), "--host", "127.0.0.1"],
@@ -316,7 +316,7 @@ def check_restart_replay(report: dict, workspace: Path, log_dir: Path) -> None:
         proc = subprocess.Popen(
             [sys.executable, str(REPO / "scripts" / "serve_skill_service.py"),
              "--workspace", str(workspace), "--port", str(PORT), "--host", "127.0.0.1"],
-            env=_prod_env(workspace, {"DKWS_RATE_LIMIT_BURST": "30"}),
+            env=_prod_env(workspace, {"KERT_RATE_LIMIT_BURST": "30"}),
             stdout=log_file, stderr=subprocess.STDOUT)
         try:
             if not _wait_ready(proc):
@@ -344,7 +344,7 @@ def main() -> int:
     """执行全部验证并写出报告。"""
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(REPO / "evidence" / "m2-p1"))
-    ap.add_argument("--workspace", default="/tmp/dkws-m2p1-e2e-ws")
+    ap.add_argument("--workspace", default="/tmp/kert-m2p1-e2e-ws")
     args = ap.parse_args()
 
     out_dir = Path(args.out)

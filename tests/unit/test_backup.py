@@ -8,9 +8,9 @@ import tarfile
 
 import pytest
 
-from dkws.domain import workspace as ws_mod
-from dkws.domain.errors import ConflictError, UsageError
-from dkws.infrastructure.backup import (
+from kert.domain import workspace as ws_mod
+from kert.domain.errors import ConflictError, UsageError
+from kert.infrastructure.backup import (
     EXCLUDE_PATTERNS,
     MANIFEST_NAME,
     OPTIONAL_DIRS,
@@ -26,7 +26,7 @@ from dkws.infrastructure.backup import (
     verify_backup,
     verify_consistency,
 )
-from dkws.infrastructure.runtime_store import RuntimeStore
+from kert.infrastructure.runtime_store import RuntimeStore
 
 
 @pytest.fixture()
@@ -210,7 +210,7 @@ class TestManifestAndVerify:
         """manifest 落盘且可解析。"""
         root, _ = create_backup(src_ws, dest)
         data = json.loads((root / MANIFEST_NAME).read_text(encoding="utf-8"))
-        assert data["schema"] == "dkws_backup_manifest/v1"
+        assert data["schema"] == "kert_backup_manifest/v1"
 
     def test_manifest_has_notes(self, src_ws, dest):
         """manifest 含非声明与说明事项。"""
@@ -430,7 +430,7 @@ class TestBackupManifestDataclass:
     def test_as_dict_schema(self):
         """含 schema 标识便于版本演进。"""
         manifest = BackupManifest(backup_id="b", created_at="t", workspace="/w")
-        assert manifest.as_dict()["schema"] == "dkws_backup_manifest/v1"
+        assert manifest.as_dict()["schema"] == "kert_backup_manifest/v1"
 
     def test_file_count_derived(self):
         """file_count 由 files 派生，避免手工维护不一致。"""

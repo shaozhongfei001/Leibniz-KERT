@@ -1,0 +1,130 @@
+{
+  "gate": "G0-5-extended",
+  "loop": "PI-0",
+  "trigger": "独立 QA 判定 AT-PI0-004 = PARTIAL，补跨版式对照与 CLAUSE 定位验证",
+  "generatedAt": "2025-09-04T23:33:20+08:00",
+  "parser": "pdfplumber@0.11.10",
+  "sources": [
+    {
+      "sourceId": "PUB-PRICE-002",
+      "sourceTitle": "对公及机构客户服务收费目录（结算与现金管理类，公开公示 PDF）",
+      "sourcePath": "01_raw/_public_reference/PUB-PRICE-002.pdf",
+      "status": "AVAILABLE",
+      "purpose": "跨版式鲁棒性对照",
+      "fileBytes": 285717,
+      "sourceBytesHash": "e84eaf2617308415663527ab871b99e4e6a49a159ed93b8c042e4e68acc01846",
+      "usage": "VERIFICATION_ONLY",
+      "authorityLevel": "PUBLIC_PRICE_DISCLOSURE",
+      "metrics": {
+        "pages_total": 7,
+        "tables_total": 6,
+        "rows_scanned": 263,
+        "rows_header": 10,
+        "rows_section": 126,
+        "rows_empty": 46,
+        "rows_continuation": 0,
+        "items_extracted": 0,
+        "items_with_page": 0,
+        "items_with_bbox": 0,
+        "unknown_field_count": 0,
+        "total_field_count": 0,
+        "rows_unparsed": 81,
+        "pageLocationSuccessRate": 0.0,
+        "bboxLocationSuccessRate": 0.0,
+        "parseFailureRate": 1.0,
+        "unknownFieldRate": 0.0
+      },
+      "unparsedSamples": [
+        {
+          "page": 1,
+          "row": 1,
+          "cells": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "page": 1,
+          "row": 3,
+          "cells": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "page": 1,
+          "row": 14,
+          "cells": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "page": 1,
+          "row": 16,
+          "cells": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "page": 1,
+          "row": 18,
+          "cells": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "sourceId": "REG-CM-001",
+      "sourceTitle": "《现金管理暂行条例》（2011 修订，国务院令第 12 号）",
+      "sourcePath": "01_raw/_authoritative/REG-CM-001.pdf",
+      "status": "AVAILABLE",
+      "purpose": "CLAUSE 定位方式验证 + 首份权威区真实法规",
+      "fileBytes": 92460,
+      "sourceBytesHash": "105df242da87f50587208351c6abb07ddde2d689ab13e0d0619f420875290024",
+      "usage": "AUTHORITATIVE",
+      "authorityLevel": "REGULATORY",
+      "clauseVerified": false,
+      "clauseVerifiedNote": "条款号取自法规原文结构，仍需 Owner 核定后转 CLAUSE_VERIFIED",
+      "metrics": {
+        "pages_total": 4,
+        "lines_scanned": 106,
+        "chapters_found": 4,
+        "clauses_extracted": 25,
+        "clauses_with_page": 25,
+        "clauses_with_chapter": 25,
+        "lines_unattributed": 3,
+        "clausePageLocationRate": 1.0,
+        "clauseChapterAttributionRate": 1.0
+      },
+      "unattributedSamples": [
+        {
+          "page": 1,
+          "line": "《现金管理暂行条例》(2011 修订)（国务院令第 12 号）"
+        },
+        {
+          "page": 1,
+          "line": "（1988年9月8日中华人民共和国国务院令第12号发布 根据2011年1月8日国务"
+        },
+        {
+          "page": 1,
+          "line": "院令第588号《国务院关于废止和修改部分行政法规的决定》修订）"
+        }
+      ],
+      "limitation": "国家层面法规，非行内制度。可支撑现金收支合规边界，给不出产品准入评级/前置产品等 HardRule，不能替代 SRC-CM-001~003。"
+    }
+  ]
+}

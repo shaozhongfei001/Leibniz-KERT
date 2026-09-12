@@ -105,7 +105,7 @@
     {
       "name": "release_manifest_has_git_anchor",
       "passed": true,
-      "detail": "git 锚点已补齐（治理文档原登记 dkws_git_commit_anchor=null）：commit=636b2147ac19 branch=feature/m2-remaining dirty=True"
+      "detail": "git 锚点已补齐（治理文档原登记 kert_git_commit_anchor=null）：commit=636b2147ac19 branch=feature/m2-remaining dirty=True"
     },
     {
       "name": "release_manifest_components",
@@ -179,7 +179,7 @@
     "notes": [
       "本备份不代表已通过灾备演练验收。",
       "RPO/RTO 与备份频率、保留策略属 Owner 决策，本清单不预设业务默认值。",
-      "90_control/locks 已排除：锁含 pid/host，恢复后必然失效，应由 dkws recover --clear-expired 清理。",
+      "90_control/locks 已排除：锁含 pid/host，恢复后必然失效，应由 kert recover --clear-expired 清理。",
       "Runtime DB 经 SQLite 在线备份 API 生成一致性快照，未直接拷贝热文件。"
     ]
   },

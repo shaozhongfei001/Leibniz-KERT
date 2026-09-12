@@ -2,7 +2,7 @@
 """生成供应链图谱 Neo4j 风格浏览器可视化（vis-network 力导向布局，自包含+本地 vendor）。
 
 读取 demo_workspace 最新 supply_chain_graph 版本的 entities/relations parquet，
-产出 dkws/examples/output/supply_chain_graph_1064.html（引用了同目录 vendor/vis-network.min.js）。
+产出 kert/examples/output/supply_chain_graph_1064.html（引用了同目录 vendor/vis-network.min.js）。
 用法: .venv/bin/python scripts/gen_supply_chain_view.py [--version DIR]
 """
 from __future__ import annotations

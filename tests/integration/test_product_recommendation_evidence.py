@@ -14,7 +14,7 @@ STATUS=CANDIDATE / FROZEN=NO / IMPLEMENTED=NO
 """
 from __future__ import annotations
 
-from dkws.application.product_recommendation.evidence import (
+from kert.application.product_recommendation.evidence import (
     MISSING_PROMPT_VERSION,
     MISSING_SKILL_FIELD,
     MISSING_SNAPSHOT_FIELD,
@@ -261,7 +261,7 @@ def test_content_hash_excludes_volatile_metadata():
 # 与 eligibility.py 的集成链路
 # ---------------------------------------------------------------------------
 def test_integration_with_eligibility_module():
-    from dkws.application.product_recommendation.eligibility import (
+    from kert.application.product_recommendation.eligibility import (
         HardEligibilityRuleExecutor,
         ProductUniverseResolver,
     )

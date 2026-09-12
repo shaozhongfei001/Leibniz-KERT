@@ -7,7 +7,7 @@
 
 ## 1. 五层工作区语义映射
 
-依据 `src/dkws/domain/workspace.py` `TOP_LEVEL_DIRS = ("01_raw","02_work","03_core","04_serve","90_control")`，本包落地其中三层，其余两层由 `dkws` CLI 落库链路负责（Gate 0 限定项）。
+依据 `src/kert/domain/workspace.py` `TOP_LEVEL_DIRS = ("01_raw","02_work","03_core","04_serve","90_control")`，本包落地其中三层，其余两层由 `kert` CLI 落库链路负责（Gate 0 限定项）。
 
 | 层 | 目录 | 语义 | 本包落地 |
 |---|---|---|---|
@@ -17,7 +17,7 @@
 | 04_serve | `04_serve/` | 投影说明（实体/关系/规则/数据集/图谱） | ✅ `projection.md`（仅投影规格说明） |
 | 90_control | （未物化） | 审核决定/门禁/血缘/质量 | ❌ 属 CLI 落库链路，本包不物化 |
 
-> **待 dkws CLI 链路正式落库（Gate 0 限定项）**：上表 `❌` 项由 `dkws init / publish` 生成；本包为静态样例，仅以目录 + 本 MANIFEST 表达五层语义，未生成 `.dkws_workspace` 标记、审核决定与图谱投影。
+> **待 kert CLI 链路正式落库（Gate 0 限定项）**：上表 `❌` 项由 `kert init / publish` 生成；本包为静态样例，仅以目录 + 本 MANIFEST 表达五层语义，未生成 `.kert_workspace` 标记、审核决定与图谱投影。
 
 ## 2. 资产清单与内容哈希
 
@@ -53,4 +53,4 @@
 ## 4. 状态
 
 - 全部资产：`CANDIDATE / FROZEN=NO / IMPLEMENTED=NO`。
-- 未落地项（如实）：源材料未上传、条款号待 Owner 核定、`dkws` CLI 未落库、无审核决定与图谱投影。
+- 未落地项（如实）：源材料未上传、条款号待 Owner 核定、`kert` CLI 未落库、无审核决定与图谱投影。

@@ -5,9 +5,9 @@ from __future__ import annotations
 import pytest
 import yaml
 
-from dkws.domain.contracts.base import FieldSpec, SchemaSpec, validate_contract
-from dkws.domain.errors import SchemaValidationError
-from dkws.infrastructure import markdown
+from kert.domain.contracts.base import FieldSpec, SchemaSpec, validate_contract
+from kert.domain.errors import SchemaValidationError
+from kert.infrastructure import markdown
 
 
 def _sample(**overrides):

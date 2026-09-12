@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# DKWS 故障注入一键测试脚本
-# 启动 DKWS 服务 → 逐项执行故障注入 → 记录行为 → 生成报告
+# KERT 故障注入一键测试脚本
+# 启动 KERT 服务 → 逐项执行故障注入 → 记录行为 → 生成报告
 # 全程无人值守，安全可控（自动恢复）
 #
 # 用法：
@@ -8,13 +8,13 @@
 #
 # 环境要求：
 #   - Python 3.10+
-#   - DKWS 项目在 /home/szf/dev/Leibniz-KERT
+#   - KERT 项目在 /home/szf/dev/Leibniz-KERT
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$SCRIPT_DIR/.." && pwd)"
-PORT="${DKWS_PORT:-8106}"
+PORT="${KERT_PORT:-8106}"
 SKIP_PROCESS=""
 OUT_DIR="${REPO}/evidence/m3-p0"
 
@@ -45,7 +45,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 echo "============================================"
-echo "DKWS 故障注入一键测试"
+echo "KERT 故障注入一键测试"
 echo "============================================"
 echo "端口: $PORT"
 echo "输出: $OUT_DIR"
@@ -73,7 +73,7 @@ fi
 echo "[3/4] 运行故障注入测试 ..."
 echo "--------------------------------------------"
 python3 "$SCRIPT_DIR/chaos_test.py" \
-    --dkws-port "$PORT" \
+    --kert-port "$PORT" \
     --out "$OUT_DIR" \
     $SKIP_PROCESS
 
@@ -84,7 +84,7 @@ echo ""
 echo "[4/4] 最终清理 ..."
 python3 "$SCRIPT_DIR/chaos_injector.py" cleanup 2>/dev/null || true
 
-# 杀掉可能残留的 DKWS 进程
+# 杀掉可能残留的 KERT 进程
 PID_ON_PORT=$(lsof -ti :"$PORT" 2>/dev/null || true)
 if [[ -n "$PID_ON_PORT" ]]; then
     echo "  清理残留进程: $PID_ON_PORT"

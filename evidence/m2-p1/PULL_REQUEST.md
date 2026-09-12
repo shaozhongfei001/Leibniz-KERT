@@ -14,16 +14,16 @@
 
 ## 一、目标
 
-为 DKWS Python Core（C′ 架构中唯一公共入口）建立生产加固基础能力，覆盖
+为 KERT Python Core（C′ 架构中唯一公共入口）建立生产加固基础能力，覆盖
 认证与安全边界、流量与体积控制、运行态持久化三块。
 
 ## 二、范围与实现
 
 ### M2.1 认证与安全边界（ADR-013 / ADR-015）
 
-- 新增 `src/dkws/infrastructure/runtime_config.py`：集中承载 profile(`dev`/`prod`)、
+- 新增 `src/kert/infrastructure/runtime_config.py`：集中承载 profile(`dev`/`prod`)、
   认证、限流、大小、并发、Runtime Store 配置。
-  来源优先级：**默认值 < 配置文件(`DKWS_CONFIG_FILE`) < 环境变量(`DKWS_*`) < 构造参数**。
+  来源优先级：**默认值 < 配置文件(`KERT_CONFIG_FILE`) < 环境变量(`KERT_*`) < 构造参数**。
 - **凭据处理**：API Key 仅以 SHA-256 摘要驻留内存；配置文件可直接写 `digest`
   从而完全不落明文；比较使用 `hmac.compare_digest`（常量时间）；
   密钥短于 16 字符直接拒绝启动；错误响应与日志不回显密钥，仅用非机密 `key_id`。
@@ -49,7 +49,7 @@
 
 ### M2.3 SQLite Runtime Store（ADR-012）
 
-- 新增 `src/dkws/infrastructure/runtime_store.py`：
+- 新增 `src/kert/infrastructure/runtime_store.py`：
   WAL + `synchronous=NORMAL` + `busy_timeout`；每操作独立连接 + 进程内写锁。
 - `schema_version` 表 + 顺序 `MIGRATIONS`（**只可追加，不可修改已发布项**），
   启动自动应用未执行的 migration，重复执行幂等。
@@ -130,11 +130,11 @@
 **新增测试**：`tests/unit/test_runtime_config.py`、`tests/unit/test_runtime_store.py`、
 `tests/security/test_api_hardening.py`、`tests/integration/test_runtime_store_api.py`
 
-**新增文档/工具**：`docs/architecture/DKWS_RUNTIME_HARDENING_M2P1.md`、
+**新增文档/工具**：`docs/architecture/KERT_RUNTIME_HARDENING_M2P1.md`、
 `examples/config/runtime.prod.example.json`、`scripts/verify_m2p1_hardening.py`、
 `evidence/m2-p1/**`（含 `TECH_LEAD_REVIEW.md` 决策台账）
 
-**修改文档**：`docs/architecture/DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
+**修改文档**：`docs/architecture/KERT_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
 （新增「2. 网络与 TLS 边界」，落实 Tech Lead 决策 3）
 
 **其他**：`.gitignore` 增加 `!evidence/**/*.log` 例外（证据日志需入库，
@@ -155,7 +155,7 @@
 **均无任何 TLS/反向代理/监听地址表述**，该缺口同时对应 WBS `M2.1` 中
 已列但未落地的条目「TLS 反向代理边界」，属真实漏项，本次补齐：
 
-- `docs/architecture/DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
+- `docs/architecture/KERT_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
   新增「2. 网络与 TLS 边界」（TLS 终止位置与调用链拓扑、逐组件监听地址要求、
   代理头信任策略的结论与理由、代理侧建议配置），后续章节编号顺延（2~8 → 3~9）
 - `evidence/m2-p1/TECH_LEAD_REVIEW.md` 新增，记录核验结果与四项决策台账
@@ -164,20 +164,20 @@
 
 1. `serve_skill_service.py` 的 `--host` 默认为 `0.0.0.0`（沿用既有行为），
    生产部署**必须**显式传 `--host 127.0.0.1`，或以防火墙/安全组约束来源。
-2. 反向代理层的大小限制**不应小于**应用层 `DKWS_MAX_REQUEST_BYTES`，
+2. 反向代理层的大小限制**不应小于**应用层 `KERT_MAX_REQUEST_BYTES`，
    否则应用层 413 会被代理层提前遮蔽。
 
 ## 九、遗留项（非本任务包范围）
 
 - Job 原子领取 / lease / dead-letter → **M2.4**（本次仅实现状态复位）
 - 分布式限流 → 依决策 2，暂不实施
-- `DKWS_TRUSTED_PROXY` 等可信代理配置 → 依决策 1，当前未实现
+- `KERT_TRUSTED_PROXY` 等可信代理配置 → 依决策 1，当前未实现
 - 密钥生成规范 / 下发渠道 / 轮换周期 / 吊销流程 / 审计要求 → 依决策 4，独立运维任务
 - 响应体大小限制对流式响应会先缓冲；当前无流式端点，后续引入需改造
 
 ## 十、非声明
 
-- 本次**不**代表 DKWS 已生产就绪。
+- 本次**不**代表 KERT 已生产就绪。
 - 本次**不**代表 GITS UAT 已通过。
 - 本次**不**代表安全审计已完成。
 - 本次**不**代表 C′ 架构已成为正式基线。

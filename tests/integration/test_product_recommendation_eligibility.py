@@ -14,7 +14,7 @@ STATUS=CANDIDATE / FROZEN=NO / IMPLEMENTED=NO
 """
 from __future__ import annotations
 
-from dkws.application.product_recommendation.eligibility import (
+from kert.application.product_recommendation.eligibility import (
     ELIGIBILITY_CLOSED_SET,
     KERT_CONTEXT_INSUFFICIENT,
     KERT_PRODUCT_KNOWLEDGE_STALE,

@@ -1345,9 +1345,9 @@
             "message": "请求校验通过"
           },
           {
-            "phase": "dkws",
+            "phase": "kert",
             "status": "ok",
-            "message": "DKWS 客户知识库检索完成（CUST-VALIDATION-001 命中 0 条 KI）"
+            "message": "KERT 客户知识库检索完成（CUST-VALIDATION-001 命中 0 条 KI）"
           },
           {
             "phase": "evidence",
@@ -1441,9 +1441,9 @@
             "message": "进入知识地图 KM-CORP-RM-OUTREACH，任务 OUTREACH_PREPARATION"
           },
           {
-            "phase": "dkws",
+            "phase": "kert",
             "status": "ok",
-            "message": "DKWS 客户知识库检索完成（CUST-VALIDATION-001 命中 0 条 KI）"
+            "message": "KERT 客户知识库检索完成（CUST-VALIDATION-001 命中 0 条 KI）"
           },
           {
             "phase": "evidence",
@@ -1558,9 +1558,9 @@
             "message": "进入知识地图 KM-CORP-RM-MEETING，任务 MEETING_PREPARATION"
           },
           {
-            "phase": "dkws",
+            "phase": "kert",
             "status": "ok",
-            "message": "DKWS 客户知识库检索完成（CUST-VALIDATION-001 命中 0 条 KI）"
+            "message": "KERT 客户知识库检索完成（CUST-VALIDATION-001 命中 0 条 KI）"
           },
           {
             "phase": "evidence",

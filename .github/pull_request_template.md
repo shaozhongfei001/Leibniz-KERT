@@ -23,7 +23,7 @@
 ## 检查清单
 
 - [ ] 代码遵循项目编码规范（`ruff check src/ tests/` 无错误）
-- [ ] 类型检查通过（`mypy src/dkws/` 无新增错误）
+- [ ] 类型检查通过（`mypy src/kert/` 无新增错误）
 - [ ] 未修改 GITS 仓库或绕过 Python Core 公共入口
 - [ ] 新增依赖已更新 `pyproject.toml` 和 `requirements-lock.txt`
 - [ ] 相关文档已更新（ADR / 规范 / README）

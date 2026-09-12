@@ -7,7 +7,7 @@
 
 ## 语义
 
-`03_core` 是 DKWS 五层工作区的**唯一权威源**。产品卡作为权威结构化投影落在此层，按 `<domain>/version=<版本号>/` 组织，版本目录**发布后不可变，只可退役**。
+`03_core` 是 KERT 五层工作区的**唯一权威源**。产品卡作为权威结构化投影落在此层，按 `<domain>/version=<版本号>/` 组织，版本目录**发布后不可变，只可退役**。
 
 ## 本包内容
 
@@ -17,4 +17,4 @@
 
 ## 与发布机制的关系（如实）
 
-正式 DKWS 发布由 `src/dkws/application/publish.py` `Publisher.publish` 完成（收集 APPROVED 候选 → G3 门禁 → 写临时版本目录 + RELEASE.md（SHA-256 清单）→ 全量重读校验 → 原子提交 → 原子更新 CURRENT.md 指针）。本包为**静态示例**，`RELEASE.md`/`CURRENT.md` 为人工按同构规则预填（`status=CANDIDATE`），**待 dkws CLI 链路正式落库（Gate 0 限定项）**后由 CLI 重算覆盖。
+正式 KERT 发布由 `src/kert/application/publish.py` `Publisher.publish` 完成（收集 APPROVED 候选 → G3 门禁 → 写临时版本目录 + RELEASE.md（SHA-256 清单）→ 全量重读校验 → 原子提交 → 原子更新 CURRENT.md 指针）。本包为**静态示例**，`RELEASE.md`/`CURRENT.md` 为人工按同构规则预填（`status=CANDIDATE`），**待 kert CLI 链路正式落库（Gate 0 限定项）**后由 CLI 重算覆盖。

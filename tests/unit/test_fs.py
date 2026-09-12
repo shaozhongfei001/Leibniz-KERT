@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.domain.errors import PathSafetyError, UsageError
-from dkws.infrastructure.fs import REBUILDABLE_ROOTS, WorkspaceWriter
+from kert.domain.errors import PathSafetyError, UsageError
+from kert.infrastructure.fs import REBUILDABLE_ROOTS, WorkspaceWriter
 
 
 @pytest.fixture

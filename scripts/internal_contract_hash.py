@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compute DKWS internal contract bundle hash."""
+"""Compute KERT internal contract bundle hash."""
 from __future__ import annotations
 import hashlib, json
 from pathlib import Path
@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "docs" / "contracts" / "internal"
 WHITELIST = [
-    "openapi/dkws-skill-runtime-internal-v1.yaml",
+    "openapi/kert-skill-runtime-internal-v1.yaml",
     "schemas/execution-plan.schema.json",
     "schemas/execution-result.schema.json",
     "schemas/tool-call-receipt.schema.json",
@@ -35,7 +35,7 @@ def main() -> None:
     for e in entries:
         h.update(e["path"].encode("utf-8")); h.update(b"\0"); h.update(e["sha256"].encode("ascii")); h.update(b"\0")
     result = {
-        "schema": "dkws-internal-contract-bundle/v1",
+        "schema": "kert-internal-contract-bundle/v1",
         "base_dir": "docs/contracts/internal",
         "bundle_hash": h.hexdigest(),
         "files": entries,

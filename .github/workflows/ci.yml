@@ -1,9 +1,9 @@
-# DKWS CI/CD Pipeline
+# KERT CI/CD Pipeline
 #
 # 触发条件：push 到 main/develop 分支，PR 到 main/develop
-# 关键约束：CI 在无密钥环境下运行，使用 DKWS_PROFILE=dev（默认值，无需 API Key）
+# 关键约束：CI 在无密钥环境下运行，使用 KERT_PROFILE=dev（默认值，无需 API Key）
 
-name: DKWS CI
+name: KERT CI
 
 on:
   push:
@@ -21,7 +21,7 @@ concurrency:
 env:
   PYTHON_VERSION: "3.11"
   # CI 环境：dev profile 无需 API Key，测试使用确定性逻辑
-  DKWS_PROFILE: dev
+  KERT_PROFILE: dev
 
 jobs:
   # ──────────────────────────────────────────────
@@ -54,7 +54,7 @@ jobs:
       - name: Mypy type check
         run: |
           pip install ".[api]"
-          mypy src/dkws/ --ignore-missing-imports || true
+          mypy src/kert/ --ignore-missing-imports || true
           # mypy 初次集成：仅报告，不阻塞 CI
           # 后续收紧：移除 || true，添加 strict 选项
 
@@ -94,14 +94,14 @@ jobs:
         run: |
           python -m pytest \
             tests/unit/ tests/integration/ tests/contract/ tests/recovery/ \
-            --cov=dkws \
+            --cov=kert \
             --cov-fail-under=80 \
             --cov-report=term-missing \
             --cov-report=xml:coverage.xml \
             --cov-report=html:coverage-html \
             -q
         env:
-          DKWS_PROFILE: dev
+          KERT_PROFILE: dev
 
       - name: Upload coverage report
         if: always()
@@ -140,7 +140,7 @@ jobs:
       - name: Run E2E tests
         run: python -m pytest tests/e2e/ -q
         env:
-          DKWS_PROFILE: dev
+          KERT_PROFILE: dev
 
   # ──────────────────────────────────────────────
   # Security：安全测试
@@ -169,7 +169,7 @@ jobs:
       - name: Run security tests
         run: python -m pytest tests/security/ -q
         env:
-          DKWS_PROFILE: dev
+          KERT_PROFILE: dev
 
   # ──────────────────────────────────────────────
   # Performance：性能基准（允许失败）
@@ -199,4 +199,4 @@ jobs:
       - name: Run performance benchmarks
         run: python -m pytest tests/performance/ -q
         env:
-          DKWS_PROFILE: dev
+          KERT_PROFILE: dev

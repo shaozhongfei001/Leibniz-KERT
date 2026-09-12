@@ -10,7 +10,7 @@
 
 ## 0. 非声明
 
-- 本次不代表 DKWS 已生产就绪
+- 本次不代表 KERT 已生产就绪
 - 本次不代表 GITS UAT 已通过
 - 本次不代表安全审计已完成
 - 本次不代表 C′ 受控混合架构已成为正式基线
@@ -117,7 +117,7 @@
 
 | 验收标准 | 达成情况 | 证据位置 |
 |----------|----------|----------|
-| 备份脚本 | `backup.py` + `dkws_ops.py backup` | `evidence/m2-p5/` E2E 检查 2-6 |
+| 备份脚本 | `backup.py` + `kert_ops.py backup` | `evidence/m2-p5/` E2E 检查 2-6 |
 | 恢复演练 | 真实备份→校验→恢复→一致性校验 | `evidence/m2-p5/` E2E 检查 10-17 |
 | 灾难恢复 | 源工作区完全删除后从备份恢复 | `evidence/m2-p5/` E2E 检查 19 |
 | 升级回滚 | 发布清单 + git 锚点 + 清单比对 | `evidence/m2-p5/` E2E 检查 20-25 |
@@ -155,7 +155,7 @@
 | SBOM 生成 | CycloneDX 格式 | `scripts/generate_sbom.sh` |
 | 依赖锁 | 35 个精确版本 | `requirements-lock.txt` |
 | 漏洞扫描 | pip-audit + bandit | `scripts/security_scan.sh` |
-| 无密钥环境 | DKWS_PROFILE=dev，436 测试通过 | `scripts/ci_setup.sh` |
+| 无密钥环境 | KERT_PROFILE=dev，436 测试通过 | `scripts/ci_setup.sh` |
 
 **关键设计**：
 - 安全扫描仅报告不阻塞（后续可收紧）

@@ -6,8 +6,8 @@ import datetime as _dt
 
 import pytest
 
-from dkws.domain.errors import UsageError
-from dkws.domain.timeutil import (
+from kert.domain.errors import UsageError
+from kert.domain.timeutil import (
     now_utc,
     parse_business_date,
     parse_ts,

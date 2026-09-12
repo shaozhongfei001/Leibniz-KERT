@@ -2,7 +2,7 @@
 
 > **基线值，非 SLA 承诺**
 
-- 项目：Leibniz-KERT (DKWS)
+- 项目：Leibniz-KERT (KERT)
 - 里程碑：M2.10 NFR Baseline
 - 生成时间：2026-08-27T19:21:49.748978
 

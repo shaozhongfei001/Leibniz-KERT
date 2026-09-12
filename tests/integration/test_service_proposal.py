@@ -7,8 +7,8 @@ import time
 import pytest
 from fastapi.testclient import TestClient
 
-from dkws.api.server import create_app
-from dkws.application.skills import SkillExecutionService
+from kert.api.server import create_app
+from kert.application.skills import SkillExecutionService
 
 CTX = {
     "schemaVersion": "1.0.0",
@@ -71,7 +71,7 @@ class TestSp20Sync:
         assert "SP-20" in reg
 
     def test_industry_mapping(self, svc):
-        from dkws.application.service_proposal import ServiceProposalExecutor
+        from kert.application.service_proposal import ServiceProposalExecutor
         ex = ServiceProposalExecutor()
         assert ex._map_industry("信息技术-软件开发") == "TECHNOLOGY"
         assert ex._map_industry("制造业-装备制造") == "MANUFACTURING"

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""DKWS Phase 0 contract bundle hash.
+"""KERT Phase 0 contract bundle hash.
 
 规则：
-- 固定白名单：docs/contracts/openapi/dkws-openapi-v2.yaml + docs/contracts/schemas/*.json
+- 固定白名单：docs/contracts/openapi/kert-openapi-v2.yaml + docs/contracts/schemas/*.json
 - 固定路径排序：按 POSIX 相对路径排序
 - 编码：UTF-8，按原始字节哈希（不进行换行归一）
 - 不包含自引用 hash 字段；清单单独输出时由本脚本生成，不作为输入
@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACTS_DIR = ROOT / "docs" / "contracts"
 DEFAULT_WHITELIST = [
-    "openapi/dkws-openapi-v2.yaml",
+    "openapi/kert-openapi-v2.yaml",
     "schemas/context-package.schema.json",
     "schemas/error.schema.json",
     "schemas/skill-execute-request.schema.json",
@@ -56,7 +56,7 @@ def compute(whitelist: list[str]) -> dict:
         h.update(e["sha256"].encode("ascii"))
         h.update(b"\0")
     return {
-        "schema": "dkws-contract-bundle/v1",
+        "schema": "kert-contract-bundle/v1",
         "base_dir": "docs/contracts",
         "encoding": "utf-8",
         "sort": "path_asc",
@@ -66,7 +66,7 @@ def compute(whitelist: list[str]) -> dict:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Compute DKWS contract bundle hash")
+    ap = argparse.ArgumentParser(description="Compute KERT contract bundle hash")
     ap.add_argument("--output", help="optional JSON output path")
     args = ap.parse_args()
     result = compute(DEFAULT_WHITELIST)

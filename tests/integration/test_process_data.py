@@ -8,9 +8,9 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from dkws.application.ingest import Ingestor
-from dkws.application.process_data import DataProcessor
-from dkws.domain.errors import UsageError
+from kert.application.ingest import Ingestor
+from kert.application.process_data import DataProcessor
+from kert.domain.errors import UsageError
 
 
 @pytest.fixture

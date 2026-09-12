@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""袁阳 assemblyMaterials.zip → DKWS 五层工作区迁移（bank_front 域）。
+"""袁阳 assemblyMaterials.zip → KERT 五层工作区迁移（bank_front 域）。
 
 规划映射（与 migrate_bank_front_data.py 同构，五层）：
 - 01_raw   ：BATCH=<id> 不可变批次（MANIFEST.md + SHA-256，domain=bank_front，
@@ -23,13 +23,13 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-from dkws.application.ingest import Ingestor
-from dkws.application.process_data import DataProcessor
-from dkws.domain import hashing, timeutil
-from dkws.domain.contracts import specs
-from dkws.domain.contracts.base import validate_contract
-from dkws.infrastructure import markdown
-from dkws.infrastructure.fs import WorkspaceWriter
+from kert.application.ingest import Ingestor
+from kert.application.process_data import DataProcessor
+from kert.domain import hashing, timeutil
+from kert.domain.contracts import specs
+from kert.domain.contracts.base import validate_contract
+from kert.infrastructure import markdown
+from kert.infrastructure.fs import WorkspaceWriter
 
 DOMAIN = "bank_front"
 SERVICE_ID = "bank_front_data"
@@ -176,7 +176,7 @@ def main() -> None:
 
     # 4) 工作区一致性检查
     print("\n== 工作区一致性 ==")
-    from dkws.domain import workspace as ws_mod
+    from kert.domain import workspace as ws_mod
 
     findings = ws_mod.check_workspace(ws, mode="full")
     blockers = [f for f in findings if f.level in ("BLOCKER", "MAJOR")]

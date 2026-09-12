@@ -40,4 +40,4 @@
 ## 规则来源与语义查询
 
 - 语义查询：`SQ-ACTIVE-PRODUCT-VERSIONS`、`SQ-CUSTOMER-NEED-AND-PROJECT`、`SQ-CUSTOMER-RELATIONSHIP`；
-- 规则资产落 DKWS 五层工作区（`01_raw → 03_core → 04_serve`），`03_core` 为唯一权威源。
+- 规则资产落 KERT 五层工作区（`01_raw → 03_core → 04_serve`），`03_core` 为唯一权威源。

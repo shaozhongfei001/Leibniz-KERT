@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from dkws.domain import paths, workspace as ws_mod
-from dkws.domain.errors import ConflictError, PathSafetyError, UsageError
-from dkws.infrastructure import locks as locks_mod
-from dkws.infrastructure.fs import WorkspaceWriter
+from kert.domain import paths, workspace as ws_mod
+from kert.domain.errors import ConflictError, PathSafetyError, UsageError
+from kert.infrastructure import locks as locks_mod
+from kert.infrastructure.fs import WorkspaceWriter
 
 
 class TestInit:
@@ -101,7 +101,7 @@ class TestPathSafety:
             paths.resolve_ws_path(ws, "01_raw/bad ")
 
     def test_symlink_escape_rejected(self, ws):
-        outside = Path("/tmp/dkws_outside_symlink")
+        outside = Path("/tmp/kert_outside_symlink")
         outside.mkdir(exist_ok=True)
         (ws / "01_raw" / "link").symlink_to(outside, target_is_directory=True)
         with pytest.raises(PathSafetyError):
@@ -166,7 +166,7 @@ class TestLocks:
 
 class TestHashing:
     def test_md_canonical(self):
-        from dkws.domain import hashing
+        from kert.domain import hashing
 
         p1 = hashing.md_semantic_sha256("# x\n\nbody  \ntail  \n")
         p2 = hashing.md_semantic_sha256("# x\n\nbody\ntail\n")
@@ -178,14 +178,14 @@ class TestHashing:
         assert q != p1
 
     def test_sha256_deterministic(self):
-        from dkws.domain import hashing
+        from kert.domain import hashing
 
         assert hashing.sha256_hex("abc") == hashing.sha256_hex("abc")
         assert len(hashing.sha256_hex("abc")) == 64
 
     def test_parquet_logical_hash_stable(self):
         import pyarrow as pa
-        from dkws.domain import hashing
+        from kert.domain import hashing
 
         t1 = pa.table({"a": [1, 2], "b": ["x", "y"]})
         t2 = pa.table({"b": ["x", "y"], "a": [1, 2]})  # 列序不同

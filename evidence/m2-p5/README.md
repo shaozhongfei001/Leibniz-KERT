@@ -6,7 +6,7 @@
 - **生成时间**：2026-08-27
 
 > **非声明**
-> - 本次不代表 DKWS 已生产就绪。
+> - 本次不代表 KERT 已生产就绪。
 > - **本次不代表已通过灾备演练验收**——本报告为开发侧自验，
 >   生产灾备演练需在真实部署环境由运维执行并由 Owner 签署。
 > - **RPO / RTO 目标属 Owner 决策**，本任务包不设定、不宣称满足任何具体指标。
@@ -19,7 +19,7 @@ WBS 验收标准：**恢复演练报告**。
 
 | 标准 | 实现 | 证据 |
 |---|---|---|
-| 备份脚本 | `backup.py` + `scripts/dkws_ops.py backup` | E2E 检查 2-6 |
+| 备份脚本 | `backup.py` + `scripts/kert_ops.py backup` | E2E 检查 2-6 |
 | 恢复演练 | 真实备份→校验→恢复→一致性校验全链路 | E2E 检查 10-17 |
 | **灾难恢复** | 源工作区**完全删除**后从备份恢复 | E2E 检查 19 |
 | 回滚流程 | 发布清单 + git 锚点 + 清单比对 | E2E 检查 20-25 |
@@ -65,7 +65,7 @@ WBS 验收标准：**恢复演练报告**。
 | 3 | `backup_db_uses_online_api` | `sqlite_online_backup`，schema=2 |
 | 4 | `backup_captures_consistency_point` | CURRENT + core 版本 + db schema |
 | 5 | `backup_excludes_stale_locks` | 失效锁被排除 |
-| 6 | `backup_includes_marker` | `.dkws_workspace` 已备份 |
+| 6 | `backup_includes_marker` | `.kert_workspace` 已备份 |
 
 ### 4.2 校验阶段
 
@@ -166,9 +166,9 @@ WAL 模式下直接拷贝 `.db` 会与 `-wal`/`-shm` **不一致**，恢复后�
 
 ### 5.8 git 锚点补齐（治理文档登记的缺失项）
 
-`DKWS_STATUS_BASELINE_CANDIDATE.yaml` 原登记 `dkws_git_commit_anchor: null`。
+`KERT_STATUS_BASELINE_CANDIDATE.yaml` 原登记 `kert_git_commit_anchor: null`。
 现由 `git_anchor()` 采集 commit / branch / tag / dirty 状态。
-**dirty 工作区会明确警示「不应用于生产」**，`dkws_ops.py manifest` 返回退出码 2
+**dirty 工作区会明确警示「不应用于生产」**，`kert_ops.py manifest` 返回退出码 2
 （可用 `--allow-dirty` 放行）。
 
 ## 6. Loop Engineering 记录
@@ -195,8 +195,8 @@ WAL 模式下直接拷贝 `.db` 会与 `-wal`/`-shm` **不一致**，恢复后�
 
 | 文件 | 行数 | 说明 |
 |---|---|---|
-| `src/dkws/infrastructure/backup.py` | 529 | 备份范围、一致性点、在线 DB 快照、完整性校验、恢复与一致性验证 |
-| `src/dkws/infrastructure/release.py` | ~330 | git 锚点、版本汇总、组件哈希、发布清单、清单比对 |
+| `src/kert/infrastructure/backup.py` | 529 | 备份范围、一致性点、在线 DB 快照、完整性校验、恢复与一致性验证 |
+| `src/kert/infrastructure/release.py` | ~330 | git 锚点、版本汇总、组件哈希、发布清单、清单比对 |
 
 ### 7.2 新增（测试）
 
@@ -205,7 +205,7 @@ WAL 模式下直接拷贝 `.db` 会与 `-wal`/`-shm` **不一致**，恢复后�
 
 ### 7.3 新增（工具 / 文档）
 
-- `scripts/dkws_ops.py`（运维 CLI：backup / verify / restore / manifest / compare）
+- `scripts/kert_ops.py`（运维 CLI：backup / verify / restore / manifest / compare）
 - `scripts/verify_m2p5_backup_restore.py`（E2E 演练）
 - `evidence/m2-p5/**`
 

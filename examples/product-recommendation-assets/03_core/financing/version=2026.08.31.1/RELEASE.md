@@ -23,4 +23,4 @@
 
 ## 说明（如实）
 
-本发布记录为**候选示例**，未经 `Publisher.publish` 流程生成：无 G3 门禁结果、无审核决定（`90_control/decisions`）、无 `.dkws_workspace` 标记。**待 dkws CLI 链路正式落库（Gate 0 限定项）**后由 CLI 重算清单哈希并原子提交。
+本发布记录为**候选示例**，未经 `Publisher.publish` 流程生成：无 G3 门禁结果、无审核决定（`90_control/decisions`）、无 `.kert_workspace` 标记。**待 kert CLI 链路正式落库（Gate 0 限定项）**后由 CLI 重算清单哈希并原子提交。

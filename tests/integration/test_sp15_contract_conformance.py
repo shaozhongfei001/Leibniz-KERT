@@ -6,7 +6,7 @@ STATUS=CANDIDATE / FROZEN=NO / IMPLEMENTED=NO / REAL_E2E_PASS=NO
 只读依赖（本测试不改动、不新增任何生产代码）：
 - KERT skills/product-recommendation/contracts/recommendation-result.md（最小结构 + 8 必填字段）
 - KERT skills/product-recommendation/contracts/examples/{valid,invalid}-sp15-result.json（正/反样例）
-- KERT specs/dkws-openapi-v1.yaml（8 个 KERT_* 错误码登记）
+- KERT specs/kert-openapi-v1.yaml（8 个 KERT_* 错误码登记）
 - GITS specs/product-recommendation/{recommendation-result,eligibility-result,
   product-fit-result,portfolio-candidate}.schema.json（仅读，用于 jsonschema 校验）
 - 已验收组件：eligibility / matcher / ranker / evidence / need_profile / portfolio
@@ -31,7 +31,7 @@ from pathlib import Path
 
 import pytest
 
-from dkws.application.product_recommendation.eligibility import (
+from kert.application.product_recommendation.eligibility import (
     ELIGIBILITY_CLOSED_SET,
     KERT_CONTEXT_INSUFFICIENT,
     KERT_EVIDENCE_INCOMPLETE,
@@ -42,19 +42,19 @@ from dkws.application.product_recommendation.eligibility import (
     HardEligibilityRuleExecutor,
     ProductUniverseResolver,
 )
-from dkws.application.product_recommendation.evidence import (
+from kert.application.product_recommendation.evidence import (
     MISSING_SNAPSHOT_FIELD,
     EvidenceBundleAssembler,
 )
-from dkws.application.product_recommendation.matcher import NeedCapabilityMatcher
-from dkws.application.product_recommendation.ranker import CandidateRanker
+from kert.application.product_recommendation.matcher import NeedCapabilityMatcher
+from kert.application.product_recommendation.ranker import CandidateRanker
 
 # ---------------------------------------------------------------------------
 # 常量与路径
 # ---------------------------------------------------------------------------
 KERT_ROOT = Path(__file__).resolve().parents[2]  # tests/integration -> repo root
 EXAMPLES_DIR = KERT_ROOT / "skills" / "product-recommendation" / "contracts" / "examples"
-OPENAPI_SPEC = KERT_ROOT / "specs" / "dkws-openapi-v1.yaml"
+OPENAPI_SPEC = KERT_ROOT / "specs" / "kert-openapi-v1.yaml"
 
 # 8 必填字段（对齐 GITS recommendation-result.schema.json `required` 与 contracts §4.1）
 REQUIRED_RESULT_FIELDS = (
@@ -72,7 +72,7 @@ REQUIRED_RESULT_FIELDS = (
 RULE_RESULT_FIELDS = ("ruleId", "ruleVersion", "result", "reasonCode",
                       "inputFactRefs", "evidenceRefs")
 
-# SP-15 专属 8 个 KERT_* 错误码（对齐 dkws-openapi-v1.yaml ErrorDetail.code）
+# SP-15 专属 8 个 KERT_* 错误码（对齐 kert-openapi-v1.yaml ErrorDetail.code）
 ALL_KERT_ERROR_CODES = {
     "KERT_PERMISSION_DENIED",
     "KERT_CONTEXT_INSUFFICIENT",
@@ -280,7 +280,7 @@ def test_inv02_only_eligible_has_fit_score_end_to_end():
 
 
 def test_inv02_ranker_forces_non_eligible_fit_score_null():
-    from dkws.application.product_recommendation.matcher import FitResult
+    from kert.application.product_recommendation.matcher import FitResult
 
     frs = [
         FitResult(productId="P-A", productVersion="2.2", eligibility="ELIGIBLE",
@@ -508,7 +508,7 @@ def test_component_outputs_validate_against_gits_schemas():
     if schemas is None:
         pytest.skip("GITS product-recommendation schemas 不存在（只读契约未就位）")
 
-    from dkws.application.product_recommendation.portfolio import PortfolioConstraintChecker
+    from kert.application.product_recommendation.portfolio import PortfolioConstraintChecker
 
     products, elig = _four_state_eligibility()
     fit_results = NeedCapabilityMatcher().match(products, _make_needs(), {}, eligibility=elig)

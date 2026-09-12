@@ -18,7 +18,7 @@
 
 ## 1. 问题描述（ID 漂移）
 
-WP2-3 执行器 `src/dkws/application/product_recommendation/eligibility.py` 的
+WP2-3 执行器 `src/kert/application/product_recommendation/eligibility.py` 的
 `RULE_CATALOG` 原使用下列 ruleId：
 
 | 原 category | 原 ruleId | 原 ruleVersion |
@@ -68,7 +68,7 @@ WP2-3 执行器 `src/dkws/application/product_recommendation/eligibility.py` 的
 
 | 文件 | 动作 | 说明 |
 |---|---|---|
-| `src/dkws/application/product_recommendation/eligibility.py` | 修改 | `RULE_CATALOG` 6 条 ruleId 改为清单真实 ID；`ruleVersion` 全部改 `1.0.0-candidate`；注释补 FO-01 映射说明 |
+| `src/kert/application/product_recommendation/eligibility.py` | 修改 | `RULE_CATALOG` 6 条 ruleId 改为清单真实 ID；`ruleVersion` 全部改 `1.0.0-candidate`；注释补 FO-01 映射说明 |
 | `tests/integration/test_product_recommendation_eligibility.py` | 修改 + 新增 | 更新旧 ID 引用（`PR-ADM-004`→`PR-ELIG-001`、`PR-PRE-001`→`PR-PRMUTEX-001`、聚合测试 fixture）；新增 `test_rule_catalog_ids_and_versions_align_with_manifest` 锁定精确映射 |
 | `tests/integration/test_golden_cases_consistency.py` | 新增 | 新增 `test_executor_rule_catalog_is_subset_of_manifest`：执行器 `RULE_CATALOG ⊆ 清单` 断言 + 版本对齐 + 完备性（无遗漏/无孤儿） |
 | `docs/governance/FO-01_RULE_ID_ALIGNMENT.md` | 新增 | 本文档 |

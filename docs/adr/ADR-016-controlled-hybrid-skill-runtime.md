@@ -2,11 +2,11 @@
 
 > 状态：CANDIDATE_AWAITING_OWNER
 > 日期：2026-08-26
-> 工作流：DKWS-C-MIXED-ARCH-REMEDIATION-01
+> 工作流：KERT-C-MIXED-ARCH-REMEDIATION-01
 
 ## Context
 
-DKWS 需要 Skill 动态加载、热更新、ToolCall 与 Python/Shell 沙箱执行。
+KERT 需要 Skill 动态加载、热更新、ToolCall 与 Python/Shell 沙箱执行。
 独立评审认为原方案 C 边界不清晰，要求修改为 C′。
 
 ## Decision
@@ -14,7 +14,7 @@ DKWS 需要 Skill 动态加载、热更新、ToolCall 与 Python/Shell 沙箱执
 采用 C′ 受控混合架构：
 
 - Python Core 是唯一公共入口和控制面
-- Java Skill Runtime 是 DKWS 内部无状态可替换执行器
+- Java Skill Runtime 是 KERT 内部无状态可替换执行器
 - GITS 只通过 Python Core 公共 HTTP 访问
 - 通用 Python/Shell 使用 OS 级 Sandbox Runner
 - 方案 B 作为正式回退路线

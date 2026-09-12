@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.domain.errors import UsageError
-from dkws.domain.rules.dsl import (
+from kert.domain.errors import UsageError
+from kert.domain.rules.dsl import (
     ACTION_OPS,
     CALC_FUNCS,
     COMPARE_OPS,

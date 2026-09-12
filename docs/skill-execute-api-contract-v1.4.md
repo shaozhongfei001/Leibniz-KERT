@@ -1,9 +1,9 @@
-# DKWS Skill 执行 API 契约 v1.4 变更说明
+# KERT Skill 执行 API 契约 v1.4 变更说明
 
 > 版本：v1.4（2026-08-23）｜ 前置：v1.3（数据所有权）
 > 范围：SP-20 服务建议书 / SP-21 交互记忆抽取 / 异步作业 / 闸门协作
 > 权威契约：`docs/dd/skill-execute-api-contract.md`（v1.3 基线）+ 本变更说明（v1.4 增量）
-> 对接样例：`docs/architecture/DKWS-V1.4-GITS-INTEGRATION-SAMPLES.md`
+> 对接样例：`docs/architecture/KERT-V1.4-GITS-INTEGRATION-SAMPLES.md`
 
 ---
 
@@ -33,7 +33,7 @@
 }
 ```
 
-- ContextPackage 完整 schema 见 GITS `docs/architecture/GITS-DKWS-SERVICE-PROPOSAL-APPENDIX-A.md` §A.1。
+- ContextPackage 完整 schema 见 GITS `docs/architecture/GITS-KERT-SERVICE-PROPOSAL-APPENDIX-A.md` §A.1。
 - **兼容**：单客户技能（R1/图谱/外联/会面）仍只传 `customerId`（v1.3），`context` 可缺省；
   SP-20/SP-21 必须传 `request.context`。
 - 顶层 `context` 与 `request.context` 二选一（服务端合并，`request.context` 优先）。
@@ -108,14 +108,14 @@
   } }
 ```
 
-- **DKWS 不存记忆**：候选/更新/取代全部交 GITS `InteractionMemoryPort` 持久化（确认/生命周期/衰减在 GITS）。
+- **KERT 不存记忆**：候选/更新/取代全部交 GITS `InteractionMemoryPort` 持久化（确认/生命周期/衰减在 GITS）。
 
 ## 4. 闸门协作端点（新）
 
 | 端点 | 语义 |
 |---|---|
 | `GET /api/skill/gates/{customerId}` | GATE-BIZ-G0..G5 清单资产（must/forbidden），GITS 渲染闸门页 |
-| `POST /api/skill/gates/audit` | 业务闸门决策**镜像**（`{customerId, gate, decision, decidedBy, reason}` → `{recorded:true,…}`，追加 `90_control/audit/gates.jsonl`）。**权威状态机在 GITS**，DKWS 不裁决。 |
+| `POST /api/skill/gates/audit` | 业务闸门决策**镜像**（`{customerId, gate, decision, decidedBy, reason}` → `{recorded:true,…}`，追加 `90_control/audit/gates.jsonl`）。**权威状态机在 GITS**，KERT 不裁决。 |
 
 ## 5. 向后兼容与约束
 
@@ -123,10 +123,10 @@
 - `data.ruleViolations` / `data.result` 为新增字段；GITS 现有解析器忽略未知字段即可（附录 B 注明）。
 - 认证仍无（演示环境网络层控制）；超时建议：同步 ≤ 120s（SP-21 ≤ 60s），SP-20 一律 async。
 - **数据所有权（v1.3）延续**：SP-20/21 的 `context` 是组合技能的显式上下文例外，银行内数据只用于生成，
-  不落 DKWS 权威库；记忆不落 DKWS；闸门不落 DKWS 决策库。
+  不落 KERT 权威库；记忆不落 KERT；闸门不落 KERT 决策库。
 
 ## 6. 变更记录（追加到主契约）
 
 | 日期 | 变更 |
 |---|---|
-| 2026-08-23 | **v1.4**：SP-20（服务建议书：ContextPackage 输入 / 逐章生成 / 事实标签 / 双版本 / 6 规则 / 异步 202+jobId）、SP-21（交互记忆抽取：候选/强化/取代 + 3 规则）、`GET /api/skill/gates/{id}`、`POST /api/skill/gates/audit`、`data.result`=ServiceResult、`data.ruleViolations`；全部向后兼容（参考 `docs/architecture/DKWS-V1.4-GITS-INTEGRATION-SAMPLES.md` 真实样例） |
+| 2026-08-23 | **v1.4**：SP-20（服务建议书：ContextPackage 输入 / 逐章生成 / 事实标签 / 双版本 / 6 规则 / 异步 202+jobId）、SP-21（交互记忆抽取：候选/强化/取代 + 3 规则）、`GET /api/skill/gates/{id}`、`POST /api/skill/gates/audit`、`data.result`=ServiceResult、`data.ruleViolations`；全部向后兼容（参考 `docs/architecture/KERT-V1.4-GITS-INTEGRATION-SAMPLES.md` 真实样例） |

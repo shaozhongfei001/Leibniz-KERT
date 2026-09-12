@@ -1,9 +1,9 @@
-# DKWS Skill 执行 API 契约 vNext（SP-15 产品推荐执行契约细化）
+# KERT Skill 执行 API 契约 vNext（SP-15 产品推荐执行契约细化）
 
-> 文档编号：`DKWS-SKILL-EXEC-CONTRACT-VNEXT`
+> 文档编号：`KERT-SKILL-EXEC-CONTRACT-VNEXT`
 > 版本：vNext（2026-08-31）｜ 前置：v1.3（数据所有权）→ v1.4（SP-20/SP-21/异步/闸门）
 > 范围：SP-15 产品适配与综合方案（三段式产品推荐）执行契约细化
-> 权威契约对齐：`specs/dkws-openapi-v1.yaml`（SkillExecuteRequest/Response）、GITS `specs/product-recommendation/recommendation-result.schema.json`、本仓 `skills/product-recommendation/contracts/recommendation-result.md`
+> 权威契约对齐：`specs/kert-openapi-v1.yaml`（SkillExecuteRequest/Response）、GITS `specs/product-recommendation/recommendation-result.schema.json`、本仓 `skills/product-recommendation/contracts/recommendation-result.md`
 
 ```text
 DOC_STATUS=CANDIDATE
@@ -21,7 +21,7 @@ BASELINE_STATE=APPROVED_WITHOUT_FREEZE
 
 | 顺位 | 输入 | 当前状态 | 用途 |
 |---|---|---|---|
-| 1 | `specs/dkws-openapi-v1.yaml` | 已落地（未提交） | SkillExecuteRequest/Response、Job 轮询、8 个 KERT_* 错误码 |
+| 1 | `specs/kert-openapi-v1.yaml` | 已落地（未提交） | SkillExecuteRequest/Response、Job 轮询、8 个 KERT_* 错误码 |
 | 2 | `skills/product-recommendation/SP-15.md` | 已落地（未提交） | SP-15 输入/输出合同、不变量、失败码 |
 | 3 | `skills/product-recommendation/contracts/recommendation-result.md` | 已落地（未提交） | `data.result` = ProductRecommendationResult 的最小结构与必填证据 |
 | 4 | GITS 三段式落地方案 V1.0 §7.4/§7.5/§9 | 设计候选 | 执行语义、失败码 GITS 处理、EvidenceBundle 必含项 |
@@ -32,7 +32,7 @@ BASELINE_STATE=APPROVED_WITHOUT_FREEZE
 
 ## 1. 目的与范围
 
-本文件是 SP-15「产品适配与综合方案」在 DKWS Skill 执行通道上的**契约细化**，回答：
+本文件是 SP-15「产品适配与综合方案」在 KERT Skill 执行通道上的**契约细化**，回答：
 
 1. SP-15 的 `SkillExecuteRequest` 请求结构（含 `request.context` 快照引用）；
 2. SP-15 的 `SkillExecuteResponse` 响应结构（`data.result` = `ProductRecommendationResult`）；
@@ -211,7 +211,7 @@ INV-10 权威证据冲突 → 禁止确定性解读
 
 ## 5. KERT_* 错误码（8 个）
 
-`errors[].code` 在 `specs/dkws-openapi-v1.yaml` `ErrorDetail.code` 已登记。SP-15 专属 8 个语义及 GITS 处理：
+`errors[].code` 在 `specs/kert-openapi-v1.yaml` `ErrorDetail.code` 已登记。SP-15 专属 8 个语义及 GITS 处理：
 
 | 错误码 | 语义 | GITS 处理 |
 |---|---|---|
@@ -310,7 +310,7 @@ INV-10 权威证据冲突 → 禁止确定性解读
 
 ```text
 GATE_DECISION=CANDIDATE
-REVIEW_OBJECT=DKWS Skill 执行 API vNext（SP-15 产品推荐执行契约细化）
+REVIEW_OBJECT=KERT Skill 执行 API vNext（SP-15 产品推荐执行契约细化）
 TARGET_TRANSITION=OWNER_REVIEW_AND_CONTRACT_DESIGN
 FROZEN=NO
 IMPLEMENTED=NO

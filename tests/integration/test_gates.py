@@ -5,15 +5,15 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.application.extract import KnowledgeExtractor
-from dkws.application.gates import GateReporter
-from dkws.application.ingest import Ingestor
-from dkws.application.parse_doc import DocumentParserService
-from dkws.application.projection import ProjectionBuilder
-from dkws.application.publish import Publisher
-from dkws.application.review import ReviewService
-from dkws.domain.contracts import specs
-from dkws.domain.contracts.base import validate_contract
+from kert.application.extract import KnowledgeExtractor
+from kert.application.gates import GateReporter
+from kert.application.ingest import Ingestor
+from kert.application.parse_doc import DocumentParserService
+from kert.application.projection import ProjectionBuilder
+from kert.application.publish import Publisher
+from kert.application.review import ReviewService
+from kert.domain.contracts import specs
+from kert.domain.contracts.base import validate_contract
 
 
 @pytest.fixture

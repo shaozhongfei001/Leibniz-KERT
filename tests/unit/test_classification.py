@@ -6,7 +6,7 @@ import dataclasses
 
 import pytest
 
-from dkws.infrastructure.classification import (
+from kert.infrastructure.classification import (
     FIELD_RULES,
     MASK_TOKEN,
     POLICY_API_RESPONSE,

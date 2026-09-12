@@ -27,8 +27,8 @@ SRC = Path(__file__).resolve().parent.parent.parent / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from dkws.api.server import create_app
-from dkws.application.skills import SkillExecutionService
+from kert.api.server import create_app
+from kert.application.skills import SkillExecutionService
 
 # 契约 vNext §3.1 的最小合法 request.context（含三快照引用 + 权限决策 + 激活合同）
 SP15_MINIMAL_CONTEXT = {

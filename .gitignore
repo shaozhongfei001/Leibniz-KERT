@@ -44,8 +44,13 @@ package-lock.json
 *~
 .~*.pptx
 
-# Workspace data (if appears inside dkws)
+# Workspace data (if appears inside kert)
 demo_workspace/
 bank_front_ws/
 .test_demo_ws/
-UNKNOWN.egg-info/
+*.egg-info/
+
+# 运行时数据文件（含 Kuzu 图数据库二进制），非源码，不入库
+data/
+*.kuzu
+*.kuzu.wal

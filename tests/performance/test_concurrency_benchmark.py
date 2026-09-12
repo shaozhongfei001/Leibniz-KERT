@@ -21,8 +21,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 
-from dkws.infrastructure.locks import WorkspaceLock
-from dkws.infrastructure.runtime_store import RuntimeStore
+from kert.infrastructure.locks import WorkspaceLock
+from kert.infrastructure.runtime_store import RuntimeStore
 
 
 # ---------- WorkspaceLock 基准 ----------

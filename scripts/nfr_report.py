@@ -67,7 +67,7 @@ def generate_report(data: dict) -> str:
     lines.append("")
     lines.append(f"> **{disclaimer}**")
     lines.append("")
-    lines.append(f"- 项目：{meta.get('project', 'Leibniz-KERT (DKWS)')}")
+    lines.append(f"- 项目：{meta.get('project', 'Leibniz-KERT (KERT)')}")
     lines.append(f"- 里程碑：{meta.get('milestone', 'M2.10')}")
     lines.append(f"- 生成时间：{datetime.now().isoformat()}")
     lines.append("")
@@ -272,7 +272,7 @@ def generate_report(data: dict) -> str:
 
 
 def main():
-    ap = argparse.ArgumentParser(description="DKWS NFR 报告生成器")
+    ap = argparse.ArgumentParser(description="KERT NFR 报告生成器")
     ap.add_argument("--input", required=True,
                     help="基准测试结果 JSON 文件路径")
     ap.add_argument("--output", default=None,
