@@ -153,12 +153,13 @@ class DeterministicLlmAdapter(LlmAdapter):
                 ],
             }
 
-        # 该技能自身的 skillId（system 中含技能指令；取不到则留空）
+        # 该技能自身的 skillId：由调用方在【技能标识】中显式给出。
+        # 不从指令正文猜测 —— 正文未必含技能名，猜测会得到 "unknown"。
+        import re as _re2
         skill_id = ""
-        m = __import__("re").search(r"【技能指令】[\s\S]{0,400}?"
-                                    r"(bank-front-[a-z-]+|skill-customer-[a-z-]+)", system or "")
-        if m:
-            skill_id = m.group(1)
+        _m = _re2.search(r"【技能标识】\s*([A-Za-z0-9._-]+)", system or "")
+        if _m:
+            skill_id = _m.group(1)
 
         out: dict = {}
         for k in keys:

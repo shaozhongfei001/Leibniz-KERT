@@ -547,6 +547,9 @@ class SkillExecutionService:
                     "你是银行对公客户经理前中台技能助手。执行以下技能指令。\n"
                     "纪律：只使用输入事实，不臆造；输出必须为合法 JSON；"
                     "无依据处如实标注（如'待核实'）。\n"
+                    # 显式给出技能标识：适配器需据此回填 skillId，
+                    # 不应从指令正文中猜测（正文未必含技能名）。
+                    f"【技能标识】{skill_id}\n"
                     f"【技能指令】\n{instruction[:2500]}\n"
                     + (f"【输出 JSON 结构参考】\n{schema_hint}\n" if schema_hint else "")
                 )
