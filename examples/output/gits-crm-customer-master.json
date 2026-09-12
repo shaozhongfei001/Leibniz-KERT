@@ -58,6 +58,36 @@
         "出口"
       ],
       "relationshipSummary": "重点客户，华东精工集团下游核心客户（摘要与 KI-009 身份段一致，不含 KYC 缺口正文）。"
+    },
+    {
+      "customerId": "CUST-CORP-0003",
+      "customerName": "北京绿源环保集团",
+      "customerShortName": "绿源环保",
+      "unifiedSocialCreditCode": "91110000MA1FL8XX5N",
+      "establishedDate": "2008-11-10",
+      "registeredCapitalCny": 100000000,
+      "industry": "ENERGY",
+      "region": "华北",
+      "enterpriseScale": "LARGE",
+      "customerTier": "KEY",
+      "relationshipSince": "2015-09-01",
+      "rmId": "RM-001",
+      "rmName": "张明远",
+      "managingBranch": "北京朝阳支行",
+      "groupFlag": true,
+      "listedStatus": "LISTED",
+      "riskLevel": "LOW",
+      "mainProducts": [
+        "污水处理",
+        "固废处理",
+        "环境监测"
+      ],
+      "coreTags": [
+        "环保",
+        "PPP项目",
+        "政府合作"
+      ],
+      "relationshipSummary": "重点集团客户，旗下5家子公司，环保行业龙头，PPP项目经验丰富（摘要与 KI-009 身份段一致，不含 KYC 缺口正文）。"
     }
   ]
 }
