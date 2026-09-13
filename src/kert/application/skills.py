@@ -430,7 +430,9 @@ class SkillExecutionService:
     # ---------------- 模型与解析 ----------------
 
     def _call_model(self, kind: str, system: str, user: str,
-                    trace: list[dict]) -> tuple[str, dict]:
+                    trace: list[dict],
+                    temperature: float | None = None,
+                    seed: int | None = None) -> tuple[str, dict]:
         """调用模型适配器；出站前按 M2.9 策略脱敏提示词。
 
         脱敏在此收口的理由：``_call_model`` 是**唯一**的模型出站点，
@@ -451,17 +453,30 @@ class SkillExecutionService:
             if hits:
                 trace.append({"phase": "llm_redaction", "status": "ok",
                               "message": f"出站提示词已脱敏：{','.join(hits)}"})
+        # **仅在显式给出时**才传采样参数：保持对既有适配器实现（含测试桩）的兼容。
+        # 注意这不构成"静默忽略"：若调用方**确实传了**参数而适配器不支持，
+        # 会因 unexpected keyword argument 而**大声失败**，不会被吞掉。
+        extra: dict = {}
+        if temperature is not None:
+            extra["temperature"] = temperature
+        if seed is not None:
+            extra["seed"] = seed
         try:
-            res = adapter.complete(outbound_system, outbound_user)
+            res = adapter.complete(outbound_system, outbound_user, **extra)
         except Exception as exc:
             trace.append({"phase": "model", "status": "failed", "message": str(exc)})
             raise
-        trace.append({"phase": "model", "status": "ok", "message": "模型调用完成"})
+        # 采样参数如实记账：**记实际生效值**，不记请求值。
+        # "请求 temperature=0 而实际 0.3" 会使可复现性结论完全错误。
+        trace.append({"phase": "model", "status": "ok", "message": "模型调用完成",
+                      "temperature": res.temperature, "seed": res.seed})
         return res.text, {
             "model": res.model_id,
             "inputTokens": res.input_tokens,
             "outputTokens": res.output_tokens,
             "latencyMs": res.latency_ms,
+            "temperature": res.temperature,
+            "seed": res.seed,
         }
 
     @staticmethod
@@ -555,7 +570,27 @@ class SkillExecutionService:
                 )
                 user = json.dumps(request.get("input", request), ensure_ascii=False)
                 # 传入技能专属 kind，使适配器按**该技能自身**的 output-schema 生成输出
-                text, model_call = self._call_model(f"pkg:{skill_id}", system, user, trace)
+                # 请求级采样参数（可选）：用于可复现性实验。
+                # 非法值**大声失败**——静默忽略会让实验在"以为固定了参数"的情况下跑偏。
+                req_temp = request.get("temperature")
+                req_seed = request.get("seed")
+                if req_temp is not None:
+                    try:
+                        req_temp = float(req_temp)
+                    except (TypeError, ValueError) as exc:
+                        raise UsageError(
+                            f"temperature 非法: {request.get('temperature')!r}") from exc
+                    if not 0.0 <= req_temp <= 2.0:
+                        raise UsageError(f"temperature 越界(0~2): {req_temp}")
+                if req_seed is not None:
+                    try:
+                        req_seed = int(req_seed)
+                    except (TypeError, ValueError) as exc:
+                        raise UsageError(
+                            f"seed 非法: {request.get('seed')!r}") from exc
+                text, model_call = self._call_model(
+                    f"pkg:{skill_id}", system, user, trace,
+                    temperature=req_temp, seed=req_seed)
                 data = self._parse_json(text)
                 if not data:
                     trace.append({"phase": "parse", "status": "failed",

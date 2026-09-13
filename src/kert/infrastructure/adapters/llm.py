@@ -27,34 +27,58 @@ class LlmResult:
     output_tokens: int
     latency_ms: float
     model_id: str
+    # **实际生效**的采样参数（非请求值）。供调用方与审计**回读**——
+    # 判定"输出是否可复现"必须以生效值为准，不能以请求值为准
+    # （请求 0 而实际 0.3 的情况下，可复现性结论会完全错误）。
+    temperature: float | None = None
+    seed: int | None = None
 
 
 class LlmAdapter(ABC):
     model_id: str = "base"
 
     @abstractmethod
-    def complete(self, system: str, user: str) -> LlmResult:
-        """同步单轮补全；失败抛异常（调用方 fail-closed）。"""
+    def complete(self, system: str, user: str, *,
+                 temperature: float | None = None,
+                 seed: int | None = None) -> LlmResult:
+        """同步单轮补全；失败抛异常（调用方 fail-closed）。
+
+        ``temperature`` / ``seed`` 为**请求级采样参数**（可选）。
+        传入时覆盖适配器默认值；返回的 ``LlmResult`` 携带**实际生效值**。
+        """
 
 
 class OpenAiCompatibleLlmAdapter(LlmAdapter):
-    def __init__(self, base_url: str, api_key: str, model: str, timeout: int = 60):
+    def __init__(self, base_url: str, api_key: str, model: str, timeout: int = 60,
+                 default_temperature: float = 0.3):
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.model = model
         self.timeout = timeout
         self.model_id = model
+        # 默认值不再写死在请求体里：可由构造参数或环境变量给定，
+        # 并**可被请求级的 temperature 覆盖**。
+        self.default_temperature = default_temperature
 
-    def complete(self, system: str, user: str) -> LlmResult:
-        body = {
+    def complete(self, system: str, user: str, *,
+                 temperature: float | None = None,
+                 seed: int | None = None) -> LlmResult:
+        eff_temperature = (self.default_temperature
+                           if temperature is None else temperature)
+        effective_seed = seed
+        body: dict = {
             "model": self.model,
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
             ],
-            "temperature": 0.3,
+            "temperature": eff_temperature,
             "max_tokens": 8192,
         }
+        # ``seed`` 仅在显式给出时下发：多数 OpenAI 兼容端点不接受该字段，
+        # 无条件下发会使其拒绝请求。
+        if effective_seed is not None:
+            body["seed"] = int(effective_seed)
         req = urllib.request.Request(
             f"{self.base_url}/chat/completions",
             data=json.dumps(body).encode("utf-8"),
@@ -79,6 +103,8 @@ class OpenAiCompatibleLlmAdapter(LlmAdapter):
             output_tokens=int(usage.get("completion_tokens", 0) or 0),
             latency_ms=round(latency_ms, 1),
             model_id=self.model,
+            temperature=eff_temperature,
+            seed=effective_seed,
         )
 
 
@@ -90,7 +116,9 @@ class DeterministicLlmAdapter(LlmAdapter):
     def __init__(self, kind: str):
         self.kind = kind
 
-    def complete(self, system: str, user: str) -> LlmResult:
+    def complete(self, system: str, user: str, *,
+                 temperature: float | None = None,
+                 seed: int | None = None) -> LlmResult:
         # 回显请求中客户标识，使输出可溯源（机器事实优先）
         customer = "示例客户"
         try:
@@ -107,6 +135,7 @@ class DeterministicLlmAdapter(LlmAdapter):
             input_tokens=0, output_tokens=0,
             latency_ms=round((time.monotonic() - t0) * 1000, 1),
             model_id=self.model_id,
+            temperature=temperature, seed=seed,
         )
 
     @staticmethod
@@ -356,5 +385,12 @@ def create_llm_adapter(kind: str) -> LlmAdapter:
         except ValueError:
             _log.warning("KERT_LLM_TIMEOUT 非法，回退 60s")
             timeout = 60
-        return OpenAiCompatibleLlmAdapter(base, key, model, timeout=timeout)
+        # 默认采样温度可由环境变量给定；请求级 temperature 仍可覆盖它。
+        try:
+            default_temp = float(os.environ.get("KERT_LLM_TEMPERATURE", "0.3"))
+        except ValueError:
+            _log.warning("KERT_LLM_TEMPERATURE 非法，回退 0.3")
+            default_temp = 0.3
+        return OpenAiCompatibleLlmAdapter(base, key, model, timeout=timeout,
+                                          default_temperature=default_temp)
     return DeterministicLlmAdapter(kind)
