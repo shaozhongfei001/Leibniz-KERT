@@ -190,6 +190,36 @@ class DeterministicLlmAdapter(LlmAdapter):
         if _m:
             skill_id = _m.group(1)
 
+        # **仿真内容优先**（2026-09-13 加入）。
+        # 原先本函数对**所有技能**一律返回空占位（集合 `[]`、结构 `{}`、
+        # 状态 `DETERMINISTIC_PLACEHOLDER`）—— 技能自身的 `output-schema.md`
+        # 声明了完整结构与**判定规则**（如 `dataGaps` 非空 ⇒ `PARTIAL`），
+        # 但内容为空 ⇒ 下游 §9.3 语义消费检验**无对象可验**。
+        # 委托方明确授权构造仿真数据；取值参照银行同业公开的访前准备实践，
+        # **不声称与任何特定机构一致**，且每份输出带 `simulationOnly` 声明。
+        try:
+            from kert.infrastructure.adapters.sim_bank_front import simulate
+            # **上游状态透传**（再入式取值）：下游能力的受控枚举
+            # （如 `coverageStatus`）须依上游 `executionStatus` 的**判定表**映射，
+            # 而非随手取。上游状态随 `user` 载荷进入本适配器，
+            # 故在此提取并传给仿真器。
+            _up = None
+            try:
+                _p = json.loads(user) if user else {}
+                _up = {
+                    "executionStatus": _p.get("reconciliationStatus")
+                                       or _p.get("upstreamStatus"),
+                    "conflicts": _p.get("conflictCases") or _p.get("conflicts"),
+                }
+            except Exception:                               # noqa: BLE001
+                _log.debug("仿真器：解析上游状态失败，按未知处理", exc_info=True)
+            sim = simulate(skill_id, customer, upstream=_up)
+        except Exception:                                   # noqa: BLE001
+            _log.debug("仿真器不可用，回退确定性占位", exc_info=True)
+            sim = None
+        if sim is not None:
+            return sim
+
         out: dict = {}
         for k in keys:
             if k == "schemaVersion":
