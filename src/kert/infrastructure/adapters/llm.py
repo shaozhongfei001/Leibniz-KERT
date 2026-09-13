@@ -165,7 +165,7 @@ class DeterministicLlmAdapter(LlmAdapter):
                 out.append(k)
         return out
 
-    def _sample_package(self, customer: str, system: str) -> dict:
+    def _sample_package(self, customer: str, system: str, user: str = "") -> dict:
         """技能包确定性输出：结构取自该技能自身 output-schema 的顶层键。
 
         诚实性约束：本输出为**确定性占位**，无分析依据。
@@ -204,18 +204,26 @@ class DeterministicLlmAdapter(LlmAdapter):
             # 而非随手取。上游状态随 `user` 载荷进入本适配器，
             # 故在此提取并传给仿真器。
             _up = None
-            try:
-                _p = json.loads(user) if user else {}
-                _up = {
-                    "executionStatus": _p.get("reconciliationStatus")
-                                       or _p.get("upstreamStatus"),
-                    "conflicts": _p.get("conflictCases") or _p.get("conflicts"),
-                }
-            except Exception:                               # noqa: BLE001
-                _log.debug("仿真器：解析上游状态失败，按未知处理", exc_info=True)
+            if user:
+                try:
+                    _p = json.loads(user)
+                except Exception as exc:                    # noqa: BLE001
+                    # **不得静默降级**（GK16 硬约束 #5）：载荷由 skills.py 以
+                    # `json.dumps` 生成，解析失败属**异常**，而非"上游未提供状态"。
+                    # 此前这里 `except Exception` + debug 吞掉了 NameError，
+                    # 使"上游状态从未送达"长期不可见（见 T-28）。
+                    _log.warning("仿真器：载荷非合法 JSON，上游状态按未知处理：%s", exc)
+                else:
+                    if isinstance(_p, dict):
+                        _up = {
+                            "executionStatus": _p.get("reconciliationStatus")
+                                               or _p.get("upstreamStatus"),
+                            "conflicts": _p.get("conflictCases") or _p.get("conflicts"),
+                        }
             sim = simulate(skill_id, customer, upstream=_up)
         except Exception:                                   # noqa: BLE001
-            _log.debug("仿真器不可用，回退确定性占位", exc_info=True)
+            # 仿真器缺失属预期的降级路径；但**降级必须可见**，不得只写 debug。
+            _log.warning("仿真器不可用，回退确定性占位", exc_info=True)
             sim = None
         if sim is not None:
             return sim
@@ -250,7 +258,11 @@ class DeterministicLlmAdapter(LlmAdapter):
     def _sample(self, customer: str, user: str = "", system: str = "") -> dict:
         # 外部技能包：按该技能自身的 output-schema 生成符合结构的确定性输出
         if self.kind.startswith("pkg:"):
-            return self._sample_package(customer, system)
+            # `user` 必须一并传入：再入式取值（下游受控枚举依上游状态映射）
+            # 只能从载荷中取得上游状态。此前此处丢参 ⇒ `_sample_package` 内
+            # 引用 `user` 抛 NameError ⇒ 被静默吞掉 ⇒ 上游状态恒为 None
+            # ⇒ 下游 `coverageStatus` 恒取默认值。详见 GK16 FAILURES.md T-28。
+            return self._sample_package(customer, system, user)
         if self.kind == "memory":
             try:
                 payload = json.loads(user)
