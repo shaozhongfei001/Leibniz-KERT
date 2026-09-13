@@ -110,7 +110,7 @@ usage_scope: "仅云端使用"
   "asOf": "<数据截止时点，ISO-8601>",
   "generatedAt": "<ISO-8601>",
   "executionStatus": "SUCCESS | PARTIAL | NOT_RUN | FAILED",
-  "executionStatusReason": "<非 SUCCESS 时必填>",
+  "executionStatusReason": "<必填：说明 executionStatus 的依据；SUCCESS 时亦须填写>",
   "indicators": [
     {
       "elementId": "KE-FRONT-003-01",
@@ -163,7 +163,7 @@ usage_scope: "仅云端使用"
 
 ## 交付标准
 
-- [ ] **`executionStatus` 已如实标注**（必填）；非 `SUCCESS` 时 `executionStatusReason` 已填写。
+- [ ] **`executionStatus` 与 `executionStatusReason` 均已填写**（两者**均为无条件必填**）。
 - [ ] **`executionStatus` 未误用**：`indicators` 为空或全为 `missing` 时**未**标 `SUCCESS`（须为 `NOT_RUN`）。
 - [ ] `taskId` 与 `asOf` 已填写；`generatedAt` / `asOf` 为合法 ISO-8601。
 - [ ] 五类指标（营收/授信使用率/用电量/代发薪/结算量）均有条目，缺失指标在 ```dataGaps``` 显式列出。

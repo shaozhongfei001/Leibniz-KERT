@@ -113,7 +113,7 @@ usage_scope: "仅云端使用"
   "customerId": "<customerId>",
   "generatedAt": "<ISO-8601>",
   "coverageStatus": "SUCCESS | PARTIAL | NOT_RUN | FAILED",
-  "coverageStatusReason": "<coverageStatus 非 SUCCESS 时必填；说明原因>",
+  "coverageStatusReason": "<必填：说明 coverageStatus 的依据；SUCCESS 时亦须填写>",
   "kycGaps": [
     {
       "gapId": "KG-001",
@@ -174,7 +174,7 @@ usage_scope: "仅云端使用"
 
 ## 交付标准
 
-- [ ] **`coverageStatus` 已如实标注**（必填）；非 `SUCCESS` 时 `coverageStatusReason` 已填写。
+- [ ] **`coverageStatus` 与 `coverageStatusReason` 均已填写**（两者**均为无条件必填**；`SUCCESS` 时说明依据，其余说明原因）。
 - [ ] **`coverageStatus` 未在上游未执行时误标为 `SUCCESS`**（上游 `upstreamStatus ∈ {NOT_RUN, FAILED}` → 本技能须标 `NOT_RUN`）。
 - [ ] 每个缺口含精准、可回答的缺口描述（非泛泛提问）。
 - [ ] 每个缺口含触发源引用（关联具体规则编号 RUL-FRONT-001-003，可追溯）。

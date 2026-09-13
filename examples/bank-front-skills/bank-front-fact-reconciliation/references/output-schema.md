@@ -11,7 +11,7 @@
   "asOf": "<数据截止时点，ISO-8601>",
   "generatedAt": "<ISO-8601>",
   "executionStatus": "SUCCESS | PARTIAL | NOT_RUN | FAILED",
-  "executionStatusReason": "<executionStatus 非 SUCCESS 时必填；说明原因>",
+  "executionStatusReason": "<必填：说明 executionStatus 的依据；SUCCESS 时亦须填写>",
   "indicators": [
     {
       "elementId": "KE-FRONT-003-01",
@@ -44,7 +44,7 @@
 | `taskId` | 本次任务标识。用于跨能力追溯同一访前任务 |
 | `asOf` | 数据截止时点。与 `indicators[].dataTimestamp` 的区别：`asOf` 为整份输出的口径时点 |
 | `executionStatus` | **执行状态**（受控枚举）。见下表 —— **这是本能力对"我到底查到了什么程度"的唯一权威声明** |
-| `executionStatusReason` | 非 `SUCCESS` 时**必填**，说明是数据不足、规则未落地还是执行失败 |
+| `executionStatusReason` | **必填**（**无条件**）。说明取值依据；非 `SUCCESS` 时说明是数据不足、规则未落地还是执行失败，`SUCCESS` 时说明依据。**运行时会校验该顶层键存在**，缺则拒绝返回 |
 | `indicators` | 五类指标（营收/授信使用率/用电量/代发薪/结算量），含数值、口径、时点、来源、状态 |
 | `conflicts` | 冲突清单：逻辑矛盾/信号背离/数据异常，每条含**实例标识**、规则编号与核实问题 |
 | `conflicts[].id` | **冲突实例**唯一标识（与 `ruleId` 并列：`ruleId` 标识规则，`id` 标识本次冲突实例）。同一规则多次触发时用以区分 |

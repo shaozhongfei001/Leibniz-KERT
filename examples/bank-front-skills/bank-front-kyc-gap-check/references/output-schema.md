@@ -9,7 +9,7 @@
   "customerId": "<customerId>",
   "generatedAt": "<ISO-8601>",
   "coverageStatus": "SUCCESS | PARTIAL | NOT_RUN | FAILED",
-  "coverageStatusReason": "<coverageStatus 非 SUCCESS 时必填；说明原因>",
+  "coverageStatusReason": "<必填：说明 coverageStatus 的依据；SUCCESS 时亦须填写>",
   "kycGaps": [
     {
       "gapId": "KG-001",
@@ -39,7 +39,7 @@
 | 字段 | 说明 |
 | --- | --- |
 | **`coverageStatus`** | **覆盖状态**（受控枚举，**必填**）。声明本次识别**在多大程度上可以代表实际缺口情况**。见下表 |
-| `coverageStatusReason` | `coverageStatus` 非 `SUCCESS` 时**必填**，说明原因（如上游未执行、触发源不完整、规则未落地） |
+| `coverageStatusReason` | **必填**（**无条件**）。说明 `coverageStatus` 取值的依据：非 `SUCCESS` 时说明原因（上游未执行/触发源不完整/规则未落地），`SUCCESS` 时说明依据（如"触发源完整评估"）。**运行时会校验该顶层键存在**，缺则拒绝返回 |
 | `kycGaps[].description` | 缺口描述：精准、具体、可回答，避免泛泛提问（KE-FRONT-005-01） |
 | `kycGaps[].trigger` | 触发源：引用事实对账冲突原文，关联规则编号（KE-FRONT-005-02） |
 | **`kycGaps[].status`** | **缺口状态**（受控枚举）。见下表 |
