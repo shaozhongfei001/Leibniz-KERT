@@ -37,9 +37,13 @@ COPY --from=builder /opt/venv /opt/venv
 COPY --chown=kert:kert src /app/src
 COPY --chown=kert:kert scripts /app/scripts
 COPY --chown=kert:kert skills /app/skills
+# 外部 Skill 包（bank-front-*）。镜像若不带上它，容器内 bank-front 技能会全部不可用
+# （运行时表现为 UNKNOWN_SKILL）——见 evidence/kert-e2e-ci/TASK_PACKAGE_D-E2E-01.md。
+COPY --chown=kert:kert examples /app/examples
 
 ENV PATH="/opt/venv/bin:$PATH" \
     PYTHONPATH=/app/src \
+    KERT_SKILL_PACKAGES=/app/examples/bank-front-skills \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     KERT_PROFILE=prod \

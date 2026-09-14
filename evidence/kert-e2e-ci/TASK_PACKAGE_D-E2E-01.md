@@ -1,7 +1,7 @@
 # 任务包 D-E2E-01 —— 技能包解析静默降级（Skill Package Resolution）
 
 ```text
-STATUS=OPEN（阻断）
+STATUS=IMPLEMENTED_PENDING_REAL_CI（本地全链条已验证：e2e 账本 failed=0、passed=27>=26、violations=[]；A1 待真实 CI 核验）
 GAP_ID=F-E2E-02（新建；已检索确认未占用——仓内仅 F-E2E-01 被引用）
 TARGET_REPO=Leibniz-KERT
 CREATED_BY=Tech Lead（会话角色）
@@ -126,8 +126,9 @@ pkgs = Path(skill_packages) if skill_packages else (
 
 ### 3.3 CI 技能就绪断言（把 10 条红变成 1 秒失败）
 
-9. e2e job 在 `Run E2E tests` **之前**增加一步：请求 `/api/skill/list`，
-   **断言 7 个 `bank-front-*` 全部存在**：
+9. e2e job 在 `Run E2E tests` **之前**增加一步：请求 `GET /api/skill/health`
+   （该服务**唯一**的技能清单端点；**不存在** `/api/skill/list` —— 本文件初版此处写错，
+   已在实施阶段经实测更正），**断言 7 个 `bank-front-*` 全部存在**：
 
    ```
    bank-front-commitment-script
@@ -192,3 +193,47 @@ pkgs = Path(skill_packages) if skill_packages else (
 
 即容器缺 `examples/` 可能**连带**影响 SP-15 规则解析（**同因嫌疑，未验证**；CI 中 SP-15 用例通过，故未暴露）。
 实施者须在 A3/A4 中一并观察并在证据中明确表态，但**不在本任务内修**。
+
+---
+
+## 8. 实施记录（2026-09-14）
+
+### 8.1 前置验证（§0）的等效替代
+
+**V1/V2（容器实测）未做**：本机 `docker build` 在 `pyarrow`（50MB）处网络中断，不可用。
+改用**等效的布局复刻**（不依赖网络、语义不失真）：
+
+- 复刻方式：把 `src/kert` 复制到源码树之外并置于 `PYTHONPATH` 首位 →
+  `kert.__file__` 落在源码树外 → `parents[3]` 不再是仓库根。这与
+  site-packages（CI）及 `PYTHONPATH=/app/src`（容器）属**同一非源码布局语义**。
+- 复刻结果：**`10 failed, 17 passed, 20 skipped`**，账本
+  `violations=['failed=10（必须 0）', 'passed=17 < 下限 26…']`
+  —— 与真实 CI（`10 failed, 16 passed, 21 skipped`）**同一失败集合、同一 violation 形态**。
+  ⇒ 根因成立（V3 等效通过）。**`V1/V2` 的容器实测仍属未完成项。**
+
+### 8.2 改动
+
+| 文件 | 改动 |
+|---|---|
+| `src/kert/api/server.py` | 新增 `SKILL_PACKAGES_ENV` / `_has_skill_packages()` / `resolve_skill_packages()`；`create_app` 改用之；新增启动日志打印 resolved 路径 + 已注册技能数 + 技能 id 清单 |
+| `deploy/Dockerfile` | 新增 `COPY --chown=kert:kert examples /app/examples`；ENV 增 `KERT_SKILL_PACKAGES=/app/examples/bank-front-skills` |
+| `.github/workflows/ci.yml`（e2e job） | `Start KERT` 增 `KERT_SKILL_PACKAGES`（**未**改成 editable 安装，符合 §3.2-6）；新增步骤 `Assert KERT skill readiness (D-E2E-01)` |
+| `tests/unit/test_skill_packages_resolution.py` | **新增**（未改任何既有用例），7 条锁定 fail-closed 语义 |
+
+### 8.3 自验证据
+
+| 项 | 结果 |
+|---|---|
+| 修复后 e2e 账本（非源码布局 + 显式 `KERT_SKILL_PACKAGES`） | `collected=47 passed=27 skipped=20 failed=0 errors=0`，`violations=[]` |
+| A5 显式无效路径 | `KERT_SKILL_PACKAGES=/nonexistent-dir-xyz` → `ValueError` 且 **exit=1**（启动失败） |
+| A6 未设置 + 非源码布局 | 打印 `未解析到外部 Skill 包：… 内置默认目录不可用（…/examples/bank-front-skills）…`，服务仍 `health=200`（**不再静默**） |
+| 新增单测 | `7 passed` |
+| CI 同款全量测试 + 覆盖率门槛 | `Required test coverage of 80% reached. Total coverage: 84.35%` |
+| `ruff check src/ tests/` | `All checks passed!` |
+
+### 8.4 未完成（**不得**视为已通过）
+
+- **A1**：真实 CI 账本尚未核验（本记录写入时该 push 的 run 尚未结束）
+- **A2**：技能就绪断言的负向有效性需在 CI 上验证（本地只验证了 `resolve_skill_packages` 的失败路径）
+- **A3/A4**：容器实测与 systemd 布局核实**未做**（网络不可用 / 无该部署环境）
+- 因此本任务**不是** `QA_PASS`；`ADMISSION-E2E-EVIDENCE.md` 的解除条件**未满足**

@@ -153,6 +153,11 @@ jobs:
         env:
           # dev profile 无需 API Key；无 LLM 密钥时自动走确定性适配器
           KERT_PROFILE: dev
+          # 显式指定外部 Skill 包（bank-front-*）。必须显式：本 job 用非 editable 安装
+          # （pip install ".[api,dev]"），内置默认值依赖 __file__ 的 parents[3]，会落到
+          # site-packages 之外从而命中不到任何技能包，且在修复前是静默降级
+          # （表现为运行时 UNKNOWN_SKILL）。见 evidence/kert-e2e-ci/TASK_PACKAGE_D-E2E-01.md。
+          KERT_SKILL_PACKAGES: ${{ github.workspace }}/examples/bank-front-skills
         run: |
           set -euo pipefail
           # 拒绝复用已在 8106 上运行的外部实例（TECH_LEAD_DECISION §0.3：
@@ -179,6 +184,39 @@ jobs:
           echo "::error::KERT 未能在 60 秒内于 127.0.0.1:8106 就绪，e2e 无法真跑——拒绝以 skip 掩盖"
           cat "$RUNNER_TEMP/kert.log"
           exit 1
+
+      - name: Assert KERT skill readiness (D-E2E-01)
+        run: |
+          # 技能就绪断言：把「外部技能缺失」从 10 条用例失败变成数秒内的显式失败。
+          # 端点用 /api/skill/health —— 该服务唯一的技能清单端点（不存在 /api/skill/list），
+          # 与 Start KERT 的就绪探针同一端点。
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.request
+
+          base = os.environ.get("KERT_BASE_URL", "http://127.0.0.1:8106")
+          expected = [
+              "bank-front-commitment-script",
+              "bank-front-eight-dimension",
+              "bank-front-fact-reconciliation",
+              "bank-front-kyc-gap-check",
+              "bank-front-product-recommendation",
+              "bank-front-report-assembler",
+              "bank-front-supply-chain-graph",
+          ]
+          with urllib.request.urlopen(base + "/api/skill/health", timeout=10) as resp:
+              body = json.load(resp)
+          available = {s["skillId"] for s in body.get("skills", [])}
+          print("已注册技能 %d 个：%s" % (len(available), sorted(available)))
+          missing = [s for s in expected if s not in available]
+          if missing:
+              print("::error::外部 Skill 包未就绪，缺少 %d 个：%s —— 检查 KERT_SKILL_PACKAGES=%s"
+                    % (len(missing), missing, os.environ.get("KERT_SKILL_PACKAGES")))
+              sys.exit(1)
+          print("✓ 技能就绪：%d 个 bank-front-* 全部存在" % len(expected))
+          PY
 
       - name: Run E2E tests
         run: |

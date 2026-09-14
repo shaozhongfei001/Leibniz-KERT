@@ -58,8 +58,69 @@ from .middleware import (
 
 SERVICE_VERSION = "1.0.0"
 
-# 外部 Skill 包默认目录（kert/examples/bank-front-skills/）
+_log = logging.getLogger(__name__)
+
+# 外部 Skill 包默认目录（kert/examples/bank-front-skills/）。
+#
+# ⚠ 该默认值依赖「源码检出」布局：只有本模块位于 <repo>/src/kert/api/ 时 parents[3]
+# 才是仓库根。在 site-packages（非 editable 安装）或容器镜像里它会落到仓外，从而命中
+# 不到任何技能包 —— 而原实现以 pkgs=None **静默降级**，表现为运行时 UNKNOWN_SKILL 且
+# 无任何日志线索（CI run 34845070952 的 10 条失败即此，
+# 见 evidence/kert-e2e-ci/TASK_PACKAGE_D-E2E-01.md）。故：
+#   - 生产/CI 必须用 KERT_SKILL_PACKAGES 显式指定；
+#   - 显式配置无效 → 启动即失败（fail-closed），不得静默降级。
 DEFAULT_SKILL_PACKAGES = Path(__file__).resolve().parents[3] / "examples" / "bank-front-skills"
+
+#: 显式指定外部 Skill 包根目录的环境变量（优先级高于内置默认）。
+SKILL_PACKAGES_ENV = "KERT_SKILL_PACKAGES"
+
+
+def _has_skill_packages(path: Path) -> bool:
+    """``path`` 是目录，且至少含一个 ``<skill>/SKILL.md``。"""
+    try:
+        if not path.is_dir():
+            return False
+        return any((child / "SKILL.md").is_file()
+                   for child in path.iterdir() if child.is_dir())
+    except OSError:
+        return False
+
+
+def resolve_skill_packages(explicit: Path | str | None = None) -> Path | None:
+    """解析外部 Skill 包根目录（fail-closed）。
+
+    优先级：``explicit`` > ``KERT_SKILL_PACKAGES`` > 内置默认（源码布局）。
+
+    Returns:
+        有效目录；未显式配置且默认不可用时返回 ``None``。
+
+    Raises:
+        ValueError: **显式配置**（入参或环境变量）但目标无效（不存在，或其中没有任何
+            ``<skill>/SKILL.md``）。此处刻意 fail-closed —— 静默降级会让技能在运行时以
+            ``UNKNOWN_SKILL`` 的形式消失且无日志线索（CI run 34845070952 的 10 条失败即此）。
+    """
+    explicit_source = "入参 skill_packages"
+    candidate: Path | str | None = explicit
+    if candidate is None:
+        raw = (os.environ.get(SKILL_PACKAGES_ENV) or "").strip()
+        if raw:
+            explicit_source = f"环境变量 {SKILL_PACKAGES_ENV}"
+            candidate = raw
+    if candidate is not None:
+        path = Path(candidate)
+        if not _has_skill_packages(path):
+            raise ValueError(
+                f"{explicit_source} 指向的 Skill 包目录无效：{path}"
+                f"（不存在，或其中没有任何 <skill>/SKILL.md）—— 拒绝静默降级；"
+                f"技能缺失会在运行时表现为 UNKNOWN_SKILL")
+        return path
+    if _has_skill_packages(DEFAULT_SKILL_PACKAGES):
+        return DEFAULT_SKILL_PACKAGES
+    _log.warning(
+        "未解析到外部 Skill 包：%s 未设置，且内置默认目录不可用（%s）—— "
+        "bank-front 等外部技能将不可用；生产/CI 请显式设置 %s",
+        SKILL_PACKAGES_ENV, DEFAULT_SKILL_PACKAGES, SKILL_PACKAGES_ENV)
+    return None
 
 
 class SkillExecuteRequest(BaseModel):
@@ -192,8 +253,7 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
                   version=SERVICE_VERSION)
     ws = Path(workspace)
     svc = KnowledgeService(ws, service_id=service_id)
-    pkgs = Path(skill_packages) if skill_packages else (
-        DEFAULT_SKILL_PACKAGES if DEFAULT_SKILL_PACKAGES.is_dir() else None)
+    pkgs = resolve_skill_packages(skill_packages)
     store: RuntimeStore | None = None
     if cfg.runtime_store.enabled:
         store = RuntimeStore(
@@ -208,6 +268,11 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
     skill_svc = SkillExecutionService(ws, knowledge=svc, skill_packages=pkgs,
                                      runtime_store=store, profile=cfg.profile,
                                      llm_redaction=cfg.redaction.llm_enabled)
+    # 技能注册结果必须显式可见：技能缺失曾以「运行时 UNKNOWN_SKILL + 无日志」的形式
+    # 静默发生（CI run 34845070952，见 evidence/kert-e2e-ci/TASK_PACKAGE_D-E2E-01.md）。
+    _registered = [s.skill_id for s in skill_svc.registry()]
+    _log.info("外部 Skill 包：resolved=%s；已注册技能 %d 个：%s",
+              pkgs, len(_registered), _registered)
     app.state.runtime_config = cfg
     app.state.runtime_store = store
     # 暴露 Service 便于运维自检与测试断言（M2-P2 Owner 决策 3 的校验链路）
