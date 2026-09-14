@@ -554,6 +554,10 @@ class SkillExecutionService:
 
             pkg = self._packages[skill_id]
 
+            # 局部导入，与本文件其余位置一致（避免模块级循环导入）。
+            # 此前 run_pkg 内 raise UsageError 未导入该名，CI Lint 报 F821。
+            from ..domain.errors import UsageError
+
             def run_pkg(request: dict, trace: list[dict]) -> tuple[dict, dict]:
                 """外部 Skill 包通用执行：SKILL.md 指令 + output-schema 约束 + 请求输入。"""
                 instruction = pkg.get("instruction") or "按技能说明执行。"
