@@ -14,6 +14,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from kert.application.product_recommendation.eligibility import (
     KERT_CONTEXT_INSUFFICIENT,
     KERT_PERMISSION_DENIED,
@@ -304,6 +306,17 @@ def test_rule_bundle_loader_from_dir():
     assert all(v == "1.0.0-candidate" for v in bundle.values())
 
 
+@pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "WAIVER-2026-09-14-F-L00-07（Owner 授权，有登记）：source-registry.md 已登记 "
+        "F-L00-07 未解除——权威区 28 份材料中 27 份仍为 PENDING_SOURCE、CLAUSE_VERIFIED=0，"
+        "13 张产品卡中 10 张（CM/CB/IB/SET/TF 族）尚无 EvidenceRef，且这几族源文件在仓内不存在。"
+        "在材料缺失期间伪造引用会违反 KERT 双区门禁语义与 GITS AI 输出边界。"
+        "登记见 evidence/waivers/WAIVER-2026-09-14-F-L00-07.md；"
+        "strict=True 使其自我过期：一旦该断言通过（XPASS）即判失败，强制移除豁免。"
+    ),
+)
 def test_product_loader_from_assets():
     products, errs = ProductKnowledgeLoader().load_dir()
     assert errs == []
