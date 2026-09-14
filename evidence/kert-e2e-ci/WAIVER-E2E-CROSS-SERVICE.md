@@ -171,3 +171,33 @@ E2E 覆盖账本（下限由本次收集结果推导，见 TECH_LEAD_DECISION.md
 
 - `Performance Benchmarks`（`tests/performance/`）的计时不稳定（`22.36ms > 20.0ms`）与本豁免无关，D-5 非目标已明确排除。
 - `evidence/jr1/TASK_PACKAGE_E2E_SKIP.md`（`JR1-E2E-SKIP`）按 D-6 应标注 `superseded_by=KERT-E2E-C`；**本次未执行该标注**——本循环被授权的文件范围仅 `tests/e2e/conftest.py`、`.github/workflows/ci.yml`（`e2e` job 内）与新增 `evidence/kert-e2e-ci/**`，不含 `evidence/jr1/**`。该项留待 Tech Lead / Owner 执行，`JR1-E2E-SKIP` 文件保持原样、不删除。
+
+---
+
+## 10. T3 触发后的重新裁决（2026-09-14）
+
+**背景**：真实 CI run `34845070952`（sha `c865365`）的账本出现 `failed=10` 且
+`passed=16 < 下限 26` ⇒ §5 的 **T3 触发**，按规定须重新裁决。
+
+**裁决结果：豁免维持不变**（本文件继续有效，§1~§8 全部不变）。
+
+**依据**：
+
+1. **T3 的触发根因不在本豁免范围内**，而是一个独立的产品缺陷：`bank-front-*` 等外部技能
+   因「Skill 包解析静默降级」而未被注册（缺口 **`F-E2E-02`**，修复见
+   `TASK_PACKAGE_D-E2E-01.md`）。该修复**未**改用例、**未**改断言语义、
+   **未**触碰本豁免的 21 条清单。
+2. **T2 未触发**：新账本（run `34858121012`）的 `uncovered_by_file` 与本文件 §2 清单
+   **逐文件计数完全一致** —— `test_cross_service_health` 3 /
+   `test_gits_to_kert_integration` 2 / `test_scenario_1_continuous_operation` 4 /
+   `test_scenario_2_previsit_report` 2 / `test_scenario_3_service_proposal` 3 /
+   `test_scenario_4_knowledge_graph` 3 / `test_scenario_5_customer_insight` 4 = **21**。
+3. **T3 不再成立**：新账本 `failed=0`、`passed=26 >= 下限 26`、`errors=0`、
+   `skipped=21 <= 上限 21`。
+4. **T1 未触发**：CI 仍未编排 GITS 服务。
+
+**结论**：本豁免的登记口径、21 条清单与下限/上限推导**全部不变**，
+继续按 §7 边界声明引用；相关解除记录见 `ADMISSION-E2E-EVIDENCE.md` §6。
+
+**不构成**：`QA_PASS`、`PRODUCTION_READY`，也不表示跨服务链路已验证。
+`F-E2E-01` **未解除**。

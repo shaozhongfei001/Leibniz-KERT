@@ -231,9 +231,23 @@ pkgs = Path(skill_packages) if skill_packages else (
 | CI 同款全量测试 + 覆盖率门槛 | `Required test coverage of 80% reached. Total coverage: 84.35%` |
 | `ruff check src/ tests/` | `All checks passed!` |
 
-### 8.4 未完成（**不得**视为已通过）
+### 8.4 A1 / A2 核验结果（补记）
 
-- **A1**：真实 CI 账本尚未核验（本记录写入时该 push 的 run 尚未结束）
-- **A2**：技能就绪断言的负向有效性需在 CI 上验证（本地只验证了 `resolve_skill_packages` 的失败路径）
-- **A3/A4**：容器实测与 systemd 布局核实**未做**（网络不可用 / 无该部署环境）
-- 因此本任务**不是** `QA_PASS`；`ADMISSION-E2E-EVIDENCE.md` 的解除条件**未满足**
+- **A1 ✅**：真实 CI run `34858121012`（sha `4bca750`）**全绿**。e2e job 账本：
+  `collected=47 passed=26 skipped=21 failed=0 errors=0`，`violations=[]`，`pytest_exitstatus=0`；
+  对照修复前同一 job 为 `passed=16 failed=10`。就绪断言输出：
+  `已注册技能 13 个：[SP-15, SP-20, SP-21, 7×bank-front-*, 3×skill-customer-*]`
+  → `✓ 技能就绪：7 个 bank-front-* 全部存在`。
+- **A2 ✅（本地，使用 CI 中同一段断言代码）**：对「无外部技能包」的服务
+  （`已注册技能 6 个`）运行后输出 `::error::外部 Skill 包未就绪，缺少 7 个：[…]`
+  且 **exit=1** —— 证明该断言不是空转，真的会挡。
+- 附注：新增的启动日志（`外部 Skill 包：resolved=…`）写入服务自身的日志文件
+  （CI 中为 `$RUNNER_TEMP/kert.log`），**不出现**在 job 日志里；
+  CI 侧可见的守卫是就绪断言本身。
+
+### 8.5 仍未完成（**不得**视为已通过）
+
+- **A3/A4**：容器实测与 systemd 布局核实**未做**（本机 `docker build` 在 `pyarrow`
+  处网络中断不可用；无 systemd 部署环境）
+- 因此本任务在 **A3/A4 维度仍不完整**；**不**构成 `QA_PASS`，**不**代表
+  `PRODUCTION_READY`。`ADMISSION-E2E-EVIDENCE.md` 的状态见该文件。

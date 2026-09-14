@@ -1,7 +1,7 @@
 # 证据可采信性登记 ADMISSION-E2E-EVIDENCE —— 本轮 KERT E2E 证据的效力边界
 
 ```text
-STATUS=REGISTERED
+STATUS=LIFTED（2026-09-14；三条解除条件均已满足，依据与残留见 §6）
 REGISTERED_BY=Tech Lead（会话角色）
 REGISTERED_AT=2026-09-14
 SCOPE=KERT-E2E-C 交付、及其独立 QA 所产出的 E2E 证据
@@ -87,3 +87,24 @@ SELF_EXPIRING=是（解除条件见 §4，三条须同时满足）
 - 本登记**不**代表 `PRODUCTION_READY`；**不**解除 `F-E2E-01`（跨服务 21 条仍未覆盖）；
   **不**构成任何 `PASS`。
 - 本登记**不**免除 §3 所列已成立证据的价值，尤其不等于"本轮 E2E 工作无产出"。
+
+---
+
+## 6. 解除记录（2026-09-14）
+
+`STATUS=LIFTED` —— 三条解除条件均已满足：
+
+| 条件 | 证据 |
+|---|---|
+| **1. D-E2E-01 的 A1 达成** | 真实 CI run `34858121012`（sha `4bca750`）：账本 `collected=47 passed=26 skipped=21 failed=0 errors=0`、`violations=[]`、`pytest_exitstatus=0`（修复前同一 job 为 `passed=16 failed=10`） |
+| **2. 技能就绪断言在 CI 生效且负向有效** | CI 日志 `✓ 技能就绪：7 个 bank-front-* 全部存在`（可用技能 13 个）；负向：对「无外部技能包」的服务运行 CI 中**同一段**断言代码 → `::error::…缺少 7 个` 且 `exit=1` |
+| **3. `WAIVER-E2E-CROSS-SERVICE` 已按 T3 重新裁决** | 见该文件 §10，裁决结果 = **豁免维持不变**。依据：新账本 `uncovered_by_file` 与 §2 清单**逐文件计数完全一致**（3/2/4/2/3/3/4 = 21），T2 未触发；T3 的触发根因（`failed>0` 且 `passed<下限`）已消除 |
+
+**残留（不随本解除而消失）**：
+
+- `TASK_PACKAGE_D-E2E-01.md` 的 **V1/V2（容器实测）与 A3/A4 仍未完成** ——
+  容器内 `bank-front-*` 技能是否真的可用**尚未实测**（本机 `docker build` 因 `pyarrow`
+  下载中断不可用，已改用等效布局复刻，见该文件 §8.1）。
+  故本解除**只**恢复「证据可采信性」，**不**构成 `PRODUCTION_READY`，**不**代表容器部署已验证。
+- `F-E2E-01`（跨服务 21 条未覆盖）**未解除**，仍按原登记口径引用。
+- §3 所列 QA 已成立证据的价值不受影响。
