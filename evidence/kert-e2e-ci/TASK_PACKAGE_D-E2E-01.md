@@ -245,9 +245,37 @@ pkgs = Path(skill_packages) if skill_packages else (
   （CI 中为 `$RUNNER_TEMP/kert.log`），**不出现**在 job 日志里；
   CI 侧可见的守卫是就绪断言本身。
 
-### 8.5 仍未完成（**不得**视为已通过）
+### 8.5 剩余未完成项
 
-- **A3/A4**：容器实测与 systemd 布局核实**未做**（本机 `docker build` 在 `pyarrow`
-  处网络中断不可用；无 systemd 部署环境）
-- 因此本任务在 **A3/A4 维度仍不完整**；**不**构成 `QA_PASS`，**不**代表
-  `PRODUCTION_READY`。`ADMISSION-E2E-EVIDENCE.md` 的状态见该文件。
+- **A4**：systemd 部署核实 —— 本地无该环境，**无法核实**（见 §8.7）
+- 除 A4 外，**V1~V3、A1、A2、A3、A5、A6 均已完成并留证**
+- 本任务**仍不构成** `QA_PASS`、**不代表** `PRODUCTION_READY`
+
+### 8.6 容器实测（V1/V2、A3 补做，已完成）
+
+本机直连 pypi 不可用（`pyarrow` 50MB 下载中断，~11 kB/s），改用国内镜像
+**仅加一行 `PIP_INDEX_URL`** 的临时 Dockerfile 构建，**被测的 `COPY`/`ENV` 行未改**；
+差异经 `diff` 留证：`16a17 > ENV PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple`。
+构建成功（22/22）。
+
+| 项 | 结果 |
+|---|---|
+| **V1** 镜像内 `/app/examples` | **存在**（含 `bank-front-skills`、`config`、`gits_adapter`、`output`、`product-recommendation-assets`） |
+| **V1b** `bank-front-skills/` 下 7 个目录 | **齐**（commitment-script / eight-dimension / fact-reconciliation / kyc-gap-check / product-recommendation / report-assembler / supply-chain-graph） |
+| **V2** 镜像内解析 | `PYTHONPATH=/app/src`；`KERT_SKILL_PACKAGES=/app/examples/bank-front-skills`；**内置默认路径 `is_dir=True`**（修复后即便不设环境变量也能解析） |
+| 镜像内注册技能数 | **13**（SP-15 / SP-20 / SP-21 + 7×`bank-front-*` + 3×`skill-customer-*`），与真实 CI 一致 |
+| **A3 容器端到端（prod profile）** | 容器 **`Up (healthy)`**；`GET /api/skill/health` → **200**；**技能总数 13、bank-front 7** |
+
+**附带记录（非缺陷，但会消耗下一位的时间）**：裸 `docker run kert-verify` 会因 prod 校验
+**拒绝启动**（`生产 profile 必须启用 API Key 认证 / 必须启用限流 / 对外监听 0.0.0.0 时禁止匿名访问`）。
+这是**有意的 fail-fast**，且 `deploy/docker-compose.yml` 与 `deploy/.env.example` 已提供
+`KERT_API_KEYS`（`${KERT_API_KEYS:?…}` 带明确提示）与 `KERT_RATE_LIMIT_ENABLED`。
+按 compose 同款 env 启动即正常。**`KERT_API_KEYS` 的格式为 `<name>:<secret≥16字符>:<perms>`。**
+
+### 8.7 A4 无法在本地核实（保留为未完成）
+
+`A4` 要求记录 systemd 部署（`/opt/kert`）中 `examples/` 是否存在及实际技能清单——
+本地**无该部署环境**，无法核实。已按 §3.2-8 **刻意未修改**
+`deploy/systemd/kert-api.service`（该部署为源码布局，默认回落即可；盲目新增
+`KERT_SKILL_PACKAGES` 会让缺少 `examples/` 的既有部署**启动失败**）。
+⇒ **systemd 路径下的技能可用性未被验证**，不得据此推断。

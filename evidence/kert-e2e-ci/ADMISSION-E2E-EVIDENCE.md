@@ -102,9 +102,13 @@ SELF_EXPIRING=是（解除条件见 §4，三条须同时满足）
 
 **残留（不随本解除而消失）**：
 
-- `TASK_PACKAGE_D-E2E-01.md` 的 **V1/V2（容器实测）与 A3/A4 仍未完成** ——
-  容器内 `bank-front-*` 技能是否真的可用**尚未实测**（本机 `docker build` 因 `pyarrow`
-  下载中断不可用，已改用等效布局复刻，见该文件 §8.1）。
-  故本解除**只**恢复「证据可采信性」，**不**构成 `PRODUCTION_READY`，**不**代表容器部署已验证。
+- **容器实测（V1/V2、A3）已完成**，见 `TASK_PACKAGE_D-E2E-01.md` §8.6：
+  镜像内 `/app/examples/bank-front-skills` 存在且 7 个技能齐；镜像内注册技能
+  **13 个**；prod profile 下容器 `Up (healthy)`、`GET /api/skill/health` → **200**、
+  `bank-front=7`。（本机直连 pypi 不可用，构建时仅额外加了一行 `PIP_INDEX_URL`，
+  被测的 `COPY`/`ENV` 行未改，差异已 `diff` 留证。）
+- **A4（systemd 部署核实）仍未完成**：本地无该部署环境（同文件 §8.7）。
+  故本解除**仍不**构成 `PRODUCTION_READY`；**systemd 路径下的技能可用性未被验证**，
+  不得据此推断。
 - `F-E2E-01`（跨服务 21 条未覆盖）**未解除**，仍按原登记口径引用。
 - §3 所列 QA 已成立证据的价值不受影响。
