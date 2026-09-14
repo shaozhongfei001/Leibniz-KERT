@@ -8,6 +8,8 @@ BASELINE_AT_START=73d0e03（开工时 git status 干净，工作树仅本任务�
 UPSTREAM_DECISION=evidence/kert-e2e-ci/TECH_LEAD_DECISION.md（D-5 采纳 c+b；D-6/D-7/D-8/D-9/D-10）
 SELF_CHECK=DEV_SELF_CHECK_PASS（仅开发自检；独立 QA 方可记 QA_PASS）
 FILES_CHANGED=2 改（.github/workflows/ci.yml、tests/e2e/conftest.py）+ evidence/kert-e2e-ci/** 新增
+COMMIT=d90e48e（§8 的两处代码哈希对应此提交；本文件随后仅追加本提交哈希，代码文件哈希不变）
+PUSHED=否（未 push、未开 PR、未合并）
 ```
 
 ---
@@ -408,6 +410,8 @@ git commit -m "fix(e2e-ci): start KERT in CI, run 26 cases, skip+register 21 cro
 - coverage: 26/47 really run, 21/47 registered as uncovered"
 # 未 push、未开 PR、未 --no-verify
 ```
+
+**实际提交**：`d90e48e`（`feature/PI-ARCH-L10-L13`，本地领先 `origin` 1 个提交，**未 push**）。后续仅追加本文件里的 `COMMIT=` 一行，`tests/e2e/conftest.py` 与 `.github/workflows/ci.yml` 的哈希在 `d90e48e` 之后未再变动。
 
 **交接说明**：
 
