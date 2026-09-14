@@ -2,7 +2,7 @@
 
 - **来源决策**：`evidence/jr1/TECH_LEAD_DECISION.md` → D-3
 - **批准角色**：Tech Lead（2026-08-31）
-- **状态**：`ready_for_dev`（待 Feature Pilot 领取）
+- **状态**：`superseded_by=KERT-E2E-C`（2026-09-14 经 `evidence/kert-e2e-ci/TECH_LEAD_DECISION.md` D-6 裁定取代；本文件**保留仅供追溯**，不再派工）
 - **建议分支**：`fix/e2e-skip-when-services-absent`（从 `develop` 拉取）
 - **前置条件**：CI 修复 PR（`fix/ci-httpx-test-dependency`）已合入 `develop`
 - **不属于 JR-1 交付范围**，独立评审、独立回滚
