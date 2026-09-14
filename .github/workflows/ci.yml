@@ -115,6 +115,18 @@ jobs:
 
   # ──────────────────────────────────────────────
   # E2E：端到端集成测试
+  #
+  # 本 job **真启动 KERT（本仓代码，dev profile + 确定性适配器）**，使本仓可跑的
+  # 26 个用例真跑；需 GITS 后端/前端的 21 个跨服务用例显式 skip 并登记为缺口
+  # F-E2E-01（清单见 evidence/kert-e2e-ci/WAIVER-E2E-CROSS-SERVICE.md）。
+  # 覆盖口径：26/47 真跑，21/47 未覆盖 —— CI 绿 ≠ 跨服务链路已验证。
+  #
+  # 防假绿（TECH_LEAD_DECISION D-5 边界 1 / D-8）：KERT 未起来时**必须** job 失败，
+  # 禁止以「全 skip 后变绿」掩盖。三道防线：
+  #   ① 启动步骤自身等就绪；未就绪/端口被占 → exit 1；
+  #   ② E2E_REQUIRE_KERT=1 → 需要 KERT 的用例在 KERT 缺失时 fail，禁止降级为 skip；
+  #   ③ 覆盖账本下限断言（conftest 的 session 钩子 + 下方独立步骤，双重）。
+  # 不用 continue-on-error：本 job 的失败必须阻断。
   # ──────────────────────────────────────────────
   e2e:
     name: E2E Tests
@@ -137,10 +149,108 @@ jobs:
             pip install ".[api,dev]"
           fi
 
+      - name: Start KERT (dev profile, deterministic adapters)
+        env:
+          # dev profile 无需 API Key；无 LLM 密钥时自动走确定性适配器
+          KERT_PROFILE: dev
+        run: |
+          set -euo pipefail
+          # 拒绝复用已在 8106 上运行的外部实例（TECH_LEAD_DECISION §0.3：
+          # 非本仓检出会产出与本次改动无关的假象，不得作为证据）。
+          if curl -fsS --max-time 2 http://127.0.0.1:8106/api/skill/health > /dev/null 2>&1; then
+            echo "::error::8106 上已有实例在监听，拒绝复用外部实例（须由本 job 启动本仓代码）"
+            exit 1
+          fi
+          # 空 HOME：复现 CI 的「无密钥」环境，强制确定性适配器
+          mkdir -p "$RUNNER_TEMP/kert-home" "$RUNNER_TEMP/kert-ws"
+          # 空目录即可作 workspace，无需 `kert init`（scripts/run_nfr_baseline.sh 为既有范式）
+          nohup env HOME="$RUNNER_TEMP/kert-home" \
+            python scripts/serve_skill_service.py \
+              --port 8106 --host 127.0.0.1 --workspace "$RUNNER_TEMP/kert-ws" \
+            > "$RUNNER_TEMP/kert.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/kert.pid"
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 2 http://127.0.0.1:8106/api/skill/health > /dev/null; then
+              echo "KERT 就绪（第 ${i} 秒）：GET /api/skill/health = 200"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::KERT 未能在 60 秒内于 127.0.0.1:8106 就绪，e2e 无法真跑——拒绝以 skip 掩盖"
+          cat "$RUNNER_TEMP/kert.log"
+          exit 1
+
       - name: Run E2E tests
-        run: python -m pytest tests/e2e/ -q
+        run: |
+          # 注意：pyproject 的 addopts 已含 -q，此处再传 -q 会变成 -qq，
+          # 连「N passed, M skipped」汇总行都会被抑制 —— 只传 -rs 打印 skip reason。
+          python -m pytest tests/e2e/ -rs
         env:
           KERT_PROFILE: dev
+          # 服务维度 require（TECH_LEAD_DECISION D-7）：KERT 缺失 → fail，禁止 skip。
+          # 不设 GITS 侧 require：跨服务用例按既定口径显式 skip + 登记（F-E2E-01）。
+          E2E_REQUIRE_KERT: "1"
+          # 覆盖账本落盘，供下方独立断言步骤核验
+          E2E_LEDGER_PATH: ${{ runner.temp }}/e2e-coverage-ledger.json
+
+      - name: Assert E2E coverage ledger
+        run: |
+          # 独立于 pytest 内部钩子的第二道下限断言（TECH_LEAD_DECISION D-8）：
+          # 口径为「errors=0 且 failed=0 且 passed>=下限 且 skipped<=上限」，
+          # 下限/上限由账本中按文件列出的分组**现场重算**，不信任账本自报的结论。
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          path = os.path.join(os.environ["RUNNER_TEMP"], "e2e-coverage-ledger.json")
+          if not os.path.exists(path):
+              print("::error::覆盖账本缺失（%s）——pytest 未正常完成，拒绝判定为通过" % path)
+              sys.exit(1)
+          with open(path, encoding="utf-8") as fh:
+              ledger = json.load(fh)
+          groups = ledger["groups"]
+          expected_min = len(groups["no_service"]) + len(groups["kert_only"])
+          expected_max = len(groups["gits_only"]) + len(groups["multi_end"])
+          print("E2E 覆盖账本：collected=%d passed=%d skipped=%d failed=%d errors=%d"
+                % (ledger["collected"], ledger["passed"], ledger["skipped"],
+                   ledger["failed"], ledger["errors"]))
+          print("  下限 passed>=%d（无服务 %d + 仅 KERT %d）"
+                % (expected_min, len(groups["no_service"]), len(groups["kert_only"])))
+          print("  上限 skipped<=%d（仅 GITS %d + 多端/含前端 %d）"
+                % (expected_max, len(groups["gits_only"]), len(groups["multi_end"])))
+          print("  覆盖口径：%s" % ledger["coverage"])
+          for nodeid, reason in sorted(ledger["uncovered_reasons"].items()):
+              print("  未覆盖（显式登记，非通过）：%s  [%s]" % (nodeid, reason))
+          problems = []
+          if ledger["errors"] != 0:
+              problems.append("errors=%d（必须 0）" % ledger["errors"])
+          if ledger["failed"] != 0:
+              problems.append("failed=%d（必须 0）" % ledger["failed"])
+          if ledger["passed"] < expected_min:
+              problems.append("passed=%d < 下限 %d" % (ledger["passed"], expected_min))
+          if ledger["skipped"] > expected_max:
+              problems.append("skipped=%d > 上限 %d" % (ledger["skipped"], expected_max))
+          if ledger["collected"] != (ledger["passed"] + ledger["skipped"]
+                                     + ledger["failed"] + ledger["errors"]):
+              problems.append("计数不自洽：collected=%d，四态之和=%d"
+                              % (ledger["collected"],
+                                 ledger["passed"] + ledger["skipped"]
+                                 + ledger["failed"] + ledger["errors"]))
+          if problems:
+              for problem in problems:
+                  print("::error::E2E 覆盖账本下限断言失败：%s" % problem)
+              sys.exit(1)
+          print("✓ 覆盖账本下限断言通过（errors=0, failed=0, passed>=%d, skipped<=%d）"
+                % (expected_min, expected_max))
+          PY
+
+      - name: Upload E2E coverage ledger
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-coverage-ledger
+          path: ${{ runner.temp }}/e2e-coverage-ledger.json
+          retention-days: 30
 
   # ──────────────────────────────────────────────
   # Security：安全测试

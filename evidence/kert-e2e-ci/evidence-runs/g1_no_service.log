@@ -1,0 +1,71 @@
+ssssssssssssssssssssssss.ssssssssssssssssssssss                          [100%]
+
+E2E 覆盖账本（下限由本次收集结果推导，见 TECH_LEAD_DECISION.md D-8）：
+  collected = 47
+  passed  = 1   (下限 26 = 无服务 1 + 仅 KERT 25)
+  skipped = 46   (上限 21 = 跨服务 21（仅 GITS 16 + 多端/含前端 5）)
+  failed  = 0   (必须 0)
+  errors  = 0   (必须 0)
+  覆盖口径：1/47 真跑，46/47 未覆盖
+  未覆盖用例清单（按文件分组）：
+    tests/e2e/test_all_skills_execution.py  (15 条)
+      - TestAllSkillsExecution::test_gates_endpoint  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[SP-15]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[SP-20]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[SP-21]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[bank-front-commitment-script]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[bank-front-eight-dimension]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[bank-front-fact-reconciliation]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[bank-front-kyc-gap-check]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[bank-front-product-recommendation]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[bank-front-report-assembler]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[bank-front-supply-chain-graph]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[skill-customer-meeting-script]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[skill-customer-outreach-script]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_execute[skill-customer-previsit-report]  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestAllSkillsExecution::test_skill_list_completeness  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+    tests/e2e/test_cross_service_health.py  (4 条)
+      - TestCrossServiceHealth::test_all_services_simultaneously  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestCrossServiceHealth::test_gits_backend_health  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestCrossServiceHealth::test_gits_frontend_reachable  [Skipped: GITS Frontend 不可达 (http://127.0.0.1:5173)]
+      - TestCrossServiceHealth::test_kert_health  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+    tests/e2e/test_gits_to_kert_integration.py  (5 条)
+      - TestGitsToKertIntegration::test_gits_calls_kert_skill_execute  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestGitsToKertIntegration::test_gits_kert_connectivity  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestGitsToKertIntegration::test_kert_gates_endpoint  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestGitsToKertIntegration::test_kert_job_status_endpoint  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestGitsToKertIntegration::test_kert_skill_list  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+    tests/e2e/test_scenario_1_continuous_operation.py  (5 条)
+      - TestContinuousOperation::test_full_engagement_loop  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestContinuousOperation::test_gate_state_via_gits  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestContinuousOperation::test_gate_state_via_kert  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestContinuousOperation::test_operating_view  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestContinuousOperation::test_start_journey  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+    tests/e2e/test_scenario_2_previsit_report.py  (3 条)
+      - TestPrevisitReport::test_full_previsit_flow  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestPrevisitReport::test_memory_extraction  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestPrevisitReport::test_previsit_report_via_kert  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+    tests/e2e/test_scenario_3_service_proposal.py  (4 条)
+      - TestServiceProposal::test_execute_sp20_via_kert  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestServiceProposal::test_generate_proposal_via_gits  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestServiceProposal::test_proposal_different_industry  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestServiceProposal::test_proposal_fact_labels  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+    tests/e2e/test_scenario_4_knowledge_graph.py  (5 条)
+      - TestKnowledgeGraph::test_customer_admission_r1  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestKnowledgeGraph::test_supply_chain_edges  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestKnowledgeGraph::test_supply_chain_graph_via_gits  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestKnowledgeGraph::test_supply_chain_node_types  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestKnowledgeGraph::test_supply_chain_via_kert  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+    tests/e2e/test_scenario_5_customer_insight.py  (5 条)
+      - TestCustomerInsight::test_customer_operating_view  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestCustomerInsight::test_full_insight_flow  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestCustomerInsight::test_insight_gate_correlation  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestCustomerInsight::test_insight_via_kert  [Skipped: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)]
+      - TestCustomerInsight::test_kyc_gap_analysis  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+  require 开关：（未设置 → 缺失服务一律 skip）
+  ✗ 下限断言失败：
+    - passed=1 < 下限 26（无服务 1 + 仅 KERT 25）——被 require 的服务可能未起来，禁止以 skip 掩盖
+    - skipped=46 > 上限 21（跨服务用例数）——存在计划外跳过
+::error::E2E 覆盖账本下限断言失败，job 必须失败（禁止以 skip 掩盖未验证）
+  说明：本账本是「未覆盖」的显式登记，不等于「通过」；CI 绿不代表跨服务链路已验证。
+1 passed, 46 skipped in 11.39s

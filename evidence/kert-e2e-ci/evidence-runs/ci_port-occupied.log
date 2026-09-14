@@ -1,0 +1,13 @@
+########## 环境预检（netns 内） ##########
+1: lo    inet 127.0.0.1/8 scope host lo\       valid_lft forever preferred_lft forever
+1: lo    inet6 ::1/128 scope host \       valid_lft forever preferred_lft forever
+8106 预检: 000
+8082 预检: 000
+5173 预检: 000
+
+########## 说明：本模式先在 netns 内占用 8106，再执行 Start KERT ##########
+预占实例健康检查: 200
+
+########## STEP: Start KERT（8106 已被占用） ##########
+::error::8106 上已有实例在监听，拒绝复用外部实例（须由本 job 启动本仓代码）
+########## Start KERT（8106 已被占用） exit=1 ##########
