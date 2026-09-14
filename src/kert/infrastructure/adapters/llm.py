@@ -398,8 +398,8 @@ class DeterministicLlmAdapter(LlmAdapter):
                 "",
             ]
         lines.append(
-            f"> 生成模式：确定性兜底（未配置 KERT_LLM_*，未调用大模型）。"
-            f"正式草稿请配置 KERT_LLM_BASE_URL / KERT_LLM_API_KEY / KERT_LLM_MODEL。"
+            "> 生成模式：确定性兜底（未配置 KERT_LLM_*，未调用大模型）。"
+            "正式草稿请配置 KERT_LLM_BASE_URL / KERT_LLM_API_KEY / KERT_LLM_MODEL。"
         )
 
         claims = [
