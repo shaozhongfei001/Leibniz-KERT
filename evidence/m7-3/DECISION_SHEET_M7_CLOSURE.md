@@ -55,6 +55,19 @@ AUTHOR    : Tech Lead
 | **实施授权** | **条件性授权（已给，无需再次审批）**：① c20 落定（TL 发**冻结信号**）→ ② 冻结态复测确认"0 变化"**并回报原始计数** ⇒ **即可开工**。白名单：`src/kert/application/skills.py`、**新增**测试文件、`docs/contracts/schemas/assembly-trace.schema.json`（**仅追加两字段**）、`evidence/m7-3/**`；**既有测试文件一字不改**（含 `test_skills.py`）；新测试自带夹具 |
 
 
+#### C-4.1 Q1-i 裁定：留痕范围 = **声明的 bindings 集合**（不读计划）
+
+> TL 裁定（2026-09-16）：**签名逐字一致优先于留痕范围**。理由：B-1 的价值在"可证的等价"，纯代入才能只证行为、不证依赖变化；传 `plan` 会把"计划读取"引入一个此前完全不读计划的方法。
+> 已**独立核实**前提：声明 `bindings` = **7 条**（`KI-009` + `KI-FRONT-001…006`）、三张地图 `assetRefs` 并集 = **同样 7 条** ⇒ scope=bindings 与 scope=map-union 在受控工作区**相等**；该等式由 `tests/unit/test_knowledge_source.py:228-240` 以**双向等式 + 诊断信息**钉住（非单向包含）。
+> **具名依赖**：若该用例被放宽/改写/移除，本 scope 决策必须**重审**。
+>
+> 配套四条（v1.4 待补）：① 加 `inspect.signature` 等式守卫（比源码扫描更能抓住"参数变了"）；② 上述等式登记为具名依赖并写明后果；③ 显式写明**语义噪声** —— scope 是**并集**而单任务计划资产是其**子集** ⇒ 回落时可能列出多于该任务所需的资产（非等价性问题，但**不得**被读成"该任务需要全量"；且资产 ID 不得进 `message`，T3）；④ **plan-scoped 留痕属 B-2 议题**（需读计划），B-1 不留口子。
+
+#### C-4.2 归因观察：第三方在途新增 `src/kert/domain/activation_contract.py`
+
+`git status` 出现 `?? src/kert/domain/activation_contract.py`（§5.5 ② 激活合同注册/解析，读 `<ws>/90_control/schema/activations/AC-*.json`）—— **非 c20、非 m71**。⇒ 冻结信号须附"`git rev-parse HEAD` + 完整 `git status` 快照"以保归因；并**预告**：该模块读控制面 `schema/`，若纳入部署则**供给面清单将再次扩项**（现行 6 类文件），属后续议题（与 D-5 同族）。
+
+
 ## D. 已知缺口（知情项，不阻塞）
 
 | # | 事项 | 现状 |
@@ -67,6 +80,7 @@ AUTHOR    : Tech Lead
 | **D-6** | **e2e 假绿风险**：`/api/skill/execute` 对**一切业务错误**返回 **200**（仅 `UNKNOWN_SKILL` 为 404，`server.py` 读码确认），而 e2e 只断言 `status_code in (200,201,202)` + 字段存在 ⇒ **部署工作区未供给时 e2e 仍绿，而技能实际 `skill_error`** | 已登记为 **C-1b 的交付项之一**；**不在 B-1 改 e2e**。若强化断言（须能区分 `ok`/`skill_error`），会牵动 **CI 供给**（未供给即红）⇒ 属**流水线决策**，需你裁 |
 | **D-7** | **读取路径一致性债**：`_run_supply_chain`（技能包 `bank-front-supply-chain-graph`）仍为**字面量驱动**读取，将与能力驱动路径**并存** | **不得**表述为"读取已全部接线"；归 O-6 / M7.2 范围，需另立 |
 | **D-8** | **引用纪律**：`src/kert/api/server.py` 常被并行改动（本轮 c20 在途 +29 行） | 引用该文件必须 **"函数名 + 行号"双锚**，并在文档顶部记**行号基准快照**；并发编辑期间的跑数**不可归因**（见"先冻结再跑"规则） |
+| **D-9** | **第三方在途未归因**：`?? src/kert/domain/activation_contract.py`（§5.5 ②，新增未跟踪文件）与 `.understandignore`（他人会话 UA-D10） | 非本轮任何队友所为；**冻结前须归因**（复测须附 `git rev-parse HEAD` + 完整 `git status` 快照）。该模块读 `<ws>/90_control/schema/activations/AC-*.json` ⇒ 若纳入部署，**供给面清单将再次扩项**（现行 6 类文件），与 D-5 同族 | 复测归因；未来供给面 |
 
 ## 非声明
 
