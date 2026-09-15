@@ -46,6 +46,36 @@ def test_spec_declares_the_three_paths_and_schemas():
         assert name in schemas, name
 
 
+def test_response_envelope_shapes_match_contract(client):
+    """合同声明的响应**形状**必须与**实际**响应一致（防"测试绿而合同错"）。
+
+    起因（真实事故，2026-09-16 由 C-20 归并候选发现）：v1.5 的 `RoutingPlanResponse`
+    曾把 `allowed` 声明在**顶层**，而实现按标准信封放在 `data` 内，用例按 `data.allowed`
+    断言 ⇒ **测试全绿、合同错**。本用例机械核对：合同 `required` ⊆ 实际键集，
+    且 `data` 内声明的 `required`/属性名必须真的出现。
+    """
+    spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
+    schemas = spec["components"]["schemas"]
+
+    cases = [
+        ("KnowledgeMapListResponse", client.get("/v1/knowledge-maps").json()),
+        ("KnowledgeMapDetail",
+         client.get("/v1/knowledge-maps/KM-CORP-RM-OUTREACH").json()),
+        ("RoutingPlanResponse",
+         client.post("/v1/routing/plan", json={"taskType": "OUTREACH_PREPARATION"}).json()),
+    ]
+    for name, body in cases:
+        schema = schemas[name]
+        assert set(schema["required"]) <= set(body), (name, sorted(body))
+        data_schema = (schema.get("properties") or {}).get("data") or {}
+        if data_schema:
+            assert "data" in body, (name, sorted(body))
+            assert set(data_schema.get("required") or ()) <= set(body["data"]), \
+                (name, sorted(body["data"]))
+            for prop in (data_schema.get("properties") or {}):
+                assert prop in body["data"], (name, prop, sorted(body["data"]))
+
+
 def test_activation_plan_contract_matches_implementation_field_for_field(client):
     """合同 `ActivationPlan.required` 必须与 `to_dict()` 的键集合**逐字段相等**。
 

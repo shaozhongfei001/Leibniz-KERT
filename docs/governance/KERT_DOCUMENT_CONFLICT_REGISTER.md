@@ -25,7 +25,11 @@
 
 - 状态/能力/证据以 `KERT_STATUS_BASELINE_CANDIDATE.yaml` 为准。
 - 文档替代关系见 `KERT_SUPERSESSION_MAP.md`。
-- 契约 v1/v2 替代关系以 OpenAPI/JSON Schema 候选为唯一权威源，v1 保留兼容层。
+- 契约权威：**运行中权威**是 `specs/kert-openapi-v1.yaml`（1.5.0，服务实际实现、向 GITS 提供）；
+  `docs/contracts/**` 的 v2 候选**未批准**，仅为设计输入。两者归并见 **C-20**
+  （Contract Owner 2026-09-15 批准列入 W8/Phase 0 收口，**尚未执行**）。
+  （本条 2026-09-16 修正：原文为"以 OpenAPI/JSON Schema 候选为唯一权威源、v1 保留兼容层"，
+  与同文件 C-20 判定直接冲突 —— 2026-09-15 只改了 `docs/contracts/README.md` 未同步此行。）
 
 ## C′ 混合架构整改新增冲突（2026-08-26）
 

@@ -1214,23 +1214,36 @@ components:
           description: 主体标识（如 customerId）；仅记录，不影响 planHash
     RoutingPlanResponse:
       type: object
-      required: [request_id, status, allowed]
+      description: "标准响应信封（与 /v1/* 其余端点一致）；裁决结果在 data 内。修正记录：v1.5 初版误把 allowed 写在顶层，已改正（2026-09-16）。"
+      required: [request_id, status, data]
       properties:
         request_id:
           type: string
         status:
           type: string
-        allowed:
-          type: boolean
-          description: 只可能为 true（带 plan）或 false（带 denial）——**没有第三态**
-        plan:
-          description: "allowed=true 时存在"
-          allOf:
-            - $ref: "#/components/schemas/ActivationPlan"
-        denial:
-          description: "allowed=false 时存在"
-          allOf:
-            - $ref: "#/components/schemas/PlanDenial"
+        data:
+          type: object
+          required: [allowed]
+          properties:
+            allowed:
+              type: boolean
+              description: 只可能为 true（带 plan）或 false（带 denial）——**没有第三态**
+            plan:
+              description: "allowed=true 时存在"
+              allOf:
+                - $ref: "#/components/schemas/ActivationPlan"
+            denial:
+              description: "allowed=false 时存在"
+              allOf:
+                - $ref: "#/components/schemas/PlanDenial"
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        meta:
+          type: object
+          additionalProperties: true
     KnowledgeMapSummary:
       type: object
       required: [mapId, version, domain, tasks, priority, assetCount, skillCount]
