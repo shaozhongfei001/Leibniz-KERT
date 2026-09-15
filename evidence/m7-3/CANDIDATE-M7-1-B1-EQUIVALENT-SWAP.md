@@ -181,6 +181,15 @@ assert (r_true.status, kind_true) == (r_false.status, kind_false) == ("ok", "ski
 
 ⇒ 形态（**字段名已定稿**，见 C-3）：`{"phase": "evidence", "status": "ok"|"degraded", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "sourceCode": "KNOWLEDGE_SOURCE_UNBOUND", "message": "知识源能力解析结果…"}`（`message` 不含 `KI-`）。
 
+> **T6 表述修正（TL 2026-09-16 采纳，**取代原表述**）**：T6 原文"新增条目只追加在既有序列**末尾**"
+> **物理不可满足** —— 取数段之后还有 `model` / `parse` 条目，留痕必然落在序列中间。故 T6 由下式**取代**：
+> **「剔除留痕后与接线前逐字全等（含顺序）」+「留痕是紧接既有 `kert` 条目之后的连续块」**。
+> 该式**等价且更强**（顺序敏感 + 位置约束），且原表述的目标（"剔除后可还原"可机械判定）由前者保证。
+> **不得**改为"trace 末尾追加"：那会把留痕移出取数段，削弱**回落可见性**，而可见性正是留痕存在的理由。
+> **位置约束已在交付测试中被断言**（不是只写在文档里）：
+> `tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only`
+> 的 `r.assembly_trace[idx[0] - 1].get("phase") == "kert"`（= 变异 **V13** 的打击点，实测可捕获）。
+
 ### 1.6 既有 fail-open 文案**不动**
 
 A 组两条断言要求既有条目**原样保留**：
@@ -600,6 +609,8 @@ if __name__ == "__main__":
 
 ## 9. 预跑记录（**非冻结态**；不得作为冻结证据）
 
+> TL 采纳批注（2026-09-16）：本次预跑**已被 TL 采纳为 B-1 实施基准** —— 理由：① 9 个并发文件 sha before==after ⇒ 可归因 ② 3 条红灯归因明确且与 44 条枚举不相交 ③ 以『不得新增红灯』替代『全绿』作为验收不变量。正式冻结跑在第三方批次落定后**补做一次**。
+
 > ⛔ **抬头声明**：本节记录的是 **预跑（pre-run）**，发生在**第三方在途批次未落定**期间。
 > 按 TL 规则：**预跑不得写入 §6 作为冻结证据**；其唯一用途是**提前发现本包自己的问题**（探针、快照流程、报数模板）。
 > **正式冻结跑待 TL 的新冻结信号**（该信号将在第三方批次落定后发出）。
@@ -692,3 +703,87 @@ _route_plan 调用数 = 49 ；去重用例 = 44 ；load_ki 观测用例 = 44 ；
 - 预跑**未改变** B-1 的任何设计结论；**未发现**本包自身的问题（探针、快照流程、报数模板均按 §6 要求产出）；
 - 预跑**不构成**冻结证据；**正式冻结跑**待 TL 的新冻结信号，届时按 §6 的 (a)–(h) + R-A…R-F 全量重跑并原文报数；
 - 预跑期间**未触碰**任何第三方文件（`provision.py` / `cli/main.py` / `activation_contract.py` / `test_provision*.py` / `activations/**` 均只读）。
+
+---
+
+## 10. B-1 **实施验证记录**（2026-09-16；本片实施交付）
+
+### 10.1 落地清单（HEAD 开工前后一致：`9b79da67`）
+
+```text
+M src/kert/application/skills.py                    +249/-3   sha256 1677173cd1170fd6552a589d4e22f1d8ca97cfed47d91c9b9a041daa7fe9efc4
+M docs/contracts/schemas/assembly-trace.schema.json   +8/-0   sha256 5abfa6defeeefa86b6dea90c13689c943f9a67b9f8b1e8b51815faab178cb4ad
+?? tests/unit/test_skills_capability_swap_guards.py    470 行  sha256 648dee8d7e6455f7718bb1c8c6d1ba4ea140387a7f9a83380b113bbe619a5435
+?? tests/integration/test_skills_capability_swap.py    401 行  sha256 b4b12bab88145dc6a32441315d7eabbd8c7f59929e0344b7b377445553e11abe
+```
+
+### 10.2 四目录原始计数与退出码（含红集逐条 node id）
+
+```text
+tests/unit         → 4 failed, 975 passed, exit 1
+tests/integration  → 469 passed, 1 xfailed, exit 0      （基线 458 + 本片 11）
+tests/contract     → 53 passed, exit 0
+tests/recovery     → 18 passed, exit 0
+红灯集（两跑一致）:
+  tests/unit/test_knowledge_source.py::test_module_wiring_is_limited_to_explicit_whitelist   ← **新增**（2-A 的"尚未接线"门禁，非行为回归）
+  tests/unit/test_provision_cli.py::test_apply_then_idempotent_rerun                          ← 基准已有（第三方在途）
+  tests/unit/test_provision_cli.py::test_json_output_follows_standard_envelope               ← 基准已有
+  tests/unit/test_provision_cli.py::test_init_flag_initializes_fresh_volume_then_provisions  ← 基准已有
+```
+
+### 10.3 枚举两跑（原版探针 `/tmp/m71b_impact_probe.py`，sha `d73ce3c6…`）
+
+两跑输出**逐字一致**（仅耗时行不同）⇒ 两跑**交集 == 并集**（R-A 口径成立）。
+
+```text
+_route_plan 命中用例数 = 63 = 基线 44（与 §9.4 的"去重用例 = 44"逐字一致） + 本片新增 19
+_run_supply_chain     = 3  （不变 ⇒ D 组未接线）
+```
+
+> ⚠ **探针口径变更（B-1 结构性影响）**：探针只包 `_load_ki`；B-1 之后三个已接线技能的**生产路径不再经过** `_load_ki`
+> ⇒ 其 `load_ki` 计数对这三个技能**结构性失效**。若要用该探针核对"读取路径"，须同时计数 `_load_ki_from_declaration`。
+
+### 10.4 变异矩阵 V1–V14（全部捕获：基线 rc=0 → 变异 rc≠0 → 恢复 rc=0 + 恢复后 sha == golden）
+
+| 变异 | 捕获用例 | 结果 |
+|---|---|---|
+| V1 接线后仍走旧隐式路径 | `test_declaration_pattern_is_the_read_driver` | PASS |
+| V2 回落被静默吞掉 | `test_declaration_absent_is_visible_but_never_refused` | PASS |
+| V3 解析失败不回落 | `test_unavailable_code_differs_from_absent` | PASS |
+| V4 把"不可用"当必需并拒绝 | `test_required_flag_does_not_escalate` | PASS |
+| V5 能力门禁提前到计划门禁之前 | `test_unprovisioned_workspace_refuses_and_records_why` | PASS |
+| V6 新条目字段污染 | `test_trace_field_discipline_and_append_only` | PASS |
+| V7 UNAVAILABLE/ABSENT 混码 | `test_unavailable_code_differs_from_absent` + 三态用例 | PASS |
+| V8 改 `_load_ki` 本体（成功分支返回 `{}`） | `test_legacy_reader_contract_is_unchanged`（**本片新增**） | PASS |
+| V9 读取内容被截断 | `test_alpha_ki_text_equals_reference_provider` | PASS |
+| V10 留痕指纹写死 | `test_binding_fingerprint_is_not_hardcoded` | PASS |
+| V11 声明缺失即拒绝（B-2 语义提前） | `test_declaration_absent_is_visible_but_never_refused` | PASS |
+| V12 出现第 4 个调用点 | `test_new_reader_call_sites_are_exactly_the_three_wired_skills` | PASS |
+| V13 新条目插到 `kert` 之前（非追加） | `test_trace_field_discipline_and_append_only` | PASS |
+| V14 签名漂移（加 `plan`） | `test_signature_equality_guard` | PASS |
+
+> **V8 的实现期修正**：设计里 V8 的捕获写的是"D 组 3 条行为不变"，**实测该假设不成立** ——
+> D 组断言只依赖 `CustomerKnowledgeProvider.supply_chain/interpretation`，**不依赖** `_load_ki` 的返回
+> ⇒ 仅靠 D 组**抓不到**"改本体"。故新增 `test_legacy_reader_contract_is_unchanged`：
+> 直调本体、钉住三条分支（无投影 / 有投影 / 取数抛异常）的**逐字输出**。这条才是 V8 的真正捕获点。
+
+### 10.5 三条**测量学陷阱**（本片实测踩到，务必写进后续片的测量纪律）
+
+1. **pyc 复用会伪造"恢复后"的跑数**：变异体与目标版本**字节数相同**时（如 V13 的两行挪位），
+   `(源文件 mtime 的整秒, 文件大小)` 与旧 pyc 记录相同 ⇒ Python **复用旧字节码**，
+   于是"恢复后"实跑的是**变异行为**（本片实测命中一次，表现为恢复跑仍红）。
+   对策（且不删任何文件）：每次写入后把 mtime **单调前移**（实测用 `+20s×序号`），使整秒必不同。
+2. **外部写入者会回写文件**：`src/kert/application/skills.py` 曾两次在本片**两条命令之间**被写回
+   **变异内容**（取证：mtime `02:20:31`，形态符合编辑器缓冲区回写）。
+   对策：以 `/tmp` golden 快照为唯一真源 + 每次测量前后强校验 + 不一致即自动回写。
+   ⇒ **提交前请用 `sha256sum` 复核该文件 = `1677173c…`**。
+3. **量具自伤**：影响面探针在同一进程内把 `_load_ki` 换成**无注解**的计数包装器 ⇒
+   纯 `inspect.signature` 互比会把**量具**误判成"签名漂移"（本片实测两次假红）。
+   守卫已改为"**源码级(AST)签名相等** + 运行期未被包装"两条断言 ⇒ V14 仍必 FAIL，量具不再致红。
+
+### 10.6 已知边界与"未做"
+
+- `_run_supply_chain` **自身**的 trace 输出不在本片守卫范围（AST 守卫只证"**未接线**"；改该方法属 D 组/后续片议题）；
+- `KNOWLEDGE_SOURCE_UNBOUND` 在 B-1 读取路径**不可达**（遍历声明绑定集；计划面判定归 **B-2**）；
+- (γ) 夹具必须带 `evidenceTimestamp`，否则 R1 无新证据策略在**取数之前**拦截（走不到读取层）；
+- **未做**：未改任何既有测试（唯一新增红 = 2-A 白名单门禁，待 TL 裁定）；未动 `customer_knowledge.py` / `api/**` / `specs/**` / `deploy/**` / 2-A 声明文件；未 commit、未 push。

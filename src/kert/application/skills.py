@@ -36,6 +36,25 @@ from pathlib import Path
 
 from ..domain import timeutil
 from ..domain.activation_plan import ActivationPlanBuilder, PlanDenial
+# M7.1-B1：知识源能力的**只读**消费端（声明 → 能力 → 读取契约）。
+# 注意方向：domain 层不反向依赖 application 层，故此导入不构成循环。
+from ..domain.knowledge_source import (
+    CODE_AMBIGUOUS,
+    CODE_ASSET_REF_UNMATCHED,
+    CODE_CONTRACT_MISMATCH,
+    CODE_DECLARATION_ABSENT,
+    CODE_DECLARATION_INVALID,
+    CODE_DISABLED,
+    CODE_LIMIT_EXCEEDED,
+    CODE_OK,
+    CODE_UNAVAILABLE,
+    CODE_UNBOUND,
+    DeclarationLoad,
+    KnowledgeSourceCapability,
+    KnowledgeSourceResolver,
+    SourceHealth,
+    resolve_declaration,
+)
 from ..infrastructure.adapters import llm as llm_mod
 from ..infrastructure.classification import detect_value_patterns, redact_for_llm
 
@@ -96,6 +115,55 @@ def _is_external_adapter(adapter) -> bool:
     对其脱敏只会降低结果质量；仅 OpenAI 兼容适配器需要出站脱敏。
     """
     return isinstance(adapter, llm_mod.OpenAiCompatibleLlmAdapter)
+
+
+# --------------------------------------------------------------------------- #
+# M7.1-B1：声明驱动的知识源能力读取 —— 留痕文案与可用性探针
+# --------------------------------------------------------------------------- #
+
+#: 能力解析未通过时的**留痕文案**（逐码一条）。
+#:
+#: ⚠ 纪律（违反即破坏既有断言）：``message`` **不得**含子串 ``KI-``
+#: —— ``tests/integration/test_skills.py:130`` 用 ``if "KI-" in m`` 把含该子串的
+#: message 视为"逐知识条目轨迹"并断言其中含 ``skipped``。而能力 ID
+#: （``KS-CUSTOMER-KI-PARQUET``）与资产引用 id（``KI-009`` …）**都**含 ``KI-``，
+#: 故**一律不得**拼进 ``message``，只放在独立字段 ``capabilityId`` / ``assetVersion`` 上。
+_SOURCE_MESSAGES: dict[str, str] = {
+    CODE_DECLARATION_ABSENT: "控制面未声明知识源能力，已回落既有读取路径（B-1 等价口径）",
+    CODE_DECLARATION_INVALID: "知识源能力声明非法，已回落既有读取路径（B-1 等价口径）",
+    CODE_UNAVAILABLE: "知识源能力不可用（投影缺失），已回落既有读取路径",
+    CODE_DISABLED: "知识源能力已被停用，已回落既有读取路径",
+    CODE_AMBIGUOUS: "资产引用绑定的知识源能力存在同优先级歧义，已回落既有读取路径",
+    CODE_ASSET_REF_UNMATCHED: "资产引用绑定与读取契约不匹配，已回落既有读取路径",
+    CODE_CONTRACT_MISMATCH: "知识源读取契约不匹配，已回落既有读取路径",
+    CODE_UNBOUND: "资产引用未绑定知识源能力，已回落既有读取路径",
+    CODE_LIMIT_EXCEEDED: "知识源读取超过契约条数上限，已回落既有读取路径",
+}
+
+#: 能力解析通过时的留痕文案（同样不含 ``KI-``）。
+_SOURCE_OK_MESSAGE = "知识源能力读取完成（按控制面声明的读取契约取数）"
+
+
+class _KiProjectionProbe:
+    """``customer_knowledge`` 投影可用性探针（B-1 的最小实现）。
+
+    判据取自取数层自身的探测结果（``CustomerKnowledgeProvider.available``）——**不**读
+    文件系统、**不**做网络访问，与接线前"投影缺失 ⇒ 空结果 + ``kert`` skipped"的判据
+    **同源**，避免 B-1 引入第二套可用性事实。
+
+    真实探针（按声明 ``sourceKind`` 检查 ``04_serve/<serviceId>/CURRENT.md`` 等）
+    属后续片，届时替换本类。
+    """
+
+    def __init__(self, ckp: object | None) -> None:
+        self._ckp = ckp
+
+    def health(self, capability: KnowledgeSourceCapability) -> SourceHealth:
+        """返回该能力的可用性（**无第三态**：可用 / 不可用）。"""
+        ok = self._ckp is not None and bool(getattr(self._ckp, "available", False))
+        detail = ("customer_knowledge 投影可用" if ok
+                  else "customer_knowledge 投影不可用（未接入 / 未供给 / 投影缺失）")
+        return SourceHealth(available=ok, detail=detail)
 
 
 class SkillExecutionService:
@@ -520,6 +588,181 @@ class SkillExecutionService:
                           "message": f"KERT 客户知识库不可用（fail-open）：{exc}"})
             return {}
 
+    # ---- M7.1-B1：经控制面声明的知识源能力读取（等价替换的接线点）----
+
+    def _load_ki_from_declaration(self, customer_id: str, trace: list[dict]) -> dict:
+        """经控制面声明的知识源能力读取 KI 片段（与 :meth:`_load_ki` **逐字等价**）。
+
+        设计依据：``evidence/m7-3/CANDIDATE-M7-1-B1-EQUIVALENT-SWAP.md``
+        （TL 已认的 4 组白名单）；声明格式见
+        ``src/kert/domain/knowledge_source.py``（M7.1-A 第一片）。
+
+        与 :meth:`_load_ki` 的关系（**四条必须同时成立**，否则就不是 B-1）：
+
+        1. **签名逐字一致**（同参同返回，**不接计划参数**）⇒ 本方法**不读计划**：
+           技能读什么仍由 ``_route_plan`` + ``_plan_assets`` 决定（本方法之后照旧按计划资产
+           过滤、逐条记 ok/skipped）；本方法只换**读取实现**。⇒ ``_route_plan`` /
+           ``_plan_assets`` / 计划门禁**一寸不碰**。
+        2. **读取范围不裁剪**：仍返回该客户的**全部**知识条目（与
+           ``CustomerKnowledgeProvider.ki_map`` 等价），**不**顺带裁成"只读计划里的资产"
+           —— 后者会改变 ``ki`` 内容，属后续片。
+        3. **失败一律回落、绝不拒绝**（硬规则 E0）：声明缺失 / 声明非法 / 能力不可用 /
+           契约不匹配 / 读取异常 ⇒ 回落 :meth:`_load_ki` 的既有路径，行为与接线前
+           **逐字一致**，**不**抛 ``SkillError``、**不**改 ``status``、**不**产生 KI 级拒绝。
+           "声明缺失 ⇒ 拒绝"属 B-2，**本片严禁**（含任何"顺手把拒绝当异常抛"的间接写法）。
+        4. **回落必须可见**：每次读取**追加一条**具名留痕（``capabilityId`` /
+           ``sourceCode`` / 指纹），即"隐式正则约定 → 显式声明绑定"的观测面
+           —— 现状的隐式正则见 ``src/kert/application/customer_knowledge.py:31``
+           （``^(KI-[\\w-]+)\\s+(.+)$`` 施加于 ``heading_path[0]``），
+           此处改由声明的 ``readContract.assetMatch.pattern`` 驱动。
+
+        留痕字段纪律（违反任一即破坏 A/B 组既有断言）：
+
+        - **不**带 ``kiId``（否则被当作逐知识条目轨迹）；
+        - **不**带 ``mapId`` / ``errorCode``（否则 ``test_skill_routing_trace.py`` 的
+          ``_route_entry`` 会误选本条目为"路由条目"）；
+        - ``message`` **不含** ``KI-``（见 :data:`_SOURCE_MESSAGES`）；
+        - ``phase`` 取 ``evidence``、``status`` 取 ``ok``（成功）/ ``degraded``（回落），
+          均在 canonical 枚举内；
+        - 绑定指纹放**既有**字段 ``assetVersion``，**不**新增第三字段
+          （契约面只 additive 追加 ``capabilityId`` / ``sourceCode`` 两个字段）。
+
+        ⚠ **语义噪声（不得误读）**：本方法遍历的是**声明绑定集**，而**单个任务**的计划资产
+        只是它的**子集** —— 例如 ``KM-CORP-RM-OUTREACH`` 只声明 3 条
+        （``KI-009`` / ``KI-FRONT-004`` / ``KI-FRONT-006``），而声明绑定集有 7 条。
+        故**不得**把这里的解析/留痕范围读作"该任务需要这些资产"；命名也刻意避开
+        ``assets`` / ``plannedAssets`` / ``mapAssets``。
+
+        ⚠ **不在本片覆盖**：`_run_supply_chain`（``bank-front-supply-chain-graph``）仍走
+        字面量 ``KI-FRONT-001/002/003`` ⇒ **不得**表述为"客户知识读取已全部接线"。
+        """
+        load = self._declaration_load()
+        if not load.allowed:
+            return self._fallback_ki(customer_id, trace, load.code)
+
+        declaration = load.declaration
+        assert declaration is not None  # allowed ⇒ 非空（见 DeclarationLoad.allowed）
+
+        resolver = KnowledgeSourceResolver(load)
+        probe = _KiProjectionProbe(self._ckp)
+        capability: KnowledgeSourceCapability | None = None
+        for binding in declaration.bindings:
+            resolution = resolver.resolve(binding.asset_ref_id, probe=probe)
+            if not resolution.allowed:
+                # 首个未通过门禁者定码（遍历顺序 = 声明顺序 ⇒ 确定性、可复现）
+                return self._fallback_ki(customer_id, trace, resolution.code,
+                                         capability=resolution.capability,
+                                         binding_sha256=resolver.binding_sha256)
+            capability = resolution.capability
+
+        if capability is None:
+            # 防御性分支：解析器保证 bindings 非空，故此处不可达；仍 fail-closed 回落。
+            return self._fallback_ki(customer_id, trace, CODE_DECLARATION_INVALID)
+
+        contract = capability.read_contract
+        if contract.service_id != getattr(self._ckp, "service_id", None):
+            # 声明指向的服务 ≠ 取数层实际接入的服务 ⇒ 不得"看起来像就照读"
+            return self._fallback_ki(customer_id, trace, CODE_CONTRACT_MISMATCH,
+                                     capability=capability,
+                                     binding_sha256=resolver.binding_sha256)
+
+        rows = self._declared_rows(customer_id)
+        if rows is None:
+            return self._fallback_ki(customer_id, trace, CODE_UNAVAILABLE,
+                                     capability=capability,
+                                     binding_sha256=resolver.binding_sha256)
+
+        ki = self._project_ki(rows, contract.asset_match)
+        # 与 _load_ki 的 kert 条目**逐字相同**（A/B 组既有断言依赖该条目与文案）
+        trace.append({"phase": "kert", "status": "ok",
+                      "message": f"KERT 客户知识库检索完成（{customer_id} 命中 {len(ki)} 条 KI）"})
+        trace.append(self._source_entry(capability, source_code=CODE_OK, status="ok",
+                                        binding_sha256=resolver.binding_sha256))
+        return ki
+
+    def _declaration_load(self) -> DeclarationLoad:
+        """加载工作区知识源声明（**只读**；无工作区 ⇒ 视为声明缺失，不抛错）。"""
+        if self.workspace is None:
+            return DeclarationLoad(
+                code=CODE_DECLARATION_ABSENT,
+                reason="未解析工作区（workspace=None）⇒ 声明视为缺失（B-1 回落）")
+        return resolve_declaration(self.workspace)
+
+    def _declared_rows(self, customer_id: str) -> list[dict] | None:
+        """按声明契约取**原始片段行**；取数层不可用/读取失败 ⇒ ``None``（调用方回落）。
+
+        B-1 复用取数层**已探测**的服务实例（``CustomerKnowledgeProvider._svc``）而不另建
+        ``KnowledgeService``：可用性判据必须与实际读取对象**同源**，否则会出现
+        "探针说可用、实际读不到"的第二套事实。按 ``sourceKind`` 分派真实适配器属后续片。
+        """
+        if not customer_id:
+            # 与 customer_knowledge.py:55-56 的"空 customerId ⇒ 空结果"一致
+            return []
+        svc = getattr(self._ckp, "_svc", None)
+        if svc is None:
+            return None
+        try:
+            return svc.segments(document_id=customer_id)
+        except Exception:  # noqa: BLE001 —— 读取异常不得升级为拒绝（E0：一律回落）
+            return None
+
+    @staticmethod
+    def _project_ki(rows: list[dict], asset_match) -> dict[str, dict]:  # noqa: ANN001
+        """按声明契约把原始片段行投影为 ``{资产引用 id: {title, content}}``。
+
+        逐字等价于 ``customer_knowledge.py:59-68``（同一匹配语义、同一"首见优先"
+        ``setdefault``、同一 ``content`` 去空白与空内容跳过规则）；唯一差别是
+        **匹配规则来自声明**（``readContract.assetMatch``）而非源码字面量正则。
+        """
+        out: dict[str, dict] = {}
+        for row in rows:
+            heading_path = row.get("heading_path") or []
+            head = heading_path[0] if heading_path else ""
+            matched = asset_match.match(str(head))
+            if matched is None:
+                continue
+            asset_ref_id, title = matched
+            content = (row.get("content") or "").strip()
+            if content:
+                out.setdefault(asset_ref_id, {"title": title, "content": content})
+        return out
+
+    @staticmethod
+    def _source_entry(capability: KnowledgeSourceCapability | None, *,
+                      source_code: str, status: str,
+                      binding_sha256: str | None = None) -> dict:
+        """构造知识源能力留痕条目（字段纪律见 :meth:`_load_ki_from_declaration`）。
+
+        ``capabilityId`` 仅在**确实解析出能力**时出现：不伪造占位能力 ID
+        （声明缺失/非法时根本没有能力可指，故只留 ``sourceCode``）。
+        """
+        entry: dict = {
+            "phase": "evidence",
+            "status": status,
+            "sourceCode": source_code,
+            "message": (_SOURCE_OK_MESSAGE if source_code == CODE_OK
+                        else _SOURCE_MESSAGES.get(source_code, _SOURCE_OK_MESSAGE)),
+        }
+        if capability is not None:
+            entry["capabilityId"] = capability.capability_id
+        if binding_sha256:
+            entry["assetVersion"] = binding_sha256
+        return entry
+
+    def _fallback_ki(self, customer_id: str, trace: list[dict], source_code: str,
+                     *, capability: KnowledgeSourceCapability | None = None,
+                     binding_sha256: str | None = None) -> dict:
+        """回落既有字面量读取路径，并在其后**追加**一条具名留痕（硬规则 E0）。
+
+        顺序刻意是"**先回落读取、再追加留痕**"：既有的 ``kert`` 条目与逐知识条目条目
+        保持原位，新增条目是**纯追加** ⇒ "剔除新增条目后与接线前逐字全等"可机械判定。
+        """
+        ki = self._load_ki(customer_id, trace)
+        trace.append(self._source_entry(capability, source_code=source_code,
+                                        status="degraded",
+                                        binding_sha256=binding_sha256))
+        return ki
+
     def _ki_context(self, ki: dict, only: list[str] | None = None) -> str:
         """命中的 KI 原文拼接为模型上下文（按契约顺序）。"""
         parts = []
@@ -717,7 +960,8 @@ class SkillExecutionService:
         # ⑤b-full (A)：资产清单由**计划**给出（地图 assetRefs），计划被拒即拒绝执行
         plan = self._route_plan(trace, "KM-CORP-RM-OUTREACH", "OUTREACH_PREPARATION")
         assets = self._plan_assets(plan)
-        ki = self._load_ki(customer_id, trace)
+        # M7.1-B1：读取实现改为**声明驱动**（失败一律回落，见 _load_ki_from_declaration）
+        ki = self._load_ki_from_declaration(customer_id, trace)
         for kid in assets:
             self._trace_ki(trace, kid, self._ki_title(kid), kid in ki)
         context = self._ki_context(ki, only=list(assets))
@@ -750,7 +994,8 @@ class SkillExecutionService:
         # ⑤b-full (A)：资产清单由**计划**给出（地图 assetRefs），计划被拒即拒绝执行
         plan = self._route_plan(trace, "KM-CORP-RM-MEETING", "MEETING_PREPARATION")
         assets = self._plan_assets(plan)
-        ki = self._load_ki(customer_id, trace)
+        # M7.1-B1：读取实现改为**声明驱动**（失败一律回落，见 _load_ki_from_declaration）
+        ki = self._load_ki_from_declaration(customer_id, trace)
         for kid in assets:
             self._trace_ki(trace, kid, self._ki_title(kid), kid in ki)
         context = self._ki_context(ki, only=list(assets))
@@ -783,7 +1028,8 @@ class SkillExecutionService:
         customer_id = request.get("customerId") or ""
         plan = self._route_plan(trace, "KM-CORP-RM-PREVISIT", "PRE_VISIT_PREPARATION")
         assets = self._plan_assets(plan)
-        ki = self._load_ki(customer_id, trace)
+        # M7.1-B1：读取实现改为**声明驱动**（失败一律回落，见 _load_ki_from_declaration）
+        ki = self._load_ki_from_declaration(customer_id, trace)
         for kid in assets:
             self._trace_ki(trace, kid, self._ki_title(kid), kid in ki)
 

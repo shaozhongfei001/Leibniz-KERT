@@ -633,6 +633,8 @@ def test_module_source_has_no_data_engine_or_write_dependency():
 ALLOWED_WIRING: dict[str, str] = {
     "src/kert/application/provision.py":
         "供给期校验：validate_source 调用 load_declaration（TL 授权第二片-A）",
+    "src/kert/application/skills.py":
+        "技能执行期读取：声明驱动 KI 读取（TL 授权 M7.1-B1；裁决记录 DECISION_SHEET A-10）",
 }
 
 
