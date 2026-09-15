@@ -196,7 +196,7 @@ def test_gate_audit_shape_matches_contract(spec, client):
 
 # --------------------------------------------------------------------------- #
 # ③ 未知 Skill 的 404：SkillExecuteErrorResponse（**与 200 同构**）
-#    修正依据：实现 `src/kert/api/server.py:635-643`（复用同步结果体，`status_code=404`）
+#    修正依据：实现 `skill_execute() 的 404 段 @ `src/kert/api/server.py:663-671``（复用同步结果体，`status_code=404`）
 # --------------------------------------------------------------------------- #
 
 def test_unknown_skill_404_shape_matches_contract(spec, client):
@@ -217,7 +217,7 @@ def test_unknown_skill_404_shape_matches_contract(spec, client):
 
 # --------------------------------------------------------------------------- #
 # ④ Job 状态：JobStatusResponse（信封）+ JobStatusData（snake_case 记录）
-#    修正依据：实现 `src/kert/api/server.py:502-508` + `src/kert/application/jobs.py:236-253`
+#    修正依据：实现 `job()` @ `src/kert/api/server.py:530-536` + `src/kert/application/jobs.py:236-253`
 #    ⚠ 须通知 GITS：`data.status` / `data.skill_result` 的嵌套位置保持不变
 # --------------------------------------------------------------------------- #
 
@@ -253,7 +253,7 @@ def test_job_status_skill_result_is_optional(spec):
 
 # --------------------------------------------------------------------------- #
 # ⑤ Job 不存在的 404：InfrastructureErrorResponse（`{"detail":{"error":{...}}}`）
-#    修正依据：实现 `src/kert/api/server.py:308-316` 的 `_handle()`
+#    修正依据：实现 `_handle()` @ `src/kert/api/server.py:310-318`
 # --------------------------------------------------------------------------- #
 
 def test_job_not_found_404_shape_matches_contract(spec, client):
@@ -275,7 +275,7 @@ def test_job_not_found_404_shape_matches_contract(spec, client):
 def test_skill_health_shape_matches_contract(spec, client):
     """`/api/skill/health` 必须声明实现真正返回的全部键（`service` 与 `skills[].version`）。
 
-    修正依据：`src/kert/api/server.py:612-617` 返回字典字面量
+    修正依据：`skill_health()` @ `src/kert/api/server.py:637-645` 返回字典字面量
     `{"status", "service", "skills:[{skillId,name,version}]}`；
     原合同漏声明 `service` 与 `skills[].version`（三条断言方向中的"实现发了合同没声明的"）。
     """
@@ -300,7 +300,7 @@ def test_skill_health_shape_matches_contract(spec, client):
 def test_execute_has_no_400_and_422_matches_contract(spec, client):
     """`/api/skill/execute` **没有 400 路径**；参数错误实测为 422 + FastAPI 校验体。
 
-    修正依据：该路由无 `try/except`（`src/kert/api/server.py:619-643`），
+    修正依据：该路由无 `try/except`（`skill_execute()` @ `src/kert/api/server.py:647-671`），
     请求体校验由 Pydantic 直接完成并返回 422。
     """
     responses = spec["paths"]["/api/skill/execute"]["post"]["responses"]
@@ -321,7 +321,7 @@ def test_execute_has_no_400_and_422_matches_contract(spec, client):
 def test_report_404_shape_matches_contract(spec, client):
     """`/api/skill/report/{requestId}` 的 404 实测为 `{"detail": "<字符串>"}`。
 
-    修正依据：`src/kert/api/server.py:653-657` 用 `HTTPException(detail=str)` 抛出。
+    修正依据：`skill_report() 的 404 段 @ `src/kert/api/server.py:681-685`` 用 `HTTPException(detail=str)` 抛出。
     """
     ref = _ref_of(spec, "/api/skill/report/{requestId}", "get", "404")
     assert ref == "StringDetailErrorResponse"
@@ -347,7 +347,7 @@ def _force_map_load_failure(monkeypatch, exc_factory) -> None:
 def test_knowledge_maps_error_shapes_match_contract(spec, ws, monkeypatch):
     """`/v1/knowledge-maps` 的 422/500 如实化：领域异常 = `detail` 包装；未捕获 = 信封。
 
-    修正依据：路由 `except KERTException → _handle()`（`src/kert/api/server.py:700-704`）
+    修正依据：`list_knowledge_maps()` 的 try/except @ `src/kert/api/server.py:728-732`
     给出 `{"detail":{"error":{...}}}`；未捕获异常走 app 级处理器给出 `ErrorResponse` 信封。
     两种 500 形态并存 ⇒ 合同用 `oneOf` 如实声明，本用例**分别命中两支**（防空转）。
     """

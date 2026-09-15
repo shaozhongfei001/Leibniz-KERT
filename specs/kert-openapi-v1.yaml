@@ -22,7 +22,7 @@ info:
       `/api/skill/report` 的 404 体、`/v1/knowledge-maps` 的 `422`/`500` 体均未按实测核对；
       `OpenAPI` 方言（3.0.3 vs 校验器要求的 3.1.0）与 8 处 `nullable` 亦未处理（归并 P2 验收条件）。
       另记一条**观察（不在本合同范围、本批不修）**：`_handle()` 对**非** `KERTException`
-      的兜底分支会把 `str(exc)` 放进 `detail.error.message`（`src/kert/api/server.py:308-316`），
+      的兜底分支会把 `str(exc)` 放进 `detail.error.message`（`_handle()` @ `src/kert/api/server.py:310-318`），
       与新增的未捕获异常处理器（只给通用 `INTERNAL_ERROR`）**口径不一致**，存在内部信息外泄面；
       列为后续议题（需另立批次，涉及 `_handle()` 全量调用点的行为变更）。
     - **v1.5.1 补丁（2026-09-16，更正性，非语义增量）**：
@@ -236,12 +236,7 @@ paths:
             参数错误一律 422。
 
             **修正记录（2026-09-16，按实测核对）**：原声明 `400` + `ErrorResponse`
-            与实现不符——该路由没有 `try/except`（`src/kert/api/server.py:619-643`），
-            请求体校验由 Pydantic 直接完成并返回 **422**，响应体是 FastAPI 校验体
-            `{"detail": [ {type, loc, msg, input}, ... ]}`。
-
-            **修正记录（2026-09-16，按实测核对）**：原声明 `400` + `ErrorResponse`
-            与实现不符——该路由没有 `try/except`（`src/kert/api/server.py:619-643`），
+            与实现不符——该路由没有 `try/except`（`skill_execute()` @ `src/kert/api/server.py:647-671`），
             请求体校验由 Pydantic 直接完成并返回 **422**，响应体是 FastAPI 校验体
             `{"detail": [ {type, loc, msg, input}, ... ]}`。
           content:
@@ -260,7 +255,7 @@ paths:
             `errors[0].code=UNKNOWN_SKILL`），而**不是** `ErrorResponse`。
 
             **修正记录（2026-09-16，按实现核对）**：原声明为 `ErrorResponse` 并给
-            `SKILL_NOT_FOUND` 示例，与实现不符；实现（`src/kert/api/server.py:635-643`）把
+            `SKILL_NOT_FOUND` 示例，与实现不符；实现（`skill_execute() 的 404 段 @ `src/kert/api/server.py:663-671`）把
             同步结果体原样以 404 返回。GITS 调用方已按真实行为编码
             （`DshHttpSkillExecutionAdapter.java:32`），故按实现修正合同。
           content:
@@ -332,7 +327,7 @@ paths:
           description: |
             报告不存在或已过期（执行结果仅缓存约 10 分钟）。
             响应体是 `{"detail": "<字符串>"}`（实现以 `HTTPException(detail=str)` 抛出，
-            `src/kert/api/server.py:653-657`），**不是** `ErrorResponse`。
+            `skill_report() 的 404 段 @ `src/kert/api/server.py:681-685`），**不是** `ErrorResponse`。
 
             **修正记录（2026-09-16，按实测核对）**：原声明未给响应体，实测为字符串 `detail`。
           content:
@@ -776,12 +771,12 @@ components:
         Skill 子系统健康（`GET /api/skill/health`，GITS 适配器使用）。
 
         **修正记录（2026-09-16，按实测核对；F7）**：原声明只有 `status`/`skills`，
-        而实现**恒返回 `service`**（`src/kert/api/server.py:612-617` 的字典字面量：
+        而实现**恒返回 `service`**（`skill_health()` @ `src/kert/api/server.py:637-645` 的字典字面量：
         `{"status", "service", "skills"}`）⇒ 声明不完整。按实测补 `service`（必填）。
 
         **闭集论证**（`additionalProperties: false` 的依据）：实现返回的是**字面量字典**、
-        仅上述 3 键（`server.py:612-617`），不存在条件增删分支 ⇒ 响应确为闭集。
-        ⚠ 附注：`service` 目前**写死** `customer-engagement`（`server.py:614`），
+        仅上述 3 键（`skill_health()` @ `src/kert/api/server.py:637-645`），不存在条件增删分支 ⇒ 响应确为闭集。
+        ⚠ 附注：`service` 目前**写死** `customer-engagement`（`skill_health()` 的 `service` 行 @ `src/kert/api/server.py:642`），
         与冲突 `C-14`（"产品中立"）同源；是否改为配置化由 Contract Owner 决策。
       required: [status, service, skills]
       additionalProperties: false
@@ -827,7 +822,7 @@ components:
       description: |
         健康接口的技能摘要。
         **修正记录（2026-09-16，按实测核对；F7）**：补 `version`——实现恒返回
-        `{"skillId", "name", "version"}`（`src/kert/api/server.py:615-616`），原声明缺席。
+        `{"skillId", "name", "version"}`（`skill_health()` 的 `skills` 推导 @ `src/kert/api/server.py:643-644`），原声明缺席。
         **闭集论证**：实现为字典字面量、仅上述 3 键、无条件分支 ⇒ 响应确为闭集。
       required: [skillId, name, version]
       additionalProperties: false
@@ -1260,7 +1255,7 @@ components:
 
         **修正记录（2026-09-16，按实现核对）**：本 schema 原声明为**扁平对象**
         （顶层 `jobId`/`createdAt`/`completedAt`，`data` 仅含 `skill_result`），
-        与实现长期不符——实现返回 `_response()` 信封（`src/kert/api/server.py:502-508`），
+        与实现长期不符——实现返回 `_response()` 信封（`job()` @ `src/kert/api/server.py:530-536`），
         Job 记录取自 `STATUS.md` front matter（`src/kert/application/jobs.py:236-253`），
         键为 snake_case，`skill_result` 位于 `data` 内（`jobs.py:324-333`）。
 
@@ -1478,7 +1473,7 @@ components:
     InfrastructureErrorResponse:
       type: object
       description: |
-        基础设施/领域异常响应。`KERTException` 经 `src/kert/api/server.py:308-316` 的 `_handle()`
+        基础设施/领域异常响应。`KERTException` 经 `_handle()` @ `src/kert/api/server.py:310-318`
         转为 `HTTPException(detail={"error": {...}})`，FastAPI 默认序列化为 `{"detail": ...}`
         ——即真实形状是**多一层 `detail` 包装**，与 `ErrorResponse` 不同。
 
@@ -1515,7 +1510,7 @@ components:
         用于 `/api/skill/execute` 的 `422`（该端点**没有** `400` 路径）。
 
         **修正记录（2026-09-16）**：新增。原合同对该端点声明 `400` + `ErrorResponse`，
-        实测为 **422** + 本形状（`src/kert/api/server.py:619-643` 无 `try/except`，
+        实测为 **422** + 本形状（`skill_execute()` @ `src/kert/api/server.py:647-671` 无 `try/except`，
         校验由 Pydantic 直接完成）。
         说明：`detail[]` 各项由 FastAPI 生成，字段集随校验错误类型而异，
         故此处**宽松描述**（只钉住 `type`/`loc`/`msg`/`input` 四个常见键）。
@@ -1549,7 +1544,7 @@ components:
       type: object
       description: |
         `HTTPException(detail=<字符串>)` 的默认序列化形状：`{"detail": "<字符串>"}`。
-        用于 `/api/skill/report/{requestId}` 的 `404`（`src/kert/api/server.py:653-657`）。
+        用于 `/api/skill/report/{requestId}` 的 `404`（`skill_report() 的 404 段 @ `src/kert/api/server.py:681-685`）。
 
         **修正记录（2026-09-16）**：新增。原合同对该 404 未给响应体，实测为字符串 `detail`。
       required: [detail]
@@ -1607,7 +1602,7 @@ components:
       description: |
         `/api/skill/execute` 的**未知 Skill**（HTTP 404）响应体。
         与 200 **同构**（`status=skill_error`、`errors[].code=UNKNOWN_SKILL`），**不是** `ErrorResponse`。
-        实现由 `src/kert/api/server.py:635-643` 直接复用同步结果体并以 404 返回
+        实现由 `skill_execute() 的 404 段 @ `src/kert/api/server.py:663-671`` 直接复用同步结果体并以 404 返回
         （`status_code=404 if unknown else 200`）。
 
         **修正记录（2026-09-16，按实现核对）**：本 404 原误声明为 `ErrorResponse`
