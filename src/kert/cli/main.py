@@ -97,6 +97,36 @@ def init_cmd(
           human=f"已初始化工作区: {ws}\n  目录: {len(result.created_dirs)} 个\n  文件: {len(result.created_files)} 个")
 
 
+@app.command("provision")
+def provision_cmd(
+    workspace_path: Path = typer.Option(..., "--workspace", "-w",
+                                       help="目标工作区（须已 init）"),
+    source: Path = typer.Option(..., "--source", "-s",
+                                help="控制面元数据源（须为合法工作区）"),
+    by: str = typer.Option("svc_kert", "--by", help="供给主体（留痕）"),
+    output: str = typer.Option("text", "--output", help=_COMMON),
+    dry_run: bool = typer.Option(False, "--dry-run",
+                                 help="仅展示将新建/覆盖的文件，不落盘"),
+):
+    """供给控制面元数据（知识地图 / 路由策略 / 本体引用）到工作区（M7.3 第五步）。
+
+    先全量校验源，再逐份原子写入；源内任一份定义非法则**一份都不写**。
+    """
+    from ..application.provision import provision_control_plane
+
+    result = provision_control_plane(Path(workspace_path), Path(source),
+                                     dry_run=dry_run, by=by)
+    data = result.to_dict()
+    counts = result.counts()
+    lines = [f"workspace: {result.workspace}", f"source: {result.source}",
+             f"策略: {result.policy_id}@{result.policy_version}  地图: {result.map_count}",
+             f"新建 {counts['CREATED']} / 覆盖 {counts['UPDATED']} / 未变 {counts['UNCHANGED']}"]
+    lines += [f"  [{it.action}] {it.rel_path}" for it in result.items]
+    if dry_run:
+        lines.append("（--dry-run：未落盘）")
+    _emit(output, data, human="\n".join(lines))
+
+
 @app.command("inspect")
 def inspect_cmd(
     workspace_path: Path = typer.Option(..., "--workspace", "-w"),

@@ -25,9 +25,10 @@ D-4：fail-closed（**新增拒绝码，不复用既有码**）
 - 声明合法 ⇒ 放行，``version = "<contractId>@sha256:<哈希前16>"``（该值进 plan hash，见 D-3）。
 
 ⚠ **运维前提（必须随部署满足，本模块不做代理）**：fail-closed 意味着工作区**必须**经供给
-（provisioning）放入声明文件，否则该工作区的计划构建会被**全量拒绝**。运行期工作区（如
-``bank_front_ws``）的供给属后续接线范围；受控 example 工作区
-``examples/bank-front-knowledge-maps/`` 已随本步提供声明文件。
+（provisioning）放入声明文件，否则该工作区的计划构建会被**全量拒绝**。供给入口已具备：
+``kert provision -w <ws> -s examples/bank-front-knowledge-maps``
+（``kert.application.provision``，先全量校验后逐份原子写入）。受控 example 工作区
+``examples/bank-front-knowledge-maps/`` 即供给源。
 """
 
 from __future__ import annotations
