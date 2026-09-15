@@ -35,6 +35,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from ..domain import timeutil
+from ..domain.activation_plan import ActivationPlanBuilder, PlanDenial
 from ..infrastructure.adapters import llm as llm_mod
 from ..infrastructure.classification import detect_value_patterns, redact_for_llm
 
@@ -624,11 +625,55 @@ class SkillExecutionService:
 
     # ---------------- 知识组装轨迹（KI 级，供 gits 控制台展示）----------------
 
-    @staticmethod
-    def _trace_knowledge_map(trace: list[dict], map_id: str, task: str) -> None:
-        """进入知识地图步骤。"""
-        trace.append({"phase": "evidence", "status": "ok",
-                      "message": f"进入知识地图 {map_id}，任务 {task}"})
+    def _trace_knowledge_map(self, trace: list[dict], expected_map_id: str,
+                             task: str) -> None:
+        """进入知识地图步骤（v1.5：**按计划如实记录**）。
+
+        接线范围（**仅可观测性**，不改变技能读取哪些知识条目）：
+        把"技能进了哪张地图"从硬编码叙述变成**可核验事实**——记录**解析出的**地图、
+        版本快照与 ``planHash``（与 ``/v1/routing/plan`` 同源同值）。
+
+        三种结果，**一律不回落**到 ``expected_map_id``：回落会把"未获准"或"选错地图"
+        伪装成正常路径，恰好是 trace 存在的意义所在。
+
+        - 解析成功 ⇒ ``status=ok``，附 ``mapId`` / ``planHash`` / ``versions``；
+          若解析结果与 ``expected_map_id`` 不一致，额外置 ``mapMismatch=True``（意味着
+          本技能组装的知识条目并非计划所选地图的条目，需人工核对）；
+        - 计划被拒 ⇒ ``status=blocked`` + 拒绝码（``ROUTE_*`` / ``KNOWLEDGE_MAP_*`` /
+          ``ONTOLOGY_REFERENCE_*``）；
+        - 工作区未配置或解析异常 ⇒ ``status=blocked`` + ``ROUTE_UNRESOLVED``。
+
+        ``status`` 沿用 trace 既有词表（ok/skipped/blocked/failed），**不新增**枚举值。
+        """
+        if self.workspace is None:
+            trace.append({"phase": "evidence", "status": "blocked",
+                          "code": "ROUTE_UNRESOLVED",
+                          "message": f"未解析知识地图（{task}）：工作区未配置"})
+            return
+        try:
+            decision = ActivationPlanBuilder.load(self.workspace).build(task)
+        except Exception as exc:  # noqa: BLE001 —— 解析失败不得中断技能执行
+            trace.append({"phase": "evidence", "status": "blocked",
+                          "code": "ROUTE_UNRESOLVED",
+                          "message": f"未解析知识地图（{task}）：{exc}"})
+            return
+        if isinstance(decision, PlanDenial):
+            trace.append({"phase": "evidence", "status": "blocked",
+                          "code": decision.code,
+                          "message": f"知识地图未获准（{task}）：{decision.code}——{decision.reason}"})
+            return
+
+        resolved = decision.versions.get("knowledgeMap") or ""
+        resolved_id = resolved.split("@", 1)[0]
+        entry = {"phase": "evidence", "status": "ok", "mapId": resolved_id,
+                 "planHash": decision.plan_hash, "versions": dict(decision.versions),
+                 "message": f"按计划进入知识地图 {resolved or resolved_id}，任务 {task}"}
+        if resolved_id != expected_map_id:
+            entry["mapMismatch"] = True
+            entry["mapExpected"] = expected_map_id
+            entry["message"] += (f"（注意：本技能按 {expected_map_id} 组装知识条目，"
+                                 f"与计划所选 {resolved_id} 不一致，需核对）")
+        trace.append(entry)
 
     @staticmethod
     def _trace_ki(trace: list[dict], ki_id: str, name: str, ok: bool) -> None:
