@@ -45,6 +45,7 @@ AUTHOR    : Tech Lead
 | **D-3** | `_handle()` 对非 KERT 异常返回 `str(exc)`，与 A-5 新处理器口径不一致 | 列为后续议题，本批不动 |
 | **D-4** | 容器复测约束 | 镜像会"存在但内容陈旧"；`COPY` 取**构建期工作区**而非 HEAD ⇒ 后续片须**先提交再 build**，证据绑定**镜像 sha256 + 镜像内交付物 sha256** |
 | **D-5** | **供给面口径变更（5 → 6 类文件）**：M7.1 第二片-A 起，`90_control/schema/knowledge_sources.json` 纳入供给 ⇒ 新运行的 CLI 输出为"新建 6 / 覆盖 0 / 未变 6" | **历史证据不回填**（`EVIDENCE-PROVISIONING.md`、`EVIDENCE-5B-FULL.md`、`EVIDENCE-E2E-STACK-UP.md` 中的"5"如实反映当时供给面）；本条即口径变更记录。**声明缺失按"不供给、不报错"**处理（与本体引用同口径，已由 TL 复核接受）；若日后要改为"缺失即拒绝"，属**语义升级**，需另裁 |
+| **C-3** | **canonical schema additive 增量**：B-1 会引入两个新 trace 字段（`capabilityId`/`sourceCode`），须**同步** `docs/contracts/schemas/assembly-trace.schema.json` | **待 Contract Owner 追认**（按 v1.5 先例：additive 先行 + 提案 + 登记 §0.1）。理由：只靠 `additionalProperties` 兜底**正是上一轮刚被纠正的**"实现有字段、合同未声明"失实模式，不得重演。**合同本体（`specs/**`、v2 候选）不动**；B-1 实施白名单中新纳入该 schema 文件的"仅追加两字段" | B-1 的观测面孔 |
 | **D-6** | **e2e 假绿风险**：`/api/skill/execute` 对**一切业务错误**返回 **200**（仅 `UNKNOWN_SKILL` 为 404，`server.py` 读码确认），而 e2e 只断言 `status_code in (200,201,202)` + 字段存在 ⇒ **部署工作区未供给时 e2e 仍绿，而技能实际 `skill_error`** | 已登记为 **C-1b 的交付项之一**；**不在 B-1 改 e2e**。若强化断言（须能区分 `ok`/`skill_error`），会牵动 **CI 供给**（未供给即红）⇒ 属**流水线决策**，需你裁 |
 | **D-7** | **读取路径一致性债**：`_run_supply_chain`（技能包 `bank-front-supply-chain-graph`）仍为**字面量驱动**读取，将与能力驱动路径**并存** | **不得**表述为"读取已全部接线"；归 O-6 / M7.2 范围，需另立 |
 | **D-8** | **引用纪律**：`src/kert/api/server.py` 常被并行改动（本轮 c20 在途 +29 行） | 引用该文件必须 **"函数名 + 行号"双锚**，并在文档顶部记**行号基准快照**；并发编辑期间的跑数**不可归因**（见"先冻结再跑"规则） |
