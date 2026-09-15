@@ -2,7 +2,11 @@
 
 ```text
 DOC_ID   : CANDIDATE-M7-1-B1-EQUIVALENT-SWAP
-VERSION  : v1.1（2026-09-16：按 TL 收紧 —— 新增**等价前提硬规则 E0**、回落用例 §2.7、变异 V11、白名单改为"新文件 only"）
+VERSION  : v1.3（2026-09-16：**并入 TL 的 Q1-Q5 定稿** —— 方法名 `_load_ki_from_declaration` + 签名与 `_load_ki` 一致、
+           逐资产留痕（新增约束 T6：只追加在**序列末尾**）、Q4 守卫须**白名单精确且 fail-closed**、
+           Q5 先冻结态复测；新增变异 V12/V13 与 R-1 停机条件）
+           v1.2：对齐 DECISION_SHEET C-3（两字段须同期追加 canonical schema；禁用"只靠 additionalProperties 兜底"）
+           v1.1：新增**等价前提硬规则 E0**、回落用例 §2.7、变异 V11、白名单改为"新文件 only"
 TASK_ID  : M7-1-B1-PLAN (前置件；**非实施授权**)
 REPO     : Leibniz-KERT
 性质     : 只读设计方案（**不改任何代码**）；供 TL 决定是否派工实施
@@ -13,6 +17,11 @@ TL 裁定  : **R-1 不授权**（A 组 29 条属已声明业务语义 ⇒ 登记
            **R-2 驳回**升格（`required` 不参与运行时判定）
            **R-3 本阶段不授权**改 e2e（登记为 B-2 交付项；牵动 CI 供给 ⇒ 流水线决策）
            **R-6 采纳**（拆 B-1/B-2），**且按硬规则 E0 收紧后成立**
+落盘指针 : evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md —— **C-1a**（B-1 等价替换 + 硬规则 E0 + 回落用例要求）、
+           **C-1b**（B-2 两处语义升级，待 Owner）、**C-2**（`required` 不升格 + 机械核对要求）、
+           **C-3**（两个新 trace 字段须**同期**追加 canonical schema，待 Contract Owner 追认）、
+           **D-5**（供给面 5→6 口径）、**D-6**（e2e 假绿归 B-2）、**D-7**（`_run_supply_chain` 一致性债）、
+           **D-8**（`server.py` 引用须"函数名 + 行号"双锚）
 行号基准 : 2026-09-16 工作区快照（含 c20 在途改动 `server.py` +29 行）；本文件一律用「函数名 + 行号」双锚
 ```
 
@@ -61,9 +70,20 @@ skills.py:820  _run_supply_chain    ← **未接线**（技能包 bank-front-sup
 
 ⇒ **若改 `_load_ki` 本体，`_run_supply_chain` 会被一并接线**，直接威胁 D 组 3 条用例（§5.1）。故：
 
-- **新增** `SkillExecutionService._load_ki_via_capability(customer_id, plan, trace) -> dict`（名可议）；
-- 由 `_run_outreach` / `_run_meeting` / `_run_previsit` 三处**显式调用**（替换各自第 720/753/786 行的 `_load_ki` 调用）；
-- `_load_ki`（`:504-521`）与其唯一剩余调用方 `_run_supply_chain`（`:818-823`）**保持一字不改**。
+- **新增** `SkillExecutionService._load_ki_from_declaration(customer_id: str, trace: list[dict]) -> dict`
+  —— **命名已定稿（Q1）**；**签名与 `_load_ki` 完全一致（同参同返回）**，使替换是**机械的**、等价性可判（Q1-i）；
+- 由 `_run_outreach` / `_run_meeting` / `_run_previsit` 三处**显式调用**（把各自第 720/753/786 行的 `self._load_ki(...)` 机械替换为 `self._load_ki_from_declaration(...)`）；
+- `_load_ki`（`:504-521`）与其唯一剩余调用方 `_run_supply_chain`（`:818-823`）**保持一字不改**；
+- **前缀 `_load_ki` 是刻意的（Q1-ii）**：使"所有 KI 读取点"可用**一个前缀 grep 枚举**，并由 §4.1 的守卫**钉住集合恰为 {`_load_ki`, `_load_ki_from_declaration`}**。
+
+#### 1.1.1 Q1-i（签名一致）的**必然推论**：方法**不接计划参数**，留痕范围 = **声明中的绑定集合**
+
+签名必须与 `_load_ki` 一致 ⇒ **不能**把 `plan` 传进来（否则签名不同）。因此：
+
+- 该方法从**声明自身的 `bindings`** 取得 assetRefId 集合（"哪些资产可由声明驱动读取"），逐条解析并产出留痕；
+- 在**受控工作区**上，声明绑定集恰为 `KI-009 + KI-FRONT-001…006`（7 条），**与三张地图 `assetRefs` 的并集完全相同**（该等式已由 `tests/unit/test_knowledge_source.py::test_declaration_covers_all_map_asset_refs` 机械核对）⇒ 与"按计划资产"在受控面上**逐条一致**；
+- **副作用（正向）**：新方法完全不读计划 ⇒ `_route_plan` / `_plan_assets` 的行为**一寸不碰**，"计划相关 0 变化"成为结构性事实。
+- ⚠ **如需改为"按计划资产"留痕，则必须传 `plan` ⇒ 签名与 `_load_ki` 不同 ⇒ 与 Q1-i 冲突**。此处按 Q1-i 优先执行（声明绑定集）；若你要求按计划资产，请指出，我改写并同步调整签名约束。
 
 ### 1.2 读取**范围**不变（关键取舍）
 
@@ -80,18 +100,19 @@ skills.py:721-722 / :754-755 / :787-788                                ← 逐 a
 
 "按资产裁剪读取"是会**改变 `ki` 内容**的另一件事（属后续片），不得与 B-1 捆绑——否则"0 变化"无法成立。
 
-### 1.3 失败处置：B-1 **一律软失败 + 具名留痕**（不改拒绝语义）
+### 1.3 失败处置：B-1 **一律回落 + 具名留痕**（**不改变任何拒绝语义**）
 
-B-1 中，能力侧四类解析失败**均不阻塞**、**均产出一条具名留痕**，且**不产生任何 KI 级拒绝**：
+B-1 中，能力侧四类解析失败**均不阻塞**、**均回落**到今日的读取路径、**均产出一条具名留痕**，且**不产生任何 KI 级拒绝**（**硬规则 E0**）：
 
-| 情形 | B-1 行为（本片） | 具名依据 | B-2 才会改为 |
+| 情形 | B-1 行为（本片） | 具名留痕 | B-2 才会改为 |
 |---|---|---|---|
-| 声明缺失 | 沿用旧路径读取（等价 α），留 `KNOWLEDGE_SOURCE_DECLARATION_ABSENT` | `knowledge_source.py:CODE_DECLARATION_ABSENT` | 拒绝 |
-| 声明非法 | 同上，留 `..._DECLARATION_INVALID` | `CODE_DECLARATION_INVALID` | 拒绝 |
-| 能力不可用（投影缺失） | 沿用旧路径（＝返回空 dict，与今天逐项相同），留 `..._UNAVAILABLE` | `CODE_UNAVAILABLE` | 拒绝 |
-| 某 assetRefId 未绑定 | 该条照常 `skipped`（今天行为），留 `..._UNBOUND` | `CODE_UNBOUND` | 拒绝（B-2，且受 R-2 约束） |
+| **声明缺失** | **回落**字面量读取路径（行为与接线前**逐字一致**），技能照常完成 | `KNOWLEDGE_SOURCE_DECLARATION_ABSENT` | 拒绝（**B-2**；B-1 严禁） |
+| 声明非法 | 同上（**回落**），技能照常完成 | `..._DECLARATION_INVALID` | 拒绝 |
+| 能力不可用（投影缺失） | **回落**（结果与今天一致：返回空 dict ⇒ 逐条 `skipped`） | `..._UNAVAILABLE` | 拒绝 |
+| 某 assetRefId 未绑定 | 该条照常 `skipped`（今天行为），**不回落读取也不拒绝** | `..._UNBOUND` | 拒绝（B-2，且受 R-2 约束） |
 
-> **B-1 的收益**：读取机制真的换成"声明驱动"（可被 §3.4 的双向证据证明），而**拒绝语义一点没变** ⇒ 部署侧无需任何前置条件，可在 B-2 之前独立上线。
+> **为什么"回落"是唯一正确选择**：B-1 的对外承诺是"**等价替换**"。一旦"声明缺失 ⇒ 拒绝"在 B-1 生效，它就已把语义升级**偷偷提前**进来 ⇒ R-6 的拆分当场作废、B-2 失去独立授权意义。
+> **B-1 的收益**：读取机制真的换成"声明驱动"（可被 §2.5 的双向证据证明），而**拒绝语义一点没变** ⇒ 部署侧无需任何前置条件，可在 B-2 之前独立上线。
 
 ### 1.4 `required` **不升格**（R-2 的机械钉法）
 
@@ -116,9 +137,12 @@ assert (r_true.status, kind_true) == (r_false.status, kind_false) == ("ok", "ski
 | T1 | 新条目**不得**携带 `kiId` 字段 | `test_control_plane_consistency.py:66`（`{t["kiId"] for t in … if t.get("kiId")}`）与 `test_skills.py:200-202` 等按 `kiId` 取集合 |
 | T2 | 新条目**不得**含 `mapId` 字段，`errorCode` **不得**以 `ROUTE_` / `KNOWLEDGE_MAP_` / `ONTOLOGY_REFERENCE_` 开头 | `test_skill_routing_trace.py:_route_entry`（`:33-39`）取**第一个**满足该条件的条目作为"路由条目" |
 | T3 | 新条目的 **`message` 值不得包含子串 `KI-`**（含能力 ID `KS-CUSTOMER-KI-PARQUET` 里的 `KI-`，**因此不得把 capabilityId 拼进 message**；应放独立字段） | `test_skills.py:130`：`all("skipped" in m for m in msgs if "KI-" in m)` |
-| T4 | `phase` / `status` 只能取 canonical 枚举值 | `docs/contracts/schemas/assembly-trace.schema.json:18-31`（phase）、`:35-44`（status）；该文件 `:107` `additionalProperties: true` ⇒ **新增字段合法**，但枚举值不可越界 |
+| T4 | `phase` / `status` 只能取 canonical 枚举值 | `docs/contracts/schemas/assembly-trace.schema.json:18-31`（phase）、`:35-44`（status）；枚举值不可越界 |
+| **T5** | 两个新字段（`capabilityId` / `sourceCode`）**必须同期追加进 canonical schema**（additive，**仅两字段**），**不得**只靠 `additionalProperties: true` 兜底 | **DECISION_SHEET C-3**：靠 `additionalProperties` 兜底＝上一轮刚被纠正的"**实现有字段、合同未声明**"失实模式；按 v1.5 先例走"additive 先行 + 提案 + 登记 §0.1 + 待 Contract Owner 追认"；**合同本体（`specs/**`、v2 候选）不动** |
 
-⇒ 建议形态（示例，字段名待定稿）：`{"phase": "evidence", "status": "ok"|"degraded", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "sourceCode": "KNOWLEDGE_SOURCE_UNBOUND", "message": "知识源能力解析结果…"}`（`message` 不含 `KI-`）。
+| **T6** | 新增条目**只追加在既有序列末尾**（append-only），**不得**插入中间、**不得**改动既有条目的顺序与内容 | **Q3 定稿**：这样"剔除新增条目后可还原"才是**机械可判**的（§2.2 的**前缀相等**断言形式即由 T6 保证可判） |
+
+⇒ 形态（**字段名已定稿**，见 C-3）：`{"phase": "evidence", "status": "ok"|"degraded", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "sourceCode": "KNOWLEDGE_SOURCE_UNBOUND", "message": "知识源能力解析结果…"}`（`message` 不含 `KI-`）。
 
 ### 1.6 既有 fail-open 文案**不动**
 
@@ -150,10 +174,15 @@ assert set(new_ki) == set(ref_ki)
 assert all(new_ki[k]["title"] == ref_ki[k]["title"]
            and new_ki[k]["content"] == ref_ki[k]["content"] for k in ref_ki)
 
-# 2) 技能产出：除"新增留痕条目"外逐字段相同（最强形式）
+# 2) **前缀相等（T6 保证可判，最强形式）**：既有序列必须是被测序列的**逐字前缀**
+n = len(r_ref.assembly_trace)
+assert r.assembly_trace[:n] == r_ref.assembly_trace      # 既有条目顺序与内容一字不改
+assert all(e.get("capabilityId") for e in r.assembly_trace[n:])   # 新增条目**只**在末尾
+assert r.data == r_ref.data and r.status == r_ref.status
+
+# 2b) 等价形式（便于排障）：剔除新增条目后全等
 def _strip_new(entries):  return [e for e in entries if e.get("capabilityId") is None]
 assert _strip_new(r.assembly_trace) == _strip_new(r_ref.assembly_trace)
-assert r.data == r_ref.data and r.status == r_ref.status
 
 # 3) 逐 asset 轨迹：顺序与 ok/skipped 判定一致
 assert [(t.get("kiId"), t.get("status")) for t in r.assembly_trace if t.get("kiId")] \
@@ -204,11 +233,49 @@ assert {t["kiId"] for t in trace if t["kiId"]} == set(KI_IDS)
 ### 2.6 不可用分支的**可区分性**
 
 ```python
-# 用同一工作区的三种声明形态分别断言，拒绝码/留痕码必须互不相同
+# 用同一工作区的三种声明形态分别断言：三者的**留痕码**必须互不相同
+# （B-1 中三者都是"回落 + 留痕"，**都不是拒绝**；B-2 才会成为拒绝码 —— 见硬规则 E0）
 assert codes(无声明) == {KNOWLEDGE_SOURCE_DECLARATION_ABSENT}
 assert codes(声明含未声明字段) == {KNOWLEDGE_SOURCE_DECLARATION_INVALID}
 assert codes(删除 04_serve/customer_knowledge/CURRENT.md) == {KNOWLEDGE_SOURCE_UNAVAILABLE}
+# 且三者在 B-1 中都必须 **同时** 满足：status == "ok" 且 errors == []
 ```
+
+### 2.7 (γ) **回落规则**用例（**新增**，钉住"今天完全没测"的组合；TL 明确要求）
+
+**组合**：计划门禁放行 + **声明缺失** + 客户知识库**可用**（这正是 2-A 之前供给过的工作区 / 手工配置工作区的真实形态）。
+
+```python
+# ── 夹具（新文件内自建，不改既有测试文件）──
+ws = provisioned_and_seeded_ws()                     # 用 tests/conftest.py:28-40 的 ws_provisioned + 自建 seed
+(ws / "90_control" / "schema" / "knowledge_sources.json").unlink()   # 声明缺失
+
+# ── 前提断言：声明不是计划门禁的输入 ⇒ 计划仍放行（防"夹具其实没进到分支"）──
+plan = ActivationPlanBuilder.load(ws).build("PRE_VISIT_PREPARATION")
+assert not isinstance(plan, PlanDenial), plan.reason
+
+# ── 断言 1：技能照常完成，走**字面量回落路径** ⇒ 与参照实现逐字节等价（§2.2-1）──
+r = SkillExecutionService(ws).execute("skill-customer-outreach-script", "b1-g1", {"customerId": CID})
+assert r.status == "ok"
+ref_ki = CustomerKnowledgeProvider(ws).ki_map(CID)
+assert set(t["kiId"] for t in r.assembly_trace if t.get("kiId")) == set(ref_ki) & set(ASSETS)
+
+# ── 断言 2：具名留痕存在（回落是"可见的"，不是静默）──
+assert [t.get("sourceCode") for t in r.assembly_trace if t.get("capabilityId")] \
+       == ["KNOWLEDGE_SOURCE_DECLARATION_ABSENT"]
+
+# ── 断言 3：**未出现任何拒绝**（硬规则 E0 的核心）──
+assert r.errors == []
+assert not any(str(t.get("sourceCode","")).startswith("KNOWLEDGE_SOURCE_")
+               and t.get("status") in {"failed", "blocked"} for t in r.assembly_trace)
+
+# ── 断言 4：与"接线前"逐字一致（除新增留痕外 trace/data 全等，§2.2-2）──
+assert _strip_new(r.assembly_trace) == _strip_new(baseline_trace)
+```
+
+**变体 (γ)′（声明缺失 + 库不可用）**：断言 `status == "ok"`、既有 `phase="kert"/"skipped"` 条目仍在、逐条 KI `skipped`、**无拒绝** —— 即 A 组行为在"声明缺失"下同样成立。
+
+**为什么必须新增**：这三条既有断言都不覆盖"声明缺失"：`test_unprovisioned_workspace_refuses_and_records_why`（`test_skill_routing_trace.py:46-65`）在**计划门禁**就已被拒，走不到读取层；`test_skills.py` 的 A/B 组夹具**都带声明**。⇒ 该组合此前**零覆盖**，本用例是**补洞**（新增，不改任何既有断言）。
 
 ---
 
@@ -217,7 +284,8 @@ assert codes(删除 04_serve/customer_knowledge/CURRENT.md) == {KNOWLEDGE_SOURCE
 | ID | 变异（实现侧） | 期望结果 | 捕获用例 |
 |---|---|---|---|
 | **V1** | 接线后仍走旧的隐式路径（新方法内部直接调 `ki_map`，不过声明） | FAIL | §2.5 方向 A/B；§2.2-3 |
-| **V2** | 声明缺失被**吞成 skipped**（无具名条目、无 `sourceCode`） | FAIL | §2.4 末行（`codes == {…ABSENT}`） |
+| **V2** | 声明缺失被**静默吞掉**（回落了但**无具名条目 / 无 `sourceCode`**） | FAIL | §2.4 末行 + §2.7 断言 2 |
+| **V11** | **声明缺失时拒绝**（把 B-2 语义提前进 B-1） | FAIL | §2.7 全部四条断言（尤其断言 1/3）；并要求该变异**必须**被捕获——否则硬规则 E0 只是注释承诺 |
 | **V3** | 未绑定时**回落**（读全部资产 / 读字面量） | FAIL | 未绑定夹具：该条必须 `skipped`、其余条数不变、`ki` 与 `ref_ki` 仍等价 |
 | **V4** | `required` **顺带升格**（true ⇒ 拒绝、false ⇒ skipped） | FAIL | §1.4 的"两侧结果必须相同"断言 |
 | **V5** | 能力门禁**提前**到计划门禁之前 | FAIL | C 组 3 条既有用例（拒绝码须仍为 `ROUTE_UNRESOLVED` / `ROUTE_POLICY_ABSENT` / `ONTOLOGY_REFERENCE_INVALID`） |
@@ -226,6 +294,8 @@ assert codes(删除 04_serve/customer_knowledge/CURRENT.md) == {KNOWLEDGE_SOURCE
 | **V8** | 改 `_load_ki` 本体（波及 `_run_supply_chain`） | FAIL | D 组 3 条行为不变 + 新增"调用点集合 == {outreach, meeting, previsit}"机械断言 |
 | **V9** | 读取内容被改写（strip/截断/去重/改 title） | FAIL | §2.2-1 逐字节断言 |
 | **V10** | 留痕中的能力指纹写死（常量 / 与 `resolver.binding_sha256` 不符） | FAIL | 断言指纹 == `KnowledgeSourceResolver.load(ws).binding_sha256`，且**改声明后必变** |
+| **V12** | **出现第 4 个调用点**（例如把新方法也塞进 `_run_supply_chain`，或新增一个 `_load_ki*` 方法） | FAIL | §4.1 守卫：前缀枚举集合必须恰为 `{_load_ki, _load_ki_from_declaration}`，且新方法调用点集合必须恰为 `{_run_outreach, _run_meeting, _run_previsit}`；并**显式**断言 `_run_supply_chain` **不**在其中 |
+| **V13** | 新增条目**插入到序列中间**（而非末尾） | FAIL | §2.2 的**前缀相等**断言（`r.assembly_trace[:n] == r_ref.assembly_trace`） |
 
 > 变异执行方式沿用前两片：临时改实现 → 期望非零退出码 → 恢复并校验 sha256 一致。**恢复后 sha256 与变异前逐字节相同**为本片证据的一部分。
 
@@ -236,8 +306,12 @@ assert codes(删除 04_serve/customer_knowledge/CURRENT.md) == {KNOWLEDGE_SOURCE
 ### 4.1 D 组：**不接线**，并加机械守卫
 
 - `_run_supply_chain`（`skills.py:818-823`）与其调用的 `_load_ki`（`:820`）**不动** ⇒ 3 条 D 组用例（`TestSupplyChainFromLibrary::test_graph_complete_from_library`、`::test_graph_partial_unknown_customer`、`TestSecondCustomer::test_graph_complete_from_library`）行为不变。
-- 新增机械守卫：**断言新方法（`_load_ki_via_capability`）的调用点集合恰为 `{_run_outreach, _run_meeting, _run_previsit}`**（源码扫描，同前两片的门禁风格）。若有人日后把它塞进 `_load_ki`，本用例变红。
-- **一致性债照旧登记**：`bank-front-supply-chain-graph` 仍走"字面量 KI-FRONT-001/002/003"（`:821-823`）⇒ 本项目**不得**表述为"客户知识读取已全部接线"。
+- **新增机械守卫（Q4 定稿，白名单精确 + fail-closed）**，用 **`_load_ki` 前缀 grep** 实现（借 Q1-ii 的命名约定）：
+  1. **前缀枚举集合必须恰为** `{_load_ki, _load_ki_from_declaration}` —— 多出任何 `_load_ki*` 方法即 FAIL（防新增读取点绕过守卫）；
+  2. **新方法的调用点集合必须恰为** `{_run_outreach, _run_meeting, _run_previsit}` —— 出现第 4 个调用点即 FAIL；
+  3. **显式断言** `_run_supply_chain` **不**调用新方法（防 D 组被顺手接线）；
+  4. **守卫本身 fail-closed**：源码不可读 / 解析不到调用点 / 夹具缺失 ⇒ **FAIL，不得 skip**（沿用前两片"负例夹具缺失即 FAIL"的风格）。
+- **一致性债照旧登记**（`DECISION_SHEET` **D-7**）：`bank-front-supply-chain-graph` 仍走"字面量 KI-FRONT-001/002/003"（`:821-823`）⇒ 本项目**不得**表述为"客户知识读取已全部接线"。
 
 ### 4.2 E 组：**必须显式复跑**（不得默认不受影响）
 
@@ -259,18 +333,33 @@ assert codes(删除 04_serve/customer_knowledge/CURRENT.md) == {KNOWLEDGE_SOURCE
 | 2 | **不动** `tests/e2e/**` | e2e 假绿修补与 CI 供给耦合，登记为 **B-2 交付项** |
 | 3 | **不接线** `_run_supply_chain` / `bank-front-supply-chain-graph` | O-6 范围；§4.1 |
 | 4 | **不改** `application/customer_knowledge.py` | 它是 B-1 的**参照实现**（§2.1）；改它就没法证等价 |
-| 5 | **不改** `api/**`、`specs/**`、`docs/contracts/**`、`deploy/**` | 边界 |
+| 5 | **不改** `api/**`、`specs/**`、`deploy/**`，以及**除 C-3 明确纳入者之外**的任何 `docs/contracts/**` | 边界；唯一例外见下方白名单（additive 两字段） |
 | 6 | **不改** `application/provision.py`、`domain/knowledge_source.py` | 2-A 已完成供给；B-1 只**消费**该模块 |
-| 7 | **不做**"按计划资产裁剪读取"、**不做**"未绑定/声明缺失 ⇒ 拒绝" | 都会改变行为（§1.2/§1.3），属 B-2 |
+| 7 | **不做**"按计划资产裁剪读取" | 会改变 `ki` 内容（§1.2），属后续片 |
 | 8 | **不升格** `required` | R-2 裁定；§1.4 |
+| 9 | **任何让「声明缺失 ⇒ 拒绝」在 B-1 生效的写法**（含在读取层、技能层、API 层、或"顺手把 `ReadDenial` 当 `SkillError` 抛"的间接写法） | **硬规则 E0**；R-6 拆分的前提 |
+| 10 | **既有测试文件一字不改**（含 `tests/integration/test_skills.py`、`test_skill_routing_trace.py`、`test_control_plane_consistency.py`） | 只冻结那 29 条既有断言；TL 允许**新增**测试（补洞），不允许就地改 |
 
-**B-1 实施阶段（另需授权）预计触碰的文件（文件级白名单）**：
+**B-1 实施阶段（另需授权）的文件级白名单（**TL 已定稿，共 4 组**；除此四组外一律不动）**：
 
 ```text
-src/kert/application/skills.py                 （新增 1 个方法 + 3 处调用替换）
-tests/unit/test_skills_capability_swap.py      （新增：等价性/守卫/变异配套用例）
-tests/integration/test_skills.py               （仅当新增用例需放在既有夹具旁；**不改既有断言**）
+src/kert/application/skills.py                        （新增 1 个 `_load_ki_from_declaration` + 3 处机械调用替换；不动 `_load_ki`）
+tests/unit/test_skills_capability_swap_guards.py      （新增：Q4 调用点守卫 + trace 字段纪律 T1-T6 守卫）
+tests/integration/test_skills_capability_swap.py      （新增：α/β/γ 等价性 + 回落 + 可区分性）
+docs/contracts/schemas/assembly-trace.schema.json     （**仅追加 `capabilityId` / `sourceCode` 两字段**；additive，
+                                                      按 v1.5 先例走提案 + 登记 §0.1，**待 Contract Owner 追认** — C-3）
+evidence/m7-3/**                                      （实施期证据与登记；不含改写历史证据）
 ```
+
+> C-3 的**实施时序**：additive 增量可**先行**（与 v1.5 先例一致），但必须①同步改该 schema、②附变更提案、③登记到追认清单；**合同本体（`specs/kert-openapi-v1.yaml`、v2 候选）一律不动**。
+
+### 5.1 **R-1 停机条件**（TL 明确要求）
+
+> **若实施中发现"不改那 29 条（A 组）就无法做到 0 变化" ⇒ 立即停下报告 TL，不得自行改测试去对齐实现。**
+
+这条与硬规则 E0 是同一件事的两面：B-1 的存在意义就是"**不动既有断言**的前提下换实现"；一旦越线，B-1 就不再是 B-1，而应退回 B-2（待 Owner）。
+
+> 新增集成测试**自带夹具**、不依赖既有测试文件的改动：`ws_provisioned` 直接取自 `tests/conftest.py:28-40`；"已种客户知识"的等价物在新文件内自建（沿用 `tests/integration/test_skills.py:41-49` 的既有写法 `seed_customer_knowledge(ws, quiet=True)`），但**不修改** `test_skills.py` 本身。
 
 ---
 
@@ -278,6 +367,7 @@ tests/integration/test_skills.py               （仅当新增用例需放在既
 
 **本方案的"0 条既有用例变化"结论尚未成立**，因为它依赖的实跑发生在**并发期**（c20 在途改 `src/kert/api/server.py`，+29 行）。并发期跑数不可归因。故：
 
+0. **Q5 已定稿：先冻结态复测，再派工实施**。c20 批次**仍在途**（本轮未收到落定信号）⇒ **在收到 TL 的"冻结"信号前，不动 `skills.py`**（本文档为唯一产出）。
 1. 等 TL 告知 c20 批次落定；
 2. 在 **HEAD 冻结态**重跑：`git status --short`（须干净或仅有本包改动）→ 记录 `git rev-parse HEAD`；
 3. 重跑影响面枚举并留证：
@@ -289,6 +379,98 @@ tests/integration/test_skills.py               （仅当新增用例需放在既
 ```
 
 4. **只有冻结态复跑后**，才可在 B-1 验收材料中写"0 条既有用例变化"；此前该结论一律标注为**"待冻结态确认"**。
+5. 同一冻结态下还须确认：(γ) 回落组合（§2.7）在**接线前**的基线**确实没被任何既有用例覆盖**（即"今天完全没测"这一前提），否则该组合与本方案的"新增补洞"定位需重估。
+
+6. **探针脚本落盘（防 `/tmp` 被清理导致"方法不可复现"）**：此前用于实跑的脚本位于 `/tmp/m71b_impact_probe.py`（仓外、一次性）。下面是**等价的精简可复现版**，与 §6 第 3 步命令配套使用；分组口径与本文《影响面分析》A/B/C/D/E 完全一致：
+
+```python
+#!/usr/bin/env python3
+"""M7.1 影响面实跑探针（精简可复现版）。用法：.venv/bin/python <本文件>"""
+from __future__ import annotations
+import json, sys
+from collections import defaultdict
+from pathlib import Path
+import pytest
+
+REPO = Path("<repo 绝对路径>"); sys.path.insert(0, str(REPO / "src"))
+DECL = Path("90_control") / "schema" / "knowledge_sources.json"
+REC, CUR = [], {"n": ""}
+
+def install() -> None:
+    from kert.application import skills as sk
+    rp = sk.SkillExecutionService._route_plan
+    lk = sk.SkillExecutionService._load_ki
+    sc = sk.SkillExecutionService._run_supply_chain
+
+    def route(self, trace, expected_map_id, task):
+        ws = Path(self.workspace) if self.workspace else None
+        rec = {"node": CUR["n"], "kind": "route_plan", "task": task,
+               "decl": bool(ws and (ws / DECL).is_file()), "out": ""}
+        REC.append(rec)
+        try:
+            res = rp(self, trace, expected_map_id, task)
+        except Exception as exc:                      # 只记录，不改行为
+            rec["out"] = f"RAISED:{type(exc).__name__}"; raise
+        rec["out"] = "ALLOWED"; return res
+
+    def load(self, cid, trace):
+        ws = Path(self.workspace) if self.workspace else None
+        REC.append({"node": CUR["n"], "kind": "load_ki",
+                    "ckp": bool(getattr(self._ckp, "available", False)),
+                    "proj": bool(ws and (ws / "04_serve" / "customer_knowledge" / "CURRENT.md").is_file())})
+        return lk(self, cid, trace)
+
+    def supply(self, req, trace):
+        REC.append({"node": CUR["n"], "kind": "supply_chain"})
+        return sc(self, req, trace)
+
+    sk.SkillExecutionService._route_plan = route
+    sk.SkillExecutionService._load_ki = load
+    sk.SkillExecutionService._run_supply_chain = supply
+
+class Tracker:
+    def pytest_runtest_setup(self, item): CUR["n"] = item.nodeid
+    def pytest_runtest_teardown(self, item, nextitem):
+        CUR["n"] = nextitem.nodeid if nextitem is not None else ""
+
+if __name__ == "__main__":
+    install()
+    pytest.main(["tests/unit", "tests/integration", "tests/contract", "tests/recovery",
+                 "-p", "no:warnings", "-o", "addopts=", "-q", "--tb=no"], plugins=[Tracker()])
+    route, ki, sup = defaultdict(list), defaultdict(list), set()
+    for r in REC:
+        (route if r["kind"] == "route_plan" else ki if r["kind"] == "load_ki" else sup
+         ).__setitem__(r["node"], None) if False else None
+    for r in REC:
+        if r["kind"] == "route_plan": route[r["node"]].append(r)
+        elif r["kind"] == "load_ki": ki[r["node"]].append(r)
+        else: sup.add(r["node"])
+    ok = lambda n: any(r["out"] == "ALLOWED" for r in route[n])            # noqa: E731
+    ckp = lambda n: any(r["ckp"] for r in ki.get(n, []))                   # noqa: E731
+    A = sorted(n for n in route if ok(n) and n in ki and not ckp(n))
+    B = sorted(n for n in route if ok(n) and n in ki and ckp(n))
+    C = sorted(n for n in route if not ok(n))
+    E = sorted(n for n in route if n not in set(A) | set(B) | set(C))
+    print(json.dumps({"route_plan_calls": sum(len(v) for v in route.values()),
+                      "route_plan_items": len(route), "load_ki_items": len(ki),
+                      "A": A, "B": B, "C": C, "E": E,
+                      "supply_chain_unwired": sorted(sup)},
+                     ensure_ascii=False, indent=2))
+```
+
+7. **报数清单（TL 明确要求；不接受"全绿/通过"式转述）** —— 冻结态复测后逐项给出**原文**：
+
+```text
+(a) git rev-parse HEAD  与  git status --short 的原文（证"冻结/干净"）
+(b) 四个目录各自的原始计数与退出码（逐目录一行，不得合并为一句"全量通过"）：
+      tests/unit           → <N passed in …s>   exit <0>
+      tests/integration    → <N passed, M xfailed in …s>  exit <0>
+      tests/contract       → <…>  exit <…>
+      tests/recovery       → <…>  exit <…>
+(c) 44 条枚举原文：_route_plan 调用数、去重用例数、load_ki 去重用例数，以及 A/B/C/D/E 五组各自计数与用例名
+(d) (γ) 前提复核结论：接线前"计划放行 + 声明缺失"组合是否**零覆盖**（含检索命令）
+(e) 环境声明：venv 路径与 python 版本（避免"系统 python3 vs .venv"两口径混淆）
+```
 
 ---
 
@@ -299,8 +481,11 @@ tests/integration/test_skills.py               （仅当新增用例需放在既
 | 新增 trace 条目撞既有断言 | §1.5 的 T1-T4 + V6 守卫用例（三条反推证据均已落到具体行号） |
 | 误伤 D 组（改到 `_load_ki` 本体） | §1.1 只新增方法 + §4.1 调用点机械守卫 + V8 |
 | `required` 顺带升格 | §1.4 两侧结果必须相同的断言 + V4 |
-| 等价性只证了"看起来一样" | §2.2 给出逐字段/逐字节/去新条目后全等三种形式；§2.5 给双向证据 |
-| 部署顺序 | B-1 **不需要**任何部署前置（不改变拒绝语义）；声明已随 2-A 供给，缺/非法在 B-1 下都不阻塞 |
+| **B-1 顺手让"声明缺失 ⇒ 拒绝"生效**（把 B-2 提前，作废 R-6 拆分） | **硬规则 E0** + §2.7 四条断言 + **V11**（该变异必须被捕获） |
+| **"实现有字段、合同未声明"**（C-3 指出的失实模式，上一轮刚被纠正） | **T5**：两字段**同期**追加 canonical schema（仅 additive）＋变更提案＋登记待追认；**禁止**只靠 `additionalProperties` 兜底 |
+| 等价性只证了"看起来一样" | §2.2 给出**前缀相等（T6）**/逐字段/逐字节/去新条目后全等四种形式；§2.5 给双向证据 |
+| **Q4 守卫被"可跳过"化**（加 `skip`/`xfail`/条件短路后形同虚设） | 守卫须 **fail-closed**：源码不可读、枚举不到调用点、夹具缺失 ⇒ **FAIL 而非 skip**；并用 **V12**（加第 4 个调用点）实证守卫有效 |
+| 部署顺序 | B-1 **不需要**任何部署前置（不改变拒绝语义；声明缺失亦回落）；声明已随 2-A 供给，缺/非法在 B-1 下都不阻塞 |
 
 **回滚**：单 commit revert（只涉及 `skills.py` + 新测试文件）⇒ 读取回到 `ki_map` 路径；声明留在卷里**完全惰性**（与《影响面分析》§4.3 一致）。
 
@@ -308,10 +493,16 @@ tests/integration/test_skills.py               （仅当新增用例需放在既
 
 ## 8. 待确认事项（供 TL 定稿）
 
-| ID | 待定 | 建议 |
+**Q1–Q5 全部已由 TL 定稿**，本文件已按其改写（下表为回执与落点索引）：
+
+| ID | 定稿结论 | 在本文件的落点 |
 |---|---|---|
-| Q1 | 新增方法的**命名**（`_load_ki_via_capability` / `_load_ki_planned` / `_load_ki_bound`） | 取 `_load_ki_via_capability`，并在 docstring 写明"经控制面声明的能力读取；B-1 阶段失败一律软失败" |
-| Q2 | 新 trace 条目的**字段名**（`sourceCode` 是否合适；是否同时带 `capabilityId`） | 用 `capabilityId` + `sourceCode`；`message` 严格不含 `KI-`（T3） |
-| Q3 | 未绑定留痕的**粒度**：每次执行一条汇总，还是每资产一条 | **每资产一条**（可定位到具体 assetRefId），但必须遵守 T1（无 `kiId`） |
-| Q4 | B-1 是否**同时**新增"调用点集合"机械守卫文件 | 是（与既有 `ALLOWED_WIRING` 门禁同风格的源码扫描） |
-| Q5 | 实施是否等冻结态复测完成后再开始 | 建议**先做冻结态复测**（§6），再派工实施，避免"以并发期数据为依据" |
+| **Q1** | 方法名 **`_load_ki_from_declaration`**；签名与 `_load_ki` **完全一致**（同参同返回）；前缀 `_load_ki` **刻意保留**（可一个前缀 grep 枚举全部 KI 读取点） | §1.1（含 §1.1.1 的签名推论：留痕范围 = 声明绑定集） |
+| **Q2** | 字段名 **`capabilityId` + `sourceCode`**；并**同步追加进 canonical schema**（additive、待 Contract Owner 追认） | §1.5 **T5** + §5 白名单第 4 组 |
+| **Q3** | **每资产一条**留痕；三条硬约束（无 `kiId` / `message` 不含 `KI-` / **只追加在序列末尾**） | §1.5 **T1/T3/T6** + §2.2 **前缀相等**断言 |
+| **Q4** | **加**调用点守卫：白名单精确（第 4 个调用点即 FAIL）、显式断言 `_run_supply_chain` **不**调用、守卫**不得可静默跳过** | §4.1 四条 + §3 **V12** + §7 风险行 |
+| **Q5** | **先冻结态复测，再派工实施**；等 TL 的"冻结"信号 | §6 第 0 条 |
+| Q6（我方提出） | (γ) 回落用例落在**新文件** `tests/integration/test_skills_capability_swap.py`（不碰 `test_skills.py`） | §5 白名单第 3 组 |
+
+> **唯一仍未获得的是"实施授权 + 冻结信号"**；在收到之前本文档是唯一产出，`skills.py` 不动（Q5）。
+> **R-1 提醒照旧**：A 组 29 条仍登记为**待 Owner**（C-1b），B-1 内严禁触碰；触碰即触发 §5.1 停机条件。
