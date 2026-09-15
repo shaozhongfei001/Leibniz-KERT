@@ -16,7 +16,9 @@ AUTHOR    : Tech Lead
 | **A-2** | **v1 是否升 OpenAPI 3.1.0 / validator 是否放宽**（O5，含 8 处 `nullable`；`validate_contract_bundle.py:75-76` 硬要求 3.1.0） | 登记为**归并 P2 的验收条件**（二选一：v1 升 3.1.0，或 validator 放宽到接受 3.0.3），本轮不动 | 归并 P2 能否验收 |
 | **A-3** | **v2 候选处置等级（O6）**：归档 / 降级 / 拆分 | **降级为非权威设计输入 + `schemas` 保留细节层**（= A-1 的组成部分）；归档为可选 P3 | v2 目录的最终定位 |
 | **A-4** | **版本 `1.5.0 → 1.5.1` 补丁**：Contract Owner 追认的是**特定 artifact 的 v1.5.0**，而该 artifact 已被更正两次（F2 我修于 `62b967a`；F1/F3/F4/F5/F6 修于 `f7749af`） | **追认 1.5.1 为"形状更正补丁"**，并确认追认覆盖的是 v1.5 的 **additive 增量**（语义不变） | 追认对象的唯一性；TL 已在执行层要求队友 bump |
-| **A-5** | **错误信封族 Part B**（实现修复）：`/api/skill/execute` 未捕获异常须返回合同声明的 `ErrorResponse` 信封（现为 FastAPI 默认 500 纯文本） | TL 已按"发现问题直接修"**授权**（仅 `src/kert/api/server.py` 一处；不得改 2xx 路径与认证中间件；500 消息须通用、不得放 `str(exc)`）——**供你知悉**，如反对请驳回 | 无（执行中） |
+| **A-5** | **错误信封族 Part B**（实现修复）：`/api/skill/execute` 未捕获异常须返回合同声明的 `ErrorResponse` 信封（现为 FastAPI 默认 500 纯文本） | 已由 c20 **完成并提交**（`e3bcefe`）；TL 核实：`server.py` 1 处（+29/−1，sha `7e516e610c43d482`）、不改 2xx 路径与中间件、消息通用不回显 `str(exc)`、用例含**金丝雀断言**（异常细节不得出现在响应体） | 无 |
+| **A-6** | **F8：9 条"已实现但合同未声明"路径**（`/v1/extractions`(202)、`/v1/extractions/{job_id}/result`、`/v1/entities/{entity_id}`、`/v1/data/query`、`/v1/search`、`/v1/graph/query`、`/v1/rules/evaluate`、`/v1/evidence/{object_id}`、`/v1/catalog`）；**另 1 条反向缺口** `/v1/skills`（合同声明但实现缺失） | **需你裁决**。**TL 建议 A**（9 条一次性登记，`1.5.1 → 1.6.0`），**条件** = 每条须配**机械核对**（实现侧证据 + 用例），否则又是一次"手写声明、从未校验"。**B** 仅在你想压缩工作量时成立，但**豁免清单必须成文**；**C 须先拿出"无外部调用方"的证据**才成立，不接受凭偏好选。附裁 2 项：`/v1/skills` 建议**从合同删除**（合同不得承诺不存在的东西，除非已对某调用方承诺过 —— 需先补"是否有调用方"的事实）；`/v1/graph/query` 与 v2 声明的差异随 **C-20** 归并处理。提案：`evidence/m7-3/PROPOSAL_REGISTER_UNDECLARED_V1_PATHS.md` | `/v1/*` 面合同化完整性 |
+| **A-7** | **1.5.1 追认对象**：合同已 bump `1.5.0 → 1.5.1`（形状/错误响应更正），提交于 `e3bcefe` | **待你追认**：确认追认覆盖 v1.5 的 **additive 增量**、且 `1.5.1` 为**形状更正补丁**（语义不变）。同时 `1.5.1` 已含 F4b/F4d/F4e 三处形状更正（execute 400→422、report 404 字符串 detail、maps 500 `oneOf`） | 追认对象的唯一性 |
 
 ## B. 治理 / 发布 / 流程类（Owner）
 
@@ -80,7 +82,8 @@ AUTHOR    : Tech Lead
 | **D-6** | **e2e 假绿风险**：`/api/skill/execute` 对**一切业务错误**返回 **200**（仅 `UNKNOWN_SKILL` 为 404，`server.py` 读码确认），而 e2e 只断言 `status_code in (200,201,202)` + 字段存在 ⇒ **部署工作区未供给时 e2e 仍绿，而技能实际 `skill_error`** | 已登记为 **C-1b 的交付项之一**；**不在 B-1 改 e2e**。若强化断言（须能区分 `ok`/`skill_error`），会牵动 **CI 供给**（未供给即红）⇒ 属**流水线决策**，需你裁 |
 | **D-7** | **读取路径一致性债**：`_run_supply_chain`（技能包 `bank-front-supply-chain-graph`）仍为**字面量驱动**读取，将与能力驱动路径**并存** | **不得**表述为"读取已全部接线"；归 O-6 / M7.2 范围，需另立 |
 | **D-8** | **引用纪律**：`src/kert/api/server.py` 常被并行改动（本轮 c20 在途 +29 行） | 引用该文件必须 **"函数名 + 行号"双锚**，并在文档顶部记**行号基准快照**；并发编辑期间的跑数**不可归因**（见"先冻结再跑"规则） |
-| **D-9** | **第三方在途未归因**：`?? src/kert/domain/activation_contract.py`（§5.5 ②，新增未跟踪文件）与 `.understandignore`（他人会话 UA-D10） | 非本轮任何队友所为；**冻结前须归因**（复测须附 `git rev-parse HEAD` + 完整 `git status` 快照）。该模块读 `<ws>/90_control/schema/activations/AC-*.json` ⇒ 若纳入部署，**供给面清单将再次扩项**（现行 6 类文件），与 D-5 同族 | 复测归因；未来供给面 |
+| **D-9** | **第三方在途未归因**（非 c20、非 m71）：`src/kert/domain/activation_contract.py`、`tests/unit/test_activation_contract.py`、`examples/bank-front-knowledge-maps/90_control/schema/activations/`、**`src/kert/application/provision.py`、`src/kert/cli/main.py`、`tests/unit/test_provision.py`**（均在途修改）、`.understandignore`（他人会话 UA-D10） | 非本轮任何队友所为；**复测/冻结须归因**（附 `git rev-parse HEAD` + 完整 `git status` 快照；期间变动即作废重跑）。该模块读 `<ws>/90_control/schema/activations/AC-*.json`，且**第三方正在改 provisioning** ⇒ **供给面口径可能再变**（现行 6 类文件），与 D-5 同族；B-1 复测的枚举基线也可能随之偏移 | 复测归因；供给面口径；B-1 基线 |
+| **D-10** | **性能基准 flake**：`tests/performance/test_concurrency_benchmark.py:221` 墙钟阈值（`assert avg_create < 20.0`）在冻结态偶发 FAIL（本轮 2 条；此前 1 条 / 3 条，**失败集合漂移**） | TL **隔离复跑仍 FAIL** ⇒ 已证与 c20 改动无关。**结构性理由（比"机器负载"更强）**：多智能体并发跑测使**墙钟阈值基准结构性不可靠** —— 我们自己的并发就在污染它。⇒ 该文件**不得**作为验收/冻结证据；由你决定放宽阈值 / 加 `perf` marker / 移出默认套件 | 每次"冻结态"跑数都会被它污染 |
 
 ## 非声明
 
