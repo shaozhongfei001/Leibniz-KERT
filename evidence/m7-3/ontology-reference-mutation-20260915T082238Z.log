@@ -1,0 +1,582 @@
+
+===== N1-baseline PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+[变异] activation_plan.py: 'f"ontology={ontology_key}",' -> 'f"ontology=UNUSED",'
+
+===== N1-mutated FAIL 期望（本体版本不进 hash） =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+...............................................F.F......F                [100%]
+=================================== FAILURES ===================================
+____________________ test_ontology_version_enters_plan_hash ____________________
+
+tmp_path = PosixPath('/tmp/pytest-of-szf/pytest-28/test_ontology_version_enters_p0')
+
+    def test_ontology_version_enters_plan_hash(tmp_path: Path):
+        """**D-3 主线负例**：只改声明里的哈希 ⇒ plan_hash 必须变；换回 ⇒ 必须回到原值。"""
+        ws = tmp_path / "ws"
+        init_workspace(ws)
+        _write_ontology_ws(ws, sha256=ONTOLOGY_SHA_A)
+        before = _build(ws)
+        assert isinstance(before, ActivationPlan), before
+    
+        # 变异：换一个**合法**哈希
+        _write_ontology_ws(ws, sha256=ONTOLOGY_SHA_B)
+        after = _build(ws)
+        assert isinstance(after, ActivationPlan), after
+>       assert after.plan_hash != before.plan_hash, "本体版本必须进入 plan hash"
+E       AssertionError: 本体版本必须进入 plan hash
+E       assert '3143a5bf79c5f1a2' != '3143a5bf79c5f1a2'
+E        +  where '3143a5bf79c5f1a2' = ActivationPlan(schema='activation_plan/v1', plan_id='AP-KERT-ONTOLOGY_TEST_TASK-3143a5bf', task_type='ONTOLOGY_TEST_TA...', 'routePolicy': 'RP-TEST-0001@1.0.0', 'activationContract': None, 'ontology': 'CTR-SEM-002@sha256:1111111122222222'}).plan_hash
+E        +  and   '3143a5bf79c5f1a2' = ActivationPlan(schema='activation_plan/v1', plan_id='AP-KERT-ONTOLOGY_TEST_TASK-3143a5bf', task_type='ONTOLOGY_TEST_TA...', 'routePolicy': 'RP-TEST-0001@1.0.0', 'activationContract': None, 'ontology': 'CTR-SEM-002@sha256:705578d6324abd0c'}).plan_hash
+
+tests/unit/test_activation_plan.py:268: AssertionError
+_____________ test_ontology_key_participates_in_canonical_content ______________
+
+    def test_ontology_key_participates_in_canonical_content():
+        """`canonical_content` 显式包含 ontology 行（防空转：不靠"变量没用到"这种隐性行为）。"""
+        base = dict(task_type="T", policy_key="RP-X@1.0.0", map_key="KM-X@1.0.0",
+                    assets=(PlanAsset("KI-009", True, 1),), skills=("skill-a",))
+        with_ont = canonical_content(**base, ontology_key=ONTOLOGY_VERSION_A)
+        without_ont = canonical_content(**base)
+        assert "ontology=" in with_ont
+>       assert with_ont != without_ont
+E       AssertionError: assert 'schema=activation_plan/v1\ntask=T\npolicy=RP-X@1.0.0\nmap=KM-X@1.0.0\nontology=UNUSED\nasset=1:KI-009:R\nskill=skill-a' != 'schema=activation_plan/v1\ntask=T\npolicy=RP-X@1.0.0\nmap=KM-X@1.0.0\nontology=UNUSED\nasset=1:KI-009:R\nskill=skill-a'
+
+tests/unit/test_activation_plan.py:303: AssertionError
+_________________ test_plan_hash_is_sensitive_to_ontology_key __________________
+
+    def test_plan_hash_is_sensitive_to_ontology_key():
+        """反空转：直接对 `compute_plan_hash` 施加本体版本变化（不依赖文件系统）。"""
+        base = dict(task_type="T", policy_key="RP-X@1.0.0", map_key="KM-X@1.0.0",
+                    assets=(PlanAsset("KI-009", True, 1),), skills=("skill-a",))
+        h_a = compute_plan_hash(**base, ontology_key=ONTOLOGY_VERSION_A)
+        h_none = compute_plan_hash(**base)
+        h_b = compute_plan_hash(**base, ontology_key="CTR-SEM-002@sha256:1111111122222222")
+>       assert len({h_a, h_none, h_b}) == 3
+E       AssertionError: assert 1 == 3
+E        +  where 1 = len({'5f03b87f814fe715'})
+
+tests/unit/test_activation_plan.py:405: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/test_activation_plan.py::test_ontology_version_enters_plan_hash
+FAILED tests/unit/test_activation_plan.py::test_ontology_key_participates_in_canonical_content
+FAILED tests/unit/test_activation_plan.py::test_plan_hash_is_sensitive_to_ontology_key
+EXIT=1
+[恢复] activation_plan.py <- .plan.bak
+
+===== N1-restored PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+
+===== N2-baseline PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+[变异] activation_plan.py: '        ont = self.ontology_resolution()\n        if not ont.allowed or ont.reference is None:\n            return PlanDenial(code=ont.code,\n                              reason=f"本体引用未放行 ⇒ 不产出计划: {ont.reason}")\n' -> '        ont = self.ontology_resolution()\n        if False:\n            return PlanDenial(code=ont.code, reason=ont.reason)\n'
+
+===== N2-mutated FAIL 期望（缺失不再拒绝） =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+..................................................FFF.F..                [100%]
+=================================== FAILURES ===================================
+_________________ test_denied_when_ontology_declaration_absent _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-szf/pytest-31/test_denied_when_ontology_decl0')
+
+    def test_denied_when_ontology_declaration_absent(tmp_path: Path):
+        """**D-4 主线负例**：移走/未提供声明文件 ⇒ 计划构建必须 Deny（不是"照常出计划"）。"""
+        ws = tmp_path / "ws"
+        init_workspace(ws)
+        _write_ontology_ws(ws)
+        ok = _build(ws)
+        assert isinstance(ok, ActivationPlan), ok  # 先证明夹具本身能放行（防夹具缺失导致恒真）
+    
+        # 变异：移走声明文件
+        (schema_dir(ws) / ONTOLOGY_FILENAME).unlink()
+>       denied = _build(ws)
+
+tests/unit/test_activation_plan.py:317: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_activation_plan.py:244: in _build
+    return ActivationPlanBuilder.load(ws).build(ONTOLOGY_TASK, subject_id="CUST-0001")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <kert.domain.activation_plan.ActivationPlanBuilder object at 0x72fb7bdd0c10>
+task_type = 'ONTOLOGY_TEST_TASK', subject_id = 'CUST-0001'
+permission_decision_id = None
+
+    def build(self, task_type: str, *, subject_id: str | None = None,
+              permission_decision_id: str | None = None) -> PlanDecision:
+        """构建激活计划；任一门禁被拒则不产出计划（fail-closed）。
+    
+        :param task_type: 任务类型（调用方输入）。
+        :param subject_id: 主体标识（如 customerId）；仅记录，**不**入 hash。
+        :param permission_decision_id: 权限决策 ID；仅记录，**不**入 hash。
+        """
+        res = self._resolver.resolve(task_type)
+        if not res.allowed or res.map is None or res.rule is None:
+            return PlanDenial(code=res.code,
+                              reason=f"路由未放行 ⇒ 不产出计划: {res.reason}")
+    
+        # 门禁 2（D-4）：本体引用必须被**声明且合法**，否则拒绝 —— 不放行"本体未被消费"的计划。
+        ont = self.ontology_resolution()
+        if False:
+            return PlanDenial(code=ont.code, reason=ont.reason)
+    
+        m = res.map
+        assets = tuple(PlanAsset(asset_id=r.asset_id, required=r.required, sequence=r.sequence)
+                       for r in m.asset_refs)
+        skills = tuple(sorted(m.skill_refs))
+    
+>       ontology_key = ont.reference.version           # 进 hash（D-3）
+E       AttributeError: 'NoneType' object has no attribute 'version'
+
+src/kert/domain/activation_plan.py:232: AttributeError
+________________ test_denied_when_ontology_declaration_invalid _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-szf/pytest-31/test_denied_when_ontology_decl1')
+
+    def test_denied_when_ontology_declaration_invalid(tmp_path: Path):
+        """声明非法（大写哈希 / 未知字段 / 绝对路径 / 前缀不符）⇒ `ONTOLOGY_REFERENCE_INVALID`。"""
+        for bad in (
+            {"contentSha256": ONTOLOGY_SHA_A.upper()},
+            {"contractId": "SEM-002"},
+            {"authoritySource": "/abs/specs/gits-core.owl.ttl"},
+            {"authoritySource": "../other-repo/gits-core.owl.ttl"},
+            {"authorityRepo": "gits/repo"},
+            {"bogus": 1},
+        ):
+            ws = tmp_path / "ws"
+            init_workspace(ws)
+            _write_ontology_ws(ws)
+            doc = json.loads((schema_dir(ws) / ONTOLOGY_FILENAME).read_text(encoding="utf-8"))
+            doc.update(bad)
+            (schema_dir(ws) / ONTOLOGY_FILENAME).write_text(
+                json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    
+>           denied = _build(ws)
+
+tests/unit/test_activation_plan.py:347: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_activation_plan.py:244: in _build
+    return ActivationPlanBuilder.load(ws).build(ONTOLOGY_TASK, subject_id="CUST-0001")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <kert.domain.activation_plan.ActivationPlanBuilder object at 0x72fb7bdd3370>
+task_type = 'ONTOLOGY_TEST_TASK', subject_id = 'CUST-0001'
+permission_decision_id = None
+
+    def build(self, task_type: str, *, subject_id: str | None = None,
+              permission_decision_id: str | None = None) -> PlanDecision:
+        """构建激活计划；任一门禁被拒则不产出计划（fail-closed）。
+    
+        :param task_type: 任务类型（调用方输入）。
+        :param subject_id: 主体标识（如 customerId）；仅记录，**不**入 hash。
+        :param permission_decision_id: 权限决策 ID；仅记录，**不**入 hash。
+        """
+        res = self._resolver.resolve(task_type)
+        if not res.allowed or res.map is None or res.rule is None:
+            return PlanDenial(code=res.code,
+                              reason=f"路由未放行 ⇒ 不产出计划: {res.reason}")
+    
+        # 门禁 2（D-4）：本体引用必须被**声明且合法**，否则拒绝 —— 不放行"本体未被消费"的计划。
+        ont = self.ontology_resolution()
+        if False:
+            return PlanDenial(code=ont.code, reason=ont.reason)
+    
+        m = res.map
+        assets = tuple(PlanAsset(asset_id=r.asset_id, required=r.required, sequence=r.sequence)
+                       for r in m.asset_refs)
+        skills = tuple(sorted(m.skill_refs))
+    
+>       ontology_key = ont.reference.version           # 进 hash（D-3）
+E       AttributeError: 'NoneType' object has no attribute 'version'
+
+src/kert/domain/activation_plan.py:232: AttributeError
+___________ test_ontology_denial_codes_are_distinct_from_route_codes ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-szf/pytest-31/test_ontology_denial_codes_are0')
+
+    def test_ontology_denial_codes_are_distinct_from_route_codes(tmp_path: Path):
+        """本体拒绝码**不复用**路由既有码（D-4 明确要求）。"""
+        ws = tmp_path / "ws"
+        init_workspace(ws)
+        _write_ontology_ws(ws)
+        (schema_dir(ws) / ONTOLOGY_FILENAME).unlink()
+>       denied = _build(ws)
+
+tests/unit/test_activation_plan.py:358: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_activation_plan.py:244: in _build
+    return ActivationPlanBuilder.load(ws).build(ONTOLOGY_TASK, subject_id="CUST-0001")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <kert.domain.activation_plan.ActivationPlanBuilder object at 0x72fb7bd90670>
+task_type = 'ONTOLOGY_TEST_TASK', subject_id = 'CUST-0001'
+permission_decision_id = None
+
+    def build(self, task_type: str, *, subject_id: str | None = None,
+              permission_decision_id: str | None = None) -> PlanDecision:
+        """构建激活计划；任一门禁被拒则不产出计划（fail-closed）。
+    
+        :param task_type: 任务类型（调用方输入）。
+        :param subject_id: 主体标识（如 customerId）；仅记录，**不**入 hash。
+        :param permission_decision_id: 权限决策 ID；仅记录，**不**入 hash。
+        """
+        res = self._resolver.resolve(task_type)
+        if not res.allowed or res.map is None or res.rule is None:
+            return PlanDenial(code=res.code,
+                              reason=f"路由未放行 ⇒ 不产出计划: {res.reason}")
+    
+        # 门禁 2（D-4）：本体引用必须被**声明且合法**，否则拒绝 —— 不放行"本体未被消费"的计划。
+        ont = self.ontology_resolution()
+        if False:
+            return PlanDenial(code=ont.code, reason=ont.reason)
+    
+        m = res.map
+        assets = tuple(PlanAsset(asset_id=r.asset_id, required=r.required, sequence=r.sequence)
+                       for r in m.asset_refs)
+        skills = tuple(sorted(m.skill_refs))
+    
+>       ontology_key = ont.reference.version           # 进 hash（D-3）
+E       AttributeError: 'NoneType' object has no attribute 'version'
+
+src/kert/domain/activation_plan.py:232: AttributeError
+__________________ test_denied_when_builder_has_no_workspace ___________________
+
+    def test_denied_when_builder_has_no_workspace():
+        """未绑定工作区 ⇒ 读不到声明 ⇒ 拒绝（fail-closed 默认值，不静默放行）。"""
+>       denied = ActivationPlanBuilder(RouteResolver.load(REAL_WS)).build("PRE_VISIT_PREPARATION")
+
+tests/unit/test_activation_plan.py:377: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <kert.domain.activation_plan.ActivationPlanBuilder object at 0x72fb7bb775e0>
+task_type = 'PRE_VISIT_PREPARATION', subject_id = None
+permission_decision_id = None
+
+    def build(self, task_type: str, *, subject_id: str | None = None,
+              permission_decision_id: str | None = None) -> PlanDecision:
+        """构建激活计划；任一门禁被拒则不产出计划（fail-closed）。
+    
+        :param task_type: 任务类型（调用方输入）。
+        :param subject_id: 主体标识（如 customerId）；仅记录，**不**入 hash。
+        :param permission_decision_id: 权限决策 ID；仅记录，**不**入 hash。
+        """
+        res = self._resolver.resolve(task_type)
+        if not res.allowed or res.map is None or res.rule is None:
+            return PlanDenial(code=res.code,
+                              reason=f"路由未放行 ⇒ 不产出计划: {res.reason}")
+    
+        # 门禁 2（D-4）：本体引用必须被**声明且合法**，否则拒绝 —— 不放行"本体未被消费"的计划。
+        ont = self.ontology_resolution()
+        if False:
+            return PlanDenial(code=ont.code, reason=ont.reason)
+    
+        m = res.map
+        assets = tuple(PlanAsset(asset_id=r.asset_id, required=r.required, sequence=r.sequence)
+                       for r in m.asset_refs)
+        skills = tuple(sorted(m.skill_refs))
+    
+>       ontology_key = ont.reference.version           # 进 hash（D-3）
+E       AttributeError: 'NoneType' object has no attribute 'version'
+
+src/kert/domain/activation_plan.py:232: AttributeError
+=========================== short test summary info ============================
+FAILED tests/unit/test_activation_plan.py::test_denied_when_ontology_declaration_absent
+FAILED tests/unit/test_activation_plan.py::test_denied_when_ontology_declaration_invalid
+FAILED tests/unit/test_activation_plan.py::test_ontology_denial_codes_are_distinct_from_route_codes
+FAILED tests/unit/test_activation_plan.py::test_denied_when_builder_has_no_workspace
+EXIT=1
+[恢复] activation_plan.py <- .plan.bak
+
+===== N2-restored PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+
+===== N3-baseline PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+[变异] ontology_reference.py: '        return ReferenceResolution(\n            code=CODE_INVALID,\n            reason=f"本体引用声明非法 ⇒ 拒绝（fail-closed）: {exc.message}",\n        )' -> '        return ReferenceResolution(code=CODE_ABSENT, reason="downgraded")'
+
+===== N3-mutated FAIL 期望（非法降级为缺失） =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+............................FF.....................F.....                [100%]
+=================================== FAILURES ===================================
+_____________________ test_bad_json_declaration_is_invalid _____________________
+
+tmp_path = PosixPath('/tmp/pytest-of-szf/pytest-34/test_bad_json_declaration_is_i0')
+
+    def test_bad_json_declaration_is_invalid(tmp_path: Path):
+        ws = _ws(tmp_path)
+        d = schema_dir(ws)
+        d.mkdir(parents=True, exist_ok=True)
+        (d / FILENAME).write_text("{oops", encoding="utf-8")
+    
+        with pytest.raises(SchemaValidationError, match="无法解析"):
+            load_ontology_reference(ws)
+    
+        res = resolve_reference(ws)
+>       assert not res.allowed and res.code == CODE_INVALID
+E       AssertionError: assert (not False and 'ONTOLOGY_REFERENCE_ABSENT' == 'ONTOLOGY_REFERENCE_INVALID'
+E        +  where False = ReferenceResolution(code='ONTOLOGY_REFERENCE_ABSENT', reason='downgraded', reference=None).allowed
+E         
+E         - ONTOLOGY_REFERENCE_INVALID
+E         ?                    ^ ^^^^^
+E         + ONTOLOGY_REFERENCE_ABSENT
+E         ?                    ^^^^ ^)
+
+tests/unit/test_ontology_reference.py:246: AssertionError
+___________________ test_invalid_declaration_is_invalid_code ___________________
+
+tmp_path = PosixPath('/tmp/pytest-of-szf/pytest-34/test_invalid_declaration_is_in0')
+
+    def test_invalid_declaration_is_invalid_code(tmp_path: Path):
+        ws = _ws(tmp_path)
+        _write_decl(ws, _decl(contentSha256=AUTHORITY_SHA256.upper()))
+        res = resolve_reference(ws)
+>       assert not res.allowed and res.code == CODE_INVALID
+E       AssertionError: assert (not False and 'ONTOLOGY_REFERENCE_ABSENT' == 'ONTOLOGY_REFERENCE_INVALID'
+E        +  where False = ReferenceResolution(code='ONTOLOGY_REFERENCE_ABSENT', reason='downgraded', reference=None).allowed
+E         
+E         - ONTOLOGY_REFERENCE_INVALID
+E         ?                    ^ ^^^^^
+E         + ONTOLOGY_REFERENCE_ABSENT
+E         ?                    ^^^^ ^)
+
+tests/unit/test_ontology_reference.py:253: AssertionError
+________________ test_denied_when_ontology_declaration_invalid _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-szf/pytest-34/test_denied_when_ontology_decl1')
+
+    def test_denied_when_ontology_declaration_invalid(tmp_path: Path):
+        """声明非法（大写哈希 / 未知字段 / 绝对路径 / 前缀不符）⇒ `ONTOLOGY_REFERENCE_INVALID`。"""
+        for bad in (
+            {"contentSha256": ONTOLOGY_SHA_A.upper()},
+            {"contractId": "SEM-002"},
+            {"authoritySource": "/abs/specs/gits-core.owl.ttl"},
+            {"authoritySource": "../other-repo/gits-core.owl.ttl"},
+            {"authorityRepo": "gits/repo"},
+            {"bogus": 1},
+        ):
+            ws = tmp_path / "ws"
+            init_workspace(ws)
+            _write_ontology_ws(ws)
+            doc = json.loads((schema_dir(ws) / ONTOLOGY_FILENAME).read_text(encoding="utf-8"))
+            doc.update(bad)
+            (schema_dir(ws) / ONTOLOGY_FILENAME).write_text(
+                json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    
+            denied = _build(ws)
+            assert isinstance(denied, PlanDenial), f"{bad} 应导致拒绝"
+>           assert denied.code == "ONTOLOGY_REFERENCE_INVALID", f"{bad} ⇒ {denied.code}"
+E           AssertionError: {'contentSha256': '705578D6324ABD0C1BD2BD670E6F3C0FFD8E04C358D0134246C89A3ACFC38D00'} ⇒ ONTOLOGY_REFERENCE_ABSENT
+E           assert 'ONTOLOGY_REFERENCE_ABSENT' == 'ONTOLOGY_REFERENCE_INVALID'
+E             
+E             - ONTOLOGY_REFERENCE_INVALID
+E             ?                    ^ ^^^^^
+E             + ONTOLOGY_REFERENCE_ABSENT
+E             ?                    ^^^^ ^
+
+tests/unit/test_activation_plan.py:349: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/test_ontology_reference.py::test_bad_json_declaration_is_invalid
+FAILED tests/unit/test_ontology_reference.py::test_invalid_declaration_is_invalid_code
+FAILED tests/unit/test_activation_plan.py::test_denied_when_ontology_declaration_invalid
+EXIT=1
+[恢复] ontology_reference.py <- .ont.bak
+
+===== N3-restored PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+
+===== N4-baseline PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+[变异] ontology_reference.json: contentSha256 705578d6324abd0c… -> aaaaaaaaaaaaaaaa…（只改前16位）
+
+===== N4-mutated FAIL 期望（声明值改变必须传导） =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+FFF..................................F........F..........                [100%]
+=================================== FAILURES ===================================
+__________________ test_real_workspace_declares_ontology_pin ___________________
+
+    def test_real_workspace_declares_ontology_pin():
+        """受控 example 工作区的声明必须逐字段等于权威取值（否则后续断言都在测空气）。"""
+        assert reference_path(REAL_WS).is_file(), f"缺少声明文件: {reference_path(REAL_WS)}"
+    
+        ref = load_ontology_reference(REAL_WS)
+        assert isinstance(ref, OntologyReference), "受控工作区必须提供本体引用声明"
+        assert ref.contract_id == AUTHORITY_CONTRACT_ID
+        assert ref.authority_repo == AUTHORITY_REPO
+        assert ref.authority_source == AUTHORITY_SOURCE
+>       assert ref.content_sha256 == AUTHORITY_SHA256
+E       AssertionError: assert 'aaaaaaaaaaaa...89a3acfc38d00' == '705578d6324a...89a3acfc38d00'
+E         
+E         - 705578d6324abd0c1bd2bd670e6f3c0ffd8e04c358d0134246c89a3acfc38d00
+E         ? ----------- ^^^^
+E         + aaaaaaaaaaaaaaaa1bd2bd670e6f3c0ffd8e04c358d0134246c89a3acfc38d00
+E         ?  ^^^^^^^^^^^^^^^
+
+tests/unit/test_ontology_reference.py:98: AssertionError
+_____________ test_version_format_matches_gits_golden_expectation ______________
+
+    def test_version_format_matches_gits_golden_expectation():
+        """版本引用 = ``<contractId>@sha256:<前16>``，与 gits 侧黄金计划逐字一致。"""
+        ref = load_ontology_reference(REAL_WS)
+        assert ref is not None
+>       assert ref.version == AUTHORITY_VERSION
+E       AssertionError: assert 'CTR-SEM-002@...aaaaaaaaaaaaa' == 'CTR-SEM-002@...578d6324abd0c'
+E         
+E         - CTR-SEM-002@sha256:705578d6324abd0c
+E         + CTR-SEM-002@sha256:aaaaaaaaaaaaaaaa
+
+tests/unit/test_ontology_reference.py:107: AssertionError
+______________ test_real_workspace_plan_carries_ontology_version _______________
+
+    def test_real_workspace_plan_carries_ontology_version():
+        """端到端：受控工作区的三张地图都产出**携带本体版本**的计划。"""
+        for task in ("OUTREACH_PREPARATION", "MEETING_PREPARATION", "PRE_VISIT_PREPARATION"):
+            plan = ActivationPlanBuilder.load(REAL_WS).build(task)
+            assert isinstance(plan, ActivationPlan), f"{task} 应产出计划，实际 {plan}"
+>           assert plan.versions["ontology"] == AUTHORITY_VERSION
+E           AssertionError: assert 'CTR-SEM-002@...aaaaaaaaaaaaa' == 'CTR-SEM-002@...578d6324abd0c'
+E             
+E             - CTR-SEM-002@sha256:705578d6324abd0c
+E             + CTR-SEM-002@sha256:aaaaaaaaaaaaaaaa
+
+tests/unit/test_ontology_reference.py:117: AssertionError
+________________ test_real_workspace_builds_plan_for_each_task _________________
+
+    def test_real_workspace_builds_plan_for_each_task():
+        for task, (map_id, asset_count, skills) in REAL_TASKS.items():
+            plan = ActivationPlanBuilder.load(REAL_WS).build(task, subject_id="CUST-0001")
+            assert isinstance(plan, ActivationPlan), f"{task} 应产出计划，实际 {plan}"
+            assert HASH_RE.match(plan.plan_hash), plan.plan_hash
+            assert plan.plan_id == plan_id_for(task, plan.plan_hash)
+            assert plan.map_key == f"{map_id}@1.0.0"
+            assert plan.policy_key == "RP-KERT-BANKFRONT-001@1.0.0"
+            assert len(plan.assets) == asset_count, [a.asset_id for a in plan.assets]
+            assert list(plan.skills) == skills
+            assert plan.route_reason, "计划必须携带路由理由"
+            # 预留槽位：不虚构取值
+            assert plan.versions["activationContract"] is None
+            # 本体引用槽位自 M7.3 第三步起填入**真实声明值**（见本文件"本体引用"一节）
+>           assert plan.versions["ontology"] == ONTOLOGY_VERSION_A
+E           AssertionError: assert 'CTR-SEM-002@...aaaaaaaaaaaaa' == 'CTR-SEM-002@...578d6324abd0c'
+E             
+E             - CTR-SEM-002@sha256:705578d6324abd0c
+E             + CTR-SEM-002@sha256:aaaaaaaaaaaaaaaa
+
+tests/unit/test_activation_plan.py:80: AssertionError
+________ test_real_workspace_plan_carries_ontology_version_in_versions _________
+
+    def test_real_workspace_plan_carries_ontology_version_in_versions():
+        """受控工作区：`versions.ontology` 取**真实值**（不再是预留 `None`），且格式与 gits 侧一致。"""
+        plan = ActivationPlanBuilder.load(REAL_WS).build("PRE_VISIT_PREPARATION")
+        assert isinstance(plan, ActivationPlan)
+>       assert plan.versions["ontology"] == ONTOLOGY_VERSION_A
+E       AssertionError: assert 'CTR-SEM-002@...aaaaaaaaaaaaa' == 'CTR-SEM-002@...578d6324abd0c'
+E         
+E         - CTR-SEM-002@sha256:705578d6324abd0c
+E         + CTR-SEM-002@sha256:aaaaaaaaaaaaaaaa
+
+tests/unit/test_activation_plan.py:251: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/test_ontology_reference.py::test_real_workspace_declares_ontology_pin
+FAILED tests/unit/test_ontology_reference.py::test_version_format_matches_gits_golden_expectation
+FAILED tests/unit/test_ontology_reference.py::test_real_workspace_plan_carries_ontology_version
+FAILED tests/unit/test_activation_plan.py::test_real_workspace_builds_plan_for_each_task
+FAILED tests/unit/test_activation_plan.py::test_real_workspace_plan_carries_ontology_version_in_versions
+EXIT=1
+[恢复] ontology_reference.json <- .decl.bak
+
+===== N4-restored PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+
+===== N5-baseline PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+[变异] ontology_reference.json: authorityRepo/authoritySource 改值、**哈希不变**
+
+===== N5-mutated：若出现 FAIL 说明路径**进了** hash（反向对照要求 PASS） =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+F.F......................................................                [100%]
+=================================== FAILURES ===================================
+__________________ test_real_workspace_declares_ontology_pin ___________________
+
+    def test_real_workspace_declares_ontology_pin():
+        """受控 example 工作区的声明必须逐字段等于权威取值（否则后续断言都在测空气）。"""
+        assert reference_path(REAL_WS).is_file(), f"缺少声明文件: {reference_path(REAL_WS)}"
+    
+        ref = load_ontology_reference(REAL_WS)
+        assert isinstance(ref, OntologyReference), "受控工作区必须提供本体引用声明"
+        assert ref.contract_id == AUTHORITY_CONTRACT_ID
+>       assert ref.authority_repo == AUTHORITY_REPO
+E       AssertionError: assert 'some-other-repo' == 'gits-cbanking'
+E         
+E         - gits-cbanking
+E         + some-other-repo
+
+tests/unit/test_ontology_reference.py:96: AssertionError
+______________ test_real_workspace_plan_carries_ontology_version _______________
+
+    def test_real_workspace_plan_carries_ontology_version():
+        """端到端：受控工作区的三张地图都产出**携带本体版本**的计划。"""
+        for task in ("OUTREACH_PREPARATION", "MEETING_PREPARATION", "PRE_VISIT_PREPARATION"):
+            plan = ActivationPlanBuilder.load(REAL_WS).build(task)
+            assert isinstance(plan, ActivationPlan), f"{task} 应产出计划，实际 {plan}"
+            assert plan.versions["ontology"] == AUTHORITY_VERSION
+            assert plan.ontology_key == AUTHORITY_VERSION
+            # 来源路径如实记录，但**不**进 hash
+>           assert plan.ontology_source == f"{AUTHORITY_REPO}:{AUTHORITY_SOURCE}"
+E           AssertionError: assert 'some-other-r...elsewhere.ttl' == 'gits-cbankin...-core.owl.ttl'
+E             
+E             - gits-cbanking:specs/semantic/gits-core.owl.ttl
+E             + some-other-repo:ontology/elsewhere.ttl
+
+tests/unit/test_ontology_reference.py:120: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/test_ontology_reference.py::test_real_workspace_declares_ontology_pin
+FAILED tests/unit/test_ontology_reference.py::test_real_workspace_plan_carries_ontology_version
+EXIT=1
+[恢复] ontology_reference.json <- .decl.bak
+
+===== N5-restored PASS 期望 =====
+$ /usr/bin/python3 -m pytest tests/unit/test_ontology_reference.py tests/unit/test_activation_plan.py -q
+.........................................................                [100%]
+EXIT=0
+
+===== sha256 恢复一致性 =====
+OK  d0947461328da3196f30cc7ff5575c79f9f73308e48d5e4c985f4f406e871462 -> d0947461328da3196f30cc7ff5575c79f9f73308e48d5e4c985f4f406e871462  src/kert/domain/activation_plan.py
+OK  0cd9ebcdac2d4f7a8ba79bfd5db5523d692992a221618698f579b04d69c137d3 -> 0cd9ebcdac2d4f7a8ba79bfd5db5523d692992a221618698f579b04d69c137d3  src/kert/domain/ontology_reference.py
+OK  653f3ac8050f66e45c73b95d818442c3d528e004c18f27c25b5fc97cbddc744e -> 653f3ac8050f66e45c73b95d818442c3d528e004c18f27c25b5fc97cbddc744e  examples/bank-front-knowledge-maps/90_control/schema/ontology_reference.json
+
+===== 变异自证汇总 =====
+OK  N1 baseline                  EXIT=0
+OK  N1 mutated                   EXIT=1
+OK  N1 restored                  EXIT=0
+OK  N2 baseline                  EXIT=0
+OK  N2 mutated                   EXIT=1
+OK  N2 restored                  EXIT=0
+OK  N3 baseline                  EXIT=0
+OK  N3 mutated                   EXIT=1
+OK  N3 restored                  EXIT=0
+OK  N4 baseline                  EXIT=0
+OK  N4 mutated                   EXIT=1
+OK  N4 restored                  EXIT=0
+OK  N5 baseline                  EXIT=0
+BAD N5 mutated(expect PASS)      EXIT=1
+OK  N5 restored                  EXIT=0
+
+ALL_RESULT=FAIL
+临时备份已清理: ['evidence/m7-3/.plan.bak', 'evidence/m7-3/.ont.bak', 'evidence/m7-3/.decl.bak']

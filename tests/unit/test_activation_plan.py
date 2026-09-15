@@ -23,7 +23,8 @@ from kert.domain.activation_plan import (
     replay_matches,
 )
 from kert.domain.knowledge_map import catalog_dir
-from kert.domain.route_policy import POLICY_FILENAME, schema_dir
+from kert.domain.ontology_reference import FILENAME as ONTOLOGY_FILENAME
+from kert.domain.route_policy import POLICY_FILENAME, RouteResolver, schema_dir
 from kert.domain.workspace import init_workspace
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -75,7 +76,8 @@ def test_real_workspace_builds_plan_for_each_task():
         assert plan.route_reason, "计划必须携带路由理由"
         # 预留槽位：不虚构取值
         assert plan.versions["activationContract"] is None
-        assert plan.versions["ontology"] is None
+        # 本体引用槽位自 M7.3 第三步起填入**真实声明值**（见本文件"本体引用"一节）
+        assert plan.versions["ontology"] == ONTOLOGY_VERSION_A
         assert plan.versions["knowledgeMap"] == f"{map_id}@1.0.0"
         assert plan.versions["routePolicy"] == "RP-KERT-BANKFRONT-001@1.0.0"
 
@@ -206,3 +208,199 @@ def test_plan_to_dict_shape_is_stable():
     assert d["schema"] == "activation_plan/v1"
     assert [a["sequence"] for a in d["assets"]] == [1, 2, 3]
     assert d["skills"] == sorted(d["skills"])
+
+
+# --------------------------------------------------------------------------- #
+# M7.3 第三步：本体引用（D-3 入 hash / D-4 fail-closed）
+# --------------------------------------------------------------------------- #
+
+ONTOLOGY_SHA_A = "705578d6324abd0c1bd2bd670e6f3c0ffd8e04c358d0134246c89a3acfc38d00"
+ONTOLOGY_SHA_B = "1111111122222222333333334444444455555555666666667777777788888888"
+ONTOLOGY_VERSION_A = "CTR-SEM-002@sha256:705578d6324abd0c"
+
+ONTOLOGY_TASK = "ONTOLOGY_TEST_TASK"
+ONTOLOGY_MAP = "KM-ONTOLOGY-TEST-0001"
+
+
+def _write_ontology_ws(ws: Path, *, sha256: str = ONTOLOGY_SHA_A,
+                       repo: str = "gits-cbanking",
+                       source: str = "specs/semantic/gits-core.owl.ttl") -> None:
+    """构造最小可放行工作区（地图 + 策略 + 本体引用声明）。"""
+    _write_map(ws, ONTOLOGY_MAP, tasks=[ONTOLOGY_TASK],
+               assets=[{"assetId": "KI-009", "required": True, "sequence": 1},
+                       {"assetId": "KI-010", "required": False, "sequence": 2}],
+               skills=["skill-a"])
+    _write_policy(ws, [{"priority": 10, "taskType": ONTOLOGY_TASK,
+                        "knowledgeMapId": ONTOLOGY_MAP, "reason": "本体相关路由"}])
+    d = schema_dir(ws)
+    d.mkdir(parents=True, exist_ok=True)
+    (d / ONTOLOGY_FILENAME).write_text(json.dumps({
+        "schema": "ontology_reference/v1", "contractId": "CTR-SEM-002",
+        "authorityRepo": repo, "authoritySource": source, "contentSha256": sha256,
+    }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _build(ws: Path):
+    return ActivationPlanBuilder.load(ws).build(ONTOLOGY_TASK, subject_id="CUST-0001")
+
+
+def test_real_workspace_plan_carries_ontology_version_in_versions():
+    """受控工作区：`versions.ontology` 取**真实值**（不再是预留 `None`），且格式与 gits 侧一致。"""
+    plan = ActivationPlanBuilder.load(REAL_WS).build("PRE_VISIT_PREPARATION")
+    assert isinstance(plan, ActivationPlan)
+    assert plan.versions["ontology"] == ONTOLOGY_VERSION_A
+    assert plan.versions["activationContract"] is None  # 仍为预留槽位
+    assert plan.to_dict()["versions"]["ontology"] == ONTOLOGY_VERSION_A
+
+
+def test_ontology_version_enters_plan_hash(tmp_path: Path):
+    """**D-3 主线负例**：只改声明里的哈希 ⇒ plan_hash 必须变；换回 ⇒ 必须回到原值。"""
+    ws = tmp_path / "ws"
+    init_workspace(ws)
+    _write_ontology_ws(ws, sha256=ONTOLOGY_SHA_A)
+    before = _build(ws)
+    assert isinstance(before, ActivationPlan), before
+
+    # 变异：换一个**合法**哈希
+    _write_ontology_ws(ws, sha256=ONTOLOGY_SHA_B)
+    after = _build(ws)
+    assert isinstance(after, ActivationPlan), after
+    assert after.plan_hash != before.plan_hash, "本体版本必须进入 plan hash"
+    assert after.plan_id != before.plan_id
+
+    # 反向对照（防空转）：只改来源路径/仓名，不改哈希 ⇒ plan_hash **必须不变**
+    _write_ontology_ws(ws, sha256=ONTOLOGY_SHA_A,
+                       repo="another-repo", source="docs/ontology/other.ttl")
+    path_only = _build(ws)
+    assert isinstance(path_only, ActivationPlan), path_only
+    assert path_only.plan_hash == before.plan_hash, "来源路径不得进入 plan hash"
+    assert path_only.ontology_source == "another-repo:docs/ontology/other.ttl"
+    assert path_only.plan_hash != after.plan_hash
+
+    # 换回原哈希 ⇒ 可重放
+    _write_ontology_ws(ws, sha256=ONTOLOGY_SHA_A)
+    restored = _build(ws)
+    assert isinstance(restored, ActivationPlan), restored
+    assert replay_matches(before, restored)
+    assert restored.plan_hash == before.plan_hash
+
+
+def test_ontology_version_prefix_is_consistent_with_plan_hash_length():
+    """版本中的哈希前缀与 plan hash 取同一长度口径（16 hex）。"""
+    plan = ActivationPlanBuilder.load(REAL_WS).build("OUTREACH_PREPARATION")
+    assert isinstance(plan, ActivationPlan)
+    prefix = plan.versions["ontology"].split("@sha256:")[1]
+    assert len(prefix) == len(plan.plan_hash) == 16
+
+
+def test_ontology_key_participates_in_canonical_content():
+    """`canonical_content` 显式包含 ontology 行（防空转：不靠"变量没用到"这种隐性行为）。"""
+    base = dict(task_type="T", policy_key="RP-X@1.0.0", map_key="KM-X@1.0.0",
+                assets=(PlanAsset("KI-009", True, 1),), skills=("skill-a",))
+    with_ont = canonical_content(**base, ontology_key=ONTOLOGY_VERSION_A)
+    without_ont = canonical_content(**base)
+    assert "ontology=" in with_ont
+    assert with_ont != without_ont
+    assert canonical_content(**base, ontology_key=ONTOLOGY_VERSION_A) == with_ont
+
+
+def test_denied_when_ontology_declaration_absent(tmp_path: Path):
+    """**D-4 主线负例**：移走/未提供声明文件 ⇒ 计划构建必须 Deny（不是"照常出计划"）。"""
+    ws = tmp_path / "ws"
+    init_workspace(ws)
+    _write_ontology_ws(ws)
+    ok = _build(ws)
+    assert isinstance(ok, ActivationPlan), ok  # 先证明夹具本身能放行（防夹具缺失导致恒真）
+
+    # 变异：移走声明文件
+    (schema_dir(ws) / ONTOLOGY_FILENAME).unlink()
+    denied = _build(ws)
+    assert isinstance(denied, PlanDenial), "声明缺失时不得照常出计划"
+    assert denied.allowed is False
+    assert denied.code == "ONTOLOGY_REFERENCE_ABSENT"
+
+    # 恢复 ⇒ 回到可放行且 hash 一致
+    _write_ontology_ws(ws)
+    restored = _build(ws)
+    assert isinstance(restored, ActivationPlan), restored
+    assert restored.plan_hash == ok.plan_hash
+
+
+def test_denied_when_ontology_declaration_invalid(tmp_path: Path):
+    """声明非法（大写哈希 / 未知字段 / 绝对路径 / 前缀不符）⇒ `ONTOLOGY_REFERENCE_INVALID`。"""
+    for bad in (
+        {"contentSha256": ONTOLOGY_SHA_A.upper()},
+        {"contractId": "SEM-002"},
+        {"authoritySource": "/abs/specs/gits-core.owl.ttl"},
+        {"authoritySource": "../other-repo/gits-core.owl.ttl"},
+        {"authorityRepo": "gits/repo"},
+        {"bogus": 1},
+    ):
+        ws = tmp_path / "ws"
+        init_workspace(ws)
+        _write_ontology_ws(ws)
+        doc = json.loads((schema_dir(ws) / ONTOLOGY_FILENAME).read_text(encoding="utf-8"))
+        doc.update(bad)
+        (schema_dir(ws) / ONTOLOGY_FILENAME).write_text(
+            json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        denied = _build(ws)
+        assert isinstance(denied, PlanDenial), f"{bad} 应导致拒绝"
+        assert denied.code == "ONTOLOGY_REFERENCE_INVALID", f"{bad} ⇒ {denied.code}"
+
+
+def test_ontology_denial_codes_are_distinct_from_route_codes(tmp_path: Path):
+    """本体拒绝码**不复用**路由既有码（D-4 明确要求）。"""
+    ws = tmp_path / "ws"
+    init_workspace(ws)
+    _write_ontology_ws(ws)
+    (schema_dir(ws) / ONTOLOGY_FILENAME).unlink()
+    denied = _build(ws)
+    assert isinstance(denied, PlanDenial)
+    assert denied.code not in {"ROUTE_POLICY_ABSENT", "ROUTE_NOT_MAPPED", "ROUTE_AMBIGUOUS",
+                               "ROUTE_MAP_UNKNOWN", "ROUTE_MAP_POLICY_MISMATCH"}
+
+
+def test_route_denial_takes_precedence_over_ontology(tmp_path: Path):
+    """门禁顺序：路由先裁决 ⇒ 路由被拒时**不**因本体缺失而改变归因（默认拒绝归因正确）。"""
+    ws = tmp_path / "ws"
+    init_workspace(ws)
+    _write_ontology_ws(ws)
+    (schema_dir(ws) / ONTOLOGY_FILENAME).unlink()
+    denied = ActivationPlanBuilder.load(ws).build("UNMAPPED_TASK")
+    assert isinstance(denied, PlanDenial)
+    assert denied.code == "ROUTE_NOT_MAPPED", denied.code
+
+
+def test_denied_when_builder_has_no_workspace():
+    """未绑定工作区 ⇒ 读不到声明 ⇒ 拒绝（fail-closed 默认值，不静默放行）。"""
+    denied = ActivationPlanBuilder(RouteResolver.load(REAL_WS)).build("PRE_VISIT_PREPARATION")
+    assert isinstance(denied, PlanDenial)
+    assert denied.code == "ONTOLOGY_REFERENCE_ABSENT"
+
+
+def test_ontology_source_path_not_in_canonical_content():
+    """**逐行**校验：canonical content 不得含来源仓名 / 仓内路径 / 绝对路径。"""
+    plan = ActivationPlanBuilder.load(REAL_WS).build("PRE_VISIT_PREPARATION")
+    assert isinstance(plan, ActivationPlan)
+    content = canonical_content(task_type=plan.task_type, policy_key=plan.policy_key,
+                                map_key=plan.map_key, assets=plan.assets, skills=plan.skills,
+                                ontology_key=plan.ontology_key)
+    assert "specs/semantic" not in content
+    assert "gits-cbanking" not in content
+    assert str(REPO_ROOT) not in content
+    assert str(REAL_WS) not in content
+    for line in content.splitlines():
+        _, _, value = line.partition("=")
+        assert not value.startswith("/"), f"疑似环境路径进入 hash 输入: {line}"
+
+
+def test_plan_hash_is_sensitive_to_ontology_key():
+    """反空转：直接对 `compute_plan_hash` 施加本体版本变化（不依赖文件系统）。"""
+    base = dict(task_type="T", policy_key="RP-X@1.0.0", map_key="KM-X@1.0.0",
+                assets=(PlanAsset("KI-009", True, 1),), skills=("skill-a",))
+    h_a = compute_plan_hash(**base, ontology_key=ONTOLOGY_VERSION_A)
+    h_none = compute_plan_hash(**base)
+    h_b = compute_plan_hash(**base, ontology_key="CTR-SEM-002@sha256:1111111122222222")
+    assert len({h_a, h_none, h_b}) == 3
+    assert compute_plan_hash(**base, ontology_key=ONTOLOGY_VERSION_A) == h_a
