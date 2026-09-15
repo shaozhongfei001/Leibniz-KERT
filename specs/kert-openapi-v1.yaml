@@ -7,9 +7,13 @@ info:
     - v1.3 基线：单客户技能执行、健康检查、报告查看
     - v1.4 增量：SP-20 服务建议书（异步）、SP-21 交互记忆抽取、闸门协作端点
     - v1.5 增量：知识路由与激活计划（知识地图注册查询 / 路由裁决 / 可重放计划），**纯新增**
+    - v1.5 修正：`assemblyTrace` 类型 `object` → `array`（合同长期与实现不符，已改正）
 
     权威契约：`docs/skill-execute-api-contract-v1.4.md`
-    v1.5 增量说明：`evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md`（TL 提案，待 Contract Owner 追认）
+    v1.5 变更说明：`evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md`
+    **追认：Contract Owner 于 2026-09-15 批准**（含上述 assemblyTrace 类型修正）；
+    登记：`docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md` §0.1
+    本文档为**运行中权威**（服务实际实现）；v2 候选未批准，归并列 W8/Phase 0 收口（冲突 C-20）
   version: "1.5.0"
   contact:
     name: KERT Team
@@ -703,9 +707,16 @@ components:
           items:
             $ref: "#/components/schemas/ErrorDetail"
         assemblyTrace:
-          type: object
-          description: 知识装配追踪
-          additionalProperties: true
+          type: array
+          description: |
+            知识装配追踪。**每项**为 ``AssemblyTraceStep``；字段（含 ``phase``/``status``
+            词表与 ``kiId``/``errorCode``/``mapId``/``planHash`` 等）的权威定义见
+            ``docs/contracts/schemas/assembly-trace.schema.json``，本处不复写。
+            修正记录：v1.5 前本字段误写为 ``type: object``，与实现返回的数组不符
+            （Contract Owner 于 2026-09-15 批准修正）。
+          items:
+            type: object
+            additionalProperties: true
         modelCalls:
           type: array
           description: 模型调用记录

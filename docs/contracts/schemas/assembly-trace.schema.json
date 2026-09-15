@@ -63,6 +63,32 @@
     "errorCode": {
       "type": "string"
     },
+    "mapId": {
+      "type": "string",
+      "description": "v1.5：解析出的知识地图 ID（技能路由 trace）"
+    },
+    "mapExpected": {
+      "type": "string",
+      "description": "v1.5：该技能自身 KI 清单对应的知识地图 ID（失配时与 mapId 不同）"
+    },
+    "mapMismatch": {
+      "type": "boolean",
+      "description": "v1.5：计划所选地图 ≠ 技能组装知识条目所用地图 ⇒ true（分歧必须可见）"
+    },
+    "planHash": {
+      "type": "string",
+      "description": "v1.5：可重放激活计划哈希（与 /v1/routing/plan 同源同值）"
+    },
+    "versions": {
+      "type": "object",
+      "description": "v1.5：版本快照（knowledgeMap / routePolicy / ontology / activationContract）",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
     "redactedMessage": {
       "type": "string"
     },

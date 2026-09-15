@@ -44,6 +44,30 @@ NOT_A_SIGN_OFF  = 本登记**不是**基线签署、**不是**规格修订、**�
 
 ---
 
+## 0.1 Contract Owner 追认登记（2026-09-15）
+
+```text
+RATIFIED_BY     = Contract Owner（人类；本次会话明示"我作为 Contract Owner 同意全部按你的建议执行"）
+RATIFIED_AT     = 2026-09-15
+SCOPE           = ① 追认 specs/kert-openapi-v1.yaml 的 v1.5 additive 增量（M7.3 ④ 知识路由 API）
+                  ② 批准 assemblyTrace 类型修正（object → array）
+                  ③ 批准将 v1↔v2 双权威归并**列入** W8/Phase 0 收口（**≠ 立即归并**）
+NOT_A_SIGN_OFF  = 不是基线签署、不是规格修订、不构成生产就绪声明；
+                  不改变 PRODUCTION_RELEASE_GATE=BLOCKED；不代表 GITS UAT 通过
+```
+
+| 追认项 | 结论 | 落地位置（证据） |
+|---|---|---|
+| v1.5 additive 增量（`Routing` tag / 3 路径 / 8 schema） | **追认** | `specs/kert-openapi-v1.yaml`（`version 1.5.0`）；提案 `evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md`；实现与验证 `evidence/m7-3/EVIDENCE-ROUTING-API.md` |
+| `assemblyTrace` 类型失实（`object` → `array`） | **批准修正** | `specs/kert-openapi-v1.yaml`（`SkillExecuteResponse.assemblyTrace`）；canonical schema `docs/contracts/schemas/assembly-trace.schema.json` 同步补 v1.5 字段；机械核对用例 `tests/integration/test_skill_routing_trace.py` |
+| v1↔v2 双权威归并 | **批准列入 W8/Phase 0 收口**（本轮**未**执行归并） | `docs/governance/KERT_DOCUMENT_CONFLICT_REGISTER.md` **C-20**；`docs/contracts/README.md` 权威声明修正 |
+
+> ⚠ **本追认不消除 v1↔v2 双权威现状**：归并本身仍是**未开工**事项（见冲突 C-20）。
+> 归并完成前，**运行中权威**是 `specs/kert-openapi-v1.yaml`（服务实际实现），
+> `docs/contracts/openapi/kert-openapi-v2.yaml` 仍为**未批准候选**。
+
+---
+
 ## 0. 只读清点结果（每项均有代码/文档证据）
 
 | 指令要求的能力 | 仓内权威对应 | 现状（有证据） |

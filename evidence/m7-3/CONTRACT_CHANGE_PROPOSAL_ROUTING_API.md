@@ -5,7 +5,9 @@ PROPOSAL_ID : M7-3-4-CONTRACT-ROUTING-API
 ISSUED_BY   : Tech Lead
 ISSUED_AT   : 2026-09-15
 TARGET      : specs/kert-openapi-v1.yaml
-STATUS      : TL 提案；**已按本提案先行推进实现**（additive），**待 Contract Owner 追认**
+STATUS      : **已由 Contract Owner 追认（2026-09-15）**
+              （追认范围含 §1 全部 additive 增量 + `assemblyTrace` 类型修正；
+               登记见 docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md §0.1）
 AUTHORITY   : docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md §0（D1-A）
               独立评审 §4.7（KnowledgeMapRegistry / RoutePolicy / ActivationPlan + 版本合同）
 ```

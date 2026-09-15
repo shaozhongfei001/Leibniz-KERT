@@ -61,11 +61,19 @@ ENV       : python3 3.10.12；ruff 0.16.4（= ci.yml:49）
    - ⚠ **遗留缺口**：早退场景下无法从 trace 回答"本技能本该用哪张地图"。
      若要补齐，需把路由 trace 提到门禁之前 —— 属**独立议题**，本步未做。
 
-## 6. 附带发现：合同对 `assemblyTrace` 的类型**失实**（未改，待处置）
+## 6. 附带发现：合同对 `assemblyTrace` 的类型**失实**（**已获批准并修正**）
 
-`specs/kert-openapi-v1.yaml:705` 声明 `assemblyTrace: type: object`，但实现
-（`SkillExecuteResult.assembly_trace`）返回**数组**。**本次未修改合同**（超出本步授权），
-建议 Contract Owner 一行修正：`type: array` + `items: {type: object, additionalProperties: true}`。
+`specs/kert-openapi-v1.yaml` 原声明 `assemblyTrace: type: object`，但实现
+（`SkillExecuteResult.assembly_trace`）返回**数组**。Contract Owner 于 **2026-09-15 批准修正**，
+已落地：
+
+- 合同改为 `type: array` + `items`（并按 `$ref` 语义指向 canonical schema，不复写字段）；
+- canonical schema `docs/contracts/schemas/assembly-trace.schema.json` 补入 v1.5 新字段
+  （`mapId`/`mapExpected`/`mapMismatch`/`planHash`/`versions`）；
+- 实现字段名由自造的 `code` **对齐到 canonical 的 `errorCode`**（避免同义重复字段）；
+- 新增**机械核对**用例：实现产出的 ok/blocked 两类 trace 条目须通过 canonical schema 校验
+  （`test_emitted_trace_entries_conform_to_canonical_schema`），并用例钉住合同为数组
+  （`test_spec_assembly_trace_is_array_not_object`）。
 
 ## 7. 非声明
 

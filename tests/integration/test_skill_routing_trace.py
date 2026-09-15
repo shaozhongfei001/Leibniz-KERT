@@ -11,6 +11,8 @@ import json
 import sys
 from pathlib import Path
 
+import jsonschema
+import yaml
 from fastapi.testclient import TestClient
 
 SRC = Path(__file__).resolve().parents[2] / "src"
@@ -30,7 +32,7 @@ _ONTOLOGY_VERSION = "CTR-SEM-002@sha256:705578d6324abd0c"
 def _route_entry(trace: list[dict]) -> dict:
     """trace 中的路由步骤：成功项带 ``mapId``，被拒项带路由类拒绝码。"""
     for t in trace:
-        if "mapId" in t or str(t.get("code", "")).startswith(
+        if "mapId" in t or str(t.get("errorCode", "")).startswith(
                 ("ROUTE_", "KNOWLEDGE_MAP_", "ONTOLOGY_REFERENCE_")):
             return t
     raise AssertionError(f"trace 中未找到路由步骤：{trace}")
@@ -47,7 +49,7 @@ def test_unprovisioned_workspace_records_blocked_but_skill_still_runs(ws):
     assert r.status == "ok", (r.status, r.errors)      # 行为不变
     e = _route_entry(r.assembly_trace)
     assert e["status"] == "blocked"
-    assert e["code"] == "ROUTE_POLICY_ABSENT"
+    assert e["errorCode"] == "ROUTE_POLICY_ABSENT"
     # 不回落硬编码：被拒时**不得**出现那张地图的名字
     assert "KM-CORP-RM-OUTREACH" not in json.dumps(e, ensure_ascii=False)
 
@@ -118,7 +120,7 @@ def test_route_trace_absent_when_blocked_before_routing(ws):
     r = svc.execute("skill-customer-previsit-report", "rt-4b", OUTREACH_REQ)  # 无 evidenceTimestamp
 
     assert r.status == "exit_policy_no_new_evidence"
-    assert not any("mapId" in t or str(t.get("code", "")).startswith("ROUTE_")
+    assert not any("mapId" in t or str(t.get("errorCode", "")).startswith("ROUTE_")
                    for t in r.assembly_trace)
 
 
@@ -178,7 +180,7 @@ def test_ontology_denial_code_is_passed_through(ws):
     assert r.status == "ok"
     e = _route_entry(r.assembly_trace)
     assert e["status"] == "blocked"
-    assert e["code"] == "ONTOLOGY_REFERENCE_INVALID"
+    assert e["errorCode"] == "ONTOLOGY_REFERENCE_INVALID"
 
 
 # --------------------------------------------------------------------------- #
@@ -193,5 +195,57 @@ def test_no_workspace_records_unresolved():
     assert len(trace) == 1
     assert trace[0]["phase"] == "evidence"
     assert trace[0]["status"] == "blocked"
-    assert trace[0]["code"] == "ROUTE_UNRESOLVED"
+    assert trace[0]["errorCode"] == "ROUTE_UNRESOLVED"
     assert "工作区未配置" in trace[0]["message"]
+
+
+# --------------------------------------------------------------------------- #
+# 合同 ↔ 实现机械核对（Contract Owner 2026-09-15 批准的修正项）
+# --------------------------------------------------------------------------- #
+
+ROOT = Path(__file__).resolve().parents[2]
+TRACE_SCHEMA = ROOT / "docs" / "contracts" / "schemas" / "assembly-trace.schema.json"
+V1_SPEC = ROOT / "specs" / "kert-openapi-v1.yaml"
+
+
+def test_spec_assembly_trace_is_array_not_object():
+    """v1.5 修正：合同须声明 ``assemblyTrace`` 为**数组**（实现返回 list）。
+
+    修正前合同写 ``type: object``，与实现长期不符 —— 本用例把修正钉住，防回归。
+    """
+    spec = yaml.safe_load(V1_SPEC.read_text(encoding="utf-8"))
+    holders = {
+        name: schema["properties"]["assemblyTrace"]
+        for name, schema in spec["components"]["schemas"].items()
+        if isinstance(schema, dict) and "assemblyTrace" in (schema.get("properties") or {})
+    }
+    assert holders, "合同中未声明 assemblyTrace"
+    for name, node in holders.items():
+        assert node["type"] == "array", (name, node)
+        assert node["items"]["type"] == "object", (name, node)
+
+
+def test_emitted_trace_entries_conform_to_canonical_schema(ws):
+    """实现产出的 trace 条目必须通过 canonical schema（真实校验，非形状近似）。
+
+    覆盖 **ok** 与 **blocked** 两种路由条目：词表（``phase``/``status`` 枚举）、
+    必填字段（``message``）与新字段类型（``mapMismatch`` 布尔、``versions`` 值类型）
+    任一不符即失败。
+    """
+    schema = json.loads(TRACE_SCHEMA.read_text(encoding="utf-8"))
+    jsonschema.Draft202012Validator.check_schema(schema)
+    validator = jsonschema.Draft202012Validator(schema)
+
+    provision_control_plane(ws, SOURCE)
+    svc = SkillExecutionService(ws)
+    ok_entry = _route_entry(svc.execute("skill-customer-outreach-script", "rt-c9a",
+                                        OUTREACH_REQ).assembly_trace)
+    assert ok_entry["status"] == "ok"
+    validator.validate(ok_entry)
+
+    # 撤掉策略 ⇒ 造出 blocked 条目
+    (ws / "90_control" / "schema" / "route_policy.json").unlink()
+    blocked = _route_entry(SkillExecutionService(ws).execute(
+        "skill-customer-outreach-script", "rt-c9b", OUTREACH_REQ).assembly_trace)
+    assert blocked["status"] == "blocked"
+    validator.validate(blocked)

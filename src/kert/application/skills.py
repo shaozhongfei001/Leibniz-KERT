@@ -647,19 +647,19 @@ class SkillExecutionService:
         """
         if self.workspace is None:
             trace.append({"phase": "evidence", "status": "blocked",
-                          "code": "ROUTE_UNRESOLVED",
+                          "errorCode": "ROUTE_UNRESOLVED",
                           "message": f"未解析知识地图（{task}）：工作区未配置"})
             return
         try:
             decision = ActivationPlanBuilder.load(self.workspace).build(task)
         except Exception as exc:  # noqa: BLE001 —— 解析失败不得中断技能执行
             trace.append({"phase": "evidence", "status": "blocked",
-                          "code": "ROUTE_UNRESOLVED",
+                          "errorCode": "ROUTE_UNRESOLVED",
                           "message": f"未解析知识地图（{task}）：{exc}"})
             return
         if isinstance(decision, PlanDenial):
             trace.append({"phase": "evidence", "status": "blocked",
-                          "code": decision.code,
+                          "errorCode": decision.code,
                           "message": f"知识地图未获准（{task}）：{decision.code}——{decision.reason}"})
             return
 
