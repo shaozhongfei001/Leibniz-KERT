@@ -70,6 +70,9 @@ def check_shape(spec: dict, schema: dict, value, path: str) -> int:
         for sub in schema["allOf"]:
             checked += check_shape(spec, sub, value, path)
         return checked
+    if "oneOf" in schema:  # 析取：至少一支必须匹配（如实记录形态并存的情形）
+        _, checked = check_shape_any(spec, schema, value, path)
+        return checked
 
     if isinstance(value, dict):
         props = schema.get("properties") or {}
@@ -93,6 +96,23 @@ def check_shape(spec: dict, schema: dict, value, path: str) -> int:
         for idx, item in enumerate(value):
             checked += check_shape(spec, schema["items"], item, f"{path}[{idx}]")
     return checked
+
+
+def check_shape_any(spec: dict, schema: dict, value, path: str) -> tuple[int, int]:
+    """`oneOf` 析取核对：至少一支通过。
+
+    Returns:
+        (命中分支下标, 该分支已核对键数)；全不匹配时抛 AssertionError 并列出各支失败原因。
+    """
+    failures = []
+    for idx, branch in enumerate(schema["oneOf"]):
+        try:
+            return idx, check_shape(spec, branch, value, path)
+        except AssertionError as exc:  # noqa: PERF203 - 分支少，可读性优先
+            label = branch.get("$ref", "<inline>") if isinstance(branch, dict) else branch
+            failures.append(f"    branch[{idx}] {label}: {exc}")
+    raise AssertionError(
+        f"{path}: oneOf 无任何分支匹配实际形状：\n" + "\n".join(failures))
 
 
 @pytest.fixture(scope="module")
@@ -246,3 +266,167 @@ def test_job_not_found_404_shape_matches_contract(spec, client):
     assert checked >= 4, checked
     assert body["detail"]["error"]["code"] == "ASSET_NOT_FOUND"
     assert body["detail"]["error"]["retryable"] is False
+
+
+# --------------------------------------------------------------------------- #
+# ⑧ 健康接口（F7）
+# --------------------------------------------------------------------------- #
+
+def test_skill_health_shape_matches_contract(spec, client):
+    """`/api/skill/health` 必须声明实现真正返回的全部键（`service` 与 `skills[].version`）。
+
+    修正依据：`src/kert/api/server.py:612-617` 返回字典字面量
+    `{"status", "service", "skills:[{skillId,name,version}]}`；
+    原合同漏声明 `service` 与 `skills[].version`（三条断言方向中的"实现发了合同没声明的"）。
+    """
+    ref = _ref_of(spec, "/api/skill/health", "get", "200")
+    assert ref == "SkillHealthResponse"
+    body = client.get("/api/skill/health").json()
+
+    checked = check_shape(spec, _schemas(spec)[ref], body, ref)
+    assert checked >= 4, checked
+    assert body["service"] == "customer-engagement"  # 写死值，见 C-14
+    for item in body["skills"]:
+        checked += check_shape(spec, _schemas(spec)["SkillBriefInfo"], item,
+                               "SkillBriefInfo")
+    assert checked >= 5 + 3 * len(body["skills"]), checked
+    assert body["skills"] and all(s["version"] for s in body["skills"])
+
+
+# --------------------------------------------------------------------------- #
+# ⑥ 错误信封族 · Part A（合同如实化）
+# --------------------------------------------------------------------------- #
+
+def test_execute_has_no_400_and_422_matches_contract(spec, client):
+    """`/api/skill/execute` **没有 400 路径**；参数错误实测为 422 + FastAPI 校验体。
+
+    修正依据：该路由无 `try/except`（`src/kert/api/server.py:619-643`），
+    请求体校验由 Pydantic 直接完成并返回 422。
+    """
+    responses = spec["paths"]["/api/skill/execute"]["post"]["responses"]
+    assert "400" not in responses, "400 实测不可达，不得再声明"
+    ref = _ref_of(spec, "/api/skill/execute", "post", "422")
+    assert ref == "ValidationErrorResponse"
+
+    r = client.post("/api/skill/execute", json={})
+    assert r.status_code == 422
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)[ref], body, ref)
+    assert checked >= 4, checked
+    assert body["detail"][0]["loc"] == ["body", "skillId"]
+    # 不得再是旧声明的 ErrorResponse 形状
+    assert "errors" not in body and "requestId" not in body
+
+
+def test_report_404_shape_matches_contract(spec, client):
+    """`/api/skill/report/{requestId}` 的 404 实测为 `{"detail": "<字符串>"}`。
+
+    修正依据：`src/kert/api/server.py:653-657` 用 `HTTPException(detail=str)` 抛出。
+    """
+    ref = _ref_of(spec, "/api/skill/report/{requestId}", "get", "404")
+    assert ref == "StringDetailErrorResponse"
+    r = client.get("/api/skill/report/no-such-request-id")
+    assert r.status_code == 404
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)[ref], body, ref)
+    assert checked >= 1, checked
+    assert set(body) == {"detail"}, sorted(body)
+    assert isinstance(body["detail"], str) and body["detail"]
+
+
+def _force_map_load_failure(monkeypatch, exc_factory) -> None:
+    """让 `KnowledgeMapRegistry.load` 抛出指定异常（只用于测试，不动实现）。"""
+    from kert.domain.knowledge_map import KnowledgeMapRegistry
+
+    def _boom(_ws):
+        raise exc_factory()
+
+    monkeypatch.setattr(KnowledgeMapRegistry, "load", staticmethod(_boom))
+
+
+def test_knowledge_maps_error_shapes_match_contract(spec, ws, monkeypatch):
+    """`/v1/knowledge-maps` 的 422/500 如实化：领域异常 = `detail` 包装；未捕获 = 信封。
+
+    修正依据：路由 `except KERTException → _handle()`（`src/kert/api/server.py:700-704`）
+    给出 `{"detail":{"error":{...}}}`；未捕获异常走 app 级处理器给出 `ErrorResponse` 信封。
+    两种 500 形态并存 ⇒ 合同用 `oneOf` 如实声明，本用例**分别命中两支**（防空转）。
+    """
+    from kert.domain.errors import KERTException, SchemaValidationError
+
+    resp500 = spec["paths"]["/v1/knowledge-maps"]["get"]["responses"]["500"]
+    schema500 = resp500["content"]["application/json"]["schema"]
+    assert "oneOf" in schema500, (
+        "500 实测两种形状并存，合同必须用 oneOf 如实声明（不得只声明一支）")
+    assert [b["$ref"].rsplit("/", 1)[1] for b in schema500["oneOf"]] == [
+        "InfrastructureErrorResponse", "ErrorResponse"]  # 声明必须两支都在
+
+    app = create_app(ws)
+    client = TestClient(app, raise_server_exceptions=False)
+
+    # ① 领域异常（422）⇒ InfrastructureErrorResponse
+    ref422 = _ref_of(spec, "/v1/knowledge-maps", "get", "422")
+    assert ref422 == "InfrastructureErrorResponse"
+    _force_map_load_failure(monkeypatch, lambda: SchemaValidationError("控制面地图定义非法"))
+    r = client.get("/v1/knowledge-maps")
+    assert r.status_code == 422
+    checked = check_shape(spec, _schemas(spec)[ref422], r.json(), ref422)
+    assert checked >= 4, checked
+
+    # ② 领域异常（500）⇒ oneOf branch[0]
+    _force_map_load_failure(
+        monkeypatch, lambda: KERTException("boom", error_code="INTERNAL_ERROR"))
+    r = client.get("/v1/knowledge-maps")
+    assert r.status_code == 500
+    branch, checked = check_shape_any(spec, schema500, r.json(), "knowledge-maps.500")
+    assert branch == 0, f"领域异常的 500 应命中 detail 包装分支，实为 branch[{branch}]"
+    assert checked >= 4, checked
+
+    # ③ 未捕获异常（500）⇒ oneOf branch[1]
+    _force_map_load_failure(monkeypatch, lambda: RuntimeError("boom"))
+    r = client.get("/v1/knowledge-maps")
+    assert r.status_code == 500
+    branch, checked = check_shape_any(spec, schema500, r.json(), "knowledge-maps.500")
+    assert branch == 1, branch
+    assert checked >= 3, checked
+
+
+# --------------------------------------------------------------------------- #
+# ⑦ 错误信封族 · Part B（实现补齐：未捕获异常 ⇒ 合同声明的 ErrorResponse 信封）
+# --------------------------------------------------------------------------- #
+
+#: 金丝雀串：若 500 响应体出现它，说明异常内容被回显（安全缺陷）。
+LEAK_CANARY = "SECRET-CANARY-2f9c1d"
+
+
+def test_unhandled_exception_returns_error_envelope(spec, ws, monkeypatch):
+    """未捕获异常必须返回合同声明的 `ErrorResponse` 信封，且**不得**回显异常内容。
+
+    修正依据：`/api/skill/execute` 的 `500` 声明为 `ErrorResponse`
+    （`requestId`/`status`/`errors[]`）；实现此前落到 FastAPI 默认 500（纯文本）。
+    app 级处理器见 `src/kert/api/server.py` 的 `_unhandled_exception`。
+    变异自证：移除该处理器 ⇒ 本用例 FAIL（退化为纯文本 500）。
+    """
+    app = create_app(ws)
+    service = app.state.skill_service
+
+    def _boom(*_args, **_kwargs):
+        raise RuntimeError(LEAK_CANARY)
+
+    monkeypatch.setattr(service, "execute", _boom)
+    client = TestClient(app, raise_server_exceptions=False)
+
+    r = client.post("/api/skill/execute",
+                    json={"skillId": "SP-20", "requestId": "boom-1", "request": {}})
+    assert r.status_code == 500
+    assert "application/json" in r.headers.get("content-type", ""), r.headers
+    body = r.json()
+
+    checked = check_shape(spec, _schemas(spec)["ErrorResponse"], body, "ErrorResponse")
+    assert checked >= 3, checked
+    assert body["status"] == "skill_error"
+    assert body["errors"][0]["code"] == "INTERNAL_ERROR"
+    assert body["requestId"], "500 必须回传 requestId 以便与日志关联"
+
+    # (b) 安全口径：只给通用文案，不得回显异常类名或异常内容
+    assert LEAK_CANARY not in r.text, "500 响应体泄漏了异常内容"
+    assert "RuntimeError" not in r.text, "500 响应体泄漏了异常类名"

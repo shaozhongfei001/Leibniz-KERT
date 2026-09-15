@@ -36,7 +36,7 @@ def client() -> TestClient:
 
 def test_spec_declares_the_three_paths_and_schemas():
     spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
-    assert spec["info"]["version"] == "1.5.0"
+    assert spec["info"]["version"] == "1.5.1"
     for path in ("/v1/knowledge-maps", "/v1/knowledge-maps/{mapId}", "/v1/routing/plan"):
         assert path in spec["paths"], path
     schemas = spec["components"]["schemas"]

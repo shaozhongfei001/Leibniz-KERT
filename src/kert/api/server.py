@@ -27,7 +27,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi import Response as FastApiResponse
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from ..application import report as report_mod
@@ -44,6 +44,7 @@ from ..infrastructure.observability import (
     get_metrics_registry,
     get_tracer,
     log_event,
+    new_request_id,
     otel_available,
     prometheus_client_available,
 )
@@ -54,6 +55,7 @@ from ..infrastructure.runtime_config import (
 )
 from ..infrastructure.runtime_store import RuntimeStore
 from .middleware import (
+    STATE_REQUEST_ID,
     ApiKeyAuthMiddleware,
     ConcurrencyLimitMiddleware,
     ObservabilityMiddleware,
@@ -314,6 +316,32 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         return HTTPException(status_code=500,
                              detail={"error": {"code": "INTERNAL_ERROR",
                                                "message": str(exc)}})
+
+    @app.exception_handler(Exception)
+    async def _unhandled_exception(request: Request, exc: Exception) -> JSONResponse:
+        """未捕获异常 ⇒ 合同声明的 `ErrorResponse` 信封（HTTP 500）。
+
+        修正记录（2026-09-16，Contract Owner 授权；对应失实项 F4c）：
+        此前未捕获异常落到 FastAPI 默认 500（**纯文本** `Internal Server Error`），
+        与 `specs/kert-openapi-v1.yaml` 中 `/api/skill/execute` 的 `500` 声明
+        （`ErrorResponse` 信封：`requestId`/`status`/`errors[]`）不符。
+        本处理器使**实际响应**与合同一致（只影响 5xx 兜底路径，2xx 与中间件行为不变）。
+
+        安全口径：响应体**只**给通用 `INTERNAL_ERROR` 消息，**不回显** `str(exc)`
+        （异常细节仅进服务端日志）；回传 `requestId` 供排障关联。
+        登记：`evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md`；用例
+        `tests/integration/test_contract_shape_conformance.py`。
+        """
+        request_id = (getattr(request.state, STATE_REQUEST_ID, None)
+                      or new_request_id())
+        _log.error("未捕获异常已转为 ErrorResponse 信封：request_id=%s method=%s path=%s",
+                   request_id, request.method, request.url.path,
+                   exc_info=(type(exc), exc, exc.__traceback__))
+        return JSONResponse(status_code=500, content={
+            "requestId": request_id,
+            "status": "skill_error",
+            "errors": [{"code": "INTERNAL_ERROR", "message": "内部错误"}],
+        })
 
     @app.get("/livez")
     def livez():

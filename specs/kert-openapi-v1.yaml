@@ -21,13 +21,31 @@ info:
       仍待后续批次（本轮未做）：`/api/skill/execute` 的 `400`/`500` 声明、
       `/api/skill/report` 的 404 体、`/v1/knowledge-maps` 的 `422`/`500` 体均未按实测核对；
       `OpenAPI` 方言（3.0.3 vs 校验器要求的 3.1.0）与 8 处 `nullable` 亦未处理（归并 P2 验收条件）。
+      另记一条**观察（不在本合同范围、本批不修）**：`_handle()` 对**非** `KERTException`
+      的兜底分支会把 `str(exc)` 放进 `detail.error.message`（`src/kert/api/server.py:308-316`），
+      与新增的未捕获异常处理器（只给通用 `INTERNAL_ERROR`）**口径不一致**，存在内部信息外泄面；
+      列为后续议题（需另立批次，涉及 `_handle()` 全量调用点的行为变更）。
+    - **v1.5.1 补丁（2026-09-16，更正性，非语义增量）**：
+      Contract Owner 于 2026-09-15 追认的对象是 **`1.5.0` 的 additive 增量**
+      （`docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md` §0.1）；
+      其后本文件被更正两次（`assemblyTrace` 类型：commit `62b967a`；形状更正：commit `f7749af`）
+      ⇒ 同一版本号承载了两份内容，会让"追认"失去确切对象。故 bump 至 `1.5.1`：
+      **追认覆盖 v1.5 的 additive 增量，本补丁为形状/错误响应更正**，不含新增能力。
+      本补丁内容：① `/api/skill/execute` 的 `400`（**实测不可达**）→ `422` + `ValidationErrorResponse`；
+      ② `/api/skill/report/{requestId}` 的 `404` 如实化（新增 `StringDetailErrorResponse`）；
+      ③ `/v1/knowledge-maps` 的 `422`/`500` 如实化；
+      ④ 新增 app 级异常处理器，使**未捕获异常**返回本合同声明的 `ErrorResponse` 信封（F4c，实现侧改动）；
+      ⑤ `SkillHealthResponse` / `SkillBriefInfo` 按实测补齐 `service` 与 `skills[].version`（F7）。
+      另：`/v1/*` 下 **9 条已实现但未登记**的路径属 **additive 扩展**（非形状更正），
+      不并入本补丁，另出提案待 Contract Owner 追认：
+      `evidence/m7-3/PROPOSAL_REGISTER_UNDECLARED_V1_PATHS.md`。
 
     权威契约：`docs/skill-execute-api-contract-v1.4.md`
     v1.5 变更说明：`evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md`
     **追认：Contract Owner 于 2026-09-15 批准**（含上述 assemblyTrace 类型修正）；
     登记：`docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md` §0.1
     本文档为**运行中权威**（服务实际实现）；v2 候选未批准，归并列 W8/Phase 0 收口（冲突 C-20）
-  version: "1.5.0"
+  version: "1.5.1"
   contact:
     name: KERT Team
   license:
@@ -97,13 +115,17 @@ paths:
                 $ref: "#/components/schemas/SkillHealthResponse"
               example:
                 status: ok
+                service: customer-engagement
                 skills:
                   - skillId: R1
                     name: 对公客户画像
+                    version: "1.0.0"
                   - skillId: SP-20
                     name: 对公客户服务建议书生成
+                    version: "1.0.0"
                   - skillId: SP-21
                     name: 交互记忆抽取
+                    version: "1.0.0"
 
   /v1/skills:
     get:
@@ -208,18 +230,30 @@ paths:
               example:
                 jobId: JOB-SKILL-20260828-001
                 status: PENDING
-        "400":
-          description: 请求参数错误
+        "422":
+          description: |
+            请求体校验失败（FastAPI / Pydantic）。**本端点没有 `400` 路径**：
+            参数错误一律 422。
+
+            **修正记录（2026-09-16，按实测核对）**：原声明 `400` + `ErrorResponse`
+            与实现不符——该路由没有 `try/except`（`src/kert/api/server.py:619-643`），
+            请求体校验由 Pydantic 直接完成并返回 **422**，响应体是 FastAPI 校验体
+            `{"detail": [ {type, loc, msg, input}, ... ]}`。
+
+            **修正记录（2026-09-16，按实测核对）**：原声明 `400` + `ErrorResponse`
+            与实现不符——该路由没有 `try/except`（`src/kert/api/server.py:619-643`），
+            请求体校验由 Pydantic 直接完成并返回 **422**，响应体是 FastAPI 校验体
+            `{"detail": [ {type, loc, msg, input}, ... ]}`。
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ValidationErrorResponse"
               example:
-                requestId: req-20260828-001
-                status: skill_error
-                errors:
-                  - code: INVALID_PARAMETER
-                    message: "customerId is required"
+                detail:
+                  - type: missing
+                    loc: ["body", "skillId"]
+                    msg: "Field required"
+                    input: {}
         "404":
           description: |
             Skill 不存在。响应体与 200 **同构**（`status=skill_error`、
@@ -250,11 +284,26 @@ paths:
                     message: "未知 skillId"
                 modelCalls: []
         "500":
-          description: 服务内部错误
+          description: |
+            服务内部错误。响应体为 `ErrorResponse` 信封
+            （`requestId` / `status=skill_error` / `errors[]`），错误码 `INTERNAL_ERROR`，
+            消息为**通用**文案（不回显异常内容）。
+
+            **修正记录（2026-09-16，双向对齐）**：本节声明原本就是 `ErrorResponse`，
+            但实现此前落到 FastAPI 默认 500（**纯文本** `Internal Server Error`）⇒ 声明失实。
+            已按"合同为准"在实现侧补齐 app 级未捕获异常处理器
+            （`src/kert/api/server.py` 的 `_unhandled_exception`），
+            使实际响应与本节一致（对应失实项 F4c）。
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              example:
+                requestId: req-20260828-001
+                status: skill_error
+                errors:
+                  - code: INTERNAL_ERROR
+                    message: "内部错误"
 
   /api/skill/report/{requestId}:
     get:
@@ -280,7 +329,18 @@ paths:
               schema:
                 type: object
         "404":
-          description: 报告不存在
+          description: |
+            报告不存在或已过期（执行结果仅缓存约 10 分钟）。
+            响应体是 `{"detail": "<字符串>"}`（实现以 `HTTPException(detail=str)` 抛出，
+            `src/kert/api/server.py:653-657`），**不是** `ErrorResponse`。
+
+            **修正记录（2026-09-16，按实测核对）**：原声明未给响应体，实测为字符串 `detail`。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StringDetailErrorResponse"
+              example:
+                detail: "报告不存在或已过期（执行结果仅缓存 10 分钟，请重新执行）"
 
   /api/skill/gates/{customerId}:
     get:
@@ -596,9 +656,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/KnowledgeMapListResponse"
         "422":
-          description: 控制面地图定义非法（schema 校验失败）
+          description: |
+            控制面地图定义非法（`KERTException` ⇒ `_handle()` 转
+            `HTTPException(detail={"error": ...})`，FastAPI 序列化为 `{"detail": ...}`）。
+
+            **修正记录（2026-09-16，按实测核对）**：原声明未给响应体。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+              example:
+                detail:
+                  error:
+                    code: SCHEMA_VALIDATION_FAILED
+                    message: "知识地图定义非法"
+                    retryable: false
         "500":
-          description: 内部错误
+          description: |
+            内部错误。**两种形状均可能**（故用 `oneOf`）：
+            ① 领域异常经 `_handle()` ⇒ `{"detail":{"error":{...}}}`（`InfrastructureErrorResponse`）；
+            ② 未捕获异常经 app 级处理器 ⇒ `ErrorResponse` 信封。
+
+            **修正记录（2026-09-16，按实测核对）**：原声明未给响应体；实测两形状并存。
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/InfrastructureErrorResponse"
+                  - $ref: "#/components/schemas/ErrorResponse"
+              example:
+                detail:
+                  error:
+                    code: INTERNAL_ERROR
+                    message: "内部错误"
+                    retryable: true
 
   /v1/knowledge-maps/{mapId}:
     get:
@@ -681,11 +772,27 @@ components:
 
     SkillHealthResponse:
       type: object
-      required: [status, skills]
+      description: |
+        Skill 子系统健康（`GET /api/skill/health`，GITS 适配器使用）。
+
+        **修正记录（2026-09-16，按实测核对；F7）**：原声明只有 `status`/`skills`，
+        而实现**恒返回 `service`**（`src/kert/api/server.py:612-617` 的字典字面量：
+        `{"status", "service", "skills"}`）⇒ 声明不完整。按实测补 `service`（必填）。
+
+        **闭集论证**（`additionalProperties: false` 的依据）：实现返回的是**字面量字典**、
+        仅上述 3 键（`server.py:612-617`），不存在条件增删分支 ⇒ 响应确为闭集。
+        ⚠ 附注：`service` 目前**写死** `customer-engagement`（`server.py:614`），
+        与冲突 `C-14`（"产品中立"）同源；是否改为配置化由 Contract Owner 决策。
+      required: [status, service, skills]
+      additionalProperties: false
       properties:
         status:
           type: string
           enum: [ok, degraded]
+        service:
+          type: string
+          description: 服务标识（实现当前写死 `customer-engagement`；见 C-14）
+          example: customer-engagement
         skills:
           type: array
           items:
@@ -717,12 +824,21 @@ components:
 
     SkillBriefInfo:
       type: object
-      required: [skillId, name]
+      description: |
+        健康接口的技能摘要。
+        **修正记录（2026-09-16，按实测核对；F7）**：补 `version`——实现恒返回
+        `{"skillId", "name", "version"}`（`src/kert/api/server.py:615-616`），原声明缺席。
+        **闭集论证**：实现为字典字面量、仅上述 3 键、无条件分支 ⇒ 响应确为闭集。
+      required: [skillId, name, version]
+      additionalProperties: false
       properties:
         skillId:
           type: string
         name:
           type: string
+        version:
+          type: string
+          example: "1.0.0"
 
     SkillParameter:
       type: object
@@ -1391,6 +1507,56 @@ components:
                   type: string
                 retryable:
                   type: boolean
+
+    ValidationErrorResponse:
+      type: object
+      description: |
+        请求体校验失败响应（FastAPI / Pydantic 默认形状）：`{"detail": [ ... ]}`。
+        用于 `/api/skill/execute` 的 `422`（该端点**没有** `400` 路径）。
+
+        **修正记录（2026-09-16）**：新增。原合同对该端点声明 `400` + `ErrorResponse`，
+        实测为 **422** + 本形状（`src/kert/api/server.py:619-643` 无 `try/except`，
+        校验由 Pydantic 直接完成）。
+        说明：`detail[]` 各项由 FastAPI 生成，字段集随校验错误类型而异，
+        故此处**宽松描述**（只钉住 `type`/`loc`/`msg`/`input` 四个常见键）。
+      required: [detail]
+      additionalProperties: false
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
+            description: 单条校验错误（FastAPI 标准项）
+            required: [type, loc, msg]
+            properties:
+              type:
+                type: string
+                example: missing
+              loc:
+                type: array
+                items:
+                  type: string
+                example: ["body", "skillId"]
+              msg:
+                type: string
+                example: Field required
+              input:
+                description: 触发错误的输入（可能缺席）
+                additionalProperties: true
+            additionalProperties: true
+
+    StringDetailErrorResponse:
+      type: object
+      description: |
+        `HTTPException(detail=<字符串>)` 的默认序列化形状：`{"detail": "<字符串>"}`。
+        用于 `/api/skill/report/{requestId}` 的 `404`（`src/kert/api/server.py:653-657`）。
+
+        **修正记录（2026-09-16）**：新增。原合同对该 404 未给响应体，实测为字符串 `detail`。
+      required: [detail]
+      additionalProperties: false
+      properties:
+        detail:
+          type: string
 
     ErrorResponse:
       type: object
