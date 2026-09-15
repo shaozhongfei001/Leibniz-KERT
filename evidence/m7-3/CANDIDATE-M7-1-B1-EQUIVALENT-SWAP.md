@@ -2,9 +2,12 @@
 
 ```text
 DOC_ID   : CANDIDATE-M7-1-B1-EQUIVALENT-SWAP
-VERSION  : v1.3（2026-09-16：**并入 TL 的 Q1-Q5 定稿** —— 方法名 `_load_ki_from_declaration` + 签名与 `_load_ki` 一致、
-           逐资产留痕（新增约束 T6：只追加在**序列末尾**）、Q4 守卫须**白名单精确且 fail-closed**、
-           Q5 先冻结态复测；新增变异 V12/V13 与 R-1 停机条件）
+VERSION  : v1.4（2026-09-16：并入 TL 四点补充 —— ① `inspect.signature` 等式守卫（守卫 5 / 变异 V14）
+           ② 具名依赖 **D-B1-1**（scope 决策建立在地图并集==绑定集之上，该用例改动须重审）
+           ③ **语义噪声**写明（并集 vs 单任务子集；禁暗示为"计划资产"；资产 ID 不入 message）
+           ④ plan-scoped 留痕登记为 **B-2 候选**；另加 §6 的**冻结归因前置**）
+           v1.3：并入 TL 的 Q1-Q5 定稿（`_load_ki_from_declaration`、签名一致、逐资产留痕 T6、
+           Q4 守卫白名单精确 + fail-closed、Q5 先冻结态复测；变异 V12/V13 与 R-1 停机条件）
            v1.2：对齐 DECISION_SHEET C-3（两字段须同期追加 canonical schema；禁用"只靠 additionalProperties 兜底"）
            v1.1：新增**等价前提硬规则 E0**、回落用例 §2.7、变异 V11、白名单改为"新文件 only"
 TASK_ID  : M7-1-B1-PLAN (前置件；**非实施授权**)
@@ -84,6 +87,34 @@ skills.py:820  _run_supply_chain    ← **未接线**（技能包 bank-front-sup
 - 在**受控工作区**上，声明绑定集恰为 `KI-009 + KI-FRONT-001…006`（7 条），**与三张地图 `assetRefs` 的并集完全相同**（该等式已由 `tests/unit/test_knowledge_source.py::test_declaration_covers_all_map_asset_refs` 机械核对）⇒ 与"按计划资产"在受控面上**逐条一致**；
 - **副作用（正向）**：新方法完全不读计划 ⇒ `_route_plan` / `_plan_assets` 的行为**一寸不碰**，"计划相关 0 变化"成为结构性事实。
 - ⚠ **如需改为"按计划资产"留痕，则必须传 `plan` ⇒ 签名与 `_load_ki` 不同 ⇒ 与 Q1-i 冲突**。此处按 Q1-i 优先执行（声明绑定集）；若你要求按计划资产，请指出，我改写并同步调整签名约束。
+
+**TL 已于 2026-09-16 确认 Q1-i**，理由三条：① B-1 的全部价值在"**可证的等价**"，签名逐字一致 ⇒ 替换是**纯代入**，只需证行为、不需证依赖变化；② 传 `plan` 会把"计划读取"引入一个此前**完全不读计划**的方法 ⇒ 等价性论证 / Q4 守卫 / 变异点都要重做，风险与收益不成比例；③ 受控工作区上 scope=bindings 与 scope=map-union **相等**（TL 已独立核实该等式为**双向等式**，非单向包含）。
+
+#### 1.1.2 **具名依赖 D-B1-1**（本 scope 决策的成立前提）
+
+| 依赖 ID | 依赖对象 | 若被破坏的后果 |
+|---|---|---|
+| **D-B1-1** | `tests/unit/test_knowledge_source.py:228-240` 的 `test_declaration_covers_all_map_asset_refs`（断言 **声明 `bindings` 集合 == 三张地图 `assetRefs` 的并集**，双向等式 + 诊断信息） | **本 scope 决策必须重审**：scope=bindings 之所以等价于"按计划资产"，**完全**建立在该等式之上；一旦该用例被**放宽、改写或移除**，B-1 的"不读计划"就不再被证明等价，须重新评估签名约束（可能与 Q1-i 冲突） |
+
+⇒ 因此该用例**不是普通单测**，而是 B-1 的**具名依赖**；改动它需与 B-1 的 scope 决策一并评审。
+
+#### 1.1.3 **必须写明的语义噪声**（TL 核实后的推论，不是缺陷但是可被误读处）
+
+scope=bindings 取的是**并集**，而**单个任务**的计划资产只是它的**子集** ⇒ 回落/留痕会列出**多于该任务所需**的资产。
+
+**具体例子**：`KM-CORP-RM-OUTREACH` 只声明 **3 条**（`KI-009` / `KI-FRONT-004` / `KI-FRONT-006`），而 (γ) 回落留痕按声明绑定集会列出 **7 条** ⇒ 读 trace 的人**可能误读**为"该任务需要这 7 条"。
+
+**三条强制要求（B-1 实现时必须满足）**：
+
+1. **显式写明**：本节的例子必须出现在实现与该模块的 docstring 里（避免下一个人重新推理一遍）；
+2. **措辞与字段不得暗示它们是"计划资产"** —— 禁止使用 `assets` / `plannedAssets` / `mapAssets` 之类命名；建议用 `declarationBindings` / `boundAssetRefIds` 语义的命名（**字段名定稿后再落**）；
+3. **资产 ID 不得进 `message`**（§1.5 **T3** 对新增条目**同样生效**：`message` 不得含子串 `KI-`）。
+
+> 说明：这不是等价性问题（新增条目不改既有行为），但它会让"**声明面**"与"**计划面**"在观测上混为一谈 —— 而二者的区分正是 B-1（不读计划）与 B-2（可能读计划）的分界。
+
+#### 1.1.4 plan-scoped 留痕 ⇒ **B-2 候选**（不在 B-1 决定）
+
+"按计划资产留痕"需要读计划 ⇒ 与 Q1-i 签名约束冲突 ⇒ **登记为 B-2 候选议题**（连同其签名/等价性重做成本）。B-1 **不留任何口子**（不预留参数、不预留开关）。
 
 ### 1.2 读取**范围**不变（关键取舍）
 
@@ -296,6 +327,7 @@ assert _strip_new(r.assembly_trace) == _strip_new(baseline_trace)
 | **V10** | 留痕中的能力指纹写死（常量 / 与 `resolver.binding_sha256` 不符） | FAIL | 断言指纹 == `KnowledgeSourceResolver.load(ws).binding_sha256`，且**改声明后必变** |
 | **V12** | **出现第 4 个调用点**（例如把新方法也塞进 `_run_supply_chain`，或新增一个 `_load_ki*` 方法） | FAIL | §4.1 守卫：前缀枚举集合必须恰为 `{_load_ki, _load_ki_from_declaration}`，且新方法调用点集合必须恰为 `{_run_outreach, _run_meeting, _run_previsit}`；并**显式**断言 `_run_supply_chain` **不**在其中 |
 | **V13** | 新增条目**插入到序列中间**（而非末尾） | FAIL | §2.2 的**前缀相等**断言（`r.assembly_trace[:n] == r_ref.assembly_trace`） |
+| **V14** | **签名漂移**：给新方法加 `plan` 参数（或改返回类型） | FAIL | §4.1 守卫 **5**（`inspect.signature` 等式）；并**必然**同时触发 V12（若把 plan 传进来则调用点也要改） |
 
 > 变异执行方式沿用前两片：临时改实现 → 期望非零退出码 → 恢复并校验 sha256 一致。**恢复后 sha256 与变异前逐字节相同**为本片证据的一部分。
 
@@ -310,7 +342,14 @@ assert _strip_new(r.assembly_trace) == _strip_new(baseline_trace)
   1. **前缀枚举集合必须恰为** `{_load_ki, _load_ki_from_declaration}` —— 多出任何 `_load_ki*` 方法即 FAIL（防新增读取点绕过守卫）；
   2. **新方法的调用点集合必须恰为** `{_run_outreach, _run_meeting, _run_previsit}` —— 出现第 4 个调用点即 FAIL；
   3. **显式断言** `_run_supply_chain` **不**调用新方法（防 D 组被顺手接线）；
-  4. **守卫本身 fail-closed**：源码不可读 / 解析不到调用点 / 夹具缺失 ⇒ **FAIL，不得 skip**（沿用前两片"负例夹具缺失即 FAIL"的风格）。
+  4. **守卫本身 fail-closed**：源码不可读 / 解析不到调用点 / 夹具缺失 ⇒ **FAIL，不得 skip**（沿用前两片"负例夹具缺失即 FAIL"的风格）；
+  5. **签名等式守卫（TL 补充，直接保护 Q1-i）**：
+     ```python
+     import inspect
+     assert (inspect.signature(SkillExecutionService._load_ki_from_declaration)
+             == inspect.signature(SkillExecutionService._load_ki))
+     ```
+     —— 日后若有人为传 `plan` 而**改签名/加参数**，本守卫**立即 FAIL**；**源码扫描抓不到"参数变了"，这条能**。
 - **一致性债照旧登记**（`DECISION_SHEET` **D-7**）：`bank-front-supply-chain-graph` 仍走"字面量 KI-FRONT-001/002/003"（`:821-823`）⇒ 本项目**不得**表述为"客户知识读取已全部接线"。
 
 ### 4.2 E 组：**必须显式复跑**（不得默认不受影响）
@@ -386,6 +425,7 @@ evidence/m7-3/**                                      （实施期证据与登�
 ```python
 #!/usr/bin/env python3
 """M7.1 影响面实跑探针（精简可复现版）。用法：.venv/bin/python <本文件>"""
+# 实测：本脚本已从本文档抽出后直接运行，exit 0，输出合法 JSON（见第 7 项的测量学 caveat）
 from __future__ import annotations
 import json, sys
 from collections import defaultdict
@@ -439,9 +479,6 @@ if __name__ == "__main__":
                  "-p", "no:warnings", "-o", "addopts=", "-q", "--tb=no"], plugins=[Tracker()])
     route, ki, sup = defaultdict(list), defaultdict(list), set()
     for r in REC:
-        (route if r["kind"] == "route_plan" else ki if r["kind"] == "load_ki" else sup
-         ).__setitem__(r["node"], None) if False else None
-    for r in REC:
         if r["kind"] == "route_plan": route[r["node"]].append(r)
         elif r["kind"] == "load_ki": ki[r["node"]].append(r)
         else: sup.add(r["node"])
@@ -458,7 +495,25 @@ if __name__ == "__main__":
                      ensure_ascii=False, indent=2))
 ```
 
-7. **报数清单（TL 明确要求；不接受"全绿/通过"式转述）** —— 冻结态复测后逐项给出**原文**：
+7. **⚠ 已实测的测量学caveat：异步/线程用例的归属存在竞态（必须在冻结态报数时按规则处理）**
+
+实测事实（同一天、同一棵树、仅探针实现细节不同）：
+
+| 观测 | 结果 |
+|---|---|
+| **同一个探针连跑两次**（`/tmp/m71b_impact_probe.py`，run1 vs run2，逐条集合比对） | **完全一致**：A/B/C/E = **29/9/3/3**，`load_ki` 观测用例 = **44**，漂移集合为空 |
+| **结构等价的精简版探针**（§6 第 6 项那份）跑一次 | A/B/C/E = **30/9/3/2**，`load_ki` 观测用例 = **43**（少 1；且少掉的是**异步/技能包**类条目） |
+
+⇒ 结论：**漂移不来自树状态，而来自 `_load_ki` 调用在异步/线程路径上的归属竞态**（nodeid 由 `pytest_runtest_setup/teardown` 提供，worker 线程可能在主线程已推进后被记录，或未被记录）。
+
+**冻结态报数必须遵守的规则（否则会把抖动当事实写进证据）**：
+
+- **R-A**：`A` 组中属于**异步/线程路径**的条目（如 `test_thread_mode_without_store`、`test_queue_stats_reflects_enqueued`、`test_profile_*` 等）**必须逐条人工确认**，不得只凭一次观测；
+- **R-B**：探针**连跑两次**，报**两次的集合与差异**（不报单次结果）；
+- **R-C**：无法稳定归属的条目**一律保守归入 E**（"需复跑确认"），**不得**计入 A 组（A 组是"语义变更载体"的论据，宁可少不许虚增）；
+- **R-D**：报数时同时给出**探针脚本的 sha256**（区分"原版 / 精简版"两种实现）。
+
+8. **报数清单（TL 明确要求；不接受"全绿/通过"式转述）** —— 冻结态复测后逐项给出**原文**：
 
 ```text
 (a) git rev-parse HEAD  与  git status --short 的原文（证"冻结/干净"）
@@ -470,7 +525,27 @@ if __name__ == "__main__":
 (c) 44 条枚举原文：_route_plan 调用数、去重用例数、load_ki 去重用例数，以及 A/B/C/D/E 五组各自计数与用例名
 (d) (γ) 前提复核结论：接线前"计划放行 + 声明缺失"组合是否**零覆盖**（含检索命令）
 (e) 环境声明：venv 路径与 python 版本（避免"系统 python3 vs .venv"两口径混淆）
+(f) 探针两次运行的集合差异（见第 7 项 R-A…R-D），以及探针脚本自身 sha256
 ```
+
+9. **冻结归因前置（TL 冻结信号附带要求；冻结基准 `e3bcefe`）** —— 复测报告**开头**必须附：
+
+```text
+(1) git rev-parse HEAD                        （应为 e3bcefe）
+(2) git status --porcelain                    （**完整**原文；本轮**非全树冻结**，须逐条列出）
+(3) 并发文件 sha256(16) 快照（至少）：
+      src/kert/application/provision.py
+      src/kert/cli/main.py
+      tests/unit/test_provision.py
+      src/kert/domain/activation_contract.py
+      tests/unit/test_activation_contract.py
+      examples/bank-front-knowledge-maps/90_control/schema/activations/**（目录内文件逐个）
+      .understandignore
+(4) 复测**期间**上述任一项若发生变化 ⇒ **该次复测作废、重跑**（并发编辑期跑数不可归因 —— 本仓既有规则）
+(5) provisioning 相关命中**单独列出**（把"B-1 造成的变化"与"供给面漂移造成的变化"分开归因）
+```
+
+背景（TL 提示）：`provision.py` / `cli/main.py` / `test_provision.py` 正被第三方改动（把**第 5 类** `activations/AC-*.json` 纳入供给）⇒ **供给面口径可能再变**（现行 6 类）⇒ 44 条枚举的基线可能随之偏移；`examples/bank-front-knowledge-maps/90_control/schema/activations/` 是受控工作区**新增子目录**（正是夹具源），须一并纳入快照。
 
 ---
 
