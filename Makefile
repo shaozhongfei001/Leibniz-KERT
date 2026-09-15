@@ -19,7 +19,7 @@ BASE_URL     = http://localhost:8106
 
 # ---------- 部署目标 ----------
 
-.PHONY: deploy-build deploy-up deploy-down deploy-logs deploy-backup deploy-restore deploy-provision deploy-smoke-test deploy-verify
+.PHONY: deploy-build deploy-up deploy-down deploy-logs deploy-backup deploy-restore deploy-provision deploy-smoke-test deploy-verify verify-e2e-local
 
 deploy-build: ## 构建 Docker 镜像
 	docker compose -f $(COMPOSE_FILE) build
@@ -52,6 +52,9 @@ deploy-smoke-test: ## 冒烟测试（构建→启动→健康检查→Skill测�
 
 deploy-verify: ## 部署验证（检查 /livez /readyz /metrics）
 	python deploy/verify_deployment.py --base-url $(BASE_URL)
+
+verify-e2e-local: ## 本机一键 e2e：起栈→就绪判据→pytest tests/e2e→撤栈（prod profile）
+	bash scripts/run_e2e_local.sh
 
 # ---------- 帮助 ----------
 

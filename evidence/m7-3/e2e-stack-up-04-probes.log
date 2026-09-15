@@ -1,0 +1,18 @@
+=== /livez (无鉴权) ===
+HTTP=200
+{"status":"alive","service":"kert-python-core","service_version":"1.0.0","uptime_seconds":19.348}
+=== /readyz (无鉴权) ===
+HTTP=200
+{"status":"ready","degraded":["knowledge_projection"],"checks":{"workspace":{"ok":true,"path":"/data/workspace"},"knowledge_projection":{"ok":false,"error":"服务 product_knowledge 无活动投影","blocking":false},"runtime_store":{"ok":true,"schema_version":2,"journal_mode":"wal"},"job_queue":{"ok":true,"claimable":0,"dead_letter":0,"expired_leases":0}}}
+=== /v1/health (无鉴权) ===
+HTTP=200
+=== /v1/knowledge-maps (无鉴权，期望 401) ===
+HTTP=401
+=== /v1/knowledge-maps (X-API-Key: secret) ===
+HTTP=200
+count= 3
+mapIds= ['KM-CORP-RM-MEETING', 'KM-CORP-RM-OUTREACH', 'KM-CORP-RM-PREVISIT']
+=== /api/skill/health ===
+HTTP=200
+skill_count= 13
+['SP-15', 'SP-20', 'SP-21', 'bank-front-commitment-script', 'bank-front-eight-dimension', 'bank-front-fact-reconciliation', 'bank-front-kyc-gap-check', 'bank-front-product-recommendation', 'bank-front-report-assembler', 'bank-front-supply-chain-graph', 'skill-customer-meeting-script', 'skill-customer-outreach-script', 'skill-customer-previsit-report']

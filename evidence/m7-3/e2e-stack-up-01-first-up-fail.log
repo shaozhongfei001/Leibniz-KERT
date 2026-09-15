@@ -1,0 +1,26 @@
+$ docker compose -f deploy/docker-compose.yml -f /tmp/e2e-override.yml --env-file deploy/.env up -d
+ Network deploy_default Creating 
+ Network deploy_default Created 
+ Container kert-provision Creating 
+ Container kert-provision Created 
+ Container kert-api Creating 
+ Container kert-api Created 
+ Container kert-worker Creating 
+ Container kert-worker Created 
+ Container kert-provision Starting 
+ Container kert-provision Started 
+ Container kert-provision Waiting 
+ Container kert-provision Error service "provision" didn't complete successfully: exit 2
+service "provision" didn't complete successfully: exit 2
+EXIT_CODE=1
+=== docker compose ps -a ===
+NAME             IMAGE                    COMMAND                   SERVICE     CREATED         STATUS                     PORTS
+kert-api         kert-python-core:local   "python /app/scripts…"   api         3 seconds ago   Created                    
+kert-provision   kert-python-core:local   "kert provision -w /…"   provision   3 seconds ago   Exited (2) 2 seconds ago   
+kert-worker      kert-python-core:local   "python /app/scripts…"   worker      3 seconds ago   Created                    
+=== provision logs ===
+Usage: kert provision [OPTIONS]
+Try 'kert provision --help' for help.
+╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ No such option: --init                                                       │
+╰──────────────────────────────────────────────────────────────────────────────╯

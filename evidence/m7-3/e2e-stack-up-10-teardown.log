@@ -1,0 +1,16 @@
+$ docker compose -f deploy/docker-compose.yml -f /tmp/e2e-override.yml --env-file deploy/.env down --remove-orphans
+ Container kert-worker Stopping 
+ Container kert-worker Stopped 
+ Container kert-worker Removing 
+ Container kert-worker Removed 
+ Container kert-api Stopping 
+ Container kert-api Stopped 
+ Container kert-api Removing 
+ Container kert-api Removed 
+ Container kert-provision Stopping 
+ Container kert-provision Stopped 
+ Container kert-provision Removing 
+ Container kert-provision Removed 
+ Network deploy_default Removing 
+ Network deploy_default Removed 
+EXIT_CODE=0
