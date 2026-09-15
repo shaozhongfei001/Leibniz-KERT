@@ -1,0 +1,16 @@
+{
+  "schema": "knowledge_map/v1",
+  "mapId": "KM-CORP-RM-PREVISIT",
+  "version": "1.0.0",
+  "title": "企业客户经理 · 访前准备知识地图",
+  "domain": "customer",
+  "tasks": ["PRE_VISIT_PREPARATION"],
+  "priority": 20,
+  "assetRefs": [
+    {"assetId": "KI-FRONT-001", "required": true, "sequence": 1},
+    {"assetId": "KI-FRONT-002", "required": true, "sequence": 2},
+    {"assetId": "KI-FRONT-003", "required": true, "sequence": 3}
+  ],
+  "skillRefs": ["skill-customer-previsit-report"],
+  "notes": "assetRefs 与 skills.py 中 _run_previsit 实际读取的 KI 条目一致（KI-FRONT-001 / 002 / 003）；routePolicyRef 与 activationContractRef 待 M7.3 第二步落地后回填。"
+}

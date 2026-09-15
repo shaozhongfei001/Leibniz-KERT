@@ -19,6 +19,31 @@ BRANCH_AT_REQUEST = feature/PI-ARCH-L10-L13 @ c49ddb5
 
 ---
 
+## 0. 裁定结果（2026-09-15 已登记）
+
+```text
+OWNER_DIRECTIVE = 按 TL 建议执行（＝ D1-A / D2-A / D3-A）
+RECORDED_AT     = 2026-09-15
+RECORDED_BY     = Tech Lead（据人类指令登记）
+SCOPE           = **方向授权**：授权按 D1-A / D2-A / D3-A 推进实施
+NOT_A_SIGN_OFF  = 本登记**不是**基线签署、**不是**规格修订、**不是** ADR、**不**改变
+                  PRODUCTION_RELEASE_GATE=BLOCKED，**不**构成任何生产就绪声明
+```
+
+| 裁定 | 结论 | 生效含义 |
+|---|---|---|
+| **D1** | **A** —— 提前实施 M7 的零冲突子集 | 可实施 `KnowledgeMapRegistry` / `RoutePolicy` / `ActivationPlan`（+ 可重放 plan hash），
+依据为 KERT 自己的独立评审 §4.7；**不**触碰规格禁令、**不**需规格修订 |
+| **D2** | **A** —— **不引入 LightRAG 具名技术** | "检索增强"落在 M7.1 KnowledgeSource typed capability + 既有 Kùzu/Parquet 形态；
+⚠ 即：指令中"LightRAG 完整实现"被**明确重定向**，**不**以 LightRAG 形态实现 |
+| **D3** | **A** —— KERT **不内置**本体定义 | 只以"契约引用 + 内容哈希版本"**只读消费** gits 本体；
+**不**建立第二份本体权威；**不**修改 GITS 仓库 |
+
+> ⚠ **需人类复核的一处理解**：指令要求"LightRAG 完整实现"，而裁定 D2-A 的**结果是不引入 LightRAG**。
+> 该转向已在此显式登记，**不得**在后续汇报中被读作"LightRAG 已实现"。
+
+---
+
 ## 0. 只读清点结果（每项均有代码/文档证据）
 
 | 指令要求的能力 | 仓内权威对应 | 现状（有证据） |
