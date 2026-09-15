@@ -2,7 +2,13 @@
 
 ```text
 DOC_ID   : CANDIDATE-M7-1-B1-EQUIVALENT-SWAP
-VERSION  : v1.4（2026-09-16：并入 TL 四点补充 —— ① `inspect.signature` 等式守卫（守卫 5 / 变异 V14）
+VERSION  : v1.5（2026-09-16：TL 加固 R-A…R-F + 冻结**改判** —— ① A 组取**两跑交集**（R-A）
+           ② 冻结态**以原版探针为准**、精简版仅交叉验证并写明差异机制（R-E）
+           ③ 报数清单补 **(g) 探针完整命令行 / (h) 版本口径**（R-F）
+           ④ 新增 **§9 预跑记录（非冻结态）**：预跑不写入 §6 作为冻结证据；含四项归因前置、
+           四目录原始计数、3 条失败归因（第三方在途，正是改判实证）、44 条枚举与 (γ) 复核
+           ⑤ 修正 §6 引用编号（§10 → §9））
+           v1.4（并入 TL 四点补充 —— ① `inspect.signature` 等式守卫（守卫 5 / 变异 V14）
            ② 具名依赖 **D-B1-1**（scope 决策建立在地图并集==绑定集之上，该用例改动须重审）
            ③ **语义噪声**写明（并集 vs 单任务子集；禁暗示为"计划资产"；资产 ID 不入 message）
            ④ plan-scoped 留痕登记为 **B-2 候选**；另加 §6 的**冻结归因前置**）
@@ -508,10 +514,12 @@ if __name__ == "__main__":
 
 **冻结态报数必须遵守的规则（否则会把抖动当事实写进证据）**：
 
-- **R-A**：`A` 组中属于**异步/线程路径**的条目（如 `test_thread_mode_without_store`、`test_queue_stats_reflects_enqueued`、`test_profile_*` 等）**必须逐条人工确认**，不得只凭一次观测；
+- **R-A（TL 加固版）**：`A` 组的成员**必须在两次运行中都命中**（取两跑**交集**）；任一次缺席 ⇒ **归 E**。不得只凭一次观测，也不得取并集 —— A 是"语义变更载体"的论据，**宁可少不许虚增**；
 - **R-B**：探针**连跑两次**，报**两次的集合与差异**（不报单次结果）；
-- **R-C**：无法稳定归属的条目**一律保守归入 E**（"需复跑确认"），**不得**计入 A 组（A 组是"语义变更载体"的论据，宁可少不许虚增）；
-- **R-D**：报数时同时给出**探针脚本的 sha256**（区分"原版 / 精简版"两种实现）。
+- **R-C**：无法稳定归属的条目**一律保守归入 E**（"需复跑确认"），**不得**计入 A 组；
+- **R-D**：报数时同时给出**探针脚本的 sha256**（区分"原版 / 精简版"两种实现）；
+- **R-E（TL 加固版）**：冻结态**一律以原版探针**（`/tmp/m71b_impact_probe.py`，sha256 `d73ce3c6…6639b`）为准报数；**精简版（`6a80fdfb…b35a4`）仅作交叉验证**，且报告须写明两者差异及其**机制原因**（异步/线程 nodeid 归属竞态）。**严禁**"哪个探针结果好看就用哪个"；
+- **R-F**：报告须含**探针完整命令行**（可原样重跑）与 **python/venv 与 pytest 版本**。
 
 8. **报数清单（TL 明确要求；不接受"全绿/通过"式转述）** —— 冻结态复测后逐项给出**原文**：
 
@@ -526,7 +534,13 @@ if __name__ == "__main__":
 (d) (γ) 前提复核结论：接线前"计划放行 + 声明缺失"组合是否**零覆盖**（含检索命令）
 (e) 环境声明：venv 路径与 python 版本（避免"系统 python3 vs .venv"两口径混淆）
 (f) 探针两次运行的集合差异（见第 7 项 R-A…R-D），以及探针脚本自身 sha256
+(g) 探针的**完整命令行**（可原样重跑），例如：
+      cd /home/szf/dev/Leibniz-KERT && .venv/bin/python /tmp/m71b_impact_probe.py
+(h) python/venv 与 pytest 版本（本包实测口径：.venv = Python 3.12.8 / pytest 9.1.1）
 ```
+
+> **预跑 vs 冻结跑（必须区分）**：凡在第三方在途批未落定前所跑的，一律标注为**"预跑/非冻结态"**，
+> **不得**写入本节作为冻结证据（本包已发生的预跑记录见 **§9**）。
 
 9. **冻结归因前置（TL 冻结信号附带要求；冻结基准 `e3bcefe`）** —— 复测报告**开头**必须附：
 
@@ -581,3 +595,100 @@ if __name__ == "__main__":
 
 > **唯一仍未获得的是"实施授权 + 冻结信号"**；在收到之前本文档是唯一产出，`skills.py` 不动（Q5）。
 > **R-1 提醒照旧**：A 组 29 条仍登记为**待 Owner**（C-1b），B-1 内严禁触碰；触碰即触发 §5.1 停机条件。
+
+---
+
+## 9. 预跑记录（**非冻结态**；不得作为冻结证据）
+
+> ⛔ **抬头声明**：本节记录的是 **预跑（pre-run）**，发生在**第三方在途批次未落定**期间。
+> 按 TL 规则：**预跑不得写入 §6 作为冻结证据**；其唯一用途是**提前发现本包自己的问题**（探针、快照流程、报数模板）。
+> **正式冻结跑待 TL 的新冻结信号**（该信号将在第三方批次落定后发出）。
+
+### 9.1 预跑时间线与归因前置（TL 要求的 (a)–(d) 项）
+
+```text
+预跑编号      : PRE-1（收到"改判冻结"消息**之前**已启动，时间交叉；据此**降级**为预跑）
+复测起点 HEAD : 43b02fa975d0ffcaea1670c1781dbce5416fd2e1
+                （TL 原冻结基准为 e3bcefe；实测 HEAD 已前移 4 个**纯 docs** 提交：
+                 git diff --stat e3bcefe 43b02fa = 仅 evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md 7+/2-
+                 ⇒ **代码面与 e3bcefe 相同**）
+窗口内 HEAD  : 前移至 64f6f87；但 43b02fa..64f6f87 只改 **两份 evidence 文档**
+                （含本文件 v1.4 入库 3280c59）+ DECISION_SHEET ⇒ **无代码/测试变化**
+git status --porcelain（before，完整 8 行）:
+   M .understandignore
+   M evidence/m7-3/CANDIDATE-M7-1-B1-EQUIVALENT-SWAP.md
+   M src/kert/application/provision.py
+   M src/kert/cli/main.py
+   M tests/unit/test_provision.py
+  ?? examples/bank-front-knowledge-maps/90_control/schema/activations/
+  ?? src/kert/domain/activation_contract.py
+  ?? tests/unit/test_activation_contract.py
+并发文件 sha256(16)（before == after，**9 项逐条一致** ⇒ 预跑期间无并发写）:
+  e333648b1a79cea5  src/kert/application/provision.py
+  e4847152145e3233  src/kert/cli/main.py
+  8f4bd025463c2881  tests/unit/test_provision.py
+  285f1c4f0e13aaa4  src/kert/domain/activation_contract.py
+  7221a15a8d835ce5  tests/unit/test_activation_contract.py
+  8ced89d5645c2e47  .understandignore
+  9f7e46c563fb83c6  examples/.../schema/activations/AC-FACT-RECONCILIATION-001.json
+  0b7545f80dd5697c  examples/.../schema/activations/AC-PRODUCT-RECOMMEND-001.json
+  ac9fd6dd735b2070  examples/.../schema/activations/PROVENANCE.md
+环境          : .venv = Python 3.12.8 / pytest 9.1.1
+```
+
+### 9.2 逐目录原始计数与退出码（预跑）
+
+```text
+tests/unit          → 3 failed, 963 passed in 19.03s      退出码 1
+tests/integration   → 458 passed, 1 xfailed in 143.63s    退出码 0
+tests/contract      → 53 passed in 0.13s                  退出码 0
+tests/recovery      → 18 passed in 8.68s                  退出码 0
+```
+
+### 9.3 3 条失败的逐条归因（**非 B-1、非本包**）—— 正是 TL 改判冻结的实证
+
+全部位于 `tests/unit/test_provision_cli.py`：
+
+| 用例 | 断言 | 实际 |
+|---|---|---|
+| `:53 test_apply_then_idempotent_rerun` | `'新建 6 / 覆盖 0 / 未变 0' in output` | 输出为 `8` 条 → FAIL |
+| `:66 test_json_output_follows_standard_envelope` | `counts["CREATED"] == 6` | **`assert 8 == 6`** |
+| `:109 test_init_flag_initializes_fresh_volume_then_provisions` | `'新建 0 / 覆盖 0 / 未变 6' in output` | 输出为 `8` → FAIL |
+
+根因：第三方在途批次把供给面扩为 **8 个条目**（3 地图 + `route_policy.json` + `ontology_reference.json` + `knowledge_sources.json` + `activations/AC-*.json` ×2），**已同步 `test_provision.py`（+88 行）但未同步 `test_provision_cli.py` 的计数断言** ⇒ 典型"改实现未同步断言"。本包**不触碰**该文件（白名单外）。
+
+> ⇒ 这**恰好印证** TL 的改判理由：第三方半成品会污染"全量计数"，故**不能**作为冻结证据。
+
+### 9.4 44 条枚举（**原版探针为准**；R-E）
+
+```text
+命令行（可原样重跑）: cd /home/szf/dev/Leibniz-KERT && .venv/bin/python /tmp/m71b_impact_probe.py
+探针 sha256         : d73ce3c61f0f61e7a7f3a0379ca694040b2d8e733fd98aa8324e0ee9b776639b（原版，报数基准）
+                      /tmp/m71b_probe_slim.py = 6a80fdfbd470750e79c19f59fd64ac32029da1dcc83f750dbedde8feac0b35a4（仅交叉验证）
+_route_plan 调用数 = 49 ；去重用例 = 44 ；load_ki 观测用例 = 44 ；_run_supply_chain = 3
+两跑（原版）分组 : A/B/C/E = 29 / 9 / 3 / 3     两次集合差：A=∅ B=∅ C=∅ E=∅
+```
+
+**精简版交叉验证差异（R-E 要求的机制说明）**：精简版单跑给 A/B/C/E = **30/9/3/2**、`load_ki` 观测 **43**（差 **1**）。
+机制：**异步/线程路径的 nodeid 归属竞态** —— 同一原版探针连跑两次**逐条完全一致**，而两实现间差 1（缺的观测落在异步/技能包类条目）⇒ 漂移来自**观测归属**而非树状态 ⇒ 故冻结态**以原版为准**，且 A 组取**两跑交集**（R-A）。
+
+### 9.5 (γ) 前提复核：**成立**（§6 第 5 点）
+
+| 证据 | 命令 | 结果 |
+|---|---|---|
+| **决定性**：运行时读取路径**零消费者** | `grep -rn "KnowledgeSourceResolver\|plan_read\|match_heading" src/ --include=*.py \| grep -v domain/knowledge_source.py` | **零命中** ⇒ 接线前**任何**集成/e2e 用例都**不可能**走到"声明缺失的运行时判定"分支（`provision` 只调 `load_declaration`，属**供给期校验**） |
+| 测试侧引用面 | `grep -rn "knowledge_sources" tests/ --include=*.py` | 9 处，**全部**在 `test_provision*.py`（供给面）与 `test_knowledge_source.py`（本包单元层）；**无技能执行用例** |
+| 删除 schema 文件的用例 | `grep -rn "unlink()" tests/ --include=*.py` | 只有 `test_activation_plan.py:326/367/379`（删 ontology → 计划门禁被拒）与 `test_provision.py:222`（删**源**的声明 → 供给路径）；**无**"删运行时工作区声明 + 执行已接线技能"的用例 |
+
+⇒ "该组合**今天完全没测**"这一前提**经复核成立** ⇒ §2.7（γ）用例的"**新增补洞**"定位正确。
+
+### 9.6 供给面口径提示（供 TL 同步 D-5 时避免两口径打架）
+
+实测供给**条目**数 = **8**（见 §9.3 的 `assert 8 == 6`）。若按"**类**"计（`activations/` 目录算 **1 类**）则为 **7 类**。
+⇒ D-5 若记为"7 类"，建议同时注明"**CLI 条目数 = 8**"，以免与 `新建 N / 覆盖 N / 未变 N` 的**条目**口径冲突。
+
+### 9.7 预跑结论
+
+- 预跑**未改变** B-1 的任何设计结论；**未发现**本包自身的问题（探针、快照流程、报数模板均按 §6 要求产出）；
+- 预跑**不构成**冻结证据；**正式冻结跑**待 TL 的新冻结信号，届时按 §6 的 (a)–(h) + R-A…R-F 全量重跑并原文报数；
+- 预跑期间**未触碰**任何第三方文件（`provision.py` / `cli/main.py` / `activation_contract.py` / `test_provision*.py` / `activations/**` 均只读）。
