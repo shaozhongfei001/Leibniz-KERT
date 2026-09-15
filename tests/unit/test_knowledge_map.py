@@ -96,19 +96,13 @@ def test_real_workspace_registers_three_maps_with_nonzero_refs():
         assert res.map.source_path.endswith(f"{map_id}.json")
 
 
-def test_real_maps_reference_only_kis_that_skills_actually_read():
-    """反虚构：真实地图的 assetRefs 必须出现在 skills.py 真实读取的 KI 中。"""
-    skills_src = (REPO_ROOT / "src" / "kert" / "application" / "skills.py").read_text(encoding="utf-8")
-    reg = KnowledgeMapRegistry.load(REAL_WS)
-
-    checked = 0
-    for m in reg.maps:
-        for ref in m.asset_refs:
-            assert ref.asset_id in skills_src, (
-                f"{m.map_id} 引用了 skills.py 中从未读取的资产 {ref.asset_id}（疑似虚构）"
-            )
-            checked += 1
-    assert checked == 10, f"期望核对 10 条 assetRef，实际 {checked}"  # 3+4+3
+# 注：原 `test_real_maps_reference_only_kis_that_skills_actually_read` 已**移除**。
+# 它的检查过弱且自身会腐烂：只判 `asset_id` 是否作为**字符串**出现在 skills.py 源码里
+# （不区分哪个技能读取），且只做**单向**（地图 ⊆ 源码文本），末尾还硬编码 `checked == 10`。
+# 这三点使它对"技能实际读了 7 条、地图只声明 3 条"这种**漏声明**完全不可见
+# （KM-CORP-RM-PREVISIT 的真实事故），反而把错误计数固定了下来。
+# 逐技能的双向一致性现由 tests/integration/test_control_plane_consistency.py 以
+# **技能自己产出的 trace（kiId）**为准机械核对 —— 那里是唯一权威位置，勿在本文件复建。
 
 
 # --------------------------------------------------------------------------- #

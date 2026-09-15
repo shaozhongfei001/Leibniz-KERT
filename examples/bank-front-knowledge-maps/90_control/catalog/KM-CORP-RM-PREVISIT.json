@@ -1,17 +1,21 @@
 {
   "schema": "knowledge_map/v1",
   "mapId": "KM-CORP-RM-PREVISIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "企业客户经理 · 访前准备知识地图",
   "domain": "customer",
   "tasks": ["PRE_VISIT_PREPARATION"],
   "priority": 20,
   "assetRefs": [
-    {"assetId": "KI-FRONT-001", "required": true, "sequence": 1},
-    {"assetId": "KI-FRONT-002", "required": true, "sequence": 2},
-    {"assetId": "KI-FRONT-003", "required": true, "sequence": 3}
+    {"assetId": "KI-009", "required": true, "sequence": 1},
+    {"assetId": "KI-FRONT-001", "required": true, "sequence": 2},
+    {"assetId": "KI-FRONT-002", "required": true, "sequence": 3},
+    {"assetId": "KI-FRONT-003", "required": true, "sequence": 4},
+    {"assetId": "KI-FRONT-004", "required": true, "sequence": 5},
+    {"assetId": "KI-FRONT-005", "required": true, "sequence": 6},
+    {"assetId": "KI-FRONT-006", "required": false, "sequence": 7}
   ],
   "skillRefs": ["skill-customer-previsit-report"],
   "routePolicyRef": "RP-KERT-BANKFRONT-001",
-  "notes": "assetRefs 与 skills.py 中 _run_previsit 实际读取的 KI 条目一致（KI-FRONT-001 / 002 / 003）；routePolicyRef 已回填至本仓自有策略（RP-KERT-BANKFRONT-001），策略会校验其一致；activationContractRef 仍留空（本仓暂未引入激活合同，不虚构绑定）。"
+  "notes": "修正记录（v1.0.1）：原 assetRefs 只列 KI-FRONT-001/002/003 且 notes 谎称「与 _run_previsit 实际读取一致」——实际 _run_previsit 遍历全部 7 条 KI_ITEMS（customer_knowledge.py:20-28），那 3 条属 _run_supply_chain 的读取集（抄错来源）。现按真实读取集修正为 7 条；受治理内容变更故版本 1.0.0 → 1.0.1。required：KI-FRONT-006 标为非必需，与 OUTREACH/MEETING 地图对同一资产的既有口径一致（注意：required 目前不参与运行时判定，见 impact 分析的 (B) 子决策，尚未实施）。一致性不再靠本字段自述，由 tests/integration/test_control_plane_consistency.py 机械核对。activationContractRef 仍留空（本仓暂未引入激活合同，不虚构绑定）。"
 }

@@ -31,9 +31,15 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REAL_WS = REPO_ROOT / "examples" / "bank-front-knowledge-maps"
 
 REAL_TASKS = {
-    "OUTREACH_PREPARATION": ("KM-CORP-RM-OUTREACH", 3, ["skill-customer-outreach-script"]),
-    "MEETING_PREPARATION": ("KM-CORP-RM-MEETING", 4, ["skill-customer-meeting-script"]),
-    "PRE_VISIT_PREPARATION": ("KM-CORP-RM-PREVISIT", 3, ["skill-customer-previsit-report"]),
+    # task -> (mapId, mapVersion, assetCount, skillRefs)
+    # PREVISIT 为 1.0.1 / 7 条：1.0.0 时误只列 3 条（属 _run_supply_chain 的读取集），
+    # 受治理内容变更故升版本；逐技能一致性由 test_control_plane_consistency.py 机械核对。
+    "OUTREACH_PREPARATION": ("KM-CORP-RM-OUTREACH", "1.0.0", 3,
+                             ["skill-customer-outreach-script"]),
+    "MEETING_PREPARATION": ("KM-CORP-RM-MEETING", "1.0.0", 4,
+                            ["skill-customer-meeting-script"]),
+    "PRE_VISIT_PREPARATION": ("KM-CORP-RM-PREVISIT", "1.0.1", 7,
+                              ["skill-customer-previsit-report"]),
 }
 
 HASH_RE = re.compile(r"^[0-9a-f]{16}$")
@@ -64,12 +70,12 @@ def _write_policy(ws: Path, rules: list[dict]) -> None:
 # --------------------------------------------------------------------------- #
 
 def test_real_workspace_builds_plan_for_each_task():
-    for task, (map_id, asset_count, skills) in REAL_TASKS.items():
+    for task, (map_id, map_version, asset_count, skills) in REAL_TASKS.items():
         plan = ActivationPlanBuilder.load(REAL_WS).build(task, subject_id="CUST-0001")
         assert isinstance(plan, ActivationPlan), f"{task} 应产出计划，实际 {plan}"
         assert HASH_RE.match(plan.plan_hash), plan.plan_hash
         assert plan.plan_id == plan_id_for(task, plan.plan_hash)
-        assert plan.map_key == f"{map_id}@1.0.0"
+        assert plan.map_key == f"{map_id}@{map_version}"
         assert plan.policy_key == "RP-KERT-BANKFRONT-001@1.0.0"
         assert len(plan.assets) == asset_count, [a.asset_id for a in plan.assets]
         assert list(plan.skills) == skills
@@ -78,7 +84,7 @@ def test_real_workspace_builds_plan_for_each_task():
         assert plan.versions["activationContract"] is None
         # 本体引用槽位自 M7.3 第三步起填入**真实声明值**（见本文件"本体引用"一节）
         assert plan.versions["ontology"] == ONTOLOGY_VERSION_A
-        assert plan.versions["knowledgeMap"] == f"{map_id}@1.0.0"
+        assert plan.versions["knowledgeMap"] == f"{map_id}@{map_version}"
         assert plan.versions["routePolicy"] == "RP-KERT-BANKFRONT-001@1.0.0"
 
 
@@ -206,7 +212,11 @@ def test_plan_to_dict_shape_is_stable():
     assert list(d.keys()) == ["schema", "planId", "taskType", "subjectId", "routeReason",
                               "versions", "assets", "skills", "planHash"]
     assert d["schema"] == "activation_plan/v1"
-    assert [a["sequence"] for a in d["assets"]] == [1, 2, 3]
+    # 断言**不变量**而非字面量：sequence 必须 1..N 连续且从 1 起
+    # （原写死 [1, 2, 3]，曾把 PREVISIT 只有 3 条资产的缺陷一起"背书"住了）
+    seqs = [a["sequence"] for a in d["assets"]]
+    assert seqs, "计划必须携带资产"
+    assert seqs == list(range(1, len(seqs) + 1)), seqs
     assert d["skills"] == sorted(d["skills"])
 
 

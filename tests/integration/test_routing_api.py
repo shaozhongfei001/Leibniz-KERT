@@ -103,12 +103,13 @@ def test_unknown_map_returns_404(client):
 # 路由裁决与激活计划
 # --------------------------------------------------------------------------- #
 
-@pytest.mark.parametrize(("task", "map_id"), [
-    ("OUTREACH_PREPARATION", "KM-CORP-RM-OUTREACH"),
-    ("MEETING_PREPARATION", "KM-CORP-RM-MEETING"),
-    ("PRE_VISIT_PREPARATION", "KM-CORP-RM-PREVISIT"),
+@pytest.mark.parametrize(("task", "map_id", "map_version"), [
+    ("OUTREACH_PREPARATION", "KM-CORP-RM-OUTREACH", "1.0.0"),
+    ("MEETING_PREPARATION", "KM-CORP-RM-MEETING", "1.0.0"),
+    # 1.0.1：修正 assetRefs（原只列 3 条，属 _run_supply_chain 的读取集）
+    ("PRE_VISIT_PREPARATION", "KM-CORP-RM-PREVISIT", "1.0.1"),
 ])
-def test_plan_allowed_for_each_task(client, task, map_id):
+def test_plan_allowed_for_each_task(client, task, map_id, map_version):
     r = client.post("/v1/routing/plan", json={"taskType": task, "subjectId": "CUST-0001"})
     assert r.status_code == 200
     data = r.json()["data"]
@@ -117,7 +118,7 @@ def test_plan_allowed_for_each_task(client, task, map_id):
     # 地图键在 versions.knowledgeMap（`to_dict()` 不重复输出 mapKey —— 与合同一致）
     assert "mapKey" not in plan
     assert plan["planId"].startswith("AP-KERT-" + task)
-    assert plan["versions"]["knowledgeMap"] == f"{map_id}@1.0.0"
+    assert plan["versions"]["knowledgeMap"] == f"{map_id}@{map_version}"
     assert plan["versions"]["routePolicy"] == "RP-KERT-BANKFRONT-001@1.0.0"
     assert plan["versions"]["ontology"] == ONTOLOGY_VERSION
     assert plan["versions"]["activationContract"] is None

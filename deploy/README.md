@@ -81,6 +81,12 @@ KERT_API_KEYS=gits-caller:$(openssl rand -hex 24):read|execute,ops-admin:$(opens
 > **安全警告**：`CHANGE_ME_AT_LEAST_16_CHARS` 是占位值，生产 profile 会拒绝启动。
 > 建议用 `openssl rand -hex 24` 生成。
 
+**控制面供给（M7.3 P2）**：`KERT_CONTROL_PLANE_SOURCE` 指向**容器内**的控制面元数据源
+（默认 `/app/examples/bank-front-knowledge-maps`，镜像已自带）。compose 会先跑一次性任务
+`provision` 把它装入 workspace；**未声明该变量则 compose 直接失败** ——
+这是 fail-closed 的部署前置：未供给的工作区会让三个 customer-engagement 技能**全部拒绝**
+（表现是"服务健康、业务全挂"，比起不来更难排查）。
+
 ### 3. 构建与启动
 
 ```bash
@@ -94,11 +100,25 @@ docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d
 docker compose -f deploy/docker-compose.yml ps
 ```
 
+`up -d` 会**先**执行一次性任务 `provision`（控制面供给，**幂等**：内容未变不改写，
+源内任一份定义非法则**一份都不写**），`api` 在其成功后启动，`worker` 再等 `api` 健康。
+"忘了供给"因此不会变成运行时故障，而是部署阶段就暴露。
+
+手动重跑供给（可随时执行，幂等）：
+
+```bash
+make deploy-provision    # 等价于 docker compose -f deploy/docker-compose.yml --env-file deploy/.env run --rm provision
+```
+
 ### 4. 验证部署
 
 ```bash
 # 快速检查
 curl http://localhost:8106/livez
+
+# 控制面是否真的供给成功？（需带 API Key；生产 profile 强制认证）
+curl -H "X-API-Key: <key_id>:<secret>" http://localhost:8106/v1/knowledge-maps
+# 期望 data.count > 0；count=0 说明供给未生效（此时路由按 fail-closed 默认拒绝）
 
 # 完整验证
 python deploy/verify_deployment.py

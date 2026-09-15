@@ -19,7 +19,7 @@ BASE_URL     = http://localhost:8106
 
 # ---------- 部署目标 ----------
 
-.PHONY: deploy-build deploy-up deploy-down deploy-logs deploy-backup deploy-restore deploy-smoke-test deploy-verify
+.PHONY: deploy-build deploy-up deploy-down deploy-logs deploy-backup deploy-restore deploy-provision deploy-smoke-test deploy-verify
 
 deploy-build: ## 构建 Docker 镜像
 	docker compose -f $(COMPOSE_FILE) build
@@ -43,6 +43,9 @@ deploy-restore: ## 从备份恢复（需 BACKUP= 参数）
 		echo "错误：BACKUP 和 TARGET 参数均为必填" >&2; exit 1; \
 	fi
 	python scripts/kert_ops.py restore --backup "$(BACKUP)" --target "$(TARGET)"
+
+deploy-provision: ## 手动重跑控制面供给（幂等；通常由 api/worker 的 depends_on 自动执行）
+	docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) run --rm provision
 
 deploy-smoke-test: ## 冒烟测试（构建→启动→健康检查→Skill测试→停止）
 	bash deploy/smoke_test.sh
