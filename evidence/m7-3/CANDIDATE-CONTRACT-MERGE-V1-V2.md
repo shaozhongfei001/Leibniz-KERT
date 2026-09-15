@@ -1,5 +1,8 @@
 # 候选方案：v1 ↔ v2 契约归并（冲突 C-20 收口）
 
+> **行号说明（2026-09-16，D-8；TL 授权仅加本句）**：本文件内所有行号引用（`v1:NNN` / `server.py:NNN`）均系**该时点快照**；
+> 此后 spec 净 **+166/−5**（本批增删），且 `server.py` 另有 **+2 / +28** 分段位移 ⇒ **勿按固定偏移换算**。
+
 ```text
 TASK_ID     : M7-CLOSURE-C20-CONTRACT-MERGE-CANDIDATE
 TASK_PACKAGE: evidence/m7-3/TASK_PACKAGE_C20-CONTRACT-MERGE-CANDIDATE.md
