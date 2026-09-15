@@ -1,0 +1,36 @@
+{
+  "schema": "knowledge_sources/v1",
+  "version": "1.0.0",
+  "title": "企业客户经理 · 知识源能力清单与资产引用绑定（M7.1-A 第一片）",
+  "capabilities": [
+    {
+      "capabilityId": "KS-CUSTOMER-KI-PARQUET",
+      "title": "客户知识条目读取（04_serve Parquet 投影 · segments）",
+      "sourceKind": "PARQUET_PROJECTION",
+      "declaredTypes": ["KNOWLEDGE_ITEM_TEXT"],
+      "readContract": {
+        "serviceId": "customer_knowledge",
+        "table": "segments.parquet",
+        "requires": ["documentId"],
+        "assetMatch": {
+          "field": "heading_path[0]",
+          "pattern": "^(?P<assetRefId>KI-[\\w-]+)\\s+(?P<title>.+)$"
+        }
+      },
+      "freshnessSource": "04_serve/customer_knowledge/CURRENT.md#target_version",
+      "version": "1.0.0",
+      "failClosed": true,
+      "enabled": true
+    }
+  ],
+  "bindings": [
+    {"assetRefId": "KI-009", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "priority": 10},
+    {"assetRefId": "KI-FRONT-001", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "priority": 10},
+    {"assetRefId": "KI-FRONT-002", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "priority": 10},
+    {"assetRefId": "KI-FRONT-003", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "priority": 10},
+    {"assetRefId": "KI-FRONT-004", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "priority": 10},
+    {"assetRefId": "KI-FRONT-005", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "priority": 10},
+    {"assetRefId": "KI-FRONT-006", "capabilityId": "KS-CUSTOMER-KI-PARQUET", "priority": 10}
+  ],
+  "notes": "本文件是**读取绑定**声明（control-plane schema 层），不是资产语义定义：它只回答『某个资产引用该用哪个读取能力』，不定义资产含义（D3-A：KERT 不建立第二份本体/语义权威）。assetRefId 指**计划资产引用**（ActivationPlan.assets[].asset_id / 知识地图 assetRefs[].assetId），与管道资产台账 asset_catalog/v1 的主键 asset_id（src/kert/domain/contracts/specs.py:395-418，落 90_control/catalog/<asset_id>.md）是**两套不同含义**，不可互换。assetMatch.pattern 逐字等价于现状隐式约定 src/kert/application/customer_knowledge.py:31 的 ^(KI-[\\w-]+)\\s+(.+)$，此处仅把分组命名化（assetRefId/title）以便机械校验；pattern 未命中或不一致一律具名拒绝（KNOWLEDGE_SOURCE_ASSET_REF_UNMATCHED），不得静默跳过。本文件**不得**放入 90_control/catalog/（该目录已被 KM-*.json 与 asset_catalog 的 *.md 占用）。第一片不实现真实读取，readContract.freshnessSource 只是声明『新鲜度从哪里取』，运行期不判定。"
+}
