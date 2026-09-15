@@ -20,7 +20,7 @@ typer = pytest.importorskip("typer")
 from typer.testing import CliRunner  # noqa: E402
 
 from kert.cli.main import app as cli_app  # noqa: E402
-from kert.domain.errors import SchemaValidationError  # noqa: E402
+from kert.domain.errors import SchemaValidationError, UsageError  # noqa: E402
 from kert.domain.workspace import init_workspace  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -86,3 +86,43 @@ def test_invalid_source_fails_closed(target, source_copy):
     assert isinstance(r.exception, SchemaValidationError)
     assert list((target / CATALOG).glob("KM-*.json")) == []
     assert list((target / SCHEMA_DIR).glob("*.json")) == []
+
+
+# --------------------------------------------------------------------------- #
+# `--init`：容器化首次部署的空卷（编排依赖此行为；起因是冒烟实测 provision 失败）
+# --------------------------------------------------------------------------- #
+
+def test_init_flag_initializes_fresh_volume_then_provisions(tmp_path):
+    ws = tmp_path / "fresh"          # 不存在（等价于首次挂载的空卷）
+    r = _run(["provision", "-w", str(ws), "-s", str(SOURCE), "--init"])
+    assert r.exit_code == 0, r.output
+    assert "已初始化工作区" in r.output
+    assert (ws / ".kert_workspace").is_file()
+    assert len(list((ws / CATALOG).glob("KM-*.json"))) == 3
+
+    # 已初始化 ⇒ no-op，且照常幂等供给
+    r2 = _run(["provision", "-w", str(ws), "-s", str(SOURCE), "--init"])
+    assert r2.exit_code == 0, r2.output
+    assert "跳过 init" in r2.output
+    assert "新建 0 / 覆盖 0 / 未变 5" in r2.output
+
+
+def test_without_init_flag_uninitialized_target_fails_closed(tmp_path):
+    """不带 ``--init`` ⇒ 目标未初始化即报错，**不隐式创建**。"""
+    ws = tmp_path / "fresh2"
+    r = _run(["provision", "-w", str(ws), "-s", str(SOURCE)])
+    assert r.exit_code != 0
+    assert isinstance(r.exception, UsageError)
+
+
+def test_init_flag_refuses_nonempty_uninitialized_dir(tmp_path):
+    """非空且未初始化 ⇒ 仍按既有纪律报错，**不静默改写**他人在用目录。"""
+    ws = tmp_path / "notempty"
+    ws.mkdir()
+    (ws / "keep.txt").write_text("运维在用", encoding="utf-8")
+
+    r = _run(["provision", "-w", str(ws), "-s", str(SOURCE), "--init"])
+    assert r.exit_code != 0
+    assert isinstance(r.exception, UsageError)
+    assert (ws / "keep.txt").read_text(encoding="utf-8") == "运维在用"
+    assert not (ws / ".kert_workspace").exists()

@@ -15,19 +15,35 @@ ENV PIP_NO_CACHE_DIR=1 \
 
 WORKDIR /build
 
+# 可选：pip 索引源。**默认留空 ⇒ 行为与原来完全一致**（用 pip 默认 PyPI）。
+# 在到 PyPI 慢/受限的构建环境里传入可避免拉大包（pyarrow 等）超时导致
+# `Could not find a version ... (from versions: none)`：
+#   PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple make deploy-build
+# 由 compose 的 build.args 透传（见 deploy/docker-compose.yml）。
+ARG PIP_INDEX_URL=""
+
 # 先装依赖再拷源码：依赖层可被缓存复用，源码改动不触发重装
 COPY pyproject.toml README.md ./
 COPY src ./src
 
 RUN python -m venv /opt/venv \
-    && /opt/venv/bin/pip install --upgrade pip setuptools wheel \
-    && /opt/venv/bin/pip install ".[api]"
+    && /opt/venv/bin/pip install ${PIP_INDEX_URL:+--index-url="$PIP_INDEX_URL"} --upgrade pip setuptools wheel \
+    && /opt/venv/bin/pip install ${PIP_INDEX_URL:+--index-url="$PIP_INDEX_URL"} ".[api]"
 
 # ---------- runtime ----------
 FROM python:3.12-slim AS runtime
 
+# 可选：Debian apt 源根（**默认留空 ⇒ 行为与原来完全一致**，用 deb.debian.org）。
+# 在到 deb.debian.org 很慢的环境里传入可显著缩短构建（实测本机 541s 才下 ~500KB）：
+#   APT_MIRROR=https://mirrors.tuna.tsinghua.edu.cn make deploy-build
+# 由 compose 的 build.args 透传（见 deploy/docker-compose.yml）。
+ARG APT_MIRROR=""
+
 # 运行期不需要编译工具链，仅保留 curl 供健康检查使用
-RUN apt-get update \
+RUN if [ -n "$APT_MIRROR" ]; then \
+        sed -i "s|http://deb.debian.org/|$APT_MIRROR/|g" /etc/apt/sources.list.d/debian.sources; \
+    fi \
+    && apt-get update \
     && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid 10001 kert \

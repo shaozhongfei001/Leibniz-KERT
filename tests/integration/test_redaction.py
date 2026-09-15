@@ -24,6 +24,16 @@ CREDIT_CODE = "91310000MA1K35Q12X"
 SKILL_ID = "skill-customer-outreach-script"
 
 
+@pytest.fixture
+def ws(ws_provisioned):
+    """本文件**遮蔽**全局 ``ws``：技能执行需要已供给控制面的工作区（M7.3 ⑤b-full）。
+
+    ⑤b-full 起 customer-engagement 技能按**计划**读取资产、计划被拒即拒绝执行，
+    故凡执行这些技能的用例都必须用已供给工作区。
+    """
+    return ws_provisioned
+
+
 @pytest.fixture(autouse=True)
 def _clean_registry():
     """清理进程级指标注册表，避免跨用例污染。"""

@@ -21,6 +21,25 @@ def ws(tmp_path):
     return tmp_path
 
 
+#: 受控控制面元数据源（知识地图 / 路由策略 / 本体引用）。
+CONTROL_PLANE_SOURCE = Path(__file__).resolve().parent.parent / "examples" / "bank-front-knowledge-maps"
+
+
+@pytest.fixture
+def ws_provisioned(ws):
+    """已在 ``ws`` 上供给控制面的工作区。
+
+    M7.3 ⑤b-full 起，customer-engagement 三个技能**按计划**读取资产，且**计划被拒即拒绝
+    执行**（fail-closed）⇒ 任何执行这三个技能的测试都必须用**已供给**的工作区；
+    未供给得到的是拒绝，那本身是有意义的用例，见
+    ``tests/integration/test_skill_routing_trace.py`` 的未供给/无工作区用例。
+    """
+    from kert.application.provision import provision_control_plane
+
+    provision_control_plane(ws, CONTROL_PLANE_SOURCE)
+    return ws
+
+
 @pytest.fixture
 def proj_version():
     """返回读取活动服务投影版本的函数（避免测试硬编码日期）。"""

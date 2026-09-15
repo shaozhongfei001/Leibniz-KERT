@@ -31,17 +31,21 @@ KI_IDS = ["KI-009", "KI-FRONT-001", "KI-FRONT-002", "KI-FRONT-003",
 
 
 @pytest.fixture
-def svc():
-    """无工作区服务：无客户知识库 → 证据全 skipped（fail-open 不阻塞）。"""
-    return SkillExecutionService()
+def svc(ws_provisioned):
+    """已供给控制面但**未种客户知识**的服务：证据全 skipped（fail-open 不阻塞）。
+
+    ⑤b-full 起技能按**计划**读取资产且计划被拒即拒绝执行，故必须已供给控制面；
+    本夹具的用意仍是"无客户知识"（证据 skipped），不是"无工作区"。
+    """
+    return SkillExecutionService(ws_provisioned)
 
 
 @pytest.fixture
-def ws_seeded(ws):
-    """已种入 CUST-CORP-0001 客户知识（customer_knowledge 投影）的工作区。"""
+def ws_seeded(ws_provisioned):
+    """已供给控制面 + 已种入 CUST-CORP-0001 客户知识（customer_knowledge 投影）的工作区。"""
     from scripts.seed_customer_knowledge import seed_customer_knowledge
-    seed_customer_knowledge(ws, quiet=True)
-    return ws
+    seed_customer_knowledge(ws_provisioned, quiet=True)
+    return ws_provisioned
 
 
 @pytest.fixture
@@ -58,10 +62,20 @@ class TestRegistry:
             "skill-customer-outreach-script",
             "skill-customer-meeting-script",
             "skill-customer-previsit-report",
+            "SP-15",  # 需要工作区才能加载契约资产；无工作区时注册表不含它
             "SP-20",
             "SP-21",
         }
-        assert all(s.version == "1.0.0" for s in reg.values())
+        # 逐技能钉版本（比 all(...=="1.0.0") 更严格，且如实反映 SP-15 的候选版本；
+        # SP-15 的 2.0.0-candidate 由 test_sp15_skill_registration.py 专门覆盖）
+        assert {s.skill_id: s.version for s in reg.values()} == {
+            "skill-customer-outreach-script": "1.0.0",
+            "skill-customer-meeting-script": "1.0.0",
+            "skill-customer-previsit-report": "1.0.0",
+            "SP-15": "2.0.0-candidate",
+            "SP-20": "1.0.0",
+            "SP-21": "1.0.0",
+        }
 
 
 class TestExecute:
@@ -117,8 +131,8 @@ class TestExecute:
 
 
 @pytest.fixture
-def client(ws):
-    app = create_app(ws)
+def client(ws_provisioned):
+    app = create_app(ws_provisioned)
     return TestClient(app)
 
 
@@ -166,9 +180,9 @@ class TestApi:
 
 
 class TestKertCollaboration:
-    def test_kert_skipped_without_customer_knowledge(self, ws):
+    def test_kert_skipped_without_customer_knowledge(self, ws_provisioned):
         """无 customer_knowledge 投影 → kert skipped（fail-open，不阻塞执行）。"""
-        svc = SkillExecutionService(ws)
+        svc = SkillExecutionService(ws_provisioned)
         r = svc.execute("skill-customer-outreach-script", "t-fo-1", OUTREACH_REQ)
         assert r.status == "ok"
         assert any(t.get("phase") == "kert" and t.get("status") == "skipped"

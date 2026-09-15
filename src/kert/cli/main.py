@@ -107,14 +107,29 @@ def provision_cmd(
     output: str = typer.Option("text", "--output", help=_COMMON),
     dry_run: bool = typer.Option(False, "--dry-run",
                                  help="仅展示将新建/覆盖的文件，不落盘"),
+    init_if_needed: bool = typer.Option(
+        False, "--init",
+        help="目标工作区未初始化时先执行 init（幂等；已初始化则 no-op）"),
 ):
     """供给控制面元数据（知识地图 / 路由策略 / 本体引用）到工作区（M7.3 第五步）。
 
     先全量校验源，再逐份原子写入；源内任一份定义非法则**一份都不写**。
+
+    部署注意：供给**要求目标工作区已初始化**（缺初始化则就地报错，不隐式创建）。
+    容器化首次部署的空卷正是这种情况，故编排里带 ``--init``：已初始化则 no-op，
+    非空且未初始化仍按既有纪律**报错**（不静默改写他人在用目录）。
     """
     from ..application.provision import provision_control_plane
 
-    result = provision_control_plane(Path(workspace_path), Path(source),
+    ws_path = Path(workspace_path)
+    if init_if_needed:
+        init_result = ws_mod.init_workspace(ws_path)
+        if init_result.already_initialized:
+            typer.echo(f"工作区已初始化，跳过 init: {ws_path}")
+        else:
+            typer.echo(f"已初始化工作区: {ws_path}")
+
+    result = provision_control_plane(ws_path, Path(source),
                                      dry_run=dry_run, by=by)
     data = result.to_dict()
     counts = result.counts()

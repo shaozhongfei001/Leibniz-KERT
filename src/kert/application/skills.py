@@ -531,10 +531,14 @@ class SkillExecutionService:
             parts.append(f"【{kid} {title}】\n{ki[kid]['content']}")
         return "\n\n".join(parts)
 
-    def _ki_sections(self, ki: dict) -> list[dict]:
-        """每个命中的 KI 出一节（heading 含 KI 编号与稳定标题，content 为库中原文）。"""
+    def _ki_sections(self, ki: dict, only: tuple[str, ...] | None = None) -> list[dict]:
+        """每个命中的 KI 出一节（heading 含 KI 编号与稳定标题，content 为库中原文）。
+
+        ``only`` 给出**计划给定的**资产序列；不给则退回契约顺序（既有行为）。
+        """
+        ids = only or tuple(k for k, _ in self._KI_ITEMS)
         return [{"heading": f"{kid} {ki[kid]['title']}", "content": ki[kid]["content"]}
-                for kid, _ in self._KI_ITEMS if kid in ki]
+                for kid in ids if kid in ki]
 
     # ---------------- Skill 执行器 ----------------
 
@@ -625,48 +629,52 @@ class SkillExecutionService:
 
     # ---------------- 知识组装轨迹（KI 级，供 gits 控制台展示）----------------
 
-    def _trace_knowledge_map(self, trace: list[dict], expected_map_id: str,
-                             task: str) -> None:
-        """进入知识地图步骤（v1.5：**按计划如实记录**）。
+    def _route_plan(self, trace: list[dict], expected_map_id: str, task: str):
+        """解析知识路由计划并记录 trace；**被拒即拒绝执行**（M7.3 ⑤b-full，(A) 口径）。
 
-        接线范围（**仅可观测性**，不改变技能读取哪些知识条目）：
-        把"技能进了哪张地图"从硬编码叙述变成**可核验事实**——记录**解析出的**地图、
-        版本快照与 ``planHash``（与 ``/v1/routing/plan`` 同源同值）。
+        返回 ``ActivationPlan``；其 ``assets``（= 地图 ``assetRefs``，按 ``sequence``）
+        决定本技能读取哪些知识条目 —— **技能读什么由控制面决定，而非源码字面量**。
 
-        三种结果，**一律不回落**到 ``expected_map_id``：回落会把"未获准"或"选错地图"
-        伪装成正常路径，恰好是 trace 存在的意义所在。
+        fail-closed：以下情形一律 :class:`SkillError`，**不回落**到任何硬编码清单：
+        工作区未配置 / 控制面解析异常 / 计划被拒（策略缺失、任务未映射、同优先级歧义、
+        地图未注册、策略错配、本体引用缺失或非法）。
 
-        - 解析成功 ⇒ ``status=ok``，附 ``mapId`` / ``planHash`` / ``versions``；
-          若解析结果与 ``expected_map_id`` 不一致，额外置 ``mapMismatch=True``（意味着
-          本技能组装的知识条目并非计划所选地图的条目，需人工核对）；
-        - 计划被拒 ⇒ ``status=blocked`` + 拒绝码（``ROUTE_*`` / ``KNOWLEDGE_MAP_*`` /
-          ``ONTOLOGY_REFERENCE_*``）；
-        - 工作区未配置或解析异常 ⇒ ``status=blocked`` + ``ROUTE_UNRESOLVED``。
+        错误码用合同中**既有**的 ``KERT_PERMISSION_DENIED``（"权限不允许"），具体路由
+        拒绝码放 ``detail.routeCode`` —— 避免为本次接线单方面扩合同错误码枚举。
 
-        ``status`` 沿用 trace 既有词表（ok/skipped/blocked/failed），**不新增**枚举值。
+        ⚠ 注意：本方法**不**升级 ``required`` 语义（(B) 子决策未实施）：``required: false``
+        的资产缺失不会导致拒绝，evidence 的 ok/skipped 仍只反映知识库取数情况（v1.3 纪律）。
         """
         if self.workspace is None:
             trace.append({"phase": "evidence", "status": "blocked",
                           "errorCode": "ROUTE_UNRESOLVED",
                           "message": f"未解析知识地图（{task}）：工作区未配置"})
-            return
+            raise SkillError("KERT_PERMISSION_DENIED",
+                             f"无工作区，无法解析知识地图路由（{task}）",
+                             detail={"task": task, "routeCode": "ROUTE_UNRESOLVED"})
         try:
             decision = ActivationPlanBuilder.load(self.workspace).build(task)
-        except Exception as exc:  # noqa: BLE001 —— 解析失败不得中断技能执行
+        except Exception as exc:  # noqa: BLE001 —— 解析失败一律拒绝，不得回落硬编码
             trace.append({"phase": "evidence", "status": "blocked",
                           "errorCode": "ROUTE_UNRESOLVED",
                           "message": f"未解析知识地图（{task}）：{exc}"})
-            return
+            raise SkillError("KERT_PERMISSION_DENIED",
+                             f"知识地图路由解析失败（{task}）：{exc}",
+                             detail={"task": task, "routeCode": "ROUTE_UNRESOLVED"}) from exc
         if isinstance(decision, PlanDenial):
             trace.append({"phase": "evidence", "status": "blocked",
                           "errorCode": decision.code,
                           "message": f"知识地图未获准（{task}）：{decision.code}——{decision.reason}"})
-            return
+            raise SkillError("KERT_PERMISSION_DENIED",
+                             f"知识地图未获准（{task}）：{decision.code}——{decision.reason}",
+                             detail={"task": task, "routeCode": decision.code,
+                                     "routeReason": decision.reason})
 
         resolved = decision.versions.get("knowledgeMap") or ""
         resolved_id = resolved.split("@", 1)[0]
         entry = {"phase": "evidence", "status": "ok", "mapId": resolved_id,
                  "planHash": decision.plan_hash, "versions": dict(decision.versions),
+                 "assets": [a.asset_id for a in decision.assets],
                  "message": f"按计划进入知识地图 {resolved or resolved_id}，任务 {task}"}
         if resolved_id != expected_map_id:
             entry["mapMismatch"] = True
@@ -674,6 +682,19 @@ class SkillExecutionService:
             entry["message"] += (f"（注意：本技能按 {expected_map_id} 组装知识条目，"
                                  f"与计划所选 {resolved_id} 不一致，需核对）")
         trace.append(entry)
+        return decision
+
+    @staticmethod
+    def _plan_assets(decision) -> tuple[str, ...]:
+        """计划给定的资产 id 序列（按 ``sequence``，即地图 ``assetRefs`` 顺序）。"""
+        return tuple(a.asset_id for a in decision.assets)
+
+    def _ki_title(self, ki_id: str) -> str:
+        """KI 编号 → 稳定标题（取自 ``customer_knowledge.KI_ITEMS``；未知则回落编号本身）。"""
+        for kid, title in self._KI_ITEMS:
+            if kid == ki_id:
+                return title
+        return ki_id
 
     @staticmethod
     def _trace_ki(trace: list[dict], ki_id: str, name: str, ok: bool) -> None:
@@ -693,12 +714,13 @@ class SkillExecutionService:
 
     def _run_outreach(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
         customer_id = request.get("customerId") or ""
-        self._trace_knowledge_map(trace, "KM-CORP-RM-OUTREACH", "OUTREACH_PREPARATION")
+        # ⑤b-full (A)：资产清单由**计划**给出（地图 assetRefs），计划被拒即拒绝执行
+        plan = self._route_plan(trace, "KM-CORP-RM-OUTREACH", "OUTREACH_PREPARATION")
+        assets = self._plan_assets(plan)
         ki = self._load_ki(customer_id, trace)
-        self._trace_ki(trace, "KI-009", "企业客户基本信息", "KI-009" in ki)
-        self._trace_ki(trace, "KI-FRONT-004", "事实承诺事项 / 沟通话术", "KI-FRONT-004" in ki)
-        self._trace_ki(trace, "KI-FRONT-006", "产品候选组合", "KI-FRONT-006" in ki)
-        context = self._ki_context(ki)
+        for kid in assets:
+            self._trace_ki(trace, kid, self._ki_title(kid), kid in ki)
+        context = self._ki_context(ki, only=list(assets))
         system = ("你是资深客户经理的外联脚本助手。基于客户知识库取数的客户事实生成外联脚本。"
                   "纪律：只使用知识库事实，不得臆造；输出必须为合法 JSON。"
                   '输出 JSON 结构：{"scriptTitle":"string","sections":[{"heading":"string","content":"string"}],'
@@ -725,13 +747,13 @@ class SkillExecutionService:
 
     def _run_meeting(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
         customer_id = request.get("customerId") or ""
-        self._trace_knowledge_map(trace, "KM-CORP-RM-MEETING", "MEETING_PREPARATION")
+        # ⑤b-full (A)：资产清单由**计划**给出（地图 assetRefs），计划被拒即拒绝执行
+        plan = self._route_plan(trace, "KM-CORP-RM-MEETING", "MEETING_PREPARATION")
+        assets = self._plan_assets(plan)
         ki = self._load_ki(customer_id, trace)
-        self._trace_ki(trace, "KI-009", "企业客户基本信息", "KI-009" in ki)
-        self._trace_ki(trace, "KI-FRONT-004", "事实承诺事项 / 沟通话术", "KI-FRONT-004" in ki)
-        self._trace_ki(trace, "KI-FRONT-005", "KYC 信息缺口", "KI-FRONT-005" in ki)
-        self._trace_ki(trace, "KI-FRONT-006", "产品候选组合", "KI-FRONT-006" in ki)
-        context = self._ki_context(ki)
+        for kid in assets:
+            self._trace_ki(trace, kid, self._ki_title(kid), kid in ki)
+        context = self._ki_context(ki, only=list(assets))
         system = ("你是资深客户经理的会面脚本助手。基于客户知识库取数的客户事实生成会面脚本。"
                   "纪律：敏感点如实呈现，不回避不臆造；输出必须为合法 JSON。"
                   '输出 JSON 结构：{"agenda":[{"time":"string","topic":"string"}],'
@@ -759,12 +781,13 @@ class SkillExecutionService:
 
     def _run_previsit(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
         customer_id = request.get("customerId") or ""
-        self._trace_knowledge_map(trace, "KM-CORP-RM-PREVISIT", "PRE_VISIT_PREPARATION")
+        plan = self._route_plan(trace, "KM-CORP-RM-PREVISIT", "PRE_VISIT_PREPARATION")
+        assets = self._plan_assets(plan)
         ki = self._load_ki(customer_id, trace)
-        for kid, name in self._KI_ITEMS:
-            self._trace_ki(trace, kid, name, kid in ki)
+        for kid in assets:
+            self._trace_ki(trace, kid, self._ki_title(kid), kid in ki)
 
-        context = self._ki_context(ki)
+        context = self._ki_context(ki, only=list(assets))
         system = ("你是资深客户经理的 R1 访前报告助手。基于客户知识库取数生成拜访报告。"
                   "纪律：只使用知识库事实，不臆造；输出必须为合法 JSON。"
                   '输出 JSON 结构：{"reportTitle":"string","executiveSummary":"string",'
@@ -781,12 +804,12 @@ class SkillExecutionService:
             trace.append({"phase": "parse", "status": "failed", "message": "输出结构校验失败"})
             raise ValueError("输出结构校验失败（fail-closed）")
         refs = (data.get("evidenceRefs") or []) + \
-            [{"id": kid, "summary": f"{ki[kid]['title']}（KERT 知识库）"} for kid, _ in self._KI_ITEMS if kid in ki]
+            [{"id": kid, "summary": f"{ki[kid]['title']}（KERT 知识库）"} for kid in assets if kid in ki]
         return {
             "reportTitle": data.get("reportTitle"),
             "executiveSummary": data["executiveSummary"],
             # 每个命中的 KI 必须有一节：heading 含 KI 编号与稳定标题，content 为库中原文
-            "sections": self._ki_sections(ki),
+            "sections": self._ki_sections(ki, only=assets),
             "evidenceRefs": refs,
         }, model_call
 

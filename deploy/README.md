@@ -104,6 +104,9 @@ docker compose -f deploy/docker-compose.yml ps
 源内任一份定义非法则**一份都不写**），`api` 在其成功后启动，`worker` 再等 `api` 健康。
 "忘了供给"因此不会变成运行时故障，而是部署阶段就暴露。
 
+该任务带 `--init`：首次部署的空卷会先被初始化（`kert init`）；已初始化则 no-op；
+**非空且未初始化**仍按既有纪律报错（不静默改写他人在用的目录）。
+
 手动重跑供给（可随时执行，幂等）：
 
 ```bash
@@ -117,7 +120,9 @@ make deploy-provision    # 等价于 docker compose -f deploy/docker-compose.yml
 curl http://localhost:8106/livez
 
 # 控制面是否真的供给成功？（需带 API Key；生产 profile 强制认证）
-curl -H "X-API-Key: <key_id>:<secret>" http://localhost:8106/v1/knowledge-maps
+# 注意：X-API-Key 的值是**密钥本身（secret）**，不是 "key_id:secret"
+# （cpgk/runtime_config.verify 对 presented 做摘要比对，见 middleware.py:144）。
+curl -H "X-API-Key: <secret>" http://localhost:8106/v1/knowledge-maps
 # 期望 data.count > 0；count=0 说明供给未生效（此时路由按 fail-closed 默认拒绝）
 
 # 完整验证

@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 import jsonschema
+import pytest
 import yaml
 from fastapi.testclient import TestClient
 
@@ -21,7 +22,7 @@ if str(SRC) not in sys.path:
 
 from kert.api.server import create_app  # noqa: E402
 from kert.application.provision import provision_control_plane  # noqa: E402
-from kert.application.skills import SkillExecutionService  # noqa: E402
+from kert.application.skills import SkillError, SkillExecutionService  # noqa: E402
 
 SOURCE = Path(__file__).resolve().parents[2] / "examples" / "bank-front-knowledge-maps"
 CUSTOMER_ID = "CUST-CORP-0001"
@@ -42,16 +43,26 @@ def _route_entry(trace: list[dict]) -> dict:
 # 未供给：记 blocked，但技能照常完成（本步不改行为）
 # --------------------------------------------------------------------------- #
 
-def test_unprovisioned_workspace_records_blocked_but_skill_still_runs(ws):
+def test_unprovisioned_workspace_refuses_and_records_why(ws):
+    """未供给 ⇒ **拒绝执行**（fail-closed），且 trace 留下拒绝原因与拒绝码。
+
+    ⑤b-light 时此用例断言"技能照常完成、只记 blocked"；⑤b-full 后语义已变：
+    没有计划就没有资产清单，技能**不得**凭源码字面量继续读取 —— 这正是 (A) 的
+    fail-closed 含义。拒绝必须同时满足：不产出数据、不留半成品、原因可见。
+    """
     svc = SkillExecutionService(ws)
     r = svc.execute("skill-customer-outreach-script", "rt-1", OUTREACH_REQ)
 
-    assert r.status == "ok", (r.status, r.errors)      # 行为不变
+    assert r.status == "skill_error"
+    assert r.errors[0]["code"] == "KERT_PERMISSION_DENIED"
+    assert r.data == {}, "fail-closed：不得返回残缺数据"
+
     e = _route_entry(r.assembly_trace)
     assert e["status"] == "blocked"
     assert e["errorCode"] == "ROUTE_POLICY_ABSENT"
-    # 不回落硬编码：被拒时**不得**出现那张地图的名字
+    # 不回落硬编码：被拒时**不得**出现那张地图的名字，也不得读取任何知识条目
     assert "KM-CORP-RM-OUTREACH" not in json.dumps(e, ensure_ascii=False)
+    assert not [t for t in r.assembly_trace if t.get("kiId")], "被拒时不得读取任何 KI"
 
 
 # --------------------------------------------------------------------------- #
@@ -168,6 +179,7 @@ def test_map_mismatch_is_surfaced_not_hidden(ws):
 # --------------------------------------------------------------------------- #
 
 def test_ontology_denial_code_is_passed_through(ws):
+    """本体引用非法 ⇒ 计划被拒 ⇒ **拒绝执行**，且拒绝码原样透传（不吞成通用失败）。"""
     provision_control_plane(ws, SOURCE)
     ref = ws / "90_control" / "schema" / "ontology_reference.json"
     doc = json.loads(ref.read_text(encoding="utf-8"))
@@ -177,7 +189,8 @@ def test_ontology_denial_code_is_passed_through(ws):
     svc = SkillExecutionService(ws)
     r = svc.execute("skill-customer-outreach-script", "rt-6", OUTREACH_REQ)
 
-    assert r.status == "ok"
+    assert r.status == "skill_error"
+    assert r.errors[0]["code"] == "KERT_PERMISSION_DENIED"
     e = _route_entry(r.assembly_trace)
     assert e["status"] == "blocked"
     assert e["errorCode"] == "ONTOLOGY_REFERENCE_INVALID"
@@ -187,12 +200,16 @@ def test_ontology_denial_code_is_passed_through(ws):
 # 无工作区
 # --------------------------------------------------------------------------- #
 
-def test_no_workspace_records_unresolved():
+def test_no_workspace_refuses_and_records_unresolved():
+    """无工作区 ⇒ 拒绝（`ROUTE_UNRESOLVED`），具体路由码在 `detail.routeCode`。"""
     svc = SkillExecutionService()
     trace: list[dict] = []
-    svc._trace_knowledge_map(trace, "KM-CORP-RM-OUTREACH", "OUTREACH_PREPARATION")
 
-    assert len(trace) == 1
+    with pytest.raises(SkillError) as ei:
+        svc._route_plan(trace, "KM-CORP-RM-OUTREACH", "OUTREACH_PREPARATION")
+
+    assert ei.value.code == "KERT_PERMISSION_DENIED"
+    assert ei.value.detail["routeCode"] == "ROUTE_UNRESOLVED"
     assert trace[0]["phase"] == "evidence"
     assert trace[0]["status"] == "blocked"
     assert trace[0]["errorCode"] == "ROUTE_UNRESOLVED"

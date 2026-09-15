@@ -29,6 +29,10 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+      # 可选镜像源（空 ⇒ 用默认源，行为不变）；见 deploy/Dockerfile 的说明
+      args:
+        PIP_INDEX_URL: "${PIP_INDEX_URL:-}"
+        APT_MIRROR: "${APT_MIRROR:-}"
     image: kert-python-core:local
     container_name: kert-provision
     restart: "no"
@@ -38,6 +42,9 @@ services:
       - "/data/workspace"
       - "-s"
       - "${KERT_CONTROL_PLANE_SOURCE:?需在 .env 声明控制面元数据源（容器内路径，如 /app/examples/bank-front-knowledge-maps）}"
+      # 首次部署的空卷尚未初始化；--init 在未初始化时先 init（已初始化则 no-op，
+      # 非空且未初始化仍按纪律报错，不静默改写）
+      - "--init"
     volumes:
       - workspace:/data/workspace
     read_only: true
@@ -57,6 +64,10 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+      # 可选镜像源（空 ⇒ 用默认源，行为不变）；见 deploy/Dockerfile 的说明
+      args:
+        PIP_INDEX_URL: "${PIP_INDEX_URL:-}"
+        APT_MIRROR: "${APT_MIRROR:-}"
     image: kert-python-core:local
     container_name: kert-api
     restart: unless-stopped
@@ -109,6 +120,10 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+      # 可选镜像源（空 ⇒ 用默认源，行为不变）；见 deploy/Dockerfile 的说明
+      args:
+        PIP_INDEX_URL: "${PIP_INDEX_URL:-}"
+        APT_MIRROR: "${APT_MIRROR:-}"
     image: kert-python-core:local
     container_name: kert-worker
     restart: unless-stopped
@@ -154,6 +169,10 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+      # 可选镜像源（空 ⇒ 用默认源，行为不变）；见 deploy/Dockerfile 的说明
+      args:
+        PIP_INDEX_URL: "${PIP_INDEX_URL:-}"
+        APT_MIRROR: "${APT_MIRROR:-}"
     image: kert-python-core:local
     container_name: kert-backup
     # 覆盖镜像默认入口，执行备份命令
