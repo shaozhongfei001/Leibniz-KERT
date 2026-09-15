@@ -56,7 +56,7 @@ def _log(report: dict, name: str, passed: bool, detail: str) -> None:
 def _init_workspace(root: Path) -> Path:
     """初始化真实工作区。"""
     sys.path.insert(0, str(SRC))
-    from dkws.domain import workspace as ws_mod
+    from kert.domain import workspace as ws_mod
 
     if root.exists():
         shutil.rmtree(root)
@@ -95,7 +95,7 @@ def _wait_ready(proc: subprocess.Popen, timeout: float = 40.0) -> bool:
 
 def check_inventory(report: dict) -> None:
     """场景 1：分类清单可导出。"""
-    from dkws.infrastructure.classification import (
+    from kert.infrastructure.classification import (
         Classification,
         classification_inventory,
     )
@@ -117,7 +117,7 @@ def check_inventory(report: dict) -> None:
 
 def check_mask_styles(report: dict) -> None:
     """场景 2：掩码风格正确性。"""
-    from dkws.infrastructure.classification import MaskStyle, mask_value
+    from kert.infrastructure.classification import MaskStyle, mask_value
 
     cases = [
         (MOBILE, MaskStyle.TAIL, 4, "8000"),
@@ -150,7 +150,7 @@ def check_mask_styles(report: dict) -> None:
 
 def check_structure_redaction(report: dict) -> None:
     """场景 9 前置：结构脱敏与策略差异。"""
-    from dkws.infrastructure.classification import (
+    from kert.infrastructure.classification import (
         POLICY_API_RESPONSE,
         POLICY_LLM,
         RedactionReport,
@@ -206,8 +206,8 @@ def check_structure_redaction(report: dict) -> None:
 
 def check_llm_egress(report: dict) -> None:
     """场景 6-7：LLM 出站脱敏。"""
-    from dkws.application import skills as skills_mod
-    from dkws.infrastructure.adapters import llm as llm_mod
+    from kert.application import skills as skills_mod
+    from kert.infrastructure.adapters import llm as llm_mod
 
     captured: dict[str, str] = {}
 
@@ -223,7 +223,7 @@ def check_llm_egress(report: dict) -> None:
 
     original_create = llm_mod.create_llm_adapter
     original_is_external = skills_mod._is_external_adapter
-    workspace = Path("/tmp/dkws-m2p4-llm-ws")
+    workspace = Path("/tmp/kert-m2p4-llm-ws")
     _init_workspace(workspace)
     try:
         llm_mod.create_llm_adapter = lambda kind: _Recorder()
@@ -265,16 +265,16 @@ def _server_env(redact_response: bool) -> dict[str, str]:
     env = dict(os.environ)
     env.update({
         "PYTHONPATH": str(SRC),
-        "DKWS_PROFILE": "prod",
-        "DKWS_BIND_HOST": "127.0.0.1",
-        "DKWS_API_KEYS": f"svc:{API_KEY}:read|execute|admin",
-        "DKWS_RATE_LIMIT_ENABLED": "true",
-        "DKWS_RUNTIME_STORE_ENABLED": "true",
-        "DKWS_STRUCTURED_LOGS": "true",
-        "DKWS_REDACT_RESPONSE": "true" if redact_response else "false",
-        "DKWS_LLM_REDACTION": "true",
+        "KERT_PROFILE": "prod",
+        "KERT_BIND_HOST": "127.0.0.1",
+        "KERT_API_KEYS": f"svc:{API_KEY}:read|execute|admin",
+        "KERT_RATE_LIMIT_ENABLED": "true",
+        "KERT_RUNTIME_STORE_ENABLED": "true",
+        "KERT_STRUCTURED_LOGS": "true",
+        "KERT_REDACT_RESPONSE": "true" if redact_response else "false",
+        "KERT_LLM_REDACTION": "true",
     })
-    env.pop("DKWS_LLM_API_KEY", None)
+    env.pop("KERT_LLM_API_KEY", None)
     return env
 
 
@@ -308,7 +308,7 @@ def check_live_service(report: dict, workspace: Path, log_dir: Path) -> None:
             status, headers, text = _request("GET", "/metrics", key=API_KEY)
             _log(report, "non_json_passthrough",
                  status == 200 and "text/plain" in headers.get("content-type", "")
-                 and "dkws_" in text,
+                 and "kert_" in text,
                  "Prometheus 文本原样透传，未被 JSON 脱敏逻辑处理")
 
             status, _, body = _request("GET", "/livez")
@@ -331,7 +331,7 @@ def check_live_service(report: dict, workspace: Path, log_dir: Path) -> None:
 
 def check_internal_plaintext(report: dict, workspace: Path) -> None:
     """场景 9：内部产物保持明文，业务逻辑不受影响。"""
-    from dkws.application.skills import SkillExecutionService
+    from kert.application.skills import SkillExecutionService
 
     svc = SkillExecutionService(workspace)
     result = svc.execute("skill-customer-outreach-script", "REQ-M2P4-VERIFY",
@@ -346,7 +346,7 @@ def main() -> int:
     """执行全部验证并写出报告。"""
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(REPO / "evidence" / "m2-p4"))
-    ap.add_argument("--workspace", default="/tmp/dkws-m2p4-e2e-ws")
+    ap.add_argument("--workspace", default="/tmp/kert-m2p4-e2e-ws")
     args = ap.parse_args()
 
     out_dir = Path(args.out)

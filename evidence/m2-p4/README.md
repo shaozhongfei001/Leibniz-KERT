@@ -6,7 +6,7 @@
 - **生成时间**：2026-08-27
 
 > **非声明**
-> - 本次不代表 DKWS 已生产就绪。
+> - 本次不代表 KERT 已生产就绪。
 > - 本次不代表 GITS UAT 已通过。
 > - 本次不代表安全审计已完成。
 > - **本次不构成对任何法规（含《个人信息保护法》）的合规认定**——
@@ -142,16 +142,16 @@ WBS 验收标准：**脱敏测试通过**。
 
 | 文件 | 行数 | 说明 |
 |---|---|---|
-| `src/dkws/infrastructure/classification.py` | ~430 | 分类等级、掩码风格、31 条字段规则、5 类值模式、脱敏策略与递归引擎 |
+| `src/kert/infrastructure/classification.py` | ~430 | 分类等级、掩码风格、31 条字段规则、5 类值模式、脱敏策略与递归引擎 |
 
 ### 6.2 修改（源码）
 
 | 文件 | 变更 |
 |---|---|
-| `src/dkws/infrastructure/runtime_config.py` | 新增 `RedactionConfig`（6 字段）并接入 `RuntimeConfig` 与 loader（4 个环境变量） |
-| `src/dkws/api/middleware.py` | 新增 `ResponseRedactionMiddleware` |
-| `src/dkws/api/server.py` | 装配响应脱敏中间件；向 Service 传 `llm_redaction` |
-| `src/dkws/application/skills.py` | `_call_model` 接入 LLM 出站脱敏；新增 `_is_external_adapter()` 与 `llm_redaction` 参数 |
+| `src/kert/infrastructure/runtime_config.py` | 新增 `RedactionConfig`（6 字段）并接入 `RuntimeConfig` 与 loader（4 个环境变量） |
+| `src/kert/api/middleware.py` | 新增 `ResponseRedactionMiddleware` |
+| `src/kert/api/server.py` | 装配响应脱敏中间件；向 Service 传 `llm_redaction` |
+| `src/kert/application/skills.py` | `_call_model` 接入 LLM 出站脱敏；新增 `_is_external_adapter()` 与 `llm_redaction` 参数 |
 
 ### 6.3 新增（测试）
 
@@ -160,7 +160,7 @@ WBS 验收标准：**脱敏测试通过**。
 
 ### 6.4 新增（文档 / 工具）
 
-- `docs/architecture/DKWS_DATA_CLASSIFICATION_M2P4.md`
+- `docs/architecture/KERT_DATA_CLASSIFICATION_M2P4.md`
 - `scripts/verify_m2p4_redaction.py`
 - `evidence/m2-p4/**`
 

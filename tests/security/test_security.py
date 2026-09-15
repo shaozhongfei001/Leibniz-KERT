@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from dkws.application.ingest import Ingestor
-from dkws.domain.errors import PathSafetyError, UsageError
-from dkws.domain import paths
+from kert.application.ingest import Ingestor
+from kert.domain.errors import PathSafetyError, UsageError
+from kert.domain import paths
 
 
 class TestPathSecurity:
@@ -34,7 +34,7 @@ class TestPathSecurity:
             Ingestor(ws).ingest("product", [zip_path], "sec-zip")
 
     def test_symlink_escape_in_workspace(self, ws):
-        outside = Path("/tmp/dkws_sec_out")
+        outside = Path("/tmp/kert_sec_out")
         outside.mkdir(exist_ok=True)
         (ws / "01_raw" / "link").symlink_to(outside, target_is_directory=True)
         with pytest.raises(PathSafetyError):
@@ -44,8 +44,8 @@ class TestPathSecurity:
 class TestInjection:
     def test_prompt_injection_treated_as_data(self, ws, tmp_path):
         """§16.2：原文中的“忽略系统指令”等内容视为数据。"""
-        from dkws.application.extract import KnowledgeExtractor
-        from dkws.application.parse_doc import DocumentParserService
+        from kert.application.extract import KnowledgeExtractor
+        from kert.application.parse_doc import DocumentParserService
 
         md = tmp_path / "doc.md"
         md.write_text("# 文档\n\n产品A利率为3.5%。\n\n"
@@ -58,8 +58,8 @@ class TestInjection:
         assert all(c["kind"] in ("ENTITY", "RELATION", "STATEMENT", "RULE")
                    for c in ex.candidates)
         # 控制面状态正常：全部 CANDIDATE
-        from dkws.domain.contracts.base import validate_contract
-        from dkws.domain.contracts import specs
+        from kert.domain.contracts.base import validate_contract
+        from kert.domain.contracts import specs
         for c in ex.candidates:
             rv = validate_contract((ws / c["path"]).read_text(encoding="utf-8"),
                                    {
@@ -76,8 +76,8 @@ class TestDocxSafety:
         """FR-ING-006：DOCX 解析只读，不执行宏/嵌入对象。"""
         from docx import Document
 
-        from dkws.application.ingest import Ingestor
-        from dkws.application.parse_doc import DocumentParserService
+        from kert.application.ingest import Ingestor
+        from kert.application.parse_doc import DocumentParserService
 
         docx_path = tmp_path / "safe.docx"
         doc = Document()

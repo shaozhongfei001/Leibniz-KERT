@@ -1,5 +1,5 @@
 {
-  "_comment": "DKWS Python Core 生产 profile 运行时配置示例（M2-P1）。使用方式：export DKWS_CONFIG_FILE=<本文件路径>。密钥请使用 digest（sha256 十六进制），不要在文件中保存明文；digest 生成：python -c \"import hashlib,sys;print(hashlib.sha256(sys.argv[1].encode()).hexdigest())\" '<secret>'",
+  "_comment": "KERT Python Core 生产 profile 运行时配置示例（M2-P1）。使用方式：export KERT_CONFIG_FILE=<本文件路径>。密钥请使用 digest（sha256 十六进制），不要在文件中保存明文；digest 生成：python -c \"import hashlib,sys;print(hashlib.sha256(sys.argv[1].encode()).hexdigest())\" '<secret>'",
   "profile": "prod",
   "bind_host": "127.0.0.1",
   "auth": {

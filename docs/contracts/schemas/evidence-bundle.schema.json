@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://dkws.local/contracts/schemas/evidence-bundle.schema.json",
+  "$id": "https://kert.local/contracts/schemas/evidence-bundle.schema.json",
   "title": "EvidenceBundle",
   "type": "object",
   "required": [

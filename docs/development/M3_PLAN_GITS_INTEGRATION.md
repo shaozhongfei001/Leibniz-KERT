@@ -9,7 +9,7 @@
 
 ## 0. M3 定位
 
-M3 是 DKWS 从"独立可运行"走向"业务闭环"的关键里程碑。核心目标是让 GITS（前端业务系统）通过 HTTP 调用 DKWS 的 Skill 执行能力，形成完整的 B→A（Business→API）联动。
+M3 是 KERT 从"独立可运行"走向"业务闭环"的关键里程碑。核心目标是让 GITS（前端业务系统）通过 HTTP 调用 KERT 的 Skill 执行能力，形成完整的 B→A（Business→API）联动。
 
 **硬阻塞**：M3 全部子项依赖 GITS 仓库授权。无授权则无法执行。
 
@@ -21,30 +21,30 @@ M3 是 DKWS 从"独立可运行"走向"业务闭环"的关键里程碑。核心�
 
 | 属性 | 说明 |
 |------|------|
-| 目标 | 清除 GITS 中所有 Mock/H2 伪成功路径，确保 DKWS 不可用时 GITS 正确失败 |
+| 目标 | 清除 GITS 中所有 Mock/H2 伪成功路径，确保 KERT 不可用时 GITS 正确失败 |
 | 依赖 | GITS 仓库读写权限 |
 | 交付物 | GITS 代码变更 + 移除清单 |
-| 验收标准 | 1) 无 Mock Skill 执行路径 2) 无 H2 内存数据库伪持久化 3) DKWS 不可用时 GITS 返回明确错误 |
+| 验收标准 | 1) 无 Mock Skill 执行路径 2) 无 H2 内存数据库伪持久化 3) KERT 不可用时 GITS 返回明确错误 |
 | 风险 | GITS 代码量未知，Mock/H2 散布范围可能很广 |
 
 ### M3.2 fail-closed 空态
 
 | 属性 | 说明 |
 |------|------|
-| 目标 | DKWS 服务未启动/空数据时，GITS 所有 Skill 调用必须 fail-closed（拒绝），不能静默降级到 Mock |
+| 目标 | KERT 服务未启动/空数据时，GITS 所有 Skill 调用必须 fail-closed（拒绝），不能静默降级到 Mock |
 | 依赖 | M3.1 |
 | 交付物 | fail-closed 测试 + 空态行为文档 |
-| 验收标准 | 1) DKWS 未启动 → GITS 返回 503/连接拒绝 2) DKWS 启动但无 Skill → GITS 返回空列表 3) 无静默降级到 Mock |
+| 验收标准 | 1) KERT 未启动 → GITS 返回 503/连接拒绝 2) KERT 启动但无 Skill → GITS 返回空列表 3) 无静默降级到 Mock |
 | 风险 | GITS 可能有隐式降级逻辑 |
 
-### M3.3 GITS→DKWS HTTP Adapter
+### M3.3 GITS→KERT HTTP Adapter
 
 | 属性 | 说明 |
 |------|------|
-| 目标 | 在 GITS 中实现 HTTP Adapter，调用 DKWS 公共 API（/v1/skills、/v1/jobs） |
+| 目标 | 在 GITS 中实现 HTTP Adapter，调用 KERT 公共 API（/v1/skills、/v1/jobs） |
 | 依赖 | M3.1、M3.2 |
 | 交付物 | GITS HTTP Adapter 代码 + 配置 + 集成测试 |
-| 验收标准 | 1) GITS 可列出 DKWS Skill 2) GITS 可同步执行 Skill 3) GITS 可异步提交 Job 4) GITS 可查询 Job 状态 |
+| 验收标准 | 1) GITS 可列出 KERT Skill 2) GITS 可同步执行 Skill 3) GITS 可异步提交 Job 4) GITS 可查询 Job 状态 |
 | 风险 | GITS 技术栈未知，Adapter 实现方式待确认 |
 
 ### M3.4 R1/供应链/SP-20/SP-21/Gate E2E
@@ -61,10 +61,10 @@ M3 是 DKWS 从"独立可运行"走向"业务闭环"的关键里程碑。核心�
 
 | 属性 | 说明 |
 |------|------|
-| 目标 | 验证 GITS→DKWS 链路在故障场景下的行为：网络中断、DKWS 崩溃、超时、数据不一致 |
+| 目标 | 验证 GITS→KERT 链路在故障场景下的行为：网络中断、KERT 崩溃、超时、数据不一致 |
 | 依赖 | M3.3 |
 | 交付物 | 故障注入脚本 + 观测报告 |
-| 验收标准 | 1) 网络中断 → GITS fail-closed 2) DKWS 崩溃 → GITS 检测到并重试 3) 超时 → GITS 超时处理 4) 数据不一致 → 检测到并告警 |
+| 验收标准 | 1) 网络中断 → GITS fail-closed 2) KERT 崩溃 → GITS 检测到并重试 3) 超时 → GITS 超时处理 4) 数据不一致 → 检测到并告警 |
 | 风险 | 故障注入可能影响共享环境 |
 
 ### M3.6 Owner UAT
@@ -87,7 +87,7 @@ M3 是 DKWS 从"独立可运行"走向"业务闭环"的关键里程碑。核心�
 任务包：M3-P1
 范围：M3.1 移除 Mock/H2、M3.2 fail-closed 空态
 分支：feature/m3-p1-gits-cleanup（需在 GITS 仓库）
-验收：无 Mock 路径、DKWS 不可用时 fail-closed
+验收：无 Mock 路径、KERT 不可用时 fail-closed
 证据：evidence/m3-p1/
 ```
 
@@ -95,9 +95,9 @@ M3 是 DKWS 从"独立可运行"走向"业务闭环"的关键里程碑。核心�
 
 ```
 任务包：M3-P2
-范围：M3.3 GITS→DKWS HTTP Adapter
+范围：M3.3 GITS→KERT HTTP Adapter
 分支：feature/m3-p2-http-adapter（需在 GITS 仓库）
-验收：GITS 可调用 DKWS 全部公共 API
+验收：GITS 可调用 KERT 全部公共 API
 证据：evidence/m3-p2/
 ```
 
@@ -106,7 +106,7 @@ M3 是 DKWS 从"独立可运行"走向"业务闭环"的关键里程碑。核心�
 ```
 任务包：M3-P3
 范围：M3.4 R1/供应链/SP-20/SP-21/Gate E2E
-分支：feature/m3-p3-e2e（DKWS 仓库）
+分支：feature/m3-p3-e2e（KERT 仓库）
 验收：4 个业务场景端到端跑通
 证据：evidence/m3-p3/
 ```
@@ -116,16 +116,16 @@ M3 是 DKWS 从"独立可运行"走向"业务闭环"的关键里程碑。核心�
 ```
 任务包：M3-P4
 范围：M3.5 故障注入、M3.6 Owner UAT
-分支：feature/m3-p4-resilience（DKWS 仓库）
+分支：feature/m3-p4-resilience（KERT 仓库）
 验收：故障场景行为正确、Owner 签署 UAT
 证据：evidence/m3-p4/
 ```
 
 ---
 
-## 3. DKWS 侧预置工作（无需 GITS 授权）
+## 3. KERT 侧预置工作（无需 GITS 授权）
 
-以下工作可在 DKWS 仓库独立推进，为 M3 做准备：
+以下工作可在 KERT 仓库独立推进，为 M3 做准备：
 
 ### 3.1 公共 API 契约确认
 
@@ -135,7 +135,7 @@ M3 是 DKWS 从"独立可运行"走向"业务闭环"的关键里程碑。核心�
 
 ### 3.2 GITS Adapter 参考实现
 
-- 在 DKWS 仓库创建 `examples/gits_adapter/` 参考实现
+- 在 KERT 仓库创建 `examples/gits_adapter/` 参考实现
 - Python 版 + curl 版，供 GITS 团队参考
 - 包含错误处理、重试、超时最佳实践
 

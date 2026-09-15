@@ -7,12 +7,12 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
-from dkws.api.server import create_app
-from dkws.application.skills import SkillExecutionService, _is_external_adapter
-from dkws.infrastructure.adapters import llm as llm_mod
-from dkws.infrastructure.classification import Classification
-from dkws.infrastructure.observability import get_metrics_registry
-from dkws.infrastructure.runtime_config import (
+from kert.api.server import create_app
+from kert.application.skills import SkillExecutionService, _is_external_adapter
+from kert.infrastructure.adapters import llm as llm_mod
+from kert.infrastructure.classification import Classification
+from kert.infrastructure.observability import get_metrics_registry
+from kert.infrastructure.runtime_config import (
     RedactionConfig,
     RuntimeConfig,
     load_runtime_config,
@@ -58,10 +58,10 @@ class TestRedactionConfig:
     def test_env_overrides(self):
         """环境变量可覆盖各开关。"""
         cfg = load_runtime_config(env={
-            "DKWS_REDACT_RESPONSE": "true",
-            "DKWS_REDACT_THRESHOLD": "CONFIDENTIAL",
-            "DKWS_REDACT_RESPONSE_TEXT": "true",
-            "DKWS_LLM_REDACTION": "false",
+            "KERT_REDACT_RESPONSE": "true",
+            "KERT_REDACT_THRESHOLD": "CONFIDENTIAL",
+            "KERT_REDACT_RESPONSE_TEXT": "true",
+            "KERT_LLM_REDACTION": "false",
         }).redaction
         assert cfg.response_enabled is True
         assert cfg.response_threshold == "CONFIDENTIAL"
@@ -70,7 +70,7 @@ class TestRedactionConfig:
 
     def test_threshold_parsed_to_classification(self):
         """阈值字符串可解析为分类等级。"""
-        cfg = load_runtime_config(env={"DKWS_REDACT_THRESHOLD": "CONFIDENTIAL"})
+        cfg = load_runtime_config(env={"KERT_REDACT_THRESHOLD": "CONFIDENTIAL"})
         assert Classification.parse(cfg.redaction.response_threshold) == \
             Classification.CONFIDENTIAL
 
@@ -98,7 +98,7 @@ class TestResponseRedaction:
         resp = _client(ws, cfg).get("/metrics")
         assert resp.status_code == 200
         assert "text/plain" in resp.headers["content-type"]
-        assert "dkws_" in resp.text
+        assert "kert_" in resp.text
 
     def test_livez_still_works_with_redaction(self, ws):
         """探针在脱敏启用下仍正常。"""
@@ -155,12 +155,12 @@ class TestLlmEgressRedaction:
     @pytest.mark.parametrize("raw", ["0", "false", "no", "off", "FALSE"])
     def test_env_can_disable(self, ws, monkeypatch, raw):
         """环境变量可关闭。"""
-        monkeypatch.setenv("DKWS_LLM_REDACTION", raw)
+        monkeypatch.setenv("KERT_LLM_REDACTION", raw)
         assert SkillExecutionService(ws)._llm_redaction_enabled is False
 
     def test_env_unknown_value_keeps_enabled(self, ws, monkeypatch):
         """未识别值按安全默认保持开启。"""
-        monkeypatch.setenv("DKWS_LLM_REDACTION", "maybe")
+        monkeypatch.setenv("KERT_LLM_REDACTION", "maybe")
         assert SkillExecutionService(ws)._llm_redaction_enabled is True
 
     def test_external_adapter_prompt_is_redacted(self, ws, monkeypatch):
@@ -180,7 +180,7 @@ class TestLlmEgressRedaction:
 
         recorder = _Recorder()
         monkeypatch.setattr(llm_mod, "create_llm_adapter", lambda kind: recorder)
-        monkeypatch.setattr("dkws.application.skills._is_external_adapter",
+        monkeypatch.setattr("kert.application.skills._is_external_adapter",
                             lambda adapter: True)
 
         svc = SkillExecutionService(ws)
@@ -207,7 +207,7 @@ class TestLlmEgressRedaction:
                                          latency_ms=1)
 
         monkeypatch.setattr(llm_mod, "create_llm_adapter", lambda kind: _Recorder())
-        monkeypatch.setattr("dkws.application.skills._is_external_adapter",
+        monkeypatch.setattr("kert.application.skills._is_external_adapter",
                             lambda adapter: False)
 
         svc = SkillExecutionService(ws)
@@ -226,7 +226,7 @@ class TestLlmEgressRedaction:
                                          latency_ms=1)
 
         monkeypatch.setattr(llm_mod, "create_llm_adapter", lambda kind: _Recorder())
-        monkeypatch.setattr("dkws.application.skills._is_external_adapter",
+        monkeypatch.setattr("kert.application.skills._is_external_adapter",
                             lambda adapter: True)
         trace: list[dict] = []
         SkillExecutionService(ws)._call_model("outreach", "系统", "无敏感内容", trace)
@@ -247,7 +247,7 @@ class TestLlmEgressRedaction:
                                          latency_ms=1)
 
         monkeypatch.setattr(llm_mod, "create_llm_adapter", lambda kind: _Recorder())
-        monkeypatch.setattr("dkws.application.skills._is_external_adapter",
+        monkeypatch.setattr("kert.application.skills._is_external_adapter",
                             lambda adapter: True)
         svc = SkillExecutionService(ws, llm_redaction=False)
         svc._call_model("outreach", "系统", f"手机 {MOBILE}", [])

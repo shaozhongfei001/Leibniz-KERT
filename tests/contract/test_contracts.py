@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.domain.contracts import specs
-from dkws.domain.contracts.base import validate_contract
-from dkws.domain.errors import SchemaValidationError
-from dkws.domain import states
+from kert.domain.contracts import specs
+from kert.domain.contracts.base import validate_contract
+from kert.domain.errors import SchemaValidationError
+from kert.domain import states
 
 from . import samples
 

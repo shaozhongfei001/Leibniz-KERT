@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DKWS 故障注入测试框架——验证 GITS 侧在 DKWS 各种故障下的行为。
+"""KERT 故障注入测试框架——验证 GITS 侧在 KERT 各种故障下的行为。
 
 故障场景覆盖：
   网络层：连接拒绝、请求超时、连接重置
@@ -8,16 +8,16 @@
   进程层：进程崩溃、进程挂起、重启中
 
 测试方式：
-  1. 启动 DKWS 服务（确定性模式，无需 LLM 密钥）
+  1. 启动 KERT 服务（确定性模式，无需 LLM 密钥）
   2. 注入故障
-  3. 通过 HTTP 客户端调用 DKWS API，观察行为
+  3. 通过 HTTP 客户端调用 KERT API，观察行为
   4. 记录 GITS 侧预期行为判定
   5. 清理故障注入
 
 仅使用标准库（os/signal/subprocess/socket/time/json/http）。
 
 用法：
-  python scripts/chaos_test.py [--dkws-port 8106] [--out evidence/m3-p0]
+  python scripts/chaos_test.py [--kert-port 8106] [--out evidence/m3-p0]
 """
 
 from __future__ import annotations
@@ -80,18 +80,18 @@ def _http_request(host: str, port: int, method: str, path: str,
     return result
 
 
-def _start_dkws(port: int, workspace: Path) -> subprocess.Popen | None:
-    """启动 DKWS 服务（确定性模式）。"""
+def _start_kert(port: int, workspace: Path) -> subprocess.Popen | None:
+    """启动 KERT 服务（确定性模式）。"""
     script = REPO / "scripts" / "serve_skill_service.py"
     if not script.exists():
-        print(f"[WARN] serve_skill_service.py 不存在，跳过 DKWS 启动", flush=True)
+        print(f"[WARN] serve_skill_service.py 不存在，跳过 KERT 启动", flush=True)
         return None
     workspace.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
     env["PYTHONPATH"] = str(SRC)
     # 确定性模式：不注入 LLM key
-    env.pop("DKWS_LLM_BASE_URL", None)
-    env.pop("DKWS_LLM_API_KEY", None)
+    env.pop("KERT_LLM_BASE_URL", None)
+    env.pop("KERT_LLM_API_KEY", None)
     try:
         proc = subprocess.Popen(
             [sys.executable, str(script),
@@ -103,18 +103,18 @@ def _start_dkws(port: int, workspace: Path) -> subprocess.Popen | None:
             time.sleep(0.5)
             r = _http_request("127.0.0.1", port, "GET", "/v1/health", timeout=2)
             if r["status"] == 200:
-                print(f"[dkws] 服务已就绪 PID={proc.pid} port={port}", flush=True)
+                print(f"[kert] 服务已就绪 PID={proc.pid} port={port}", flush=True)
                 return proc
-        print(f"[dkws] 服务启动超时", flush=True)
+        print(f"[kert] 服务启动超时", flush=True)
         proc.kill()
         return None
     except Exception as exc:
-        print(f"[dkws] 启动失败：{exc}", flush=True)
+        print(f"[kert] 启动失败：{exc}", flush=True)
         return None
 
 
-def _stop_dkws(proc: subprocess.Popen | None) -> None:
-    """停止 DKWS 服务。"""
+def _stop_kert(proc: subprocess.Popen | None) -> None:
+    """停止 KERT 服务。"""
     if proc is None:
         return
     try:
@@ -162,8 +162,8 @@ def _wait_for_port_down(port: int, timeout: float = 10.0) -> bool:
 # ---------------------------------------------------------------------------
 
 def test_network_connection_refused(report: dict, port: int) -> None:
-    """网络层：DKWS 服务不可达（连接拒绝）→ GITS 应 fail-closed。"""
-    # 不启动 DKWS，直接请求
+    """网络层：KERT 服务不可达（连接拒绝）→ GITS 应 fail-closed。"""
+    # 不启动 KERT，直接请求
     r = _http_request("127.0.0.1", port, "GET", "/v1/health", timeout=5)
     fail_closed = r["error"] in ("CONNECTION_REFUSED", "OS_ERROR")
     _log(report, "network_connection_refused",
@@ -173,7 +173,7 @@ def test_network_connection_refused(report: dict, port: int) -> None:
          f"GITS 应捕获异常并 fail-closed")
 
 
-def test_network_timeout(report: dict, port: int, dkws_proc: subprocess.Popen | None) -> None:
+def test_network_timeout(report: dict, port: int, kert_proc: subprocess.Popen | None) -> None:
     """网络层：请求超时（慢响应）→ GITS 应超时处理。"""
     # 使用 delay 注入，在代理端口上延迟
     proxy_port = port + 1000
@@ -206,7 +206,7 @@ def test_network_connection_reset(report: dict, port: int) -> None:
 
 
 def test_app_5xx(report: dict, port: int) -> None:
-    """应用层：DKWS 返回 5xx → GITS 应重试/降级。"""
+    """应用层：KERT 返回 5xx → GITS 应重试/降级。"""
     proxy_port = port + 1002
     chaos_injector.inject_5xx(proxy_port, status_code=500, duration_sec=15)
     try:
@@ -221,7 +221,7 @@ def test_app_5xx(report: dict, port: int) -> None:
 
 
 def test_app_4xx(report: dict, port: int) -> None:
-    """应用层：DKWS 返回 4xx → GITS 应区分客户端错误。"""
+    """应用层：KERT 返回 4xx → GITS 应区分客户端错误。"""
     proxy_port = port + 1003
     chaos_injector.inject_4xx(proxy_port, status_code=400, duration_sec=15)
     try:
@@ -236,7 +236,7 @@ def test_app_4xx(report: dict, port: int) -> None:
 
 
 def test_app_badbody(report: dict, port: int) -> None:
-    """应用层：DKWS 返回异常响应体（非 JSON）→ GITS 应容错。"""
+    """应用层：KERT 返回异常响应体（非 JSON）→ GITS 应容错。"""
     proxy_port = port + 1004
     chaos_injector.inject_badbody(proxy_port, duration_sec=15)
     try:
@@ -259,7 +259,7 @@ def test_app_badbody(report: dict, port: int) -> None:
 
 
 def test_data_empty(report: dict, port: int) -> None:
-    """数据层：DKWS 返回空数据 → GITS 应正确处理空态。"""
+    """数据层：KERT 返回空数据 → GITS 应正确处理空态。"""
     proxy_port = port + 1005
     chaos_injector.inject_empty(proxy_port, duration_sec=15)
     try:
@@ -274,7 +274,7 @@ def test_data_empty(report: dict, port: int) -> None:
 
 
 def test_data_partial(report: dict, port: int) -> None:
-    """数据层：DKWS 返回部分数据 → GITS 应检测不完整。"""
+    """数据层：KERT 返回部分数据 → GITS 应检测不完整。"""
     proxy_port = port + 1006
     chaos_injector.inject_partial(proxy_port, duration_sec=15)
     try:
@@ -295,13 +295,13 @@ def test_data_partial(report: dict, port: int) -> None:
         chaos_injector.cleanup_all()
 
 
-def test_process_crash(report: dict, port: int, dkws_proc: subprocess.Popen | None) -> None:
-    """进程层：DKWS 进程崩溃（kill -9）→ GITS 应检测并 fail-closed。"""
-    if dkws_proc is None:
-        _log(report, "process_crash", True, "SKIP: DKWS 未启动，无法测试进程崩溃")
+def test_process_crash(report: dict, port: int, kert_proc: subprocess.Popen | None) -> None:
+    """进程层：KERT 进程崩溃（kill -9）→ GITS 应检测并 fail-closed。"""
+    if kert_proc is None:
+        _log(report, "process_crash", True, "SKIP: KERT 未启动，无法测试进程崩溃")
         return
 
-    pid = dkws_proc.pid
+    pid = kert_proc.pid
     chaos_injector.inject_crash(pid)
 
     # 等待进程退出
@@ -318,13 +318,13 @@ def test_process_crash(report: dict, port: int, dkws_proc: subprocess.Popen | No
          f"预期=GITS 应检测服务不可达并 fail-closed")
 
 
-def test_process_hang(report: dict, port: int, dkws_proc: subprocess.Popen | None) -> None:
-    """进程层：DKWS 进程挂起（SIGSTOP）→ GITS 应超时。"""
-    if dkws_proc is None:
-        _log(report, "process_hang", True, "SKIP: DKWS 未启动，无法测试进程挂起")
+def test_process_hang(report: dict, port: int, kert_proc: subprocess.Popen | None) -> None:
+    """进程层：KERT 进程挂起（SIGSTOP）→ GITS 应超时。"""
+    if kert_proc is None:
+        _log(report, "process_hang", True, "SKIP: KERT 未启动，无法测试进程挂起")
         return
 
-    pid = dkws_proc.pid
+    pid = kert_proc.pid
     chaos_injector.inject_hang(pid, duration_sec=10)
 
     # 短超时请求
@@ -341,11 +341,11 @@ def test_process_hang(report: dict, port: int, dkws_proc: subprocess.Popen | Non
 
 
 def test_process_restart(report: dict, port: int, workspace: Path) -> None:
-    """进程层：DKWS 重启中 → GITS 应重试直到就绪。"""
+    """进程层：KERT 重启中 → GITS 应重试直到就绪。"""
     # 先启动服务
-    proc = _start_dkws(port, workspace)
+    proc = _start_kert(port, workspace)
     if proc is None:
-        _log(report, "process_restart", True, "SKIP: DKWS 启动失败")
+        _log(report, "process_restart", True, "SKIP: KERT 启动失败")
         return
 
     # 确认服务就绪
@@ -353,7 +353,7 @@ def test_process_restart(report: dict, port: int, workspace: Path) -> None:
     was_up = r1["status"] == 200
 
     # 停止服务
-    _stop_dkws(proc)
+    _stop_kert(proc)
     down = _wait_for_port_down(port, timeout=5)
 
     # 请求应失败
@@ -361,12 +361,12 @@ def test_process_restart(report: dict, port: int, workspace: Path) -> None:
     was_down = r2["error"] is not None
 
     # 重启服务
-    proc2 = _start_dkws(port, workspace)
+    proc2 = _start_kert(port, workspace)
     if proc2:
         up = _wait_for_port(port, timeout=15)
         r3 = _http_request("127.0.0.1", port, "GET", "/v1/health", timeout=5)
         recovered = r3["status"] == 200
-        _stop_dkws(proc2)
+        _stop_kert(proc2)
     else:
         recovered = False
 
@@ -381,9 +381,9 @@ def test_process_restart(report: dict, port: int, workspace: Path) -> None:
 # ---------------------------------------------------------------------------
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="DKWS 故障注入测试框架")
-    ap.add_argument("--dkws-port", type=int, default=8106,
-                    help="DKWS 服务端口")
+    ap = argparse.ArgumentParser(description="KERT 故障注入测试框架")
+    ap.add_argument("--kert-port", type=int, default=8106,
+                    help="KERT 服务端口")
     ap.add_argument("--out", default=str(REPO / "evidence" / "m3-p0"),
                     help="报告输出目录")
     ap.add_argument("--skip-process-tests", action="store_true",
@@ -397,27 +397,27 @@ def main() -> int:
         "task_package": "M3-P0",
         "scope": "故障注入韧性测试",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-        "dkws_port": args.dkws_port,
+        "kert_port": args.kert_port,
         "checks": [],
     }
 
-    port = args.dkws_port
-    workspace = Path(f"/tmp/dkws-chaos-ws-{port}")
+    port = args.kert_port
+    workspace = Path(f"/tmp/kert-chaos-ws-{port}")
 
     print("=" * 60, flush=True)
-    print("DKWS 故障注入韧性测试", flush=True)
+    print("KERT 故障注入韧性测试", flush=True)
     print("=" * 60, flush=True)
 
-    # --- 网络层测试（不需要 DKWS 运行）---
+    # --- 网络层测试（不需要 KERT 运行）---
     print("\n--- 网络层故障 ---", flush=True)
     test_network_connection_refused(report, port)
 
-    # 启动 DKWS 用于后续测试
-    print("\n[setup] 启动 DKWS 服务 ...", flush=True)
-    dkws_proc = _start_dkws(port, workspace)
+    # 启动 KERT 用于后续测试
+    print("\n[setup] 启动 KERT 服务 ...", flush=True)
+    kert_proc = _start_kert(port, workspace)
 
-    if dkws_proc:
-        test_network_timeout(report, port, dkws_proc)
+    if kert_proc:
+        test_network_timeout(report, port, kert_proc)
         test_network_connection_reset(report, port)
 
         # --- 应用层测试 ---
@@ -435,25 +435,25 @@ def main() -> int:
             # --- 进程层测试 ---
             print("\n--- 进程层故障 ---", flush=True)
             # crash 测试会 kill 进程，所以放在最后
-            test_process_hang(report, port, dkws_proc)
+            test_process_hang(report, port, kert_proc)
 
             # 重启测试需要新进程
-            _stop_dkws(dkws_proc)
-            dkws_proc = None
+            _stop_kert(kert_proc)
+            kert_proc = None
             test_process_restart(report, port, workspace)
 
             # crash 测试（如果有新进程）
-            if dkws_proc is None:
-                dkws_proc = _start_dkws(port, workspace)
-            test_process_crash(report, port, dkws_proc)
-            dkws_proc = None  # 已被 crash
+            if kert_proc is None:
+                kert_proc = _start_kert(port, workspace)
+            test_process_crash(report, port, kert_proc)
+            kert_proc = None  # 已被 crash
         else:
             print("\n--- 进程层故障（已跳过）---", flush=True)
-            _stop_dkws(dkws_proc)
-            dkws_proc = None
+            _stop_kert(kert_proc)
+            kert_proc = None
     else:
-        print("[WARN] DKWS 启动失败，仅运行网络层测试", flush=True)
-        # 仍然运行不需要 DKWS 的测试
+        print("[WARN] KERT 启动失败，仅运行网络层测试", flush=True)
+        # 仍然运行不需要 KERT 的测试
         test_network_connection_reset(report, port)
         test_app_5xx(report, port)
         test_app_4xx(report, port)
@@ -463,8 +463,8 @@ def main() -> int:
 
     # 清理
     chaos_injector.cleanup_all()
-    if dkws_proc:
-        _stop_dkws(dkws_proc)
+    if kert_proc:
+        _stop_kert(kert_proc)
 
     # 汇总
     passed = sum(1 for c in report["checks"] if c["passed"])

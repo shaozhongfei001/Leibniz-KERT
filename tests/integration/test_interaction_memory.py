@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.api.server import create_app
-from dkws.application.skills import SkillExecutionService
+from kert.api.server import create_app
+from kert.application.skills import SkillExecutionService
 
 EXISTING = [
     {"memoryId": "MEM-OLD-001", "category": "BUSINESS_SIGNAL",
@@ -64,7 +64,7 @@ class TestSp21:
 
     def test_rules_calibrate_confidence(self, svc):
         """CONFIDENCE_CALIBRATION / DECAY_RULE_APPLICATION / DUPLICATE_DETECTION。"""
-        from dkws.application.interaction_memory import InteractionMemoryExecutor
+        from kert.application.interaction_memory import InteractionMemoryExecutor
         ex = InteractionMemoryExecutor()
         bad = [{"memoryId": "M-1", "content": "x", "category": "PREFERENCE",
                 "confidence": 1.5, "suggestedDecayRule": "LINEAR"},

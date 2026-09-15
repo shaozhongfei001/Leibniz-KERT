@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DKWS CI 环境初始化脚本 (M2.8)
+# KERT CI 环境初始化脚本 (M2.8)
 #
 # 在 CI 环境中安装依赖、配置缓存、确保无密钥环境可运行
 # 本地开发也可使用：./scripts/ci_setup.sh
@@ -11,7 +11,7 @@
 #   ./scripts/ci_setup.sh --full             # 安装全部 CI 工具
 #
 # 环境变量：
-#   DKWS_PROFILE=dev    # CI 默认使用 dev profile（无需 API Key）
+#   KERT_PROFILE=dev    # CI 默认使用 dev profile（无需 API Key）
 #   PYTHON_VERSION      # 可选，指定 Python 版本（本地忽略）
 
 set -euo pipefail
@@ -46,17 +46,17 @@ if [ "$INSTALL_ALL" = true ]; then
     INSTALL_LINT=true
 fi
 
-echo "=== DKWS CI Setup ==="
+echo "=== KERT CI Setup ==="
 echo "Project: $PROJECT_ROOT"
 echo "Python:  $(python3 --version 2>&1 || echo 'not found')"
-echo "Profile: ${DKWS_PROFILE:-dev}"
+echo "Profile: ${KERT_PROFILE:-dev}"
 echo ""
 
 # ──────────────────────────────────────────────
 # 1. 确保 dev profile（无密钥环境）
 # ──────────────────────────────────────────────
-export DKWS_PROFILE="${DKWS_PROFILE:-dev}"
-echo "[INFO] DKWS_PROFILE=$DKWS_PROFILE (dev profile 无需 API Key)"
+export KERT_PROFILE="${KERT_PROFILE:-dev}"
+echo "[INFO] KERT_PROFILE=$KERT_PROFILE (dev profile 无需 API Key)"
 
 # ──────────────────────────────────────────────
 # 2. 升级 pip
@@ -113,7 +113,7 @@ echo "=== 环境验证 ==="
 
 # 检查关键包
 CHECK_PASSES=true
-for pkg in dkws pytest fastapi uvicorn; do
+for pkg in kert pytest fastapi uvicorn; do
     if python3 -c "import $pkg" 2>/dev/null; then
         echo "[OK] $pkg 可导入"
     else
@@ -122,13 +122,13 @@ for pkg in dkws pytest fastapi uvicorn; do
     fi
 done
 
-# 检查 DKWS_PROFILE
-if [ "$DKWS_PROFILE" = "dev" ]; then
-    echo "[OK] DKWS_PROFILE=dev (无密钥环境)"
-elif [ "$DKWS_PROFILE" = "prod" ]; then
-    echo "[WARN] DKWS_PROFILE=prod (需要 API Key，CI 不应使用)"
+# 检查 KERT_PROFILE
+if [ "$KERT_PROFILE" = "dev" ]; then
+    echo "[OK] KERT_PROFILE=dev (无密钥环境)"
+elif [ "$KERT_PROFILE" = "prod" ]; then
+    echo "[WARN] KERT_PROFILE=prod (需要 API Key，CI 不应使用)"
 else
-    echo "[WARN] DKWS_PROFILE=$DKWS_PROFILE (非标准 profile)"
+    echo "[WARN] KERT_PROFILE=$KERT_PROFILE (非标准 profile)"
 fi
 
 echo ""

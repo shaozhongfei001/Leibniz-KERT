@@ -56,7 +56,7 @@ def _log(report: dict, name: str, passed: bool, detail: str) -> None:
 def _init_workspace(root: Path) -> Path:
     """初始化真实工作区。"""
     sys.path.insert(0, str(SRC))
-    from dkws.domain import workspace as ws_mod
+    from kert.domain import workspace as ws_mod
 
     if root.exists():
         shutil.rmtree(root)
@@ -101,20 +101,20 @@ def _server_env(profile: str = "dev") -> dict[str, str]:
     env = dict(os.environ)
     env.update({
         "PYTHONPATH": str(SRC),
-        "DKWS_PROFILE": profile,
-        "DKWS_BIND_HOST": "127.0.0.1",
-        "DKWS_API_KEYS": (f"svc:{NORMAL_KEY}:read|execute,"
+        "KERT_PROFILE": profile,
+        "KERT_BIND_HOST": "127.0.0.1",
+        "KERT_API_KEYS": (f"svc:{NORMAL_KEY}:read|execute,"
                           f"ops:{ADMIN_KEY}:read|execute|admin"),
-        "DKWS_RATE_LIMIT_ENABLED": "true",
-        "DKWS_RATE_LIMIT_RPM": "60",
-        "DKWS_RATE_LIMIT_BURST": "3",
-        "DKWS_RUNTIME_STORE_ENABLED": "true",
-        "DKWS_STRUCTURED_LOGS": "true",
-        "DKWS_LOG_LEVEL": "INFO",
-        "DKWS_METRICS_ENABLED": "true",
-        "DKWS_TRACING_ENABLED": "true",
+        "KERT_RATE_LIMIT_ENABLED": "true",
+        "KERT_RATE_LIMIT_RPM": "60",
+        "KERT_RATE_LIMIT_BURST": "3",
+        "KERT_RUNTIME_STORE_ENABLED": "true",
+        "KERT_STRUCTURED_LOGS": "true",
+        "KERT_LOG_LEVEL": "INFO",
+        "KERT_METRICS_ENABLED": "true",
+        "KERT_TRACING_ENABLED": "true",
     })
-    env.pop("DKWS_LLM_API_KEY", None)
+    env.pop("KERT_LLM_API_KEY", None)
     return env
 
 
@@ -185,19 +185,19 @@ def check_prometheus_format(report: dict) -> None:
     samples = parsed["samples"]
     _log(report, "metrics_http_requests_labeled",
          any('method="GET"' in lbl and 'status=' in lbl
-             for lbl, _ in samples.get("dkws_http_requests_total", [])),
-         f"dkws_http_requests_total 含 method/path/status 标签，"
-         f"样本数={len(samples.get('dkws_http_requests_total', []))}")
+             for lbl, _ in samples.get("kert_http_requests_total", [])),
+         f"kert_http_requests_total 含 method/path/status 标签，"
+         f"样本数={len(samples.get('kert_http_requests_total', []))}")
 
     _log(report, "metrics_latency_histogram",
-         "dkws_http_request_duration_seconds_bucket" in samples
-         and "dkws_http_request_duration_seconds_count" in samples
-         and "dkws_http_request_duration_seconds_sum" in samples,
+         "kert_http_request_duration_seconds_bucket" in samples
+         and "kert_http_request_duration_seconds_count" in samples
+         and "kert_http_request_duration_seconds_sum" in samples,
          "延迟直方图含 _bucket/_count/_sum 三件套")
 
     _log(report, "metrics_histogram_type_declared",
-         parsed["types"].get("dkws_http_request_duration_seconds") == "histogram",
-         f"TYPE 声明={parsed['types'].get('dkws_http_request_duration_seconds')}")
+         parsed["types"].get("kert_http_request_duration_seconds") == "histogram",
+         f"TYPE 声明={parsed['types'].get('kert_http_request_duration_seconds')}")
 
     # 高基数验证：访问带路径参数的端点，标签应为模板
     for oid in ("E2E-OBJ-1", "E2E-OBJ-2", "E2E-OBJ-3"):
@@ -208,13 +208,13 @@ def check_prometheus_format(report: dict) -> None:
          "路径标签使用路由模板 {object_id}，未泄漏具体 ID（避免标签爆炸）")
 
     _log(report, "metrics_queue_gauges",
-         all(k in body for k in ("dkws_job_queue_claimable",
-                                 "dkws_job_queue_dead_letter",
-                                 "dkws_job_queue_expired_leases")),
+         all(k in body for k in ("kert_job_queue_claimable",
+                                 "kert_job_queue_dead_letter",
+                                 "kert_job_queue_expired_leases")),
          "队列深度指标已暴露（claimable/dead_letter/expired_leases）")
 
     _log(report, "metrics_build_info",
-         "dkws_build_info" in body and "dkws_process_uptime_seconds" in body,
+         "kert_build_info" in body and "kert_process_uptime_seconds" in body,
          "构建信息与运行时长指标已暴露")
 
 
@@ -253,7 +253,7 @@ def check_observability_no_blindspot(report: dict) -> None:
     _, _, body = _request("GET", "/metrics")
     _log(report, "rejected_requests_observable",
          status == 401 and 'status="401"' in body
-         and "dkws_http_client_errors_total" in body,
+         and "kert_http_client_errors_total" in body,
          f"未认证请求 → {status}，指标含 status=\"401\" 与 4xx 计数"
          f"（可观测性无盲区）")
 
@@ -296,7 +296,7 @@ def check_structured_logs(report: dict, log_path: Path) -> None:
              f"含关联字段 request_id/trace_id（示例 status={sample.get('status')}，"
              f"duration_ms={sample.get('duration_ms')}）")
         _log(report, "logs_have_service_field",
-             sample.get("service") == "dkws-python-core",
+             sample.get("service") == "kert-python-core",
              f"service={sample.get('service')}")
     else:
         _log(report, "logs_have_correlation_fields", False, "无访问日志可校验")
@@ -342,7 +342,7 @@ def main() -> int:
     """执行全部验证并写出报告。"""
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(REPO / "evidence" / "m2-p3"))
-    ap.add_argument("--workspace", default="/tmp/dkws-m2p3-e2e-ws")
+    ap.add_argument("--workspace", default="/tmp/kert-m2p3-e2e-ws")
     args = ap.parse_args()
 
     out_dir = Path(args.out)

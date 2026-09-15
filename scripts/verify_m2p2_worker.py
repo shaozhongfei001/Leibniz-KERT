@@ -45,7 +45,7 @@ def _log(report: dict, name: str, passed: bool, detail: str) -> None:
 def _init_workspace(root: Path) -> Path:
     """初始化真实工作区。"""
     sys.path.insert(0, str(SRC))
-    from dkws.domain import workspace as ws_mod
+    from kert.domain import workspace as ws_mod
 
     if root.exists():
         shutil.rmtree(root)
@@ -62,7 +62,7 @@ def _crash_worker_script(db: Path, marker: Path) -> str:
     return textwrap.dedent(f"""
         import sys, time, pathlib
         sys.path.insert(0, {str(SRC)!r})
-        from dkws.infrastructure.runtime_store import RuntimeStore
+        from kert.infrastructure.runtime_store import RuntimeStore
         store = RuntimeStore(pathlib.Path({str(db)!r}))
         job = store.claim_job("w-crash", job_types=["CRASHQ"], lease_seconds=1.0)
         assert job is not None
@@ -135,7 +135,7 @@ def check_crash_recovery(report: dict, store, db: Path, tmp: Path,
                 proc.wait(timeout=10)
 
     time.sleep(1.2)  # 等 lease（1 秒）过期
-    from dkws.infrastructure.worker import JobWorker, WorkerConfig
+    from kert.infrastructure.worker import JobWorker, WorkerConfig
 
     worker = JobWorker(store, WorkerConfig(
         worker_id="w-recover", job_types=("CRASHQ",), lease_seconds=30.0,
@@ -158,7 +158,7 @@ def check_dead_letter(report: dict, store) -> None:
 
     使用独立 job_type ``DEADQ``，避免与其他场景的 Job 互相抢占。
     """
-    from dkws.infrastructure.worker import JobWorker, WorkerConfig
+    from kert.infrastructure.worker import JobWorker, WorkerConfig
 
     store.create_job("J-DEAD", "DEADQ", max_attempts=2)
     worker = JobWorker(store, WorkerConfig(
@@ -244,8 +244,8 @@ def check_graceful_shutdown(report: dict, store, db: Path, tmp: Path,
     script.write_text(textwrap.dedent(f"""
         import sys, pathlib, time
         sys.path.insert(0, {str(SRC)!r})
-        from dkws.infrastructure.runtime_store import RuntimeStore
-        from dkws.infrastructure.worker import JobWorker, WorkerConfig
+        from kert.infrastructure.runtime_store import RuntimeStore
+        from kert.infrastructure.worker import JobWorker, WorkerConfig
         store = RuntimeStore(pathlib.Path({str(db)!r}))
         worker = JobWorker(store, WorkerConfig(
             worker_id="w-grace", job_types=("GRACEQ",),
@@ -353,8 +353,8 @@ def check_prod_async_guard(report: dict, workspace: Path) -> None:
     对应 Owner 审核决策 3（2026-08-27）：禁止回退 threading 模式，
     以免生产环境进程崩溃丢任务。
     """
-    from dkws.application.skills import SkillExecutionService
-    from dkws.domain.errors import ServiceNotReadyError
+    from kert.application.skills import SkillExecutionService
+    from kert.domain.errors import ServiceNotReadyError
 
     svc_prod = SkillExecutionService(workspace, profile="prod")
     rejected = False
@@ -394,7 +394,7 @@ def check_deprecation_marker(report: dict) -> None:
     """场景 10：recover_stale_jobs 已标记 deprecated（Owner 决策 2）。"""
     import inspect
 
-    from dkws.infrastructure.runtime_store import RuntimeStore
+    from kert.infrastructure.runtime_store import RuntimeStore
 
     doc = inspect.getdoc(RuntimeStore.recover_stale_jobs) or ""
     _log(report, "recover_stale_jobs_marked_deprecated",
@@ -409,17 +409,17 @@ def main() -> int:
     """执行全部验证并写出报告。"""
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(REPO / "evidence" / "m2-p2"))
-    ap.add_argument("--workspace", default="/tmp/dkws-m2p2-e2e-ws")
+    ap.add_argument("--workspace", default="/tmp/kert-m2p2-e2e-ws")
     args = ap.parse_args()
 
     out_dir = Path(args.out)
     log_dir = out_dir / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
-    tmp = Path("/tmp/dkws-m2p2-scripts")
+    tmp = Path("/tmp/kert-m2p2-scripts")
     tmp.mkdir(parents=True, exist_ok=True)
 
     workspace = _init_workspace(Path(args.workspace))
-    from dkws.infrastructure.runtime_store import RuntimeStore
+    from kert.infrastructure.runtime_store import RuntimeStore
 
     db = workspace / "90_control" / "runtime" / "runtime.db"
     store = RuntimeStore(db)

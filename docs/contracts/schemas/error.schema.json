@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://dkws.local/contracts/schemas/error.schema.json",
+  "$id": "https://kert.local/contracts/schemas/error.schema.json",
   "title": "ErrorItem",
   "type": "object",
   "required": [

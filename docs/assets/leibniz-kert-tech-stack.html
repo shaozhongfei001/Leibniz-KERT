@@ -29,7 +29,7 @@
 </head>
 <body>
 <h1>Leibniz-KERT 技术栈架构</h1>
-<p class="subtitle">Technology Stack Architecture · DKWS C′ 混合架构</p>
+<p class="subtitle">Technology Stack Architecture · KERT C′ 混合架构</p>
 
 <svg viewBox="0 0 1100 920" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -71,8 +71,8 @@
   <rect x="588" y="56" width="200" height="68" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
   <text x="604" y="74" class="tech-name" fill="var(--ink)">Systemd</text>
   <text x="604" y="86" class="tech-detail">裸金属服务管理</text>
-  <text x="604" y="98" class="tech-detail">dkws-api.service</text>
-  <text x="604" y="110" class="tech-ver">deploy/dkws-api.service</text>
+  <text x="604" y="98" class="tech-detail">kert-api.service</text>
+  <text x="604" y="110" class="tech-ver">deploy/kert-api.service</text>
 
   <!-- OS -->
   <rect x="804" y="56" width="240" height="68" rx="4" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="0.8"/>
@@ -132,7 +132,7 @@
   <text x="72" y="338" class="tech-detail">知识地图 · 知识目录</text>
   <text x="72" y="350" class="tech-detail">KI/KE/RUL 生命周期</text>
   <text x="72" y="362" class="tech-detail">接入→提取→审核→发布→服务</text>
-  <text x="72" y="374" class="tech-ver">src/dkws/application/</text>
+  <text x="72" y="374" class="tech-ver">src/kert/application/</text>
 
   <!-- Skill Execution -->
   <rect x="292" y="296" width="200" height="88" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
@@ -141,7 +141,7 @@
   <text x="308" y="338" class="tech-detail">激活契约 (SP-20/21)</text>
   <text x="308" y="350" class="tech-detail">客户知识提供者</text>
   <text x="308" y="362" class="tech-detail">服务方案生成</text>
-  <text x="308" y="374" class="tech-ver">src/dkws/application/skills.py</text>
+  <text x="308" y="374" class="tech-ver">src/kert/application/skills.py</text>
 
   <!-- Gate System -->
   <rect x="508" y="296" width="200" height="88" rx="4" fill="#ffffff" stroke="var(--ink)" stroke-width="0.8"/>
@@ -150,7 +150,7 @@
   <text x="524" y="338" class="tech-detail">质量门禁 · 证据链</text>
   <text x="524" y="350" class="tech-detail">校验 · 回滚 · 投影</text>
   <text x="524" y="362" class="tech-detail">备份恢复 · 运行报告</text>
-  <text x="524" y="374" class="tech-ver">src/dkws/application/gates.py</text>
+  <text x="524" y="374" class="tech-ver">src/kert/application/gates.py</text>
 
   <!-- Domain Models -->
   <rect x="724" y="296" width="320" height="88" rx="4" fill="rgba(130,87,229,0.06)" stroke="rgba(130,87,229,0.40)" stroke-width="0.8"/>
@@ -159,7 +159,7 @@
   <text x="740" y="338" class="tech-detail">Contracts · States · Paths</text>
   <text x="740" y="350" class="tech-detail">Extraction · Graph · Hashing</text>
   <text x="740" y="362" class="tech-detail">Ids · Errors · 值对象</text>
-  <text x="740" y="374" class="tech-ver">src/dkws/domain/</text>
+  <text x="740" y="374" class="tech-ver">src/kert/domain/</text>
 
   <!-- ════════════════════════════════════════════════════════════ -->
   <!-- L4 · AI 与检索层                                           -->
@@ -246,7 +246,7 @@
   <text x="72" y="694" class="tech-name" fill="var(--ink)">API Key 认证</text>
   <text x="72" y="706" class="tech-detail">ApiKeyAuth 中间件</text>
   <text x="72" y="718" class="tech-detail">请求级身份校验</text>
-  <text x="72" y="730" class="tech-ver">DKWS_API_KEYS 环境变量</text>
+  <text x="72" y="730" class="tech-ver">KERT_API_KEYS 环境变量</text>
 
   <!-- Classification -->
   <rect x="272" y="676" width="200" height="68" rx="4" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="0.8" stroke-dasharray="4,4"/>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""把 DKWS 访前报告 Markdown 转成带样式的独立 HTML。
+"""把 KERT 访前报告 Markdown 转成带样式的独立 HTML。
 
 用法：python md_to_html.py --input 访前报告_HZB0000001234.md [--output out.html]
 """
@@ -87,7 +87,7 @@ def main() -> None:
   </div>
   <div class="footer">
     <span class="badge">humanGate · 非审批结论</span>
-    由 DKWS 客户经理持续经营 Skill 平台生成。
+    由 KERT 客户经理持续经营 Skill 平台生成。
     本报告基于输入事实与证据生成，仅供访前准备参考，不构成业务审批、合规批准或监管结论。
   </div>
 </div>

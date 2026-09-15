@@ -8,8 +8,8 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from dkws.domain.errors import UsageError
-from dkws.infrastructure.parquet import (
+from kert.domain.errors import UsageError
+from kert.infrastructure.parquet import (
     cast_column,
     read_parquet,
     read_table,

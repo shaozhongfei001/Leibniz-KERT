@@ -11,8 +11,8 @@ import statistics
 import time
 from pathlib import Path
 
-from dkws.application.services import KnowledgeService
-from dkws.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
+from kert.application.services import KnowledgeService
+from kert.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
 
 
 def main() -> None:

@@ -3,7 +3,7 @@
 
 - 围绕杭州智造精密齿轮（HZB0000001234）构造三级上游 / 两级下游供应链；
 - 全部为【合成演示数据】（source_ids=DEMO-SUPPLY-CHAIN-*），非真实客户事实；
-- 走 DKWS 权威流程：候选 → 审核 APPROVE → 发布 → 投影（自动建 Kùzu 图）；
+- 走 KERT 权威流程：候选 → 审核 APPROVE → 发布 → 投影（自动建 Kùzu 图）；
 - 产物：demo_workspace 的 supply_chain 域 + supply_chain_graph 服务投影。
 
 用法：python scripts/gen_supply_chain_demo.py --workspace <demo_workspace>
@@ -14,12 +14,12 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from dkws.application.publish import Publisher
-from dkws.application.projection import ProjectionBuilder
-from dkws.application.review import ReviewService
-from dkws.domain import ids, timeutil
-from dkws.infrastructure import markdown
-from dkws.infrastructure.fs import WorkspaceWriter
+from kert.application.publish import Publisher
+from kert.application.projection import ProjectionBuilder
+from kert.application.review import ReviewService
+from kert.domain import ids, timeutil
+from kert.infrastructure import markdown
+from kert.infrastructure.fs import WorkspaceWriter
 
 DOMAIN = "supply_chain"
 SERVICE_ID = "supply_chain_graph"
@@ -155,7 +155,7 @@ def main() -> None:
     print(f"  投影 {SERVICE_ID} version={prj.projection_version}")
 
     # 5) 图规模验证
-    from dkws.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
+    from kert.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
     b = KuzuGraphBuilder(ws, service_id=SERVICE_ID)
     fp = b.fingerprint_of(b._active_version())
     print(f"  Kùzu 图谱: {fp['nodes']} 节点 / {fp['edges']} 边（指纹 {fp['hash'][:12]}…）")

@@ -1,0 +1,634 @@
+................EEE.E..E.EEE.EE.EEE.EEEE..EEE.E                          [100%]
+==================================== ERRORS ====================================
+______ ERROR at setup of TestCrossServiceHealth.test_gits_backend_health _______
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+____ ERROR at setup of TestCrossServiceHealth.test_gits_frontend_reachable _____
+
+    @pytest.fixture(scope="session")
+    def gits_frontend_ready() -> str:
+        """等待 GITS Frontend 服务就绪，返回基址。"""
+>       _wait_for(GITS_FRONTEND_URL)
+
+tests/e2e/conftest.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:5173', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:5173 ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+__ ERROR at setup of TestCrossServiceHealth.test_all_services_simultaneously ___
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_ ERROR at setup of TestGitsToKertIntegration.test_gits_calls_kert_skill_execute _
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+___ ERROR at setup of TestGitsToKertIntegration.test_gits_kert_connectivity ____
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_________ ERROR at setup of TestContinuousOperation.test_start_journey _________
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+________ ERROR at setup of TestContinuousOperation.test_operating_view _________
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+______ ERROR at setup of TestContinuousOperation.test_gate_state_via_gits ______
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_____ ERROR at setup of TestContinuousOperation.test_full_engagement_loop ______
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_________ ERROR at setup of TestPrevisitReport.test_memory_extraction __________
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_________ ERROR at setup of TestPrevisitReport.test_full_previsit_flow _________
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+____ ERROR at setup of TestServiceProposal.test_generate_proposal_via_gits _____
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_______ ERROR at setup of TestServiceProposal.test_proposal_fact_labels ________
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+____ ERROR at setup of TestServiceProposal.test_proposal_different_industry ____
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+____ ERROR at setup of TestKnowledgeGraph.test_supply_chain_graph_via_gits _____
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+______ ERROR at setup of TestKnowledgeGraph.test_supply_chain_node_types _______
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_________ ERROR at setup of TestKnowledgeGraph.test_supply_chain_edges _________
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+______ ERROR at setup of TestCustomerInsight.test_customer_operating_view ______
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_________ ERROR at setup of TestCustomerInsight.test_kyc_gap_analysis __________
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_____ ERROR at setup of TestCustomerInsight.test_insight_gate_correlation ______
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+_________ ERROR at setup of TestCustomerInsight.test_full_insight_flow _________
+
+    @pytest.fixture(scope="session")
+    def gits_ready() -> str:
+        """等待 GITS Backend 服务就绪，返回基址。"""
+>       _wait_for(f"{GITS_BASE_URL}/actuator/health")
+
+tests/e2e/conftest.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'http://127.0.0.1:8082/actuator/health', timeout = 30.0, interval = 1.0
+
+    def _wait_for(url: str, timeout: float = HEALTH_TIMEOUT, interval: float = HEALTH_INTERVAL) -> bool:
+        """轮询 GET url 直到返回 2xx 或超时。"""
+        deadline = time.monotonic() + timeout
+        last_exc: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                resp = httpx.get(url, timeout=5)
+                if 200 <= resp.status_code < 300:
+                    return True
+                last_exc = RuntimeError(f"{url} 返回 {resp.status_code}")
+            except (httpx.ConnectError, httpx.TimeoutException) as exc:
+                last_exc = exc
+            time.sleep(interval)
+>       raise AssertionError(f"服务未就绪: {url} ({last_exc})")
+E       AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health ([Errno 111] Connection refused)
+
+tests/e2e/conftest.py:39: AssertionError
+=========================== short test summary info ============================
+ERROR tests/e2e/test_cross_service_health.py::TestCrossServiceHealth::test_gits_backend_health
+ERROR tests/e2e/test_cross_service_health.py::TestCrossServiceHealth::test_gits_frontend_reachable
+ERROR tests/e2e/test_cross_service_health.py::TestCrossServiceHealth::test_all_services_simultaneously
+ERROR tests/e2e/test_gits_to_kert_integration.py::TestGitsToKertIntegration::test_gits_calls_kert_skill_execute
+ERROR tests/e2e/test_gits_to_kert_integration.py::TestGitsToKertIntegration::test_gits_kert_connectivity
+ERROR tests/e2e/test_scenario_1_continuous_operation.py::TestContinuousOperation::test_start_journey
+ERROR tests/e2e/test_scenario_1_continuous_operation.py::TestContinuousOperation::test_operating_view
+ERROR tests/e2e/test_scenario_1_continuous_operation.py::TestContinuousOperation::test_gate_state_via_gits
+ERROR tests/e2e/test_scenario_1_continuous_operation.py::TestContinuousOperation::test_full_engagement_loop
+ERROR tests/e2e/test_scenario_2_previsit_report.py::TestPrevisitReport::test_memory_extraction
+ERROR tests/e2e/test_scenario_2_previsit_report.py::TestPrevisitReport::test_full_previsit_flow
+ERROR tests/e2e/test_scenario_3_service_proposal.py::TestServiceProposal::test_generate_proposal_via_gits
+ERROR tests/e2e/test_scenario_3_service_proposal.py::TestServiceProposal::test_proposal_fact_labels
+ERROR tests/e2e/test_scenario_3_service_proposal.py::TestServiceProposal::test_proposal_different_industry
+ERROR tests/e2e/test_scenario_4_knowledge_graph.py::TestKnowledgeGraph::test_supply_chain_graph_via_gits
+ERROR tests/e2e/test_scenario_4_knowledge_graph.py::TestKnowledgeGraph::test_supply_chain_node_types
+ERROR tests/e2e/test_scenario_4_knowledge_graph.py::TestKnowledgeGraph::test_supply_chain_edges
+ERROR tests/e2e/test_scenario_5_customer_insight.py::TestCustomerInsight::test_customer_operating_view
+ERROR tests/e2e/test_scenario_5_customer_insight.py::TestCustomerInsight::test_kyc_gap_analysis
+ERROR tests/e2e/test_scenario_5_customer_insight.py::TestCustomerInsight::test_insight_gate_correlation
+ERROR tests/e2e/test_scenario_5_customer_insight.py::TestCustomerInsight::test_full_insight_flow
+26 passed, 21 errors in 64.30s (0:01:04)

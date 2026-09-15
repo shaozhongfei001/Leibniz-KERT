@@ -268,7 +268,7 @@ def run_load_test(config: LoadTestConfig) -> LoadTestResult:
 # ---------------------------------------------------------------------------
 
 def main():
-    ap = argparse.ArgumentParser(description="DKWS HTTP 负载生成工具")
+    ap = argparse.ArgumentParser(description="KERT HTTP 负载生成工具")
     ap.add_argument("--base-url", default="http://localhost:8106",
                     help="服务基础 URL（默认 http://localhost:8106）")
     ap.add_argument("--scenario", required=True, choices=SCENARIOS.keys(),

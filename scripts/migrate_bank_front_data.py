@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""bank-front 示例数据按 DKWS 数据规划迁移。
+"""bank-front 示例数据按 KERT 数据规划迁移。
 
 规划映射（五层）：
 - 01_raw   ：每个 Skill 的 example-input.json + mock-input-data.json 作为原始资产
@@ -18,13 +18,13 @@ import json
 import re
 from pathlib import Path
 
-from dkws.application.ingest import Ingestor
-from dkws.application.process_data import DataProcessor
-from dkws.domain import hashing, ids, timeutil
-from dkws.domain.contracts import specs
-from dkws.domain.contracts.base import validate_contract
-from dkws.infrastructure import markdown
-from dkws.infrastructure.fs import WorkspaceWriter
+from kert.application.ingest import Ingestor
+from kert.application.process_data import DataProcessor
+from kert.domain import hashing, ids, timeutil
+from kert.domain.contracts import specs
+from kert.domain.contracts.base import validate_contract
+from kert.infrastructure import markdown
+from kert.infrastructure.fs import WorkspaceWriter
 
 DOMAIN = "bank_front"
 SERVICE_ID = "bank_front_data"
@@ -34,7 +34,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--workspace", "-w", required=True)
     ap.add_argument("--source", default=None,
-                    help="bank-front-skills 目录（默认 dkws/examples/bank-front-skills）")
+                    help="bank-front-skills 目录（默认 kert/examples/bank-front-skills）")
     ap.add_argument("--domain", default=DOMAIN)
     args = ap.parse_args()
 
@@ -114,7 +114,7 @@ def main() -> None:
 
     # 4) 一致性检查
     print("\n== 工作区一致性 ==")
-    from dkws.domain import workspace as ws_mod
+    from kert.domain import workspace as ws_mod
 
     findings = ws_mod.check_workspace(ws, mode="full")
     blockers = [f for f in findings if f.level in ("BLOCKER", "MAJOR")]

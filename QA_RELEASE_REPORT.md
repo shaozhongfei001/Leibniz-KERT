@@ -1,9 +1,9 @@
 # QA 候选包验收报告
 
-**项目**: Leibniz-KERT (DKWS)  
+**项目**: Leibniz-KERT (KERT)  
 **版本**: 0.1.0  
 **日期**: 2026-08-28  
-**规范**: DKWS-SPEC-001 V1.0
+**规范**: KERT-SPEC-001 V1.0
 
 ---
 
@@ -70,7 +70,7 @@
 
 | 类别 | 文件/目录 | 说明 |
 |---|---|---|
-| 源码 | `src/dkws/` (64 文件, 13671 行) | 核心业务逻辑 |
+| 源码 | `src/kert/` (64 文件, 13671 行) | 核心业务逻辑 |
 | 单元测试 | `tests/unit/` | 覆盖所有核心模块 |
 | E2E 测试 | `tests/e2e/` (9 场景) | 端到端业务流程 |
 | 安全测试 | `tests/security/` | 路径穿越/脱敏/输入校验 |
@@ -79,7 +79,7 @@
 | 部署文档 | `docs/DEPLOYMENT.md` | 安装/Docker/Systemd |
 | 架构文档 | `docs/architecture/` | 设计与模型 |
 | 变更日志 | `CHANGELOG.md` | 版本变更记录 |
-| DSH 界面 | `src/dkws/dsh/` | Web 管理界面 |
+| DSH 界面 | `src/kert/dsh/` | Web 管理界面 |
 
 ---
 

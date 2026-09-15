@@ -1,0 +1,39 @@
+{
+  "gate": "G0-5",
+  "loop": "PI-0",
+  "generatedAt": "2025-09-04T23:33:20+08:00",
+  "parser": "pdfplumber@0.11.10",
+  "sources": [
+    {
+      "sourceId": "PUB-PRICE-001",
+      "sourceTitle": "对公客户市场调节价服务名录（结算业务类，公开公示 PDF）",
+      "sourcePath": "01_raw/_public_reference/PUB-PRICE-001.pdf",
+      "status": "AVAILABLE",
+      "fileBytes": 195967,
+      "sourceBytesHash": "fa276e30c4e3ae115920703d10cd89a143630ac298d4c1fdb1c885502170303e",
+      "usage": "VERIFICATION_ONLY",
+      "authorityLevel": "PUBLIC_PRICE_DISCLOSURE",
+      "metrics": {
+        "pages_total": 2,
+        "pages_with_table": 2,
+        "tables_total": 2,
+        "rows_scanned": 43,
+        "rows_header": 1,
+        "rows_section": 8,
+        "rows_empty": 0,
+        "items_extracted": 24,
+        "items_with_page": 24,
+        "items_with_bbox": 24,
+        "unknown_field_count": 20,
+        "total_field_count": 168,
+        "rows_continuation": 10,
+        "rows_unparsed": 0,
+        "pageLocationSuccessRate": 1.0,
+        "bboxLocationSuccessRate": 1.0,
+        "parseFailureRate": 0.0,
+        "unknownFieldRate": 0.119
+      },
+      "unparsedSamples": []
+    }
+  ]
+}

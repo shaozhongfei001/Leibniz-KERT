@@ -6,8 +6,8 @@ import threading
 
 import pytest
 
-from dkws.domain.errors import ConflictError
-from dkws.infrastructure.runtime_store import (
+from kert.domain.errors import ConflictError
+from kert.infrastructure.runtime_store import (
     CLAIMABLE_STATES,
     SCHEMA_VERSION,
     RuntimeStore,
@@ -59,7 +59,7 @@ def test_v1_to_v2_upgrade_normalizes_succeeded(tmp_path):
     """
     import sqlite3
 
-    from dkws.infrastructure.runtime_store import MIGRATIONS
+    from kert.infrastructure.runtime_store import MIGRATIONS
 
     db = tmp_path / "legacy.db"
     conn = sqlite3.connect(db)
@@ -322,7 +322,7 @@ def test_dead_letter_when_attempts_exhausted(store):
 
 def test_dead_letter_never_uses_blocked(store):
     """dead-letter 不使用 BLOCKED：§11.1 规定 FAILED 仅可转 RETRYING。"""
-    from dkws.domain.states import JOB_TRANSITIONS
+    from kert.domain.states import JOB_TRANSITIONS
 
     store.create_job("J1", "SKILL", max_attempts=1)
     store.claim_job("w1")

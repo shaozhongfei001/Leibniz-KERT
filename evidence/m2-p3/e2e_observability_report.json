@@ -5,7 +5,7 @@
   "environment": {
     "python": "3.12.8",
     "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
-    "workspace": "/tmp/dkws-m2p3-e2e-ws"
+    "workspace": "/tmp/kert-m2p3-e2e-ws"
   },
   "checks": [
     {
@@ -36,7 +36,7 @@
     {
       "name": "metrics_http_requests_labeled",
       "passed": true,
-      "detail": "dkws_http_requests_total 含 method/path/status 标签，样本数=3"
+      "detail": "kert_http_requests_total 含 method/path/status 标签，样本数=3"
     },
     {
       "name": "metrics_latency_histogram",
@@ -116,7 +116,7 @@
     {
       "name": "logs_have_service_field",
       "passed": true,
-      "detail": "service=dkws-python-core"
+      "detail": "service=kert-python-core"
     },
     {
       "name": "logs_do_not_leak_api_keys",

@@ -123,15 +123,15 @@ def _find_server_pid(port: int) -> int | None:
 def _find_sqlite_path() -> Path | None:
     """查找 SQLite 数据库文件路径。"""
     candidates = [
-        _PROJECT_ROOT / "90_control" / "runtime" / "dkws_runtime.db",
-        _PROJECT_ROOT / "runtime" / "dkws_runtime.db",
+        _PROJECT_ROOT / "90_control" / "runtime" / "kert_runtime.db",
+        _PROJECT_ROOT / "runtime" / "kert_runtime.db",
     ]
     for p in candidates:
         if p.exists():
             return p
     # 搜索
     for p in _PROJECT_ROOT.rglob("*.db"):
-        if "runtime" in str(p).lower() or "dkws" in str(p).lower():
+        if "runtime" in str(p).lower() or "kert" in str(p).lower():
             return p
     return None
 
@@ -489,7 +489,7 @@ def run_full_benchmark(base_url: str, output_dir: str, port: int = 8100) -> dict
     # 汇总
     report = {
         "meta": {
-            "project": "Leibniz-KERT (DKWS)",
+            "project": "Leibniz-KERT (KERT)",
             "milestone": "M2.10 NFR Baseline",
             "disclaimer": "基线值，非 SLA 承诺",
             "environment": env_info,
@@ -524,7 +524,7 @@ def run_full_benchmark(base_url: str, output_dir: str, port: int = 8100) -> dict
 # ---------------------------------------------------------------------------
 
 def main():
-    ap = argparse.ArgumentParser(description="DKWS NFR 基准测试框架")
+    ap = argparse.ArgumentParser(description="KERT NFR 基准测试框架")
     ap.add_argument("--base-url", default="http://localhost:8106",
                     help="服务基础 URL")
     ap.add_argument("--port", type=int, default=8106,

@@ -1,0 +1,143 @@
+{
+  "fragmentCount": 17,
+  "fragments": [
+    {
+      "contentSha256": "968af45e3683772857a766b92cdbe1870f5fec96236238ae8261da0f0e532522",
+      "contentText": "**第一条** 为规范法人账户透支业务操作，控制流动性风险与信用风险，依据《现金管理业务管理办法（演示文本）》制定本规程。",
+      "fragmentId": "FRG-SRCCM002-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "6bc0a31a75427505cb0f736b8f08c9bd90fc33bca2148bf8c407e3ea8231d496",
+      "contentText": "**第二条** 法人账户透支是指本行与法人客户约定，在其结算账户存款余额不足时，在核定额度内由本行提供短期资金融通的安排。",
+      "fragmentId": "FRG-SRCCM002-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "18559b6409ab56418a09d1fecfe5bf8d61ed9c60512cdbc9ae5da984eb8a5ee8",
+      "contentText": "**第三条** 单一客户透支额度最高不超过人民币 3000 万元，且不超过其上年度日均存款余额的百分之五十。",
+      "fragmentId": "FRG-SRCCM002-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "7963317fff33d85688622fb3205b35ac4dbdb07180225d76c21fbc4c876e72ae",
+      "contentText": "**第四条** 透支额度有效期不超过十二个月，到期须重新核定。单笔透支资金占用期限最长不得超过九十个自然日。",
+      "fragmentId": "FRG-SRCCM002-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "397b31fc0636c38df7467209b33a96fb1358353893348101625c4d0b0247c2d0",
+      "contentText": "**第五条** 客户申请透支额度，应当提供最近一期经审计财务报表、近六个月账户流水及资金用途说明。",
+      "fragmentId": "FRG-SRCCM002-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "84ae8a8651cdaa89fc92041d07133f0a8200f3c0d32f279c5b39d879e187c8cf",
+      "contentText": "**第六条** 申请透支业务的客户，应当在本行开立单位银行结算账户且账户状态正常，账户开立时间不少于六个月。",
+      "fragmentId": "FRG-SRCCM002-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "66dc6fc6eea32954dd701e6b3e52d589825816e99ec588827fbd3210e0950053",
+      "contentText": "**第七条** 纳入现金池管理的账户，其透支申请应当先经资金归集主账户归属机构出具意见。",
+      "fragmentId": "FRG-SRCCM002-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "6e6623b0aa41c463ce115d1186e5c905e2639977688b14efb27f1fbe09225714",
+      "contentText": "**第八条** 客户结算账户日均余额低于人民币 50 万元的，原则上不予核定透支额度；确需办理的，须经一级分行风险管理部审批。",
+      "fragmentId": "FRG-SRCCM002-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "9253e6f4f23ee78ad45cd8d09870af18a34628cd813295d5211c637c8974153e",
+      "contentText": "**第九条** 透支资金按日计息，利率不低于同期贷款市场报价利率加 150 个基点，具体以协议约定为准。",
+      "fragmentId": "FRG-SRCCM002-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "d0e49d91573627166df05b25f2e4c54513ff00157fcd244ab3ef46b790ac0763",
+      "contentText": "**第十条** 透支服务费按透支额度年化百分之零点五收取，最低每户每年人民币 2000 元。",
+      "fragmentId": "FRG-SRCCM002-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "77a284fd15eac3635d456b60fcb742f72aa213d23215d4b71dd1ec42fd41d6d4",
+      "contentText": "**第十一条** 逾期未归还透支资金的，自逾期之日起按协议利率上浮百分之五十计收罚息，并暂停新增透支。",
+      "fragmentId": "FRG-SRCCM002-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "eb7211f9360cd88271effdc1ff48ca46b324eb19b8238fdd41d22ef437919324",
+      "contentText": "**第十二条** 客户出现连续三十个自然日透支占用额度超过百分之九十的，经办行应当开展现场核查。",
+      "fragmentId": "FRG-SRCCM002-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "050dc04af1aa97a1677367a9c11fa64d289faed04ec34802f9dd4b567d1ed77f",
+      "contentText": "**第十三条** 客户评级下调至 B 级以下的，本行有权调减或提前收回透支额度。",
+      "fragmentId": "FRG-SRCCM002-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "de1adc1443f4e78d5a3294a03414f5d4f00a7a6c91193560366b81bed215f17b",
+      "contentText": "**第十四条** 透支资金不得用于固定资产投资、证券投资、民间借贷及法律法规禁止的其他用途。",
+      "fragmentId": "FRG-SRCCM002-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "13764fb9325a51347af1eb9cea22c40f162add8cf38dc47c465908fc570c92e5",
+      "contentText": "**第十五条** 透支业务办理流程为：客户申请、尽职调查、评级与额度核定、合同签署、系统参数配置、放款与贷后管理。",
+      "fragmentId": "FRG-SRCCM002-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "40ee34f91c60800ae2f5fe3d47043bc587b3a5c3a273e0501e589237d415cc66",
+      "contentText": "**第十六条** 首次办理须经柜面核验，后续提款可通过企业网银或银企直联办理。",
+      "fragmentId": "FRG-SRCCM002-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "contentSha256": "95b55e9533f29df89b2dde0bc1f8f61899daf5ef7b1cb9be4d7ee038e99a8358",
+      "contentText": "**第十七条** 本规程由 DEMO-BANK 交易银行部负责解释，自发布之日起施行。",
+      "fragmentId": "FRG-SRCCM002-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    }
+  ],
+  "sourceId": "SRC-CM-002",
+  "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+}

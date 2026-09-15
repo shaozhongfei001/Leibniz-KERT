@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DKWS 故障注入工具——独立运行，注入指定故障类型。
+"""KERT 故障注入工具——独立运行，注入指定故障类型。
 
 支持的故障类型：
   delay   — 延迟响应（通过代理拦截，添加指定延迟）
@@ -14,7 +14,7 @@
   partial — 返回部分数据
 
 安全机制：
-  - 所有注入操作自动记录到 /tmp/dkws-chaos-state.json
+  - 所有注入操作自动记录到 /tmp/kert-chaos-state.json
   - 超时自动清理（默认 60 秒）
   - crash/hang 类型需要 --pid 参数
   - 全局清理：python chaos_injector.py cleanup
@@ -41,7 +41,7 @@ import threading
 import time
 from pathlib import Path
 
-STATE_FILE = Path("/tmp/dkws-chaos-state.json")
+STATE_FILE = Path("/tmp/kert-chaos-state.json")
 DEFAULT_DURATION = 60  # 秒，超时自动清理
 
 
@@ -278,7 +278,7 @@ def inject_delay(port: int, delay_sec: float, duration_sec: float) -> str:
     _active_proxies.append(proxy)
     return (f"延迟代理已启动：127.0.0.1:{port} → 127.0.0.1:{target_port}，"
             f"延迟={delay_sec}s，持续={duration_sec}s\n"
-            f"请将 DKWS 服务启动在端口 {target_port} 上")
+            f"请将 KERT 服务启动在端口 {target_port} 上")
 
 
 def inject_reject(port: int, duration_sec: float) -> str:
@@ -491,7 +491,7 @@ def wait_proxies(duration_sec: float) -> None:
 # ---------------------------------------------------------------------------
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="DKWS 故障注入工具")
+    ap = argparse.ArgumentParser(description="KERT 故障注入工具")
     ap.add_argument("--type", required=True,
                     choices=["delay", "reject", "reset", "crash", "hang",
                              "5xx", "4xx", "badbody", "empty", "partial",

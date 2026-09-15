@@ -1,6 +1,6 @@
 {
-  "schema": "dkws-poc2-evidence/v1",
-  "workstream": "DKWS-C-MIXED-ARCH-REMEDIATION-01",
+  "schema": "kert-poc2-evidence/v1",
+  "workstream": "KERT-C-MIXED-ARCH-REMEDIATION-01",
   "status": "PARTIAL_PASS",
   "date": "2026-08-26",
   "evidence": {

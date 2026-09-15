@@ -6,15 +6,15 @@ from pathlib import Path
 
 import pytest
 
-from dkws.application.extract import KnowledgeExtractor
-from dkws.application.ingest import Ingestor
-from dkws.application.parse_doc import DocumentParserService
-from dkws.application.projection import ProjectionBuilder
-from dkws.application.publish import Publisher
-from dkws.application.review import ReviewService
-from dkws.application.services import KnowledgeService
-from dkws.domain import workspace as ws_mod
-from dkws.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
+from kert.application.extract import KnowledgeExtractor
+from kert.application.ingest import Ingestor
+from kert.application.parse_doc import DocumentParserService
+from kert.application.projection import ProjectionBuilder
+from kert.application.publish import Publisher
+from kert.application.review import ReviewService
+from kert.application.services import KnowledgeService
+from kert.domain import workspace as ws_mod
+from kert.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
 
 
 @pytest.fixture

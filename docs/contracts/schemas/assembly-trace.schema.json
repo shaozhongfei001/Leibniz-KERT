@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://dkws.local/contracts/schemas/assembly-trace.schema.json",
+  "$id": "https://kert.local/contracts/schemas/assembly-trace.schema.json",
   "title": "AssemblyTraceStep",
   "type": "object",
   "required": [
@@ -21,7 +21,7 @@
         "resolve",
         "idempotency",
         "validate",
-        "dkws",
+        "kert",
         "evidence",
         "model",
         "parse",

@@ -1,0 +1,175 @@
+{
+  "evidenceCount": 7,
+  "evidenceSpans": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCCM002-fffd6fb9",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM002-0008",
+      "locator": {
+        "clause": "第八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "客户结算账户日均余额低于人民币 50 万元的，原则上不予核定透支额度；确需办理的，须经一级分行风险管理部审批。",
+      "quoteHash": "fffd6fb94d4a53a9114be27abc1c7a5f71ff77174370859e9f14c33089e97be3",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "984fe6cde0c2b17bfad0b1c05d0a6f80ae7701647c8155b85b3ec57c92f375a2",
+      "sourceId": "SRC-CM-002",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-002.DEMO.md",
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PRICE",
+      "evidenceId": "EVS-SRCCM002-7c1df27e",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM002-0009",
+      "locator": {
+        "clause": "第九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "透支资金按日计息，利率不低于同期贷款市场报价利率加 150 个基点，具体以协议约定为准。",
+      "quoteHash": "7c1df27e69df6efed701d24d7493c6f8547af1eedf9140b5aa9b2ffdef3b8937",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "984fe6cde0c2b17bfad0b1c05d0a6f80ae7701647c8155b85b3ec57c92f375a2",
+      "sourceId": "SRC-CM-002",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-002.DEMO.md",
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PRICE",
+      "evidenceId": "EVS-SRCCM002-a6691e48",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM002-0010",
+      "locator": {
+        "clause": "第十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "透支服务费按透支额度年化百分之零点五收取，最低每户每年人民币 2000 元。",
+      "quoteHash": "a6691e48a65caca2da5ea0d135d95de9d9a4e14076b43c8ffbc96f5b7510f88b",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "984fe6cde0c2b17bfad0b1c05d0a6f80ae7701647c8155b85b3ec57c92f375a2",
+      "sourceId": "SRC-CM-002",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-002.DEMO.md",
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PRICE",
+      "evidenceId": "EVS-SRCCM002-ffd6ea0a",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM002-0011",
+      "locator": {
+        "clause": "第十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "逾期未归还透支资金的，自逾期之日起按协议利率上浮百分之五十计收罚息，并暂停新增透支。",
+      "quoteHash": "ffd6ea0aa1aeb5e1762dfbbbb3bcaedd3430e0b93804b53cfa028dd49f736746",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "984fe6cde0c2b17bfad0b1c05d0a6f80ae7701647c8155b85b3ec57c92f375a2",
+      "sourceId": "SRC-CM-002",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-002.DEMO.md",
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM002-22c1d2ba",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM002-0013",
+      "locator": {
+        "clause": "第十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "客户评级下调至 B 级以下的，本行有权调减或提前收回透支额度。",
+      "quoteHash": "22c1d2bac745332126b90d8a9f53e331831310611a03d4ff0665d7b74ed70e71",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "984fe6cde0c2b17bfad0b1c05d0a6f80ae7701647c8155b85b3ec57c92f375a2",
+      "sourceId": "SRC-CM-002",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-002.DEMO.md",
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCCM002-baa492d1",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM002-0015",
+      "locator": {
+        "clause": "第十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "透支业务办理流程为：客户申请、尽职调查、评级与额度核定、合同签署、系统参数配置、放款与贷后管理。",
+      "quoteHash": "baa492d1e6225b1c2b903a02fcaf91b4328bca109c53434eb3110403c6aa236d",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "984fe6cde0c2b17bfad0b1c05d0a6f80ae7701647c8155b85b3ec57c92f375a2",
+      "sourceId": "SRC-CM-002",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-002.DEMO.md",
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCCM002-68db5549",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM002-0016",
+      "locator": {
+        "clause": "第十六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "首次办理须经柜面核验，后续提款可通过企业网银或银企直联办理。",
+      "quoteHash": "68db554984e0866381742ee24127bf2bb1bbd9677ee3fc31a301657be7209bac",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "984fe6cde0c2b17bfad0b1c05d0a6f80ae7701647c8155b85b3ec57c92f375a2",
+      "sourceId": "SRC-CM-002",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-002.DEMO.md",
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd",
+      "usage": "AUTHORITATIVE"
+    }
+  ],
+  "sourceId": "SRC-CM-002",
+  "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+}

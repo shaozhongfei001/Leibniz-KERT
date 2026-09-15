@@ -6,8 +6,8 @@ import json
 
 import pytest
 
-from dkws.domain.errors import UsageError
-from dkws.infrastructure.adapters.llm import (
+from kert.domain.errors import UsageError
+from kert.infrastructure.adapters.llm import (
     DeterministicLlmAdapter,
     LlmResult,
     OpenAiCompatibleLlmAdapter,
@@ -122,26 +122,71 @@ class TestOpenAiCompatibleLlmAdapter:
             a.complete("sys", "usr")
 
 
+# ---------- 技能包：再入式取值（下游受控枚举依上游状态映射） ----------
+
+# 适配器按 kind="pkg:<skillId>" 走到 `_sample_package`；
+# 它从 system 的【技能标识】取 skillId，从【输出 JSON 结构参考】取顶层键。
+_KYC_PKG_SYSTEM = (
+    "【技能标识】bank-front-kyc-gap-check\n"
+    "【输出 JSON 结构参考】\n"
+    '{"customerId": "", "coverageStatus": "", "coverageStatusReason": "", "kycGaps": []}\n'
+)
+
+
+class TestPackageReentrantUpstreamStatus:
+    """负例测试：证明「上游状态 → 下游结论」这条通道**真的通**。
+
+    修复前（GK16 T-28）：`_sample_package` 形参里没有 `user`，函数体却引用它
+    ⇒ 每次调用抛 `NameError` ⇒ 被 `except Exception` 静默吞掉
+    ⇒ `simulate(..., upstream=None)` ⇒ `coverageStatus` **恒取默认值 PARTIAL**
+    ⇒ 无论上游是什么状态，下游结论都一样（"字段送达但未被消费"）。
+
+    因此本类中的前两个用例**在修复前必然失败** —— 这正是"注入确实发生"的自证。
+    反向由第三个用例保证：上游状态**确实缺失**时，回退默认值是正确行为，
+    不得被误判为消费失败。
+    """
+
+    def _coverage(self, payload: dict) -> str:
+        a = DeterministicLlmAdapter("pkg:bank-front-kyc-gap-check")
+        r = a.complete(_KYC_PKG_SYSTEM, json.dumps(payload))
+        return json.loads(r.text)["coverageStatus"]
+
+    def test_upstream_status_not_run_is_consumed(self):
+        # 上游 NOT_RUN ⇒ 必须映射为 NOT_RUN，而不是落回默认 PARTIAL
+        got = self._coverage({"customerId": "SIM-C001", "upstreamStatus": "NOT_RUN"})
+        assert got == "NOT_RUN", f"上游状态未被消费（得到 {got!r}）"
+
+    def test_alternate_enum_value_changes_downstream_conclusion(self):
+        # **仅"移除字段"不足以证明消费**：当默认值恰与真实值同值时（都是 PARTIAL），
+        # 移除与否下游输出都一样。故必须注入**同枚举的他值**。
+        assert self._coverage({"customerId": "SIM-C001", "upstreamStatus": "SUCCESS"}) == "SUCCESS"
+        assert self._coverage({"customerId": "SIM-C001", "upstreamStatus": "PARTIAL"}) == "PARTIAL"
+
+    def test_missing_upstream_status_falls_back_to_default(self):
+        # 上游确实未提供状态时，"未知"按判定表落 PARTIAL —— 这是预期行为
+        assert self._coverage({"customerId": "SIM-C001"}) == "PARTIAL"
+
+
 # ---------- create_llm_adapter ----------
 
 class TestCreateLlmAdapter:
     def test_no_env_returns_deterministic(self, monkeypatch):
-        monkeypatch.delenv("DKWS_LLM_BASE_URL", raising=False)
-        monkeypatch.delenv("DKWS_LLM_API_KEY", raising=False)
-        monkeypatch.delenv("DKWS_LLM_MODEL", raising=False)
+        monkeypatch.delenv("KERT_LLM_BASE_URL", raising=False)
+        monkeypatch.delenv("KERT_LLM_API_KEY", raising=False)
+        monkeypatch.delenv("KERT_LLM_MODEL", raising=False)
         a = create_llm_adapter("memory")
         assert isinstance(a, DeterministicLlmAdapter)
 
     def test_with_env_returns_openai(self, monkeypatch):
-        monkeypatch.setenv("DKWS_LLM_BASE_URL", "http://api.test.com")
-        monkeypatch.setenv("DKWS_LLM_API_KEY", "key123")
-        monkeypatch.setenv("DKWS_LLM_MODEL", "gpt-4")
+        monkeypatch.setenv("KERT_LLM_BASE_URL", "http://api.test.com")
+        monkeypatch.setenv("KERT_LLM_API_KEY", "key123")
+        monkeypatch.setenv("KERT_LLM_MODEL", "gpt-4")
         a = create_llm_adapter("memory")
         assert isinstance(a, OpenAiCompatibleLlmAdapter)
 
     def test_partial_env_returns_deterministic(self, monkeypatch):
-        monkeypatch.setenv("DKWS_LLM_BASE_URL", "http://api.test.com")
-        monkeypatch.delenv("DKWS_LLM_API_KEY", raising=False)
-        monkeypatch.delenv("DKWS_LLM_MODEL", raising=False)
+        monkeypatch.setenv("KERT_LLM_BASE_URL", "http://api.test.com")
+        monkeypatch.delenv("KERT_LLM_API_KEY", raising=False)
+        monkeypatch.delenv("KERT_LLM_MODEL", raising=False)
         a = create_llm_adapter("memory")
         assert isinstance(a, DeterministicLlmAdapter)

@@ -1,7 +1,7 @@
 # DSH Computer Use 安装记录（Playwright MCP 桥接）
 
 > 状态：已安装并端到端验证（2026-08-21）
-> 位置：DSH web profile 插件层（非 DKWS 工程代码，属于 DSH 底座能力）
+> 位置：DSH web profile 插件层（非 KERT 工程代码，属于 DSH 底座能力）
 
 ## 背景与结论
 
@@ -85,7 +85,7 @@ computer use（导航/点击/输入/截图/快照/网络/表单等 24 个工具�
 1. `browser_navigate(http://127.0.0.1:3080)` → Page Title: DeepSeek Harness ✅
 2. `browser_take_screenshot` → PNG 产出 ✅
 3. `browser_navigate(http://127.0.0.1:8106/api/skill/health)` → 快照显示 10 个 Skill、
-   status ok ✅（DKWS skill 服务）
+   status ok ✅（KERT skill 服务）
 4. `browser_navigate(http://127.0.0.1:8106/docs)` → Swagger UI，截图 1280x720 PNG ✅
    （产物：`/home/szf/.dsh/profiles/web/dsh-computer-use-verify.png`）
 

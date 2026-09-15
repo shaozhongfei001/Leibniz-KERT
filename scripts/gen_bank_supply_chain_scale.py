@@ -2,7 +2,7 @@
 """规模化模拟银行企业上下游图谱生成（数百/上千节点，性能展示用）。
 
 - 多核心客户 × 多级上游/下游分支树（合成演示数据，源 DEMO-BANK-SC-*，非真实事实）；
-- 走 DKWS 权威流程：候选 → 审核 APPROVE → 发布 → 投影 → Kùzu 建图；
+- 走 KERT 权威流程：候选 → 审核 APPROVE → 发布 → 投影 → Kùzu 建图；
 - 默认：8 核心客户 × 4 级上游(3 分支) + 2 级下游(3 分支) ≈ 1000+ 节点 / 1000+ 边。
 
 用法：python scripts/gen_bank_supply_chain_scale.py --workspace <demo_workspace>
@@ -15,12 +15,12 @@ import argparse
 import time
 from pathlib import Path
 
-from dkws.application.publish import Publisher
-from dkws.application.projection import ProjectionBuilder
-from dkws.application.review import ReviewService
-from dkws.domain import timeutil
-from dkws.infrastructure import markdown
-from dkws.infrastructure.fs import WorkspaceWriter
+from kert.application.publish import Publisher
+from kert.application.projection import ProjectionBuilder
+from kert.application.review import ReviewService
+from kert.domain import timeutil
+from kert.infrastructure import markdown
+from kert.infrastructure.fs import WorkspaceWriter
 
 DOMAIN = "supply_chain"
 SERVICE_ID = "supply_chain_graph"
@@ -147,7 +147,7 @@ def main() -> None:
     log(f"发布 version={pub.release_version}（资产 {pub.asset_count}）")
     log("构建投影与 Kùzu 图…")
     ProjectionBuilder(ws).build(DOMAIN, service_id=SERVICE_ID, idempotency_key="scale-demo-1")
-    from dkws.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
+    from kert.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
     b = KuzuGraphBuilder(ws, service_id=SERVICE_ID)
     fp = b.fingerprint_of(b._active_version())
     log(f"Kùzu 图谱: {fp['nodes']} 节点 / {fp['edges']} 边（指纹 {fp['hash'][:12]}…）")

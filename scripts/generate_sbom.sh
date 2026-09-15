@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DKWS SBOM 生成脚本 (M2.8)
+# KERT SBOM 生成脚本 (M2.8)
 #
 # 生成 CycloneDX 格式的 Software Bill of Materials (SBOM)
 # 输出到 evidence/m2-p6/sbom/ 目录
@@ -26,7 +26,7 @@ fi
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "=== DKWS SBOM Generation ==="
+echo "=== KERT SBOM Generation ==="
 echo "Output: $OUTPUT_DIR"
 echo "Python: $($PYTHON --version 2>&1 || echo 'not found')"
 echo ""

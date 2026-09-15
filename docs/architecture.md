@@ -1,8 +1,8 @@
-# DKWS 系统架构（文件目录型数据知识服务模拟平台）
+# KERT 系统架构（文件目录型数据知识服务模拟平台）
 
 > 版本：2026-08-22（对齐 v1.3 数据所有权改造）
-> 依据：`文件目录型数据知识服务模拟平台_详细需求与详细设计_V1.0.md`（DKWS-SPEC-001）+ ADR（IMP-ADR-001~011）
-> 图源：`dkws/docs/architecture.md`（Mermaid）；PNG 渲染：`dkws/docs/assets/dkws-architecture-*.png`
+> 依据：`文件目录型数据知识服务模拟平台_详细需求与详细设计_V1.0.md`（KERT-SPEC-001）+ ADR（IMP-ADR-001~011）
+> 图源：`kert/docs/architecture.md`（Mermaid）；PNG 渲染：`kert/docs/assets/kert-architecture-*.png`
 
 ---
 
@@ -49,7 +49,7 @@ flowchart TB
     D["DSH GUI / 浏览器<br/>(Skill 报告页 · 图谱可视化)"]
     C["命令行 / 脚本 / 评测"]
   end
-  subgraph API["DKWS HTTP API（FastAPI :8106）"]
+  subgraph API["KERT HTTP API（FastAPI :8106）"]
     V1["/v1/* 知识服务<br/>health / extractions / jobs / entities<br/>data/query · search · graph<br/>rules/evaluate · evidence · catalog"]
     SK["/api/skill/* 技能服务<br/>health · execute · report/{requestId}"]
   end
@@ -67,7 +67,7 @@ flowchart TB
     WS["01_raw / 02_work / 03_core<br/>04_serve / 90_control"]
   end
   subgraph EXT["外部集成"]
-    DSH["DeepSeek Harness<br/>(SKILL.md 资产同步 · dkws-1 面板)"]
+    DSH["DeepSeek Harness<br/>(SKILL.md 资产同步 · kert-1 面板)"]
     EXTLLM["DeepSeek API（OpenAI 兼容）"]
     GITS["GITS CRM<br/>PUT upsert（交付物 B）"]
   end
@@ -101,7 +101,7 @@ flowchart TB
 | 检索 | `KnowledgeService` | search（FULLTEXT/VECTOR/HYBRID）、data_query、get_entity、graph、evaluate_rule、trace |
 | 图谱 | `_graph_kuzu` + `_graph_memory` | 邻接/闭包/路径（max_depth≤10，方向拆分防环路，fail-open） |
 | 技能 | `SkillExecutionService` | 10 个 Skill（3 客户 + 7 bank-front 外部包）；幂等 TTL 10min；无新证据策略；fail-closed |
-| 取数 | `CustomerKnowledgeProvider` | v1.3：按 customerId 读 KI 片段/实体/图谱（数据所有权在 DKWS） |
+| 取数 | `CustomerKnowledgeProvider` | v1.3：按 customerId 读 KI 片段/实体/图谱（数据所有权在 KERT） |
 | 报告 | `report.py` | `/api/skill/report/{id}` 定制图谱报告（vis-network，Neo4j 风格） |
 | 模型 | `llm.py` | DeepSeek（环境注入密钥）/ 确定性回退（离线端到端） |
 
@@ -112,11 +112,11 @@ flowchart TB
 `customer_knowledge` 投影取 7 条 KI / 图谱 → evidence 打点（ok/skipped 只反映库命中）→
 LLM 生成（可选，图谱为确定性库构建）→ `data.sections` 按 KI 出章 → GITS 按 heading 对位。
 
-## 4. 关键架构约束（DKWS-SPEC-001 / ADR）
+## 4. 关键架构约束（KERT-SPEC-001 / ADR）
 
 - **文件目录为权威源**：本体 FS（03_core）+ 投影（04_serve）可重建；无隐藏数据库（§18.5）。
 - **受控变更例外**：Kùzu 作为**可重建投影层**（IMP-ADR-011，6 条边界），非权威源。
-- **数据所有权（v1.3）**：知识全在 DKWS；GITS 只传 `customerId`（+ 可选时间戳/拜访意图）。
+- **数据所有权（v1.3）**：知识全在 KERT；GITS 只传 `customerId`（+ 可选时间戳/拜访意图）。
 - **fail-open / fail-closed**：知识检索失败 fail-open；模型输出不合格 fail-closed（无残缺半成品）。
 - **可观测**：assemblyTrace（KI 级，含 kiId）、jobs 作业日志、G0-G5 门禁报告。
 
@@ -128,7 +128,7 @@ LLM 生成（可选，图谱为确定性库构建）→ `data.sections` 按 KI �
 sequenceDiagram
     autonumber
     participant G as GITS 工作台
-    participant D as DKWS API (:8106)
+    participant D as KERT API (:8106)
     participant S as SkillExecutionService
     participant CK as CustomerKnowledgeProvider
     participant KS as KnowledgeService(customer_knowledge 投影)
@@ -158,7 +158,7 @@ sequenceDiagram
     Note over G,D: 图谱分支 bank-front-supply-chain-graph：CK.supply_chain(customerId) 库构建 data.result，model=library，无 LLM
 ```
 
-PNG：`docs/assets/dkws-sequence-execute.png`
+PNG：`docs/assets/kert-sequence-execute.png`
 
 ## 6. 部署拓扑图（8106 / DSH / GITS / H2）
 
@@ -166,10 +166,10 @@ PNG：`docs/assets/dkws-sequence-execute.png`
 flowchart TB
     subgraph HOST["同一主机 172.22.90.134"]
         subgraph DSH["DSH · DeepSeek Harness :3080"]
-            GUI["DSH Web GUI(dkws-1 知识面板插件)"]
+            GUI["DSH Web GUI(kert-1 知识面板插件)"]
             SKM["SKILL.md 资产库(customer-engagement 同步)"]
         end
-        subgraph DKWS["DKWS 服务 · systemd dkws-skill :8106"]
+        subgraph KERT["KERT 服务 · systemd kert-skill :8106"]
             API["FastAPI /v1/* 知识服务 + /api/skill/* 技能服务"]
             WS5["5 层工作区(demo_workspace)"]
             KZ["Kùzu 图谱文件(04_serve 投影)"]
@@ -188,9 +188,9 @@ flowchart TB
     FE --> GAPI
     GAPI --> H2
     GAPI -->|"execute 契约 v1.3 只传 customerId"| API
-    DKWS -->|"PUT upsert / 夹具(交付物 B)"| GAPI
-    DSH -->|"SKILL.md 资产同步"| DKWS
-    DKWS -->|"LLM 调用"| DSAPI
+    KERT -->|"PUT upsert / 夹具(交付物 B)"| GAPI
+    DSH -->|"SKILL.md 资产同步"| KERT
+    KERT -->|"LLM 调用"| DSAPI
     USER --> GUI
     USER --> FE
     USER --> STATIC
@@ -199,11 +199,11 @@ flowchart TB
     GUI --> STATIC
 ```
 
-PNG：`docs/assets/dkws-deployment-topology.png`
+PNG：`docs/assets/kert-deployment-topology.png`
 
 **部署要点**：
-- 全部同机（172.22.90.134）：DSH Web（:3080）、DKWS 服务（:8106，systemd 用户服务，Restart=always）、
+- 全部同机（172.22.90.134）：DSH Web（:3080）、KERT 服务（:8106，systemd 用户服务，Restart=always）、
   GITS API（:8080）+ 前端、静态资源（:8090）。
 - **H2 为内存库**：GITS 重启后须重新 upsert / 重灌 `gits-crm-customer-master.json`（造数脚本幂等）。
-- 数据流：GITS API → DKWS execute（v1.3 只传 customerId）；DKWS → GITS `PUT /api/v1/engagement/customer/{id}`
-  同步 CRM 主档（交付物 B）；DKWS → DeepSeek API（LLM，密钥不落盘）。
+- 数据流：GITS API → KERT execute（v1.3 只传 customerId）；KERT → GITS `PUT /api/v1/engagement/customer/{id}`
+  同步 CRM 主档（交付物 B）；KERT → DeepSeek API（LLM，密钥不落盘）。

@@ -23,8 +23,8 @@ from pathlib import Path
 
 import pytest
 
-from dkws.infrastructure.runtime_store import RuntimeStore
-from dkws.infrastructure.worker import JobWorker, WorkerConfig
+from kert.infrastructure.runtime_store import RuntimeStore
+from kert.infrastructure.worker import JobWorker, WorkerConfig
 
 REPO = Path(__file__).resolve().parent.parent.parent
 SRC = REPO / "src"
@@ -168,7 +168,7 @@ class TestRealProcessCrash:
         return textwrap.dedent(f"""
             import sys, time, pathlib
             sys.path.insert(0, {str(SRC)!r})
-            from dkws.infrastructure.runtime_store import RuntimeStore
+            from kert.infrastructure.runtime_store import RuntimeStore
 
             store = RuntimeStore(pathlib.Path({str(db)!r}))
             job = store.claim_job("w-crash", lease_seconds=1.0)
@@ -284,8 +284,8 @@ class TestRealProcessCrash:
         script.write_text(textwrap.dedent(f"""
             import sys, pathlib, time
             sys.path.insert(0, {str(SRC)!r})
-            from dkws.infrastructure.runtime_store import RuntimeStore
-            from dkws.infrastructure.worker import JobWorker, WorkerConfig
+            from kert.infrastructure.runtime_store import RuntimeStore
+            from kert.infrastructure.worker import JobWorker, WorkerConfig
 
             store = RuntimeStore(pathlib.Path({str(db)!r}))
             worker = JobWorker(store, WorkerConfig(

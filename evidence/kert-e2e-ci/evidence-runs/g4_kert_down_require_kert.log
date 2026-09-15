@@ -1,0 +1,912 @@
+EEEEEEEEEEEEEEEEssEEEEEE.sssEssEsssEssssEEsssEE                          [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[skill-customer-previsit-report] _
+
+item = <Function test_skill_execute[skill-customer-previsit-report]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[skill-customer-previsit-report]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[skill-customer-meeting-script] _
+
+item = <Function test_skill_execute[skill-customer-meeting-script]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[skill-customer-meeting-script]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[skill-customer-outreach-script] _
+
+item = <Function test_skill_execute[skill-customer-outreach-script]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[skill-customer-outreach-script]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[bank-front-kyc-gap-check] _
+
+item = <Function test_skill_execute[bank-front-kyc-gap-check]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[bank-front-kyc-gap-check]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[bank-front-eight-dimension] _
+
+item = <Function test_skill_execute[bank-front-eight-dimension]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[bank-front-eight-dimension]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[bank-front-fact-reconciliation] _
+
+item = <Function test_skill_execute[bank-front-fact-reconciliation]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[bank-front-fact-reconciliation]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[bank-front-product-recommendation] _
+
+item = <Function test_skill_execute[bank-front-product-recommendation]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[bank-front-product-recommendation]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[bank-front-commitment-script] _
+
+item = <Function test_skill_execute[bank-front-commitment-script]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[bank-front-commitment-script]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[bank-front-report-assembler] _
+
+item = <Function test_skill_execute[bank-front-report-assembler]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[bank-front-report-assembler]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestAllSkillsExecution.test_skill_execute[bank-front-supply-chain-graph] _
+
+item = <Function test_skill_execute[bank-front-supply-chain-graph]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[bank-front-supply-chain-graph]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+______ ERROR at setup of TestAllSkillsExecution.test_skill_execute[SP-15] ______
+
+item = <Function test_skill_execute[SP-15]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[SP-15]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+______ ERROR at setup of TestAllSkillsExecution.test_skill_execute[SP-20] ______
+
+item = <Function test_skill_execute[SP-20]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[SP-20]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+______ ERROR at setup of TestAllSkillsExecution.test_skill_execute[SP-21] ______
+
+item = <Function test_skill_execute[SP-21]>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_execute[SP-21]>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+____ ERROR at setup of TestAllSkillsExecution.test_skill_list_completeness _____
+
+item = <Function test_skill_list_completeness>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_skill_list_completeness>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_________ ERROR at setup of TestAllSkillsExecution.test_gates_endpoint _________
+
+item = <Function test_gates_endpoint>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_gates_endpoint>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+__________ ERROR at setup of TestCrossServiceHealth.test_kert_health ___________
+
+item = <Function test_kert_health>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_kert_health>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+__ ERROR at setup of TestCrossServiceHealth.test_all_services_simultaneously ___
+
+item = <Function test_all_services_simultaneously>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_all_services_simultaneously>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_______ ERROR at setup of TestGitsToKertIntegration.test_kert_skill_list _______
+
+item = <Function test_kert_skill_list>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_kert_skill_list>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_ ERROR at setup of TestGitsToKertIntegration.test_gits_calls_kert_skill_execute _
+
+item = <Function test_gits_calls_kert_skill_execute>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_gits_calls_kert_skill_execute>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_____ ERROR at setup of TestGitsToKertIntegration.test_kert_gates_endpoint _____
+
+item = <Function test_kert_gates_endpoint>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_kert_gates_endpoint>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+__ ERROR at setup of TestGitsToKertIntegration.test_kert_job_status_endpoint ___
+
+item = <Function test_kert_job_status_endpoint>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_kert_job_status_endpoint>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+___ ERROR at setup of TestGitsToKertIntegration.test_gits_kert_connectivity ____
+
+item = <Function test_gits_kert_connectivity>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_gits_kert_connectivity>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+______ ERROR at setup of TestContinuousOperation.test_gate_state_via_kert ______
+
+item = <Function test_gate_state_via_kert>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_gate_state_via_kert>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+______ ERROR at setup of TestPrevisitReport.test_previsit_report_via_kert ______
+
+item = <Function test_previsit_report_via_kert>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_previsit_report_via_kert>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_______ ERROR at setup of TestServiceProposal.test_execute_sp20_via_kert _______
+
+item = <Function test_execute_sp20_via_kert>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_execute_sp20_via_kert>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_______ ERROR at setup of TestKnowledgeGraph.test_supply_chain_via_kert ________
+
+item = <Function test_supply_chain_via_kert>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_supply_chain_via_kert>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_______ ERROR at setup of TestKnowledgeGraph.test_customer_admission_r1 ________
+
+item = <Function test_customer_admission_r1>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_customer_admission_r1>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_________ ERROR at setup of TestCustomerInsight.test_insight_via_kert __________
+
+item = <Function test_insight_via_kert>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_insight_via_kert>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+_________ ERROR at setup of TestCustomerInsight.test_full_insight_flow _________
+
+item = <Function test_full_insight_flow>
+
+    def pytest_runtest_setup(item: Any) -> None:
+        """require 优先于 skip：夹具解析前先判定本用例所需服务是否被 require 且缺失。"""
+        if item.nodeid not in _OWN_NODEIDS:
+            return
+>       _guard_required_for(item)
+
+tests/e2e/conftest.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item = <Function test_full_insight_flow>
+
+    def _guard_required_for(item: Any) -> None:
+        """在夹具解析**之前**判定：本用例所需的服务中，被 require 却不可达的服务。
+    
+        必须早于夹具解析：否则「同时需要缺失的 GITS 与被 require 且缺失的 KERT」的用例
+        会先因 GITS 而 skip，把「被要求的服务没起来」伪装成合法跳过。
+        只针对**本用例所需**的服务，因此不会牵连其它用例可独立验证的部分。
+        """
+        needed = _services_for(item)
+        for key, service in SERVICES.items():
+            if key in needed and _service_required(key) and not _ready(service):
+>               raise ServiceNotReadyError(_required_message(service))
+E               tests.e2e.conftest.ServiceNotReadyError: KERT Skill Service 不可达 (http://127.0.0.1:8199/api/skill/health)，但已被显式要求可用（E2E_REQUIRE_KERT=1 或 E2E_REQUIRE_SERVICES=1）——禁止降级为 skip
+
+tests/e2e/conftest.py:177: ServiceNotReadyError
+
+E2E 覆盖账本（下限由本次收集结果推导，见 TECH_LEAD_DECISION.md D-8）：
+  collected = 47
+  passed  = 1   (下限 26 = 无服务 1 + 仅 KERT 25)
+  skipped = 17   (上限 21 = 跨服务 21（仅 GITS 16 + 多端/含前端 5）)
+  failed  = 0   (必须 0)
+  errors  = 29   (必须 0)
+  覆盖口径：1/47 真跑，17/47 未覆盖
+  未覆盖用例清单（按文件分组）：
+    tests/e2e/test_cross_service_health.py  (2 条)
+      - TestCrossServiceHealth::test_gits_backend_health  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestCrossServiceHealth::test_gits_frontend_reachable  [Skipped: GITS Frontend 不可达 (http://127.0.0.1:5173)]
+    tests/e2e/test_scenario_1_continuous_operation.py  (4 条)
+      - TestContinuousOperation::test_full_engagement_loop  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestContinuousOperation::test_gate_state_via_gits  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestContinuousOperation::test_operating_view  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestContinuousOperation::test_start_journey  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+    tests/e2e/test_scenario_2_previsit_report.py  (2 条)
+      - TestPrevisitReport::test_full_previsit_flow  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestPrevisitReport::test_memory_extraction  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+    tests/e2e/test_scenario_3_service_proposal.py  (3 条)
+      - TestServiceProposal::test_generate_proposal_via_gits  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestServiceProposal::test_proposal_different_industry  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestServiceProposal::test_proposal_fact_labels  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+    tests/e2e/test_scenario_4_knowledge_graph.py  (3 条)
+      - TestKnowledgeGraph::test_supply_chain_edges  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestKnowledgeGraph::test_supply_chain_graph_via_gits  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestKnowledgeGraph::test_supply_chain_node_types  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+    tests/e2e/test_scenario_5_customer_insight.py  (3 条)
+      - TestCustomerInsight::test_customer_operating_view  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestCustomerInsight::test_insight_gate_correlation  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+      - TestCustomerInsight::test_kyc_gap_analysis  [Skipped: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)]
+  require 开关：E2E_REQUIRE_KERT
+  ✗ 下限断言失败：
+    - errors=29（必须 0）
+    - passed=1 < 下限 26（无服务 1 + 仅 KERT 25）——被 require 的服务可能未起来，禁止以 skip 掩盖
+::error::E2E 覆盖账本下限断言失败，job 必须失败（禁止以 skip 掩盖未验证）
+  说明：本账本是「未覆盖」的显式登记，不等于「通过」；CI 绿不代表跨服务链路已验证。
+=========================== short test summary info ============================
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[skill-customer-previsit-report]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[skill-customer-meeting-script]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[skill-customer-outreach-script]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[bank-front-kyc-gap-check]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[bank-front-eight-dimension]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[bank-front-fact-reconciliation]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[bank-front-product-recommendation]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[bank-front-commitment-script]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[bank-front-report-assembler]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[bank-front-supply-chain-graph]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[SP-15]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[SP-20]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_execute[SP-21]
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_skill_list_completeness
+ERROR tests/e2e/test_all_skills_execution.py::TestAllSkillsExecution::test_gates_endpoint
+ERROR tests/e2e/test_cross_service_health.py::TestCrossServiceHealth::test_kert_health
+ERROR tests/e2e/test_cross_service_health.py::TestCrossServiceHealth::test_all_services_simultaneously
+ERROR tests/e2e/test_gits_to_kert_integration.py::TestGitsToKertIntegration::test_kert_skill_list
+ERROR tests/e2e/test_gits_to_kert_integration.py::TestGitsToKertIntegration::test_gits_calls_kert_skill_execute
+ERROR tests/e2e/test_gits_to_kert_integration.py::TestGitsToKertIntegration::test_kert_gates_endpoint
+ERROR tests/e2e/test_gits_to_kert_integration.py::TestGitsToKertIntegration::test_kert_job_status_endpoint
+ERROR tests/e2e/test_gits_to_kert_integration.py::TestGitsToKertIntegration::test_gits_kert_connectivity
+ERROR tests/e2e/test_scenario_1_continuous_operation.py::TestContinuousOperation::test_gate_state_via_kert
+ERROR tests/e2e/test_scenario_2_previsit_report.py::TestPrevisitReport::test_previsit_report_via_kert
+ERROR tests/e2e/test_scenario_3_service_proposal.py::TestServiceProposal::test_execute_sp20_via_kert
+ERROR tests/e2e/test_scenario_4_knowledge_graph.py::TestKnowledgeGraph::test_supply_chain_via_kert
+ERROR tests/e2e/test_scenario_4_knowledge_graph.py::TestKnowledgeGraph::test_customer_admission_r1
+ERROR tests/e2e/test_scenario_5_customer_insight.py::TestCustomerInsight::test_insight_via_kert
+ERROR tests/e2e/test_scenario_5_customer_insight.py::TestCustomerInsight::test_full_insight_flow
+1 passed, 17 skipped, 29 errors in 38.99s

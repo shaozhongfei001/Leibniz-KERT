@@ -5,14 +5,14 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.application.extract import KnowledgeExtractor
-from dkws.application.ingest import Ingestor
-from dkws.application.parse_doc import DocumentParserService
-from dkws.application.review import ReviewService
-from dkws.application import validation
-from dkws.domain.contracts import specs
-from dkws.domain.contracts.base import validate_contract
-from dkws.domain.rules import dsl
+from kert.application.extract import KnowledgeExtractor
+from kert.application.ingest import Ingestor
+from kert.application.parse_doc import DocumentParserService
+from kert.application.review import ReviewService
+from kert.application import validation
+from kert.domain.contracts import specs
+from kert.domain.contracts.base import validate_contract
+from kert.domain.rules import dsl
 
 
 @pytest.fixture

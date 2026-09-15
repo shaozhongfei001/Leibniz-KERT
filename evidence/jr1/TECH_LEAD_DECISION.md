@@ -15,7 +15,7 @@
 
 **理由**：`httpx` 的消费者全部在测试侧——`tests/e2e` 直接 import，
 `tests/integration` 经 `starlette.testclient.TestClient` 间接依赖。
-DKWS 运行时（`dkws.api`）自身不发起出站 HTTP 调用，因此 `httpx` 不属于
+KERT 运行时（`kert.api`）自身不发起出站 HTTP 调用，因此 `httpx` 不属于
 `api` extra 的运行时契约。放进 `api` 会让生产镜像携带非必要依赖，
 扩大攻击面且违反最小依赖原则。
 
@@ -76,6 +76,6 @@ Tech Lead 只裁决顺序，不代为合并。
 ## 非声明
 
 - 本决策仅裁决上述 4 项，不代表 CI 已全绿（21 个需外部服务的 e2e error 未消除）。
-- 本决策不代表 DKWS `PRODUCTION_READY=YES` 或 `GITS_UAT_PASS=YES`。
+- 本决策不代表 KERT `PRODUCTION_READY=YES` 或 `GITS_UAT_PASS=YES`。
 - 本决策不构成 Independent QA 的 `QA_PASS`。
 - Tech Lead 未执行 merge，未代替 Owner 授权。

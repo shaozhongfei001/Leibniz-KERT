@@ -4,7 +4,7 @@
   "environment": {
     "python": "3.12.8",
     "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
-    "workspace": "/tmp/dkws-m2p1-e2e-ws"
+    "workspace": "/tmp/kert-m2p1-e2e-ws"
   },
   "checks": [
     {
@@ -25,7 +25,7 @@
     {
       "name": "missing_key_401",
       "passed": true,
-      "detail": "无密钥 → 401 UNAUTHENTICATED；WWW-Authenticate='ApiKey realm=\"dkws\", header=\"X-API-Key\"'"
+      "detail": "无密钥 → 401 UNAUTHENTICATED；WWW-Authenticate='ApiKey realm=\"kert\", header=\"X-API-Key\"'"
     },
     {
       "name": "wrong_key_401",

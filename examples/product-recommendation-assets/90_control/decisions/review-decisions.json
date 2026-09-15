@@ -1,0 +1,35 @@
+{
+  "attestedBy": "OWNER",
+  "decisions": [
+    {
+      "decidedAt": "2026-09-06T23:20:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260906-11111111",
+      "rationale": "PROD-CM-001 面向单一法人客户现金池，采用 SRC-CM-001 第十条的 50 万元标准；集团客户场景（SRC-CM-003 第六条 100 万元）由集团现金池场景规则另行覆盖，不在本产品卡字段承载。",
+      "subjectId": "CNF-PRODCM001-757c6c3b",
+      "subjectKind": "CONFLICT"
+    },
+    {
+      "decidedAt": "2026-09-06T23:20:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decision": "NOT_APPLICABLE",
+      "decisionId": "DEC-20260906-22222222",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由制度文本承载；制度中出现的编码属引用而非制度规定。",
+      "subjectId": "identity.productCode",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-06T23:20:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "NOT_APPLICABLE",
+      "decisionId": "DEC-20260906-33333333",
+      "rationale": "监管依据由受控法规库（REG-CM-001）单独发布并与产品版本绑定，本版本产品卡字段不重复承载，避免与法规库双写冲突。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    }
+  ]
+}

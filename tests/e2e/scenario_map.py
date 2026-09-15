@@ -3,7 +3,7 @@
 数据来源:
 - GITS 后端 Controller: apps/api/.../api/controller/*.java
 - GITS 前端 API: frontend/src/api/*.ts
-- KERT skill 注册: src/dkws/application/skills.py
+- KERT skill 注册: src/kert/application/skills.py
 - GITS→KERT 适配器: DshHttpSkillExecutionAdapter.java (POST /api/skill/execute)
 
 GITS→KERT 调用机制:
@@ -59,13 +59,13 @@ SCENARIOS: dict[str, dict] = {
                 "description": "提交新证据触发洞察更新",
                 "controller": "EngagementJourneyController",
             },
-            # --- V14DkwsIntegrationController (GITS→KERT 跨服务) ---
+            # --- V14KertIntegrationController (GITS→KERT 跨服务) ---
             {
                 "method": "GET",
                 "path": "/api/v14/gates/state/{customerId}",
                 "body_template": None,
                 "description": "查询 Gate 状态（GITS→KERT 跨服务调用）",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
             {
                 "method": "POST",
@@ -76,7 +76,7 @@ SCENARIOS: dict[str, dict] = {
                     "context": {"customerName": "华东精工", "industry": "制造业"},
                 },
                 "description": "生成服务建议书（GITS→KERT SP-20 跨服务调用）",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
             {
                 "method": "POST",
@@ -86,7 +86,7 @@ SCENARIOS: dict[str, dict] = {
                     "customerId": "CUST-CORP-0001",
                 },
                 "description": "交互记忆抽取（GITS→KERT SP-21 跨服务调用）",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
             # --- CustomerJourneyController ---
             {
@@ -191,7 +191,7 @@ SCENARIOS: dict[str, dict] = {
         "name": "访前报告生成",
         "description": "交互记忆抽取→访前报告生成 完整链路",
         "gits_api_calls": [
-            # --- V14DkwsIntegrationController ---
+            # --- V14KertIntegrationController ---
             {
                 "method": "POST",
                 "path": "/api/v14/memories/extract",
@@ -200,7 +200,7 @@ SCENARIOS: dict[str, dict] = {
                     "customerId": "CUST-CORP-0001",
                 },
                 "description": "交互记忆抽取（GITS→KERT SP-21 跨服务调用）",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
             {
                 "method": "POST",
@@ -215,14 +215,14 @@ SCENARIOS: dict[str, dict] = {
                     },
                 },
                 "description": "生成访前报告/建议书（GITS→KERT SP-20 跨服务调用）",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
             {
                 "method": "GET",
                 "path": "/api/v14/gates/state/{customerId}",
                 "body_template": None,
                 "description": "查询 Gate 状态（访前需确认 Gate 完成度）",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
             # --- EngagementJourneyController ---
             {
@@ -304,7 +304,7 @@ SCENARIOS: dict[str, dict] = {
         "name": "客户服务建议书",
         "description": "服务建议书生成 完整链路（含事实标签、产品推荐、实施计划）",
         "gits_api_calls": [
-            # --- V14DkwsIntegrationController ---
+            # --- V14KertIntegrationController ---
             {
                 "method": "POST",
                 "path": "/api/v14/proposals",
@@ -314,14 +314,14 @@ SCENARIOS: dict[str, dict] = {
                     "context": {"customerName": "华东精工", "industry": "制造业"},
                 },
                 "description": "生成服务建议书（GITS→KERT SP-20 跨服务调用），返回 proposalDraft + factLabels",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
             {
                 "method": "GET",
                 "path": "/api/v14/gates/state/{customerId}",
                 "body_template": None,
                 "description": "查询 Gate 状态（建议书需基于 Gate 完成度）",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
             # --- EngagementJourneyController ---
             {
@@ -455,13 +455,13 @@ SCENARIOS: dict[str, dict] = {
                 "description": "获取客户经营总览（图谱上下文）",
                 "controller": "EngagementJourneyController",
             },
-            # --- V14DkwsIntegrationController ---
+            # --- V14KertIntegrationController ---
             {
                 "method": "GET",
                 "path": "/api/v14/gates/state/{customerId}",
                 "body_template": None,
                 "description": "查询 Gate 状态（图谱关联 Gate）",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
         ],
         "kert_skill_ids": [
@@ -564,13 +564,13 @@ SCENARIOS: dict[str, dict] = {
                 "description": "获取客户经营总览（含风险等级 riskLevel）",
                 "controller": "EngagementJourneyController",
             },
-            # --- V14DkwsIntegrationController ---
+            # --- V14KertIntegrationController ---
             {
                 "method": "GET",
                 "path": "/api/v14/gates/state/{customerId}",
                 "body_template": None,
                 "description": "查询 Gate 状态（洞察关联 Gate）",
-                "controller": "V14DkwsIntegrationController",
+                "controller": "V14KertIntegrationController",
             },
             # --- EvaluationController ---
             {
@@ -675,31 +675,31 @@ KERT_SKILL_REGISTRY = {
     "SP-20": {
         "name": "服务建议书生成",
         "handler": "service_proposal.handler",
-        "module": "src/dkws/application/service_proposal.py",
+        "module": "src/kert/application/service_proposal.py",
         "description": "生成客户服务建议书，含事实标签(F/C/H/P/B/A)、产品推荐、实施计划",
     },
     "SP-21": {
         "name": "访前报告/交互记忆抽取",
         "handler": "previsit_report.handler",
-        "module": "src/dkws/application/previsit_report.py",
+        "module": "src/kert/application/previsit_report.py",
         "description": "抽取交互记忆，生成访前报告",
     },
     "gates": {
         "name": "Gate 状态查询",
         "handler": "gates.handler",
-        "module": "src/dkws/application/gates.py",
+        "module": "src/kert/application/gates.py",
         "description": "查询客户 Gate 状态，含 KYC 差距分析",
     },
     "supply-chain": {
         "name": "供应链图谱构建",
         "handler": "supply_chain.handler",
-        "module": "src/dkws/application/supply_chain.py",
+        "module": "src/kert/application/supply_chain.py",
         "description": "构建供应链图谱，返回节点(nodes)和边(edges)",
     },
     "R1": {
         "name": "客户准入",
         "handler": "customer_admission.handler",
-        "module": "src/dkws/application/customer_admission.py",
+        "module": "src/kert/application/customer_admission.py",
         "description": "客户准入评估",
     },
 }

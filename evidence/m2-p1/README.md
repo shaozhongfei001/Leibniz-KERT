@@ -5,7 +5,7 @@
 生成时间：2026-08-27
 
 > **非声明**
-> - 本次不代表 DKWS 已生产就绪。
+> - 本次不代表 KERT 已生产就绪。
 > - 本次不代表 GITS UAT 已通过。
 > - 本次不代表安全审计已完成。
 > - 本次不代表 C′ 架构已成为正式基线。
@@ -56,8 +56,8 @@
 ### 2.3 静态检查
 
 ```
-ruff check src/dkws/api/middleware.py src/dkws/infrastructure/runtime_config.py \
-           src/dkws/infrastructure/runtime_store.py \
+ruff check src/kert/api/middleware.py src/kert/infrastructure/runtime_config.py \
+           src/kert/infrastructure/runtime_store.py \
            tests/unit/test_runtime_config.py tests/unit/test_runtime_store.py \
            tests/security/test_api_hardening.py tests/integration/test_runtime_store_api.py
 → All checks passed!
@@ -75,7 +75,7 @@ ruff check src/dkws/api/middleware.py src/dkws/infrastructure/runtime_config.py 
 | 1 | `prod_profile_fail_fast` | 退出码 1，输出"拒绝启动"并列明缺失项 |
 | 2 | `prod_profile_starts_with_full_config` | 配置齐备时正常就绪 |
 | 3 | `health_public_without_key` | `GET /v1/health` → 200（匿名探针可用） |
-| 4 | `missing_key_401` | 401 `UNAUTHENTICATED`，`WWW-Authenticate: ApiKey realm="dkws", header="X-API-Key"` |
+| 4 | `missing_key_401` | 401 `UNAUTHENTICATED`，`WWW-Authenticate: ApiKey realm="kert", header="X-API-Key"` |
 | 5 | `wrong_key_401` | 401，响应体不回显密钥 |
 | 6 | `valid_key_accepted` | 通过认证（非 401/403） |
 | 7 | `non_admin_scope_403` | 普通密钥访问闸门审计 → 403 `FORBIDDEN` |
@@ -108,17 +108,17 @@ ruff check src/dkws/api/middleware.py src/dkws/infrastructure/runtime_config.py 
 
 | 文件 | 说明 |
 |---|---|
-| `src/dkws/infrastructure/runtime_config.py` | 运行时配置：profile、认证、限流、大小、并发、Store；含生产 fail-fast 校验 |
-| `src/dkws/api/middleware.py` | 四个中间件：大小限制、并发限制、限流、API Key 认证 |
-| `src/dkws/infrastructure/runtime_store.py` | SQLite Runtime Store：migration、WAL、幂等、Job、审计、备份 |
+| `src/kert/infrastructure/runtime_config.py` | 运行时配置：profile、认证、限流、大小、并发、Store；含生产 fail-fast 校验 |
+| `src/kert/api/middleware.py` | 四个中间件：大小限制、并发限制、限流、API Key 认证 |
+| `src/kert/infrastructure/runtime_store.py` | SQLite Runtime Store：migration、WAL、幂等、Job、审计、备份 |
 
 ### 4.2 修改（源码）
 
 | 文件 | 变更 |
 |---|---|
-| `src/dkws/domain/errors.py` | 新增 5 个异常与 4 个错误码（401/403/429/413），既有码未改动 |
-| `src/dkws/api/server.py` | `create_app` 接受 `runtime_config`、装配中间件与 Store、health 回报加固状态、evidence 端点写审计 |
-| `src/dkws/application/skills.py` | `SkillExecutionService` 接受 `runtime_store`，幂等双层（内存 + 持久化）、闸门审计双写 |
+| `src/kert/domain/errors.py` | 新增 5 个异常与 4 个错误码（401/403/429/413），既有码未改动 |
+| `src/kert/api/server.py` | `create_app` 接受 `runtime_config`、装配中间件与 Store、health 回报加固状态、evidence 端点写审计 |
+| `src/kert/application/skills.py` | `SkillExecutionService` 接受 `runtime_store`，幂等双层（内存 + 持久化）、闸门审计双写 |
 | `scripts/serve_skill_service.py` | 启动前配置校验、生产 fail-fast、dev 模式显式告警 |
 
 ### 4.3 新增（测试）
@@ -130,7 +130,7 @@ ruff check src/dkws/api/middleware.py src/dkws/infrastructure/runtime_config.py 
 
 ### 4.4 新增（文档/配置/工具）
 
-- `docs/architecture/DKWS_RUNTIME_HARDENING_M2P1.md` —— 运行加固说明
+- `docs/architecture/KERT_RUNTIME_HARDENING_M2P1.md` —— 运行加固说明
 - `examples/config/runtime.prod.example.json` —— 生产 profile 配置示例（密钥用 digest）
 - `scripts/verify_m2p1_hardening.py` —— 端到端加固验证脚本
 - `evidence/m2-p1/**` —— 本证据集

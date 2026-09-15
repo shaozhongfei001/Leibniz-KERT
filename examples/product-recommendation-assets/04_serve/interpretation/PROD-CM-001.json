@@ -1,0 +1,78 @@
+{
+  "bundleHash": "75a8f0a11f52682a9d3c9b1a27952df8d80ac4fd6e26a9812cfefb46687ac52e",
+  "generatedAt": "2026-09-06T12:00:00+08:00",
+  "isStale": false,
+  "lifecycleState": "PUBLISHED",
+  "productId": "PROD-CM-001",
+  "provenanceState": "DEMO",
+  "purposeAllowed": {
+    "INTERPRETATION": true,
+    "RECOMMENDATION": false
+  },
+  "releaseId": "RLS-2026.09.06.1",
+  "sourceVersions": [
+    "SV-SRCCM001-20260906-5879e814",
+    "SV-SRCCM002-20260906-984fe6cd",
+    "SV-SRCCM003-20260906-b4599dd1"
+  ],
+  "staleReason": null,
+  "views": {
+    "ELIGIBILITY": [
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "eligibility.customerSegment",
+        "knowledgeState": "UNKNOWN"
+      },
+      {
+        "conflictId": "CNF-PRODCM001-757c6c3b",
+        "displayValue": "50 万元",
+        "evidenceSummaries": [
+          {
+            "authorityLevel": "INTERNAL_POLICY",
+            "evidenceId": "EVS-SRCCM001-7d3f83e8",
+            "locatorHint": "第十条",
+            "quoteExcerpt": "现金池主账户每日最低留存余额为人民币 50 万元，成员账户最低留存余额为人民币 10 万元。",
+            "sourceId": "SRC-CM-001",
+            "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+          }
+        ],
+        "fieldPath": "eligibility.minAccountBalance",
+        "knowledgeState": "SUPPORTED"
+      },
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "eligibility.prerequisiteProducts",
+        "knowledgeState": "UNKNOWN"
+      }
+    ],
+    "OVERVIEW": [
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "identity.productCode",
+        "knowledgeState": "NOT_APPLICABLE"
+      },
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "compliance.regulatoryBasis",
+        "knowledgeState": "NOT_APPLICABLE"
+      }
+    ],
+    "PRICING": [
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "pricing.serviceFee",
+        "knowledgeState": "UNKNOWN"
+      }
+    ]
+  }
+}

@@ -5,12 +5,12 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.application.ingest import Ingestor
-from dkws.application.jobs import read_job_status
-from dkws.domain import hashing
-from dkws.domain.contracts import specs
-from dkws.domain.contracts.base import validate_contract
-from dkws.domain.errors import IdempotencyConflictError, UsageError
+from kert.application.ingest import Ingestor
+from kert.application.jobs import read_job_status
+from kert.domain import hashing
+from kert.domain.contracts import specs
+from kert.domain.contracts.base import validate_contract
+from kert.domain.errors import IdempotencyConflictError, UsageError
 
 
 @pytest.fixture
@@ -122,8 +122,8 @@ class TestIngest:
 
 class TestJobControl:
     def test_status_contract(self, ws, source_file):
-        from dkws.application.jobs import JobController
-        from dkws.infrastructure.fs import WorkspaceWriter
+        from kert.application.jobs import JobController
+        from kert.infrastructure.fs import WorkspaceWriter
 
         job = JobController(ws, WorkspaceWriter(ws), job_type="TEST",
                             requested_by="t", idempotency_key="k1")
@@ -136,9 +136,9 @@ class TestJobControl:
         assert rv.front_matter["status"] == "COMPLETED"
 
     def test_illegal_jump_rejected(self, ws):
-        from dkws.application.jobs import JobController
-        from dkws.domain.errors import UsageError
-        from dkws.infrastructure.fs import WorkspaceWriter
+        from kert.application.jobs import JobController
+        from kert.domain.errors import UsageError
+        from kert.infrastructure.fs import WorkspaceWriter
 
         job = JobController(ws, WorkspaceWriter(ws), job_type="TEST",
                             requested_by="t", idempotency_key="k2")
@@ -146,9 +146,9 @@ class TestJobControl:
             job.update(status="COMPLETED")  # PENDING → COMPLETED 非法
 
     def test_failed_job_report(self, ws):
-        from dkws.application.jobs import JobController
-        from dkws.domain.contracts import specs as sp
-        from dkws.infrastructure.fs import WorkspaceWriter
+        from kert.application.jobs import JobController
+        from kert.domain.contracts import specs as sp
+        from kert.infrastructure.fs import WorkspaceWriter
 
         job = JobController(ws, WorkspaceWriter(ws), job_type="TEST",
                             requested_by="t", idempotency_key="k3")
@@ -161,7 +161,7 @@ class TestJobControl:
         assert validate_contract(report, sp.RUN_REPORT_SPEC).ok
 
     def test_lock_conflict(self, ws):
-        from dkws.infrastructure import locks as locks_mod
+        from kert.infrastructure import locks as locks_mod
 
         lk = locks_mod.WorkspaceLock(ws, "domain:product", job_id="JOB-A", owner="t")
         lk.acquire()

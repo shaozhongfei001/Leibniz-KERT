@@ -1,17 +1,17 @@
-# DKWS 契约唯一权威源（Phase 0 候选）
+# KERT 契约唯一权威源（Phase 0 候选）
 
 > 状态：CANDIDATE
 > 日期：2026-08-26
 
 ## 权威文件
 
-- OpenAPI：`openapi/dkws-openapi-v2.yaml`
+- OpenAPI：`openapi/kert-openapi-v2.yaml`
 - JSON Schema：`schemas/*.json`
 
 ## 校验命令
 
 ```bash
-cd dkws
+cd kert
 .venv/bin/python scripts/validate_contract_bundle.py
 .venv/bin/python scripts/contract_bundle_hash.py
 ```

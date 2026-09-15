@@ -101,5 +101,5 @@ AssertionError: 服务未就绪: http://127.0.0.1:8082/actuator/health
 
 - 本 PR 仅修复 CI 配置，不改变任何业务行为。
 - 本 PR 不代表 CI 已全绿（尚有 21 个需外部服务的 e2e error）。
-- 本 PR 不代表 DKWS 已生产就绪、GITS UAT 已通过、安全审计已完成。
+- 本 PR 不代表 KERT 已生产就绪、GITS UAT 已通过、安全审计已完成。
 - Feature Pilot 不代替 Owner、Tech Lead 或 Independent QA 签署，且未自行 merge。

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""DKWS 端到端演示：product 领域黄金场景（规格 §18.3）。
+"""KERT 端到端演示：product 领域黄金场景（规格 §18.3）。
 
-以 dkws CLI 为唯一入口，模拟 Operator/Knowledge Engineer/Reviewer/Consumer 全流程：
+以 kert CLI 为唯一入口，模拟 Operator/Knowledge Engineer/Reviewer/Consumer 全流程：
 init → ingest → process-data → parse-doc → extract → review → publish
 → build-projection → 查询/检索/图谱/规则/溯源。
 """
@@ -31,17 +31,17 @@ def run(cmd: list[str], *, expect: int = 0) -> subprocess.CompletedProcess:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="DKWS product 黄金场景演示")
+    ap = argparse.ArgumentParser(description="KERT product 黄金场景演示")
     ap.add_argument("--workspace", "-w", required=True, help="演示工作区目录")
-    ap.add_argument("--dkws", default="dkws", help="dkws CLI 可执行文件")
+    ap.add_argument("--kert", default="kert", help="kert CLI 可执行文件")
     args = ap.parse_args()
 
     ws = Path(args.workspace).resolve()
-    dkws = [args.dkws]
+    kert = [args.kert]
 
     # 1. 初始化
-    run(dkws + ["init", "--workspace", str(ws), "--force"])
-    run(dkws + ["validate", "--workspace", str(ws)])
+    run(kert + ["init", "--workspace", str(ws), "--force"])
+    run(kert + ["validate", "--workspace", str(ws)])
 
     # 2. 生成样例输入（20 产品 + 2 错误 + 文档）
     demo_dir = Path(__file__).resolve().parent / "inputs"
@@ -62,11 +62,11 @@ def main() -> None:
         "规则：利率不超过10。\n\n产品B不可申请。\n", encoding="utf-8")
 
     # 3. 接入
-    r = run(dkws + ["ingest", "--workspace", str(ws), "--domain", "product",
+    r = run(kert + ["ingest", "--workspace", str(ws), "--domain", "product",
                     "--source", str(demo_dir / "product.parquet"),
                     "--idempotency-key", "demo-data-1", "--output", "json"])
     data_batch = json.loads(r.stdout)["data"]["batch_id"]
-    r = run(dkws + ["ingest", "--workspace", str(ws), "--domain", "product",
+    r = run(kert + ["ingest", "--workspace", str(ws), "--domain", "product",
                     "--source", str(demo_dir / "product_manual.md"),
                     "--source", str(demo_dir / "loan_policy.md"),
                     "--idempotency-key", "demo-docs-1", "--output", "json"])
@@ -77,15 +77,15 @@ def main() -> None:
                '{"source_field": "product_id", "target_field": "product_id", "target_type": "string", "missing_policy": "REJECT"},'
                '{"source_field": "name", "target_field": "name", "target_type": "string", "missing_policy": "REJECT"},'
                '{"source_field": "rate", "target_field": "rate", "target_type": "decimal"}]}')
-    run(dkws + ["process-data", "--workspace", str(ws), "--domain", "product",
+    run(kert + ["process-data", "--workspace", str(ws), "--domain", "product",
                 "--batch", data_batch, "--schema", "product",
                 "--mapping-json", mapping])
 
     # 5. 文档解析 + 抽取
-    r = run(dkws + ["parse-doc", "--workspace", str(ws), "--domain", "product",
+    r = run(kert + ["parse-doc", "--workspace", str(ws), "--domain", "product",
                     "--batch", docs_batch, "--output", "json"])
     run_id = json.loads(r.stdout)["data"]["run_id"]
-    r = run(dkws + ["extract", "--workspace", str(ws), "--domain", "product",
+    r = run(kert + ["extract", "--workspace", str(ws), "--domain", "product",
                     "--batch", docs_batch, "--run-id", run_id, "--output", "json"])
     candidates = json.loads(r.stdout)["data"]["candidates"]
 
@@ -95,8 +95,8 @@ def main() -> None:
         {"ENTITY": ent_paths, "RELATION": rel_paths,
          "RULE": rule_paths, "STATEMENT": st_paths}[c["kind"]].append(c["path"])
     # 读取实体名分组
-    from dkws.domain.contracts import specs
-    from dkws.domain.contracts.base import validate_contract
+    from kert.domain.contracts import specs
+    from kert.domain.contracts.base import validate_contract
     by_name: dict[str, list] = {}
     for p in ent_paths:
         fm = validate_contract((ws / p).read_text(encoding="utf-8"),
@@ -116,39 +116,39 @@ def main() -> None:
         rejected.extend(p for p in group if p != chosen)
     approved += rel_paths + rule_paths
     rejected += st_paths
-    run(dkws + ["review", "--workspace", str(ws), "--domain", "product",
+    run(kert + ["review", "--workspace", str(ws), "--domain", "product",
                 "--run-id", run_id, "--decision", "APPROVE",
                 "--reason", "来源一致"] +
         [o for p in approved for o in ("--objects", p)])
-    run(dkws + ["review", "--workspace", str(ws), "--domain", "product",
+    run(kert + ["review", "--workspace", str(ws), "--domain", "product",
                 "--run-id", run_id, "--decision", "REJECT",
                 "--reason", "同名异体/矛盾利率"] +
         [o for p in rejected for o in ("--objects", p)])
 
     # 7. 发布 + 投影
-    r = run(dkws + ["publish", "--workspace", str(ws), "--domain", "product",
+    r = run(kert + ["publish", "--workspace", str(ws), "--domain", "product",
                     "--run-id", run_id, "--output", "json"])
-    run(dkws + ["build-projection", "--workspace", str(ws), "--domain", "product"])
-    run(dkws + ["validate", "--workspace", str(ws), "--mode", "full"])
+    run(kert + ["build-projection", "--workspace", str(ws), "--domain", "product"])
+    run(kert + ["validate", "--workspace", str(ws), "--mode", "full"])
 
     # 8. 服务查询
-    run(dkws + ["query-data", "--workspace", str(ws), "--dataset", "product",
+    run(kert + ["query-data", "--workspace", str(ws), "--dataset", "product",
                 "--where", '{"product_id": "P005"}'])
-    run(dkws + ["search", "--workspace", str(ws), "--query", "利率",
+    run(kert + ["search", "--workspace", str(ws), "--query", "利率",
                 "--mode", "FULLTEXT", "--top-k", "3"])
-    run(dkws + ["search", "--workspace", str(ws), "--query", "产品A",
+    run(kert + ["search", "--workspace", str(ws), "--query", "产品A",
                 "--mode", "HYBRID", "--top-k", "3"])
-    run(dkws + ["evaluate-rule", "--workspace", str(ws),
+    run(kert + ["evaluate-rule", "--workspace", str(ws),
                 "--facts", '{"rate": 5}'])
     # 图谱：用已批准实体（被关系引用的产品A/材料M1）
     ent_id = approved[0].split("/")[-1].removesuffix(".md")
-    run(dkws + ["graph", "--workspace", str(ws), "--start", ent_id,
+    run(kert + ["graph", "--workspace", str(ws), "--start", ent_id,
                 "--depth", "1"])
     # 溯源
-    run(dkws + ["trace", "--workspace", str(ws), "--object-id", ent_id])
+    run(kert + ["trace", "--workspace", str(ws), "--object-id", ent_id])
 
     print("\n" + "=" * 60)
-    print("DKWS 黄金场景演示完成：")
+    print("KERT 黄金场景演示完成：")
     print(f"  工作区: {ws}")
     print(f"  数据批次 {data_batch}（22 输入，20 通过 / 2 拒绝）")
     print(f"  文档批次 {docs_batch}，解析 run {run_id}")

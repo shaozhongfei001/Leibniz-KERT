@@ -1,4 +1,4 @@
-# DKWS Makefile（M2.7）
+# KERT Makefile（M2.7）
 #
 # 部署相关目标，简化 docker compose 操作。
 #
@@ -42,7 +42,7 @@ deploy-restore: ## 从备份恢复（需 BACKUP= 参数）
 	@if [ -z "$(BACKUP)" ] || [ -z "$(TARGET)" ]; then \
 		echo "错误：BACKUP 和 TARGET 参数均为必填" >&2; exit 1; \
 	fi
-	python scripts/dkws_ops.py restore --backup "$(BACKUP)" --target "$(TARGET)"
+	python scripts/kert_ops.py restore --backup "$(BACKUP)" --target "$(TARGET)"
 
 deploy-smoke-test: ## 冒烟测试（构建→启动→健康检查→Skill测试→停止）
 	bash deploy/smoke_test.sh

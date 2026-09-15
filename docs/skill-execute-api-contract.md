@@ -1,8 +1,8 @@
-# DKWS Skill 执行 API 精确契约（gits 侧对接用）
+# KERT Skill 执行 API 精确契约（gits 侧对接用）
 
-> 版本：**1.3（数据所有权，2026-08-22）**——权威契约在 gits 仓 `docs/dd/skill-execute-api-contract.md` v1.3，本文为 DKWS 实现快照。
-> v1.3 核心：知识全在 DKWS（本体 FS + 图 + 检索投影），gits 只传 `customerId`（+ 可选 `evidenceTimestamp`/`visitObjective`）；「gits 组 structuredFacts」废止。
-> 依据：当前实际实现 `dkws/src/dkws/api/server.py` + `dkws/src/dkws/application/skills.py` + `dkws/src/dkws/application/customer_knowledge.py`。
+> 版本：**1.3（数据所有权，2026-08-22）**——权威契约在 gits 仓 `docs/dd/skill-execute-api-contract.md` v1.3，本文为 KERT 实现快照。
+> v1.3 核心：知识全在 KERT（本体 FS + 图 + 检索投影），gits 只传 `customerId`（+ 可选 `evidenceTimestamp`/`visitObjective`）；「gits 组 structuredFacts」废止。
+> 依据：当前实际实现 `kert/src/kert/api/server.py` + `kert/src/kert/application/skills.py` + `kert/src/kert/application/customer_knowledge.py`。
 > 未实现项以 **未定** 标注，勿猜测。
 
 ---
@@ -124,7 +124,7 @@ Neo4j 风格图谱报告模板；其余 Skill 回退为暗色 JSON 查看页。�
 | `result.interpretation` | object | `supplyChainPosition`/`bargainingPower`/`concentrationRisk`/`keyChanges`/`overallAssessment`/`followUpQuestions`/`confidence` |
 | `reportUrl` | string | `/api/skill/report/{requestId}` → 定制图谱分析报告页 |
 
-> 未定字段（如需字段化契约，需 DKWS 侧扩展输出 schema 后另行发布）：
+> 未定字段（如需字段化契约，需 KERT 侧扩展输出 schema 后另行发布）：
 > 外联 `scriptId/talkingPoints/riskReminders/closingLine/followUpAction`；
 > 会面 `scriptId/kycQuestions/productDiscussions/closingSummary`；
 > R1 `customerOverview/kycGapSummary/productSchemes/keyQuestions/riskReminders/visitStrategy/supplyChainMarkdown`。
@@ -138,13 +138,13 @@ Neo4j 风格图谱报告模板；其余 Skill 回退为暗色 JSON 查看页。�
 
 | 字段 | 枚举/示例 |
 |---|---|
-| `phase` | `resolve` / `idempotency` / `evidence` / `validate` / `dkws` / `model` / `parse` / `compose` |
+| `phase` | `resolve` / `idempotency` / `evidence` / `validate` / `kert` / `model` / `parse` / `compose` |
 | `status` | `ok` / `failed` / `blocked` / `skipped` |
 | `message` | 自由文本（中文，控制台可直接展示） |
 | `kiId` | 可选（string，KI 级步骤附加；管道步骤缺省。gits 忽略未知字段即可） |
 
 - `evidence`：知识组装步骤——进入知识地图 + 逐知识条目取数（R1 报告打 7 条 KI：`KI-009` 企业客户基本信息、`KI-FRONT-001` 公司供应链图谱、`KI-FRONT-002` 产业链八维研判、`KI-FRONT-003` 行内变动行为、`KI-FRONT-004` 事实承诺事项、`KI-FRONT-005` KYC 信息缺口、`KI-FRONT-006` 产品候选组合）；有输入 `ok`，无输入 `skipped`（不编造成功）。
-- `dkws`：平台知识检索（命中 `ok`；无命中/不可用 `skipped`，fail-open）。
+- `kert`：平台知识检索（命中 `ok`；无命中/不可用 `skipped`，fail-open）。
 
 ```json
 { "phase": "evidence", "status": "ok", "kiId": "KI-009",
@@ -235,7 +235,7 @@ Neo4j 风格图谱报告模板；其余 Skill 回退为暗色 JSON 查看页。�
 
 **报告页示例**（`GET /api/skill/report/{requestId}`，`bank-front-supply-chain-graph`）：
 `http://127.0.0.1:8106/api/skill/report/scg-report-demo-0002` → 供应链图谱分析报告
-（力导向三段式图谱 + 四类解读卡片 + 节点/边明细表；截图见 `dkws/examples/output/`）。
+（力导向三段式图谱 + 四类解读卡片 + 节点/边明细表；截图见 `kert/examples/output/`）。
 
 ---
 
@@ -246,6 +246,6 @@ Neo4j 风格图谱报告模板；其余 Skill 回退为暗色 JSON 查看页。�
 | 2026-08-21 | 契约 v1.0 快照（对齐当前实现）；修复 `_run_previsit` 回归缺陷（此前 previsit 误返回 skill_error） |
 | 2026-08-21 | v1.1：assemblyTrace 升级为 KI 级知识组装轨迹（evidence 步骤逐 KI 取数 + 可选 kiId 字段）；管道步骤保留；真实响应验证通过 |
 | 2026-08-21 | v1.2：新增 `GET /api/skill/report/{requestId}` 可视化报告端点（结果取幂等缓存，TTL 10 分钟，过期 404）；所有 execute 响应 `data` 附加 `reportUrl`；`bank-front-supply-chain-graph` 使用定制「供应链图谱分析报告」模板（Neo4j 风格力导向图谱 + 解读卡片 + 明细表），其余 Skill 回退暗色 JSON 查看页；`knowledgeContext` 支持 dict/str（归一化修复） |
-| 2026-08-22 | **v1.3（数据所有权）**：evidence ok/skipped 只反映 DKWS 客户知识库对该 `customerId`+`kiId` 是否取到数（删除「已使用 request.knowledgeContext / structuredFacts.profile」文案）；R1 `data.sections` 按命中的 KI 出章（heading 含 KI 编号、content 为库中原文，未命中不凑章）；`bank-front-supply-chain-graph` 只认 `customerId` 从 `customer_knowledge` 服务投影构建 `data.result`（nodes/edges/interpretation/buildStatus，无 LLM，model=library）；R1 无新证据策略保留（`evidenceTimestamp` 未传/未更新 → `exit_policy_no_new_evidence`）；造数脚本 `scripts/seed_customer_knowledge.py` 落库 CUST-CORP-0001 华东精工 7 条 KI + 6 对手方图谱，并产出 CRM 主档投影（`examples/output/crm_customers.json`，已同步 gits `docs/dd/crm_customers.json`）；投影器支持 `x_*` 扩展字段透传（pa.Table 异构键补齐） |
+| 2026-08-22 | **v1.3（数据所有权）**：evidence ok/skipped 只反映 KERT 客户知识库对该 `customerId`+`kiId` 是否取到数（删除「已使用 request.knowledgeContext / structuredFacts.profile」文案）；R1 `data.sections` 按命中的 KI 出章（heading 含 KI 编号、content 为库中原文，未命中不凑章）；`bank-front-supply-chain-graph` 只认 `customerId` 从 `customer_knowledge` 服务投影构建 `data.result`（nodes/edges/interpretation/buildStatus，无 LLM，model=library）；R1 无新证据策略保留（`evidenceTimestamp` 未传/未更新 → `exit_policy_no_new_evidence`）；造数脚本 `scripts/seed_customer_knowledge.py` 落库 CUST-CORP-0001 华东精工 7 条 KI + 6 对手方图谱，并产出 CRM 主档投影（`examples/output/crm_customers.json`，已同步 gits `docs/dd/crm_customers.json`）；投影器支持 `x_*` 扩展字段透传（pa.Table 异构键补齐） |
 
-**gits 侧对接（v1.3）**：R1 / 供应链图谱请求只带 `customerId`（+ 可选 `visitObjective` / `evidenceTimestamp`）；`data.sections` 按 heading 对位展示（不解析 DKWS HTML 报告页）；`assemblyTrace` 仅 Debug。CRM 主档灌表：`docs/dd/crm_customers.json`（交付物 A，字段 camelCase，见 §2.2 禁止项）。
+**gits 侧对接（v1.3）**：R1 / 供应链图谱请求只带 `customerId`（+ 可选 `visitObjective` / `evidenceTimestamp`）；`data.sections` 按 heading 对位展示（不解析 KERT HTML 报告页）；`assemblyTrace` 仅 Debug。CRM 主档灌表：`docs/dd/crm_customers.json`（交付物 A，字段 camelCase，见 §2.2 禁止项）。

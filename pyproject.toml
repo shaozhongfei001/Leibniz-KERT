@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dkws"
+name = "kert"
 version = "0.1.0"
-description = "文件目录型数据知识服务模拟平台 (Data Knowledge Workspace Service) - DKWS-SPEC-001 V1.0 实现"
+description = "文件目录型数据知识服务模拟平台 (Data Knowledge Workspace Service) - KERT-SPEC-001 V1.0 实现"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Proprietary" }
@@ -30,7 +30,7 @@ api = ["fastapi>=0.110", "uvicorn>=0.29"]
 dev = ["pytest>=8.0", "httpx>=0.27"]
 
 [project.scripts]
-dkws = "dkws.cli.main:app"
+kert = "kert.cli.main:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]

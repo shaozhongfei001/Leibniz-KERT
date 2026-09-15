@@ -1,7 +1,7 @@
-# DKWS 交接评审文档（Handover Review）
+# KERT 交接评审文档（Handover Review）
 
 > 版本：2026-08-26
-> 评审对象：DKWS 当前设计、实现、契约、联调状态、UAT 结论、生产演进设计
+> 评审对象：KERT 当前设计、实现、契约、联调状态、UAT 结论、生产演进设计
 > 评审方式：离线评审（本包为评审材料）
 > 配套演进设计：`docs/production-evolution-plan.md`
 > 交接入口：`$WS/HANDOVER.md` / `$WS/HANDOVER.txt`
@@ -12,7 +12,7 @@
 
 本评审文档用于 Owner/架构评审人离线确认：
 
-1. DKWS 当前设计与实现是否与需求一致？
+1. KERT 当前设计与实现是否与需求一致？
 2. 当前与 GITS 的契约/联调状态是否清晰？
 3. 当前 UAT 失败结论是否准确？
 4. 生产级演进设计是否可执行？
@@ -28,45 +28,45 @@
 |---|---|
 | `$WS/HANDOVER.md` | 新会话首选阅读，Markdown 版 |
 | `$WS/HANDOVER.txt` | 新会话快扫版，纯文本 |
-| `$DKWS/docs/handover-review-2026-08-26.md` | 本文档 |
-| `$DKWS/docs/production-evolution-plan.md` | 生产级演进设计 |
+| `$KERT/docs/handover-review-2026-08-26.md` | 本文档 |
+| `$KERT/docs/production-evolution-plan.md` | 生产级演进设计 |
 
-### 2.2 DKWS 权威设计
+### 2.2 KERT 权威设计
 
 | 文件 | 说明 |
 |---|---|
 | `$WS/文件目录型数据知识服务模拟平台_详细需求与详细设计_V1.0.md` | 权威需求与详细设计（1751 行） |
-| `$DKWS/docs/architecture.md` | 系统架构（分层/运行时/时序/部署） |
-| `$DKWS/docs/assets/*.png` | 4 张架构图 |
-| `$DKWS/ADR.md` | 实现架构决策记录（ADR-001~011） |
-| `$DKWS/README.md` | 工程说明与功能清单 |
-| `$DKWS/REQUIREMENTS_MATRIX.md` | 需求追踪矩阵 |
-| `$DKWS/SKILL_PLATFORM_ARCH.md` | Skill 平台架构 |
+| `$KERT/docs/architecture.md` | 系统架构（分层/运行时/时序/部署） |
+| `$KERT/docs/assets/*.png` | 4 张架构图 |
+| `$KERT/ADR.md` | 实现架构决策记录（ADR-001~011） |
+| `$KERT/README.md` | 工程说明与功能清单 |
+| `$KERT/REQUIREMENTS_MATRIX.md` | 需求追踪矩阵 |
+| `$KERT/SKILL_PLATFORM_ARCH.md` | Skill 平台架构 |
 
 ### 2.3 契约与联调
 
 | 文件 | 说明 |
 |---|---|
-| `$DKWS/docs/skill-execute-api-contract.md` | 契约 v1.3 |
-| `$DKWS/docs/skill-execute-api-contract-v1.4.md` | 契约 v1.4 |
-| `$DKWS/docs/v13-return-to-gits.md` | v1.3 回传说明 |
-| `$DKWS/docs/gits-integration-samples-v14.md` | v1.4 真实样例 |
-| `$DKWS/docs/v14-joint-debugging-plan.md` | v1.4 联调计划与实测 |
-| `$DKWS/docs/gits-codebuddy-techlead-prompt-v14.md` | GITS 技术负责人提示词 |
-| `$DKWS/docs/codebuddy-techlead-prompt-v14.txt` | 同上（txt） |
-| `$DKWS/docs/architecture-review-gits-proposal.md` | GITS 架构评审提案 |
-| `$DKWS/docs/gits-supply-chain-report-dev-prompt.md` | 供应链报告开发提示词 |
+| `$KERT/docs/skill-execute-api-contract.md` | 契约 v1.3 |
+| `$KERT/docs/skill-execute-api-contract-v1.4.md` | 契约 v1.4 |
+| `$KERT/docs/v13-return-to-gits.md` | v1.3 回传说明 |
+| `$KERT/docs/gits-integration-samples-v14.md` | v1.4 真实样例 |
+| `$KERT/docs/v14-joint-debugging-plan.md` | v1.4 联调计划与实测 |
+| `$KERT/docs/gits-codebuddy-techlead-prompt-v14.md` | GITS 技术负责人提示词 |
+| `$KERT/docs/codebuddy-techlead-prompt-v14.txt` | 同上（txt） |
+| `$KERT/docs/architecture-review-gits-proposal.md` | GITS 架构评审提案 |
+| `$KERT/docs/gits-supply-chain-report-dev-prompt.md` | 供应链报告开发提示词 |
 
 ### 2.4 辅助/记录
 
 | 文件 | 说明 |
 |---|---|
-| `$DKWS/docs/graph-db-selection.md` | 图数据库选型 |
-| `$DKWS/docs/dsh-computer-use-install.md` | DSH Computer Use 安装记录 |
-| `$DKWS/docs/evaluation-sqlite-graph-base.md` | SQLite 图基座评估 |
-| `$DKWS/docs/evaluation-sqlite-graph-convenience.md` | SQLite 图便利性评估 |
-| `$DKWS/docs/HANDOVER-2026-08-23.md` | 上一版交接文档（历史） |
-| `$DKWS/docs/HANDOVER-2026-08-23.txt` | 上一版交接文档（历史） |
+| `$KERT/docs/graph-db-selection.md` | 图数据库选型 |
+| `$KERT/docs/dsh-computer-use-install.md` | DSH Computer Use 安装记录 |
+| `$KERT/docs/evaluation-sqlite-graph-base.md` | SQLite 图基座评估 |
+| `$KERT/docs/evaluation-sqlite-graph-convenience.md` | SQLite 图便利性评估 |
+| `$KERT/docs/HANDOVER-2026-08-23.md` | 上一版交接文档（历史） |
+| `$KERT/docs/HANDOVER-2026-08-23.txt` | 上一版交接文档（历史） |
 
 ---
 
@@ -74,7 +74,7 @@
 
 ### 3.1 服务状态
 
-- 服务：`dkws-skill.service`
+- 服务：`kert-skill.service`
 - 状态：`active (running)`
 - 地址：`http://127.0.0.1:8106`
 - 监听：`0.0.0.0:8106`
@@ -114,7 +114,7 @@
 - 近 24 小时日志未发现非 `127.0.0.1` 来源的外部请求
 - 全部请求状态码 200
 - 无 4xx/5xx、无异常堆栈
-- 结论：DKWS 服务健康，GITS 尚未实际调用
+- 结论：KERT 服务健康，GITS 尚未实际调用
 
 ---
 
@@ -266,7 +266,7 @@
 
 ### 5.1 v1.3 要点
 
-- 知识全在 DKWS，GITS 只传 `customerId`
+- 知识全在 KERT，GITS 只传 `customerId`
 - R1 `data.sections` 按 KI 出章
 - `bank-front-supply-chain-graph` 只认 `customerId`，库构建 `data.result`
 - `evidenceTimestamp` 缺失/未更新 → `exit_policy_no_new_evidence`
@@ -275,7 +275,7 @@
 ### 5.2 v1.4 要点
 
 - SP-20：ContextPackage + `async` + ServiceResult + ruleViolations
-- SP-21：交互记忆抽取，DKWS 不存记忆
+- SP-21：交互记忆抽取，KERT 不存记忆
 - 闸门：`GET /api/skill/gates/{customerId}` + `POST /api/skill/gates/audit`
 - 错误：未知技能 404、坏请求 422、幂等 TTL 10min
 - SP-20 必须异步：202 + jobId + 轮询 3s/3min
@@ -284,7 +284,7 @@
 
 - GITS P30 分支未带 Skill HTTP 适配器
 - `application.yaml` 未配置 `dsh.base-url`
-- 当前 UAT 分支不会调 DKWS
+- 当前 UAT 分支不会调 KERT
 - 供应链图谱端点、assemblyTrace 等在 P24 合同，不在当前 W9 合同
 - 需要合同 Loop 或 fail-closed 空态
 
@@ -372,37 +372,37 @@ v1.4 扩展字段：
 
 ### 6.2 根因
 
-- GITS 上一版 `feature/P24-dkws-supplychain` 能调 DKWS
+- GITS 上一版 `feature/P24-kert-supplychain` 能调 KERT
 - 当前分支 `feature/P30-gits-bank-experience-shell` 没有带上 Skill HTTP 适配器
 - `application.yaml` 没有 `dsh.base-url`
-- 服务即使修好，当前 jar 也不会调 DKWS
+- 服务即使修好，当前 jar 也不会调 KERT
 
 ### 6.3 当前一键访前实际链路（问题）
 
 | 页面/能力 | 当前行为 | 问题 |
 |---|---|---|
-| R1 访前报告 | 本地知识快照 + Mock LLM + H2 规则 | 未调 DKWS |
-| R2 速战卡 | H2 规则卡 | 未调 DKWS |
-| 外联话术 | Mock LLM / 本地模板 | 未调 DKWS |
-| 会面话术 | Mock LLM / 本地模板 | 未调 DKWS |
-| 供应链图谱 | 占位句，无图 | 未调 DKWS |
+| R1 访前报告 | 本地知识快照 + Mock LLM + H2 规则 | 未调 KERT |
+| R2 速战卡 | H2 规则卡 | 未调 KERT |
+| 外联话术 | Mock LLM / 本地模板 | 未调 KERT |
+| 会面话术 | Mock LLM / 本地模板 | 未调 KERT |
+| 供应链图谱 | 占位句，无图 | 未调 KERT |
 | 装配控制台 | 前端零实现 | 未展示 assemblyTrace |
-| 产品推荐 | H2 流水规则 | 未调 DKWS |
+| 产品推荐 | H2 流水规则 | 未调 KERT |
 | 服务建议书 | C2 空壳 | 未调 SP-20 |
 | 交互记忆 | 无 V14 控制器 | 未调 SP-21 |
 | 闸门 | 无 | 未接 DSH gate |
 
 ### 6.4 禁止事项
 
-- 未配置 `dsh.base-url` 或 DKWS 失败时，禁止本地补数
+- 未配置 `dsh.base-url` 或 KERT 失败时，禁止本地补数
 - 禁止解析本地 HTML 报告页冒充图谱
 - 禁止把 G0-G5 写成可写阶段机
-- 集团股权图（P05）与 P38 知识地图快照不属于 DKWS，可保留本地
+- 集团股权图（P05）与 P38 知识地图快照不属于 KERT，可保留本地
 
 ### 6.5 下一步选项
 
 - **Option A**：给可达的 `DSH_BASE_URL`，开独立 Loop 把 P24 Skill 路径合回来
-- **Option B**：先 fail-closed 空态（“DKWS 未配置/未返回”），撤掉 H2/Mock 拼装
+- **Option B**：先 fail-closed 空态（“KERT 未配置/未返回”），撤掉 H2/Mock 拼装
 - 推荐：**A+B**，既恢复真链路，也保留失败兜底
 
 ---
@@ -440,7 +440,7 @@ v1.4 扩展字段：
 
 ### 9.1 功能完整性
 
-- [ ] 五层工作区是否符合 DKWS-SPEC-001？
+- [ ] 五层工作区是否符合 KERT-SPEC-001？
 - [ ] 26 个 SchemaSpec 是否完整？
 - [ ] 黄金路径是否可跑通？
 - [ ] 12 个 Skill 是否都在线？
@@ -495,12 +495,12 @@ v1.4 扩展字段：
 |---|---|
 | 交接入口 | `$WS/HANDOVER.md` |
 | 交接快扫 | `$WS/HANDOVER.txt` |
-| 生产演进设计 | `$DKWS/docs/production-evolution-plan.md` |
-| 本评审文档 | `$DKWS/docs/handover-review-2026-08-26.md` |
-| 架构 | `$DKWS/docs/architecture.md` |
-| 契约 v1.3 | `$DKWS/docs/skill-execute-api-contract.md` |
-| 契约 v1.4 | `$DKWS/docs/skill-execute-api-contract-v1.4.md` |
-| 联调计划 | `$DKWS/docs/v14-joint-debugging-plan.md` |
-| 样例 | `$DKWS/docs/gits-integration-samples-v14.md` |
-| ADR | `$DKWS/ADR.md` |
-| README | `$DKWS/README.md` |
+| 生产演进设计 | `$KERT/docs/production-evolution-plan.md` |
+| 本评审文档 | `$KERT/docs/handover-review-2026-08-26.md` |
+| 架构 | `$KERT/docs/architecture.md` |
+| 契约 v1.3 | `$KERT/docs/skill-execute-api-contract.md` |
+| 契约 v1.4 | `$KERT/docs/skill-execute-api-contract-v1.4.md` |
+| 联调计划 | `$KERT/docs/v14-joint-debugging-plan.md` |
+| 样例 | `$KERT/docs/gits-integration-samples-v14.md` |
+| ADR | `$KERT/ADR.md` |
+| README | `$KERT/README.md` |

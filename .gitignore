@@ -44,8 +44,20 @@ package-lock.json
 *~
 .~*.pptx
 
-# Workspace data (if appears inside dkws)
+# Workspace data (if appears inside kert)
 demo_workspace/
 bank_front_ws/
 .test_demo_ws/
-UNKNOWN.egg-info/
+*.egg-info/
+
+# 运行时数据文件（含 Kuzu 图数据库二进制），非源码，不入库
+data/
+*.kuzu
+*.kuzu.wal
+
+# Understand-Anything 派生产物（6.2M，可重建；其自身声明为 DERIVED 派生视图，
+# 不构成权威事实、不得用于 EVIDENCE/Gate/ADR —— 故不入库。
+# 规则文件 `.understandignore` 相反：它是人工撰写的治理资产，**必须入库**。
+# 依据：gits-cbanking/docs/architecture/UNDERSTAND_ANYTHING_CODE_LEVEL_ASSESSMENT.md
+.ua/
+.understand-anything/

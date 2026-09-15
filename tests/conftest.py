@@ -15,7 +15,7 @@ if str(SRC) not in sys.path:
 @pytest.fixture
 def ws(tmp_path):
     """已初始化的临时工作区。"""
-    from dkws.domain import workspace as ws_mod
+    from kert.domain import workspace as ws_mod
 
     ws_mod.init_workspace(tmp_path)
     return tmp_path

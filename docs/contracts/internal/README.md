@@ -1,19 +1,19 @@
-# DKWS Python Core — Java Skill Runtime 内部契约
+# KERT Python Core — Java Skill Runtime 内部契约
 
 > 状态：CANDIDATE
 > 日期：2026-08-26
-> 工作流：DKWS-C-MIXED-ARCH-REMEDIATION-01
+> 工作流：KERT-C-MIXED-ARCH-REMEDIATION-01
 > 原则：内部 API 不对外公开；GITS 不得直接访问。
 
 ## 文件
 
-- `openapi/dkws-skill-runtime-internal-v1.yaml`
+- `openapi/kert-skill-runtime-internal-v1.yaml`
 - `schemas/*.schema.json`
 
 ## 校验
 
 ```bash
-cd dkws
+cd kert
 python3 scripts/validate_contract_bundle.py
 python3 scripts/contract_bundle_hash.py
 ```

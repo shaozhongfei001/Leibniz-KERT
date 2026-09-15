@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DKWS Phase 0 contract bundle validation.
+"""KERT Phase 0 contract bundle validation.
 
 - 所有 JSON Schema 必须是合法 JSON 且符合 JSON Schema 2020-12 meta-schema
 - 所有本地 $ref 必须存在
@@ -18,7 +18,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACTS_DIR = ROOT / "docs" / "contracts"
 SCHEMAS_DIR = CONTRACTS_DIR / "schemas"
-OPENAPI = CONTRACTS_DIR / "openapi" / "dkws-openapi-v2.yaml"
+OPENAPI = CONTRACTS_DIR / "openapi" / "kert-openapi-v2.yaml"
 
 META = jsonschema.Draft202012Validator.META_SCHEMA
 

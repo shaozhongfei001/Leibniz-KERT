@@ -89,11 +89,11 @@ ERROR ... - AssertionError: 服务未就绪: http://127.0.0.1:8106/api/skill/hea
 3. **修清 84 个错误**：62 个由 `ruff --fix` 安全自动修（`F401` 未使用
    import、`F541` 等），22 个人工逐条处理。其中两项为真实缺陷：
 
-   - **`F811` `src/dkws/application/report.py`**：`render_report` 在同文件
+   - **`F811` `src/kert/application/report.py`**：`render_report` 在同文件
      重复定义两次。第 351 行的旧版本被第 502 行完全遮蔽（dead code），
      且旧版**缺少 `SP-20` 服务建议书分支**。已删除旧版，保留含
      `render_proposal_report` 分支的完整实现。
-   - **`E402` `src/dkws/application/skills.py`**：两处 import 位于
+   - **`E402` `src/kert/application/skills.py`**：两处 import 位于
      `logging.getLogger()` 之后。经确认无循环导入顾虑，已归位到文件头部。
 
    其余 `F841` 未使用变量逐条判断后移除。注意 `ingest.py:148` 的

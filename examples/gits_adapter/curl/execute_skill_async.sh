@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# execute_skill_async.sh — 异步提交 DKWS Skill 执行
+# execute_skill_async.sh — 异步提交 KERT Skill 执行
 #
 # 用法：
 #   ./execute_skill_async.sh SKILL_ID CUSTOMER_ID [REQUEST_ID] [BASE_URL]
@@ -9,7 +9,7 @@
 #   ./execute_skill_async.sh SP-20 CUST-002 req-002 http://192.168.1.100:8106
 #
 # 环境变量：
-#   DKWS_API_KEY — API Key（可选）
+#   KERT_API_KEY — API Key（可选）
 
 set -euo pipefail
 
@@ -17,7 +17,7 @@ SKILL_ID="${1:?Usage: $0 SKILL_ID CUSTOMER_ID [REQUEST_ID] [BASE_URL]}"
 CUSTOMER_ID="${2:?}"
 REQUEST_ID="${3:-req-$(date +%Y%m%d%H%M%S)}"
 BASE_URL="${4:-http://127.0.0.1:8106}"
-API_KEY="${DKWS_API_KEY:-}"
+API_KEY="${KERT_API_KEY:-}"
 
 HEADERS=(-H "Content-Type: application/json" -H "Accept: application/json")
 if [[ -n "$API_KEY" ]]; then

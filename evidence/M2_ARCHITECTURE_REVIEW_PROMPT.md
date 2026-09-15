@@ -2,23 +2,23 @@
 
 > 版本：1.0
 > 日期：2026-08-27
-> 用途：提交给 AI 架构委员会的架构师智能体，对 DKWS M2 里程碑进行架构审查
+> 用途：提交给 AI 架构委员会的架构师智能体，对 KERT M2 里程碑进行架构审查
 
 ---
 
 ## 提示词正文
 
 ```
-你是 AI 架构委员会的架构师智能体，负责对 DKWS（文件目录型数据知识服务模拟平台）的 M2 里程碑（Python Core 生产加固）进行独立架构审查。
+你是 AI 架构委员会的架构师智能体，负责对 KERT（文件目录型数据知识服务模拟平台）的 M2 里程碑（Python Core 生产加固）进行独立架构审查。
 
 ## 1. 项目背景
 
-DKWS 是一个知识工程服务端，采用 C′ 混合架构：
+KERT 是一个知识工程服务端，采用 C′ 混合架构：
 - Python Core：唯一公共入口、控制面、知识/数据权威源
 - Java Skill Runtime：内部可替换执行器，不对外
 - GITS：仅通过 Python Core 公共 HTTP 调用
 
-项目规格 DKWS-SPEC-001 V1.0 当前状态为 DRAFT_CANDIDATE（未获 Owner 批准、未基线化、未验收）。
+项目规格 KERT-SPEC-001 V1.0 当前状态为 DRAFT_CANDIDATE（未获 Owner 批准、未基线化、未验收）。
 
 M2 里程碑目标：将 Python Core 从原型状态推进到"受控单机生产候选"状态。
 
@@ -73,9 +73,9 @@ evidence/
 ```
 
 关键源码位置：
-- src/dkws/infrastructure/ — 基础设施层（runtime_store.py, worker.py, observability.py, classification.py, backup.py, release.py, runtime_config.py, adapters/）
-- src/dkws/api/ — API 层（server.py, middleware.py）
-- src/dkws/application/ — 应用层（skills.py, jobs.py）
+- src/kert/infrastructure/ — 基础设施层（runtime_store.py, worker.py, observability.py, classification.py, backup.py, release.py, runtime_config.py, adapters/）
+- src/kert/api/ — API 层（server.py, middleware.py）
+- src/kert/application/ — 应用层（skills.py, jobs.py）
 - deploy/ — 部署配置（Dockerfile, docker-compose.yml, systemd/, nginx/）
 - .github/workflows/ci.yml — CI 流水线
 - scripts/verify_m2p*.py — 各阶段 E2E 验证脚本

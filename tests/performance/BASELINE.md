@@ -1,4 +1,4 @@
-# 性能基线报告 — Leibniz-KERT / DKWS
+# 性能基线报告 — Leibniz-KERT / KERT
 
 > 生成时间：2026-08-28
 > 环境：Linux / Python 3.10.12 / pytest 9.1.1

@@ -1,0 +1,106 @@
+........................................................................ [  6%]
+........................................................................ [ 12%]
+........................................................................ [ 18%]
+........................................................................ [ 24%]
+........................................................................ [ 30%]
+........................................................................ [ 36%]
+........................................................................ [ 42%]
+........................................................................ [ 48%]
+........................................................................ [ 54%]
+........................................................................ [ 60%]
+........................................................................ [ 66%]
+........................................................................ [ 72%]
+........................................................................ [ 78%]
+..................................x..................................... [ 84%]
+........................................................................ [ 90%]
+........................................................................ [ 96%]
+...............................................                          [100%]
+=============================== warnings summary ===============================
+../../../home/szf/dev/Leibniz-KERT/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /home/szf/dev/Leibniz-KERT/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.8-final-0 ________________
+
+Name                                                          Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------------------------
+src/kert/__init__.py                                              1      0   100%
+src/kert/api/__init__.py                                          0      0   100%
+src/kert/api/middleware.py                                      311    103    67%   153, 161, 167-176, 186-189, 197-205, 231-243, 253-267, 285-287, 294-311, 331, 337-339, 343, 361-362, 366, 375-378, 390-392, 394-408, 415, 485-491, 575-577, 584-586, 588
+src/kert/api/server.py                                          308     56    82%   183, 188, 230, 276-278, 293-298, 305-308, 354-355, 397, 400, 415-416, 428-436, 440-444, 448-453, 461-462, 474-475, 482-483, 490-502, 520-521, 543, 571, 587-588
+src/kert/application/__init__.py                                  0      0   100%
+src/kert/application/customer_knowledge.py                       98      6    94%   56, 64, 75, 88, 116, 120
+src/kert/application/extract.py                                 186     16    91%   79, 83, 85, 89-90, 115, 146, 152, 167-169, 176, 182, 207, 215, 222
+src/kert/application/gates.py                                   248     44    82%   73-75, 80-83, 86, 92-95, 119, 126-129, 133, 158-161, 165, 175, 193, 198-201, 206-208, 214-217, 221, 227, 246, 250-253, 258-261, 266-269, 278, 282, 290-294, 309, 333, 341-342, 351-354
+src/kert/application/ingest.py                                  112      9    92%   61, 137-144, 243
+src/kert/application/interaction_memory.py                      101      5    95%   124, 163-164, 192-193
+src/kert/application/jobs.py                                    166     14    92%   110, 116, 125, 163, 167, 169, 171, 212-213, 303, 322, 330-331, 338
+src/kert/application/parse_doc.py                               220     17    92%   87-89, 103, 111, 123, 147, 163-165, 184, 277, 280, 282, 316, 318, 320
+src/kert/application/process_data.py                            241     49    80%   82, 121, 156, 164, 172-178, 196-198, 213, 280, 341-343, 345-353, 356, 364-383
+src/kert/application/product_recommendation/__init__.py           0      0   100%
+src/kert/application/product_recommendation/eligibility.py      339     50    85%   116, 118, 122, 132-133, 135-142, 210, 234, 269, 272, 276-279, 281-284, 288-291, 293-295, 302-305, 369, 384, 433, 469, 477, 479, 485, 487, 508, 510, 513, 515, 529, 535, 537, 543, 545, 550, 553, 569, 576, 579, 590, 605
+src/kert/application/product_recommendation/evidence.py         180      7    96%   75, 149, 151, 225, 244, 287, 388
+src/kert/application/product_recommendation/matcher.py          321     28    91%   88-89, 141, 212, 229, 237-238, 286, 315, 336, 339, 346, 363, 368, 378, 385, 390, 400, 408, 413, 430-432, 464, 480, 491, 509, 551
+src/kert/application/product_recommendation/need_profile.py     194     23    88%   110, 214, 217, 223, 232, 235, 238, 322, 342-345, 347, 349, 379-382, 384, 386, 400, 457, 469
+src/kert/application/product_recommendation/portfolio.py        291     44    85%   99-104, 163, 167, 185, 189, 193, 198-201, 212, 230, 250, 260-261, 266, 353, 401, 449, 460-464, 467-468, 475-495, 541, 571
+src/kert/application/product_recommendation/ranker.py            48      3    94%   84, 92, 108
+src/kert/application/product_recommendation/sp15_skill.py       430     68    84%   100, 107, 139-141, 159, 173, 178, 187, 202, 221, 271-272, 277, 283-288, 302, 313-318, 320-325, 331-333, 350, 364, 375-377, 393, 396, 414-415, 422, 426, 465, 481, 483, 485, 525, 542, 570, 573, 580-585, 591-599, 666, 790-799, 845, 858-863, 915-917
+src/kert/application/projection.py                              250     19    92%   60, 64, 71, 87, 156, 178, 313-314, 345, 360, 417, 419, 421, 425-430
+src/kert/application/proposal_rules.py                           30      6    80%   35, 43, 52-53, 63, 81
+src/kert/application/publish.py                                 246     42    83%   72, 85, 104, 122, 148-152, 156, 159, 175, 190, 201, 211, 216, 234, 236, 248, 250, 252, 260, 276, 320, 355-356, 359-360, 370-374, 377-385
+src/kert/application/report.py                                  156     84    46%   28-30, 38, 42-50, 54-58, 63-75, 80-110, 174-239, 331-334, 338-339, 369, 498, 501
+src/kert/application/review.py                                  113     23    80%   51, 53, 55, 59, 71, 80, 89, 94, 115-117, 137, 140-144, 150, 159-163
+src/kert/application/rollback.py                                 64      9    86%   40, 46, 59, 62, 73, 128, 135-137
+src/kert/application/service_proposal.py                        232     13    94%   40-41, 138-146, 215-218, 337, 342-344, 401-402
+src/kert/application/services.py                                343     42    88%   52, 63, 83, 105, 125, 127, 129, 150, 156, 167, 179, 185, 208-218, 233, 245, 254-255, 283, 322, 332-333, 355, 384, 423, 426, 437, 443, 450, 454, 458, 466, 487, 493, 506, 530-532
+src/kert/application/skills.py                                  439     72    84%   154, 391-392, 402-405, 425-428, 461, 463, 489-490, 495-499, 517-520, 529, 555-618, 669-670, 703-704, 736-737, 758, 838, 849-851, 861, 864, 868-869
+src/kert/application/validation.py                               86     25    71%   32, 37-39, 55-60, 91-105, 115, 117, 120
+src/kert/cli/__init__.py                                          0      0   100%
+src/kert/cli/main.py                                            233    233     0%   3-611
+src/kert/domain/__init__.py                                       0      0   100%
+src/kert/domain/assets/__init__.py                                0      0   100%
+src/kert/domain/contracts/__init__.py                             0      0   100%
+src/kert/domain/contracts/base.py                               151     26    83%   62, 67, 70, 73, 76, 82, 85, 89-97, 111, 127, 129, 131, 145, 150, 154, 158-160, 163
+src/kert/domain/contracts/helpers.py                             28      3    89%   20, 34, 36
+src/kert/domain/contracts/specs.py                              216     32    85%   39, 47, 83, 85, 155, 206, 289, 295, 350, 354, 461, 523, 567, 573-575, 616, 619, 669, 704, 708, 789-792, 794-796, 874-878, 1029-1031
+src/kert/domain/errors.py                                        78      1    99%   60
+src/kert/domain/hashing.py                                       58      3    95%   52, 73, 93
+src/kert/domain/ids.py                                           45      0   100%
+src/kert/domain/paths.py                                         56      6    89%   57, 81-86
+src/kert/domain/rules/__init__.py                                 0      0   100%
+src/kert/domain/rules/dsl.py                                    218      8    96%   122, 134, 142, 147-149, 277-278
+src/kert/domain/states.py                                        41      6    85%   69-73, 103
+src/kert/domain/timeutil.py                                      31      3    90%   31-32, 34
+src/kert/domain/workspace.py                                    152     23    85%   107-108, 112-113, 119, 126-129, 131-134, 148, 152, 162, 183, 192-193, 199, 202, 208-209
+src/kert/dsh/__init__.py                                          0      0   100%
+src/kert/dsh/app.py                                             200     71    64%   42-59, 67-71, 82-87, 94-104, 109-111, 123, 136, 152, 155-156, 166, 169-170, 180, 183-184, 194, 197-198, 211, 214-225, 236, 260, 286-290, 297-298
+src/kert/infrastructure/__init__.py                               0      0   100%
+src/kert/infrastructure/adapters/__init__.py                      2      0   100%
+src/kert/infrastructure/adapters/base.py                         26      0   100%
+src/kert/infrastructure/adapters/docx_parser.py                  35     35     0%   6-48
+src/kert/infrastructure/adapters/llm.py                         220     52    76%   81, 91, 94-100, 151, 158-166, 177, 210-215, 224-227, 231-256, 355, 357, 427-429, 433-435
+src/kert/infrastructure/adapters/pdf_parser.py                   32     19    41%   15-27, 35, 37-38, 42-45
+src/kert/infrastructure/adapters/sim_bank_front.py               23      5    78%   47-48, 249, 252-253
+src/kert/infrastructure/adapters/text_parser.py                  21      0   100%
+src/kert/infrastructure/backup.py                               257     19    93%   145-146, 172-173, 248, 327-328, 333, 348, 457, 475, 490-491, 495-499, 525
+src/kert/infrastructure/classification.py                       146      4    97%   385-387, 398
+src/kert/infrastructure/fs.py                                    97      5    95%   37, 119-122
+src/kert/infrastructure/graph/__init__.py                         0      0   100%
+src/kert/infrastructure/graph/kuzu_builder.py                    86     10    88%   49, 54, 61, 63, 123, 126-127, 134, 142, 150
+src/kert/infrastructure/locks.py                                 78      9    88%   71-73, 81-82, 103, 108-109, 122
+src/kert/infrastructure/logging.py                               52      4    92%   27, 53, 70, 79
+src/kert/infrastructure/markdown.py                             102     13    87%   50-51, 54-55, 57, 61, 124-125, 134-138
+src/kert/infrastructure/media.py                                 60      8    87%   62, 64, 70, 72, 88-90, 108
+src/kert/infrastructure/observability.py                        281      5    98%   456, 468-469, 531, 541
+src/kert/infrastructure/parquet.py                              101     38    62%   57, 62, 69-82, 87-105, 111-114
+src/kert/infrastructure/release.py                              120     10    92%   45-46, 88-89, 94-95, 100-101, 106-107
+src/kert/infrastructure/runtime_config.py                       288     17    94%   262-265, 299, 327, 338, 340, 356-357, 359, 537, 539, 541, 543, 551, 553
+src/kert/infrastructure/runtime_store.py                        455     11    98%   196, 268, 617-618, 622-625, 845, 880-881, 996
+src/kert/infrastructure/stage_store.py                          126      3    98%   175, 186, 302
+src/kert/infrastructure/worker.py                               175     13    93%   153, 179-180, 185-187, 230, 260, 290-292, 311-313
+-------------------------------------------------------------------------------------------
+TOTAL                                                         10044   1572    84%
+Required test coverage of 80% reached. Total coverage: 84.35%
+1198 passed, 1 xfailed, 1 warning in 200.12s (0:03:20)
