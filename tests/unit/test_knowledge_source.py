@@ -629,7 +629,7 @@ def test_module_source_has_no_data_engine_or_write_dependency():
 #: 允许引用本模块的**唯一**位置：显式白名单，按**精确文件路径**（不接受目录级放行）。
 #: 理由：供给期**校验**（``provision.validate_source`` 调用 ``load_declaration``，
 #: 属"先全量校验后写入"纪律的一部分），**不是**技能执行期读取。
-#: 技能侧接线（``application/skills.py``）与 API 面（``api/**``）仍须零引用。
+#: 技能侧接线已由 M7.1-B1 授权（见白名单第 5 条）；API 面（``api/**``）仍须零引用。
 ALLOWED_WIRING: dict[str, str] = {
     "src/kert/application/provision.py":
         "供给期校验：validate_source 调用 load_declaration（TL 授权第二片-A）",

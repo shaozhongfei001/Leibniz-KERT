@@ -528,7 +528,13 @@ if __name__ == "__main__":
 - **R-C**：无法稳定归属的条目**一律保守归入 E**（"需复跑确认"），**不得**计入 A 组；
 - **R-D**：报数时同时给出**探针脚本的 sha256**（区分"原版 / 精简版"两种实现）；
 - **R-E（TL 加固版）**：冻结态**一律以原版探针**（`/tmp/m71b_impact_probe.py`，sha256 `d73ce3c6…6639b`）为准报数；**精简版（`6a80fdfb…b35a4`）仅作交叉验证**，且报告须写明两者差异及其**机制原因**（异步/线程 nodeid 归属竞态）。**严禁**"哪个探针结果好看就用哪个"；
-- **R-F**：报告须含**探针完整命令行**（可原样重跑）与 **python/venv 与 pytest 版本**。
+- **R-F**：报告须含**探针完整命令行**（可原样重跑）与 **python/venv 与 pytest 版本**；
+- **R-G（TL 定稿 2026-09-16；R-E 家族的下一条 —— 探针口径缺口）**：
+  `/tmp/m71b_impact_probe.py` **只包装 `_load_ki`** ⇒ B-1 之后三个**已接线技能的生产路径不再经过它**，
+  该探针对这三个技能的 `load_ki` 计数**结构性失效**（表现为"计数下降"，**不是**"读取变少"）。
+  ⇒ 凡用该探针核对"**读取路径**"（含**正式确认跑**要做的 A 组集合比对），**必须同时计数**
+  `_load_ki_from_declaration`；**禁止**仅凭该探针的 `load_ki` 计数论证"读取未被改动"。
+  实测依据见 §10.3。
 
 8. **报数清单（TL 明确要求；不接受"全绿/通过"式转述）** —— 冻结态复测后逐项给出**原文**：
 
@@ -712,7 +718,8 @@ _route_plan 调用数 = 49 ；去重用例 = 44 ；load_ki 观测用例 = 44 ；
 
 ```text
 M src/kert/application/skills.py                    +249/-3   sha256 1677173cd1170fd6552a589d4e22f1d8ca97cfed47d91c9b9a041daa7fe9efc4
-M docs/contracts/schemas/assembly-trace.schema.json   +8/-0   sha256 5abfa6defeeefa86b6dea90c13689c943f9a67b9f8b1e8b51815faab178cb4ad
+M docs/contracts/schemas/assembly-trace.schema.json  +10/-1   sha256 d8f9b6b6a71c9ed7bb569e755d04e2b3567ddf22d9f6c24d09b1dbb8fa1a434e
+                                                              （= 2 个新字段 + assetVersion 双用途澄清一行）
 ?? tests/unit/test_skills_capability_swap_guards.py    470 行  sha256 648dee8d7e6455f7718bb1c8c6d1ba4ea140387a7f9a83380b113bbe619a5435
 ?? tests/integration/test_skills_capability_swap.py    401 行  sha256 b4b12bab88145dc6a32441315d7eabbd8c7f59929e0344b7b377445553e11abe
 ```
@@ -741,7 +748,8 @@ _run_supply_chain     = 3  （不变 ⇒ D 组未接线）
 ```
 
 > ⚠ **探针口径变更（B-1 结构性影响）**：探针只包 `_load_ki`；B-1 之后三个已接线技能的**生产路径不再经过** `_load_ki`
-> ⇒ 其 `load_ki` 计数对这三个技能**结构性失效**。若要用该探针核对"读取路径"，须同时计数 `_load_ki_from_declaration`。
+> ⇒ 其 `load_ki` 计数对这三个技能**结构性失效**（**已定稿为 R-G**，见 §6 第 7 项）。
+> 若要用该探针核对"读取路径"，须**同时计数** `_load_ki_from_declaration`。
 
 ### 10.4 变异矩阵 V1–V14（全部捕获：基线 rc=0 → 变异 rc≠0 → 恢复 rc=0 + 恢复后 sha == golden）
 
@@ -786,4 +794,47 @@ _run_supply_chain     = 3  （不变 ⇒ D 组未接线）
 - `_run_supply_chain` **自身**的 trace 输出不在本片守卫范围（AST 守卫只证"**未接线**"；改该方法属 D 组/后续片议题）；
 - `KNOWLEDGE_SOURCE_UNBOUND` 在 B-1 读取路径**不可达**（遍历声明绑定集；计划面判定归 **B-2**）；
 - (γ) 夹具必须带 `evidenceTimestamp`，否则 R1 无新证据策略在**取数之前**拦截（走不到读取层）；
-- **未做**：未改任何既有测试（唯一新增红 = 2-A 白名单门禁，待 TL 裁定）；未动 `customer_knowledge.py` / `api/**` / `specs/**` / `deploy/**` / 2-A 声明文件；未 commit、未 push。
+- **未做**：未改任何既有测试（唯一新增红 = 2-A 白名单门禁 ⇒ **已由 TL 裁定 (a) 并授权修改**，见 §10.7）；未动 `customer_knowledge.py` / `api/**` / `specs/**` / `deploy/**` / 2-A 声明文件；未 commit、未 push。
+
+### 10.7 TL 裁定落实（A-10 与两项口径修正）与**红集不变量恢复**
+
+| # | 裁定 | 落实内容 | 结果 |
+|---|---|---|---|
+| 1 | **(a) 授权加白名单一行**（A-10） | `tests/unit/test_knowledge_source.py` 的 `ALLOWED_WIRING` **仅加一条**（含授权引用）：`"src/kert/application/skills.py": "技能执行期读取：声明驱动 KI 读取（TL 授权 M7.1-B1；裁决记录 DECISION_SHEET A-10）"` ⇒ 白名单 4 组 → **5 组** | **红集回到恰好 3 条**（`test_provision_cli.py:53/66/109`，node id 与基准逐条一致）⇒ **不变量恢复** |
+| 2 | **T6 表述修正** | §1.5 T6 原表述（"只追加在序列**末尾**"）**明记为由新式取代并写出原因**（取数段之后还有 `model`/`parse` 条目 ⇒ 物理不可满足）；位置约束**已在测试中被断言**（见 §1.5 的 T6 批注）；**未**改为"trace 末尾追加" | V13 实测可捕获 ✓ |
+| 3 | **`assetVersion` 双用途澄清**（C-3 追认包） | canonical schema 的 `assetVersion` **补一行 description**："既有的资产/绑定版本槽位；自 M7.1-B1 起亦承载知识源读取的绑定指纹 `binding_sha256`" ⇒ 追认包 = **2 个新字段 + 1 处 description 澄清**（**不新增字段**） | V10 断言 `assetVersion == resolver.binding_sha256` **且改声明后必变** ✓ |
+
+**红集不变量（A-10 后最终四目录，HEAD `88af470d`）**
+
+```text
+tests/unit        → 3 failed, 976 passed, exit 1   （红集 == 基准 3 条，逐条一致）
+tests/integration → 469 passed, 1 xfailed, exit 0
+tests/contract    → 53 passed, exit 0
+tests/recovery    → 18 passed, exit 0
+ruff check src tests → All checks passed!
+```
+
+**变异矩阵复跑（在你要求的"红集回到 3 条"状态上）—— 逐条报该次红集**
+
+每条三段（基线 / 变异 / 恢复）均运行「**基准 3 条红灯 node id + 捕获用例**」：
+
+```text
+V1  基线红集=3(==基准) 变异红集=4(=基准3+捕获1) 恢复红集=3  sha==golden ✓
+V2  基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
+V3  基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
+V4  基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
+V5  基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
+V6  基线红集=3          变异红集=6(=3+3，参数化展开)  恢复红集=3  ✓
+V7  基线红集=3          变异红集=5(=3+2)         恢复红集=3  ✓
+V8  基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
+V9  基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
+V10 基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
+V11 基线红集=3          变异红集=5(=3+2)         恢复红集=3  ✓
+V12 基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
+V13 基线红集=3          变异红集=6(=3+3，参数化展开)  恢复红集=3  ✓
+V14 基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
+```
+
+⇒ **变异只增加其目标捕获用例，从未影响基准红灯集**（每一段的基线/恢复红集都恰为基准 3 条）；
+E-1 三重比对基线：golden sha `1677173c…`、`wc -l = 1188`、`git diff --numstat = 249 3`；14 条恢复后 sha 均回原值。
+
