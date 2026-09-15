@@ -6,8 +6,13 @@
 ``90_control/catalog/KM-*.json``                 知识地图（``KnowledgeMapRegistry`` 读）
 ``90_control/schema/route_policy.json``          路由策略（``load_route_policy`` 读）
 ``90_control/schema/ontology_reference.json``    本体引用声明（``load_ontology_reference`` 读）
+``90_control/schema/knowledge_sources.json``     知识源能力声明（``load_declaration`` 读；M7.1-A）
 ``90_control/catalog/provision_manifest.json``   供给留痕（哈希/时刻/来源）
 ============================  ==================================================
+
+⚠ ``knowledge_sources.json`` **必须**落在 ``90_control/schema/``：``90_control/catalog/``
+已被两类内容占用（``KM-*.json`` 知识地图 与 管道资产台账 ``asset_catalog`` 的
+``<asset_id>.md``），往里新增文件会污染该目录的两套既有约定。
 
 纪律（每条都对应一个测试）：
 
@@ -15,11 +20,18 @@
    半供给比不供给更危险——部分地图可用会被运维误读为"已配置"，且路由策略缺失时的
    默认拒绝会掩盖真正原因。
 2. **幂等**：内容未变 ⇒ 不重写文件（留痕计 ``UNCHANGED``）。
-3. **路径来自加载器**（``catalog_dir`` / ``schema_dir`` / ``policy_path`` / ``reference_path``）：
-   写侧与读侧不可能漂移——这是"供给装到哪里"与"从哪里读"同源的唯一保证。
+3. **路径来自加载器**（``catalog_dir`` / ``schema_dir`` / ``policy_path`` / ``reference_path``
+   / ``knowledge_sources_path``）：写侧与读侧不可能漂移——这是"供给装到哪里"与
+   "从哪里读"同源的唯一保证。
 4. **不删既有文件**：只增改本清单内的文件，避免误删运维手工放置的内容。
 5. **原子替换**：单文件 temp + ``os.replace``，避免读到半截 JSON。
 6. **源必须是合法工作区**：供应方与消费方同一套校验（防止"能拷进去但读不出来"）。
+7. **知识源声明与本体引用同为"可选但必须校验"**：声明**缺失** ⇒ 不供给（不报错，
+   与 :func:`validate_source` 对本体引用的既有口径一致）；声明**非法** ⇒ 全量中止。
+   取舍理由：该声明与本体引用同层同性质，且**当前尚无运行时消费方**
+   （M7.1-A 只读、未接线）——缺它不应让整个部署起不来；而"非法"必须中止，
+   否则会破坏纪律 1。若将来该声明成为读取链的必需件，应在彼时把它改为
+   "缺失即拒绝"（属语义升级，须单独授权与评估）。
 """
 
 from __future__ import annotations
@@ -35,6 +47,11 @@ from ..domain.knowledge_map import (
     KnowledgeMapRegistry,
     catalog_dir,
     map_files,
+)
+from ..domain.knowledge_source import (
+    FILENAME as KNOWLEDGE_SOURCES_FILENAME,
+    declaration_path as knowledge_sources_path,
+    load_declaration,
 )
 from ..domain.ontology_reference import (
     FILENAME as ONTOLOGY_REFERENCE_FILENAME,
@@ -131,14 +148,31 @@ def _plan_items(ws: Path, src: Path) -> list[tuple[str, Path, Path]]:
     if ref_src.is_file():
         pairs.append((f"90_control/schema/{ONTOLOGY_REFERENCE_FILENAME}",
                       ref_src, reference_path(ws)))
+    # 知识源能力声明（M7.1-A 第 4 类）：与本体引用同为"可选但必须校验"（见模块 docstring 纪律 7）
+    ks_src = knowledge_sources_path(src)
+    if ks_src.is_file():
+        pairs.append((f"90_control/schema/{KNOWLEDGE_SOURCES_FILENAME}",
+                      ks_src, knowledge_sources_path(ws)))
     return pairs
 
 
-def validate_source(source: Path) -> tuple[KnowledgeMapRegistry, object, object]:
+def validate_source(source: Path) -> tuple[KnowledgeMapRegistry, object, object, object]:
     """把**源**当工作区全量校验（与消费侧同一套加载器）。
+
+    校验顺序与"要供给什么"一一对应，且**先于任何写入**（纪律 1）：
+
+    1. 源必须是合法工作区（``.kert_workspace`` 标记）；
+    2. 知识地图（``KnowledgeMapRegistry.load``）——须至少一份（否则供给出的是空控制面）；
+    3. 路由策略（``load_route_policy``）——**必需**（缺它则路由默认拒绝，供给无意义）；
+    4. 本体引用（``load_ontology_reference``）——可选；存在即校验，非法即中止；
+    5. 知识源能力声明（``load_declaration``）——可选；存在即校验，非法即中止
+       （M7.1-A；与第 4 项同口径，见模块 docstring 纪律 7）。
 
     抛 :class:`~kert.domain.errors.SchemaValidationError`（源内某份定义非法）
     或 :class:`~kert.domain.errors.UsageError`（源不是工作区 / 缺少必需件）。
+
+    :return: ``(registry, policy, ontology_reference, knowledge_sources_declaration)``；
+        后两项在源未放置对应文件时为 ``None``（**不是**"无声明也放行"）。
     """
     src = Path(source)
     if not is_workspace(src):
@@ -149,11 +183,12 @@ def validate_source(source: Path) -> tuple[KnowledgeMapRegistry, object, object]
     registry = KnowledgeMapRegistry.load(src)
     policy = load_route_policy(src)
     ref = load_ontology_reference(src)
+    decl = load_declaration(src)
     if not registry.maps:
         raise UsageError(f"供给源未注册任何知识地图（{catalog_dir(src)}）: {src}")
     if policy is None:
         raise UsageError(f"供给源缺少路由策略（{policy_path(src)}）: {src}")
-    return registry, policy, ref
+    return registry, policy, ref, decl
 
 
 def provision_control_plane(workspace: Path, source: Path, *,
@@ -177,7 +212,7 @@ def provision_control_plane(workspace: Path, source: Path, *,
     if ws.resolve() == src.resolve():
         raise UsageError(f"供给源与目标工作区相同: {ws}")
 
-    registry, policy, _ref = validate_source(src)
+    registry, policy, _ref, _decl = validate_source(src)
 
     items: list[ProvisionItem] = []
     pending: list[tuple[Path, str]] = []

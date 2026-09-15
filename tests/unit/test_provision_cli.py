@@ -50,12 +50,12 @@ def _run(args: list[str]):
 def test_apply_then_idempotent_rerun(target):
     r = _run(["provision", "-w", str(target), "-s", str(SOURCE)])
     assert r.exit_code == 0, r.output
-    assert "新建 5 / 覆盖 0 / 未变 0" in r.output
+    assert "新建 6 / 覆盖 0 / 未变 0" in r.output
     assert "RP-KERT-BANKFRONT-001@1.0.0" in r.output
 
     r2 = _run(["provision", "-w", str(target), "-s", str(SOURCE)])
     assert r2.exit_code == 0, r2.output
-    assert "新建 0 / 覆盖 0 / 未变 5" in r2.output
+    assert "新建 0 / 覆盖 0 / 未变 6" in r2.output
 
 
 def test_json_output_follows_standard_envelope(target):
@@ -63,9 +63,11 @@ def test_json_output_follows_standard_envelope(target):
     assert r.exit_code == 0, r.output
     payload = json.loads(r.output)
     assert payload["status"] == "OK"
-    assert payload["data"]["counts"]["CREATED"] == 5
+    assert payload["data"]["counts"]["CREATED"] == 6
     assert payload["data"]["policyId"] == "RP-KERT-BANKFRONT-001"
-    assert len(payload["data"]["items"]) == 5
+    assert len(payload["data"]["items"]) == 6
+    assert any(i["relPath"].endswith("knowledge_sources.json")
+               for i in payload["data"]["items"])
 
 
 def test_dry_run_leaves_workspace_empty(target):
@@ -104,7 +106,7 @@ def test_init_flag_initializes_fresh_volume_then_provisions(tmp_path):
     r2 = _run(["provision", "-w", str(ws), "-s", str(SOURCE), "--init"])
     assert r2.exit_code == 0, r2.output
     assert "跳过 init" in r2.output
-    assert "新建 0 / 覆盖 0 / 未变 5" in r2.output
+    assert "新建 0 / 覆盖 0 / 未变 6" in r2.output
 
 
 def test_without_init_flag_uninitialized_target_fails_closed(tmp_path):

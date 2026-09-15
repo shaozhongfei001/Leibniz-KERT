@@ -626,18 +626,55 @@ def test_module_source_has_no_data_engine_or_write_dependency():
     assert not hits, f"模块引入了被禁依赖/写操作: {hits}"
 
 
-def test_module_is_not_wired_into_application_or_api():
-    """TL 硬边界 1 的机械证明：``application/**`` 与 ``api/**`` **尚未**引用本模块。
+#: 允许引用本模块的**唯一**位置：显式白名单，按**精确文件路径**（不接受目录级放行）。
+#: 理由：供给期**校验**（``provision.validate_source`` 调用 ``load_declaration``，
+#: 属"先全量校验后写入"纪律的一部分），**不是**技能执行期读取。
+#: 技能侧接线（``application/skills.py``）与 API 面（``api/**``）仍须零引用。
+ALLOWED_WIRING: dict[str, str] = {
+    "src/kert/application/provision.py":
+        "供给期校验：validate_source 调用 load_declaration（TL 授权第二片-A）",
+}
 
-    第二片/第三片接线时本用例会变红 —— 那是**预期**的：届时须同时提交
-    「接线范围 + 合同面影响」的独立评审，不得静默接线。
+
+def test_wiring_whitelist_is_file_precise():
+    """白名单必须是**精确文件**：不得目录级放行（否则等于放开整个 ``application/``）。"""
+    for key in ALLOWED_WIRING:
+        assert Path(key).suffix == ".py", f"白名单条目必须是 .py 文件: {key}"
+        assert key.startswith("src/kert/"), key
+        assert not key.endswith("/"), key
+        assert (REPO_ROOT / key).is_file(), f"白名单条目不存在: {key}"
+
+
+def test_module_wiring_is_limited_to_explicit_whitelist():
+    """TL 硬边界 1 的机械证明（第二片-A 起为**显式白名单**版）：
+
+    ``application/**`` 与 ``api/**`` 中**只有**白名单里的精确文件可以引用本模块，
+    其余一律零引用。新增接线会让本用例变红（这是**预期**的门禁）。
     """
     offenders = []
     for sub in ("application", "api"):
-        for p in (SRC / "kert" / sub).rglob("*.py"):
-            if "knowledge_source" in p.read_text(encoding="utf-8"):
-                offenders.append(p.relative_to(REPO_ROOT).as_posix())
-    assert not offenders, f"存在未经授权的接线: {offenders}"
+        for p in sorted((SRC / "kert" / sub).rglob("*.py")):
+            rel = p.relative_to(REPO_ROOT).as_posix()
+            if "knowledge_source" in p.read_text(encoding="utf-8") and rel not in ALLOWED_WIRING:
+                offenders.append(rel)
+    assert not offenders, (
+        f"存在白名单之外的接线（未授权，须先提案）：{offenders}；"
+        f"当前允许清单: {sorted(ALLOWED_WIRING)}")
+
+
+def test_api_surface_has_zero_references():
+    """API 面**永久**零引用：拒绝码只存在于内部对象，不经 API/错误体暴露（TL 硬边界 2）。"""
+    offenders = [p.relative_to(REPO_ROOT).as_posix()
+                 for p in sorted((SRC / "kert" / "api").rglob("*.py"))
+                 if "knowledge_source" in p.read_text(encoding="utf-8")]
+    assert not offenders, f"API 面不得引用本模块: {offenders}"
+
+
+def test_whitelist_entries_are_actually_used():
+    """白名单**不自留残条**：每条都必须在对应文件里真的被引用（禁止"为将来预留"式放行）。"""
+    stale = [key for key in ALLOWED_WIRING
+             if "knowledge_source" not in (REPO_ROOT / key).read_text(encoding="utf-8")]
+    assert not stale, f"白名单存在未被使用的条目（应删除，否则是永久放行）: {stale}"
 
 
 def test_declaration_is_not_placed_in_catalog_dir():
