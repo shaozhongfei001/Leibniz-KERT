@@ -12,5 +12,6 @@
     {"assetId": "KI-FRONT-006", "required": false, "sequence": 3}
   ],
   "skillRefs": ["skill-customer-outreach-script"],
-  "notes": "assetRefs 与 skills.py 中 _run_outreach 实际读取的 KI 条目一致（KI-009 / KI-FRONT-004 / KI-FRONT-006）；routePolicyRef 与 activationContractRef 待 M7.3 第二步（KERT 自有 RoutePolicy）落地后回填，当前刻意留空以不虚构绑定。"
+  "routePolicyRef": "RP-KERT-BANKFRONT-001",
+  "notes": "assetRefs 与 skills.py 中 _run_outreach 实际读取的 KI 条目一致（KI-009 / KI-FRONT-004 / KI-FRONT-006）；routePolicyRef 已回填至本仓自有策略（RP-KERT-BANKFRONT-001）；activationContractRef 仍留空（本仓暂未引入激活合同，不虚构绑定）。"
 }

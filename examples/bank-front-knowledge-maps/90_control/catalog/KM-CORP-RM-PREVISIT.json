@@ -12,5 +12,6 @@
     {"assetId": "KI-FRONT-003", "required": true, "sequence": 3}
   ],
   "skillRefs": ["skill-customer-previsit-report"],
-  "notes": "assetRefs 与 skills.py 中 _run_previsit 实际读取的 KI 条目一致（KI-FRONT-001 / 002 / 003）；routePolicyRef 与 activationContractRef 待 M7.3 第二步落地后回填。"
+  "routePolicyRef": "RP-KERT-BANKFRONT-001",
+  "notes": "assetRefs 与 skills.py 中 _run_previsit 实际读取的 KI 条目一致（KI-FRONT-001 / 002 / 003）；routePolicyRef 已回填至本仓自有策略（RP-KERT-BANKFRONT-001），策略会校验其一致；activationContractRef 仍留空（本仓暂未引入激活合同，不虚构绑定）。"
 }

@@ -1,0 +1,29 @@
+BEFORE  route_policy.py  sha256=fede756a1cdca5dd
+BEFORE  activation_plan.py sha256=eae6eb913cbd263f
+
+=== M3：移除defaultDecision 必须为 DENY的强制 ⇒ 期望契约用例 FAIL ===
+M3 INJECTED
+tests/unit/test_route_policy.py:265: Failed
+=========================== short test summary info ============================
+FAILED tests/unit/test_route_policy.py::test_policy_contract_violations[override4-\u53ea\u5141\u8bb8 'DENY']
+M3_EXIT=1 (期望非 0)
+
+=== M4：移除地图与策略错配校验 ⇒ 期望错配用例 FAIL ===
+M4 INJECTED
+tests/unit/test_route_policy.py:196: Failed
+=========================== short test summary info ============================
+FAILED tests/unit/test_route_policy.py::test_map_declaring_other_policy_is_denied
+M4_EXIT=1 (期望非 0)
+
+=== M5：让 plan_hash 忽略资产（退化为只按 map 计）⇒ 期望哈希敏感性用例 FAIL ===
+M5 INJECTED
+tests/unit/test_activation_plan.py:120: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/test_activation_plan.py::test_plan_hash_is_sensitive_to_every_deterministic_field
+M5_EXIT=1 (期望非 0)
+
+=== 全部恢复后 ⇒ 期望全绿 ===
+AFTER   route_policy.py  sha256=fede756a1cdca5dd
+AFTER   activation_plan.py sha256=eae6eb913cbd263f
+...................................                                      [100%]
+RESTORED_EXIT=0
