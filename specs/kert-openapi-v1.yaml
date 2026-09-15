@@ -6,9 +6,11 @@ info:
 
     - v1.3 基线：单客户技能执行、健康检查、报告查看
     - v1.4 增量：SP-20 服务建议书（异步）、SP-21 交互记忆抽取、闸门协作端点
+    - v1.5 增量：知识路由与激活计划（知识地图注册查询 / 路由裁决 / 可重放计划），**纯新增**
 
     权威契约：`docs/skill-execute-api-contract-v1.4.md`
-  version: "1.4.0"
+    v1.5 增量说明：`evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md`（TL 提案，待 Contract Owner 追认）
+  version: "1.5.0"
   contact:
     name: KERT Team
   license:
@@ -29,6 +31,8 @@ tags:
     description: 闸门协作
   - name: Observability
     description: 可观测性
+  - name: Routing
+    description: 知识路由与激活计划
 
 paths:
   /v1/health:
@@ -440,6 +444,82 @@ paths:
             text/plain:
               schema:
                 type: string
+
+  /v1/knowledge-maps:
+    get:
+      tags: [Routing]
+      summary: 列出已注册的知识地图
+      description: |
+        返回本工作区 `90_control/catalog/KM-*.json` 注册的知识地图摘要，以及当前路由策略的版本。
+        控制面未注册任何地图时返回**空列表**（不报错）；此时路由裁决会**默认拒绝**。
+      operationId: listKnowledgeMaps
+      responses:
+        "200":
+          description: 知识地图列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeMapListResponse"
+        "422":
+          description: 控制面地图定义非法（schema 校验失败）
+        "500":
+          description: 内部错误
+
+  /v1/knowledge-maps/{mapId}:
+    get:
+      tags: [Routing]
+      summary: 获取单张知识地图
+      operationId: getKnowledgeMap
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "知识地图 ID（形如 KM-CORP-RM-PREVISIT）"
+      responses:
+        "200":
+          description: 地图详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeMapDetail"
+        "404":
+          description: 地图未注册（协议级资源不存在）
+        "422":
+          description: 地图定义非法
+        "500":
+          description: 内部错误
+
+  /v1/routing/plan:
+    post:
+      tags: [Routing]
+      summary: 解析任务并产出激活计划（fail-closed）
+      description: |
+        按路由策略把 `taskType` 解析为**唯一**知识地图，并产出**可重放**的激活计划
+        （资产 / Skill / 版本快照 / planHash）。
+
+        **拒绝是预期业务结果**（策略缺失、任务未映射、同优先级歧义、地图未注册、策略错配、
+        本体引用缺失或非法），此时返回 **HTTP 200** 且 `data.allowed=false` + `data.denial`。
+        `allowed` 只可能是 `true`（带 `plan`）或 `false`（带 `denial`）——**没有第三态**。
+      operationId: buildRoutingPlan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoutingPlanRequest"
+      responses:
+        "200":
+          description: 计划或**显式拒绝**（两者都是 200）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoutingPlanResponse"
+        "422":
+          description: 输入或控制面定义非法（schema 校验失败）
+        "500":
+          description: 内部错误
 
 components:
   securitySchemes:
@@ -1034,3 +1114,173 @@ components:
         detail:
           type: object
           additionalProperties: true
+
+    # ── v1.5 增量：知识路由与激活计划（纯新增；见 CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md）──
+    PlanAsset:
+      type: object
+      required: [assetId, required, sequence]
+      properties:
+        assetId:
+          type: string
+          description: 资产（知识条目）ID
+        required:
+          type: boolean
+        sequence:
+          type: integer
+          minimum: 1
+          description: 激活顺序（同一地图内唯一）
+    PlanDenial:
+      type: object
+      required: [code, reason]
+      properties:
+        code:
+          type: string
+          description: |
+            拒绝码（**三族并列，互不混用**）：
+            - `ROUTE_*`：策略缺失 / 任务未映射 / 同优先级歧义 / 地图未注册 / 策略错配
+            - `KNOWLEDGE_MAP_*`：地图注册与解析（未注册 / 未映射 / 歧义）
+            - `ONTOLOGY_REFERENCE_*`：本体引用缺失（`ONTOLOGY_REFERENCE_ABSENT`）或非法（`ONTOLOGY_REFERENCE_INVALID`）
+        reason:
+          type: string
+          description: 人类可读的拒绝原因（含可排障信息）
+    ActivationPlan:
+      type: object
+      description: "激活计划快照；字段与实现 ActivationPlan.to_dict() 逐字段一致"
+      required: [schema, planId, taskType, subjectId, routeReason, versions, assets, skills, planHash]
+      properties:
+        schema:
+          type: string
+          enum: [activation_plan/v1]
+        planId:
+          type: string
+          description: 由 planHash 派生（确定性）
+        taskType:
+          type: string
+        subjectId:
+          type: string
+          nullable: true
+          description: 主体标识；仅记录，**不**入 planHash
+        routeReason:
+          type: string
+          description: 路由理由（必须可解释）
+        versions:
+          type: object
+          description: "版本快照；ontology 为「契约引用 + 内容哈希版本」形式（如 CTR-SEM-002@sha256:…）"
+          properties:
+            knowledgeMap:
+              type: string
+              nullable: true
+            routePolicy:
+              type: string
+              nullable: true
+            activationContract:
+              type: string
+              nullable: true
+            ontology:
+              type: string
+              nullable: true
+        assets:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlanAsset"
+        skills:
+          type: array
+          items:
+            type: string
+        planHash:
+          type: string
+          description: 可重放计划哈希（sha256 前 16 位）；只覆盖确定性字段，**不含**主体/权限/时刻/路径
+    RoutingPlanRequest:
+      type: object
+      required: [taskType]
+      additionalProperties: false
+      properties:
+        taskType:
+          type: string
+          example: PRE_VISIT_PREPARATION
+        subjectId:
+          type: string
+          description: 主体标识（如 customerId）；仅记录，不影响 planHash
+    RoutingPlanResponse:
+      type: object
+      required: [request_id, status, allowed]
+      properties:
+        request_id:
+          type: string
+        status:
+          type: string
+        allowed:
+          type: boolean
+          description: 只可能为 true（带 plan）或 false（带 denial）——**没有第三态**
+        plan:
+          description: "allowed=true 时存在"
+          allOf:
+            - $ref: "#/components/schemas/ActivationPlan"
+        denial:
+          description: "allowed=false 时存在"
+          allOf:
+            - $ref: "#/components/schemas/PlanDenial"
+    KnowledgeMapSummary:
+      type: object
+      required: [mapId, version, domain, tasks, priority, assetCount, skillCount]
+      properties:
+        mapId:
+          type: string
+        version:
+          type: string
+        title:
+          type: string
+          nullable: true
+        domain:
+          type: string
+        tasks:
+          type: array
+          items:
+            type: string
+        priority:
+          type: integer
+        assetCount:
+          type: integer
+        skillCount:
+          type: integer
+        routePolicyRef:
+          type: string
+          nullable: true
+    KnowledgeMapListResponse:
+      type: object
+      required: [request_id, status, data]
+      properties:
+        request_id:
+          type: string
+        status:
+          type: string
+        data:
+          type: object
+          required: [maps, count]
+          properties:
+            maps:
+              type: array
+              items:
+                $ref: "#/components/schemas/KnowledgeMapSummary"
+            count:
+              type: integer
+            policy:
+              type: object
+              nullable: true
+              properties:
+                policyId:
+                  type: string
+                version:
+                  type: string
+                defaultDecision:
+                  type: string
+    KnowledgeMapDetail:
+      type: object
+      required: [request_id, status, data]
+      properties:
+        request_id:
+          type: string
+        status:
+          type: string
+        data:
+          $ref: "#/components/schemas/KnowledgeMapSummary"
