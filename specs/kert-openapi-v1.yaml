@@ -8,6 +8,19 @@ info:
     - v1.4 增量：SP-20 服务建议书（异步）、SP-21 交互记忆抽取、闸门协作端点
     - v1.5 增量：知识路由与激活计划（知识地图注册查询 / 路由裁决 / 可重放计划），**纯新增**
     - v1.5 修正：`assemblyTrace` 类型 `object` → `array`（合同长期与实现不符，已改正）
+    - v1.5 修正（**2026-09-16，按实现核对**；由冲突 C-20 的归并候选分析发现，
+      `evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md` §2.5 的 F1/F3/F4/F5）：
+      ① `JobStatusResponse` 扁平对象 → **标准信封**，新增 `JobStatusData`（`job_id` 等 snake_case 键）；
+      ② `GateListResponse.gates[]` 的 `GateChecklistItem` → 新增 `GateDefinition`（资产形状）；
+      ③ `GateAuditResponse` 去掉实现不存在的 `timestamp`/`auditPath`，改为回显真实记录；
+      ④ `/api/skill/execute` 的 `404`：`ErrorResponse` → 新增 `SkillExecuteErrorResponse`（与 200 同构）；
+      ⑤ `/v1/jobs/{jobId}` 的 `404`：`ErrorResponse` → 新增 `InfrastructureErrorResponse`。
+      以上均为**按已运行实现**修正（未改实现、未改 `src/**`）。
+      **须通知 GITS**：`data.status` 与 `data.skill_result` 的嵌套位置**保持不变**（GITS `DshJobPoller` 按此读取）。
+      机械核对用例：`tests/integration/test_contract_shape_conformance.py`。
+      仍待后续批次（本轮未做）：`/api/skill/execute` 的 `400`/`500` 声明、
+      `/api/skill/report` 的 404 体、`/v1/knowledge-maps` 的 `422`/`500` 体均未按实测核对；
+      `OpenAPI` 方言（3.0.3 vs 校验器要求的 3.1.0）与 8 处 `nullable` 亦未处理（归并 P2 验收条件）。
 
     权威契约：`docs/skill-execute-api-contract-v1.4.md`
     v1.5 变更说明：`evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md`
@@ -208,17 +221,34 @@ paths:
                   - code: INVALID_PARAMETER
                     message: "customerId is required"
         "404":
-          description: Skill 不存在
+          description: |
+            Skill 不存在。响应体与 200 **同构**（`status=skill_error`、
+            `errors[0].code=UNKNOWN_SKILL`），而**不是** `ErrorResponse`。
+
+            **修正记录（2026-09-16，按实现核对）**：原声明为 `ErrorResponse` 并给
+            `SKILL_NOT_FOUND` 示例，与实现不符；实现（`src/kert/api/server.py:635-643`）把
+            同步结果体原样以 404 返回。GITS 调用方已按真实行为编码
+            （`DshHttpSkillExecutionAdapter.java:32`），故按实现修正合同。
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/SkillExecuteErrorResponse"
               example:
                 requestId: req-20260828-001
                 status: skill_error
+                data:
+                  reportUrl: /api/skill/report/req-20260828-001
                 errors:
-                  - code: SKILL_NOT_FOUND
-                    message: "Skill UNKNOWN not registered"
+                  - code: UNKNOWN_SKILL
+                    message: "未知 skillId: UNKNOWN"
+                assemblyTrace:
+                  - phase: resolve
+                    status: ok
+                    message: "skillId=UNKNOWN requestId=req-20260828-001"
+                  - phase: resolve
+                    status: failed
+                    message: "未知 skillId"
+                modelCalls: []
         "500":
           description: 服务内部错误
           content:
@@ -277,22 +307,22 @@ paths:
               example:
                 customerId: CUST-001
                 gates:
-                  - gate: G0
-                    name: 证据准备
-                    state: PASSED
-                    checklist:
-                      must:
-                        - "客户基本信息完整"
-                      forbidden:
-                        - "过期证据"
-                  - gate: G1
-                    name: 事实核验
-                    state: READY_FOR_REVIEW
-                    checklist:
-                      must:
-                        - "所有事实标签已标注"
-                      forbidden:
-                        - "未标注来源的断言"
+                  - gateId: GATE-BIZ-G0
+                    name: G0
+                    sequence: 0
+                    must:
+                      - "证据与客户数据就绪（ContextPackage 完整、无关键 unknown）"
+                    forbidden:
+                      - "编造数据 / 无来源断言进入建议书"
+                    assetPath: skills/service-proposal/gates/GATE-BIZ-G0.md
+                  - gateId: GATE-BIZ-G1
+                    name: G1
+                    sequence: 1
+                    must:
+                      - "客户核验完成（F 标签断言与客户确认一致）"
+                    forbidden:
+                      - "未核验数据进入对客版"
+                    assetPath: skills/service-proposal/gates/GATE-BIZ-G1.md
         "404":
           description: 客户无闸门资产
 
@@ -325,8 +355,12 @@ paths:
                 $ref: "#/components/schemas/GateAuditResponse"
               example:
                 recorded: true
-                timestamp: "2026-08-28T10:30:00Z"
-                auditPath: "90_control/audit/gates.jsonl"
+                customerId: CUST-001
+                gate: G1
+                decision: PASSED
+                decidedBy: user-zhangsan
+                reason: "所有事实标签已标注完成"
+                recordedAt: "2026-08-28T10:30:00Z"
 
   /v1/jobs/{jobId}:
     get:
@@ -334,7 +368,18 @@ paths:
       summary: 查询异步 Job 状态
       description: |
         查询异步 Skill 执行 Job 的状态。
+        响应为**标准信封**（`request_id`/`status`/`data`/`errors`/`meta`），
+        Job 记录在 `data` 内（键为 snake_case；`data.status` 为业务状态）。
         COMPLETED 时 `data.skill_result` 为完整 execute 响应（与同步响应同构）。
+
+        **修正记录（2026-09-16，按实现核对）**：本端点的 200 响应原声明为**扁平对象**
+        （顶层 `jobId`/`status`/`createdAt`/`completedAt`），404 原声明为 `ErrorResponse`；
+        两者均与实现不符，已按实现修正（见 `JobStatusResponse`/`JobStatusData`/
+        `InfrastructureErrorResponse` 三个 schema 的修正记录）。
+
+        ⚠ **须通知 GITS（其调用方口径）**：GITS `DshJobPoller` 读取 `data.status`（强制非空）
+        与 `data.skill_result`；本次修正**保持**该嵌套位置不变，仅更正键名与信封形状。
+        机械核对用例：`tests/integration/test_contract_shape_conformance.py`。
       operationId: getJob
       parameters:
         - name: jobId
@@ -352,50 +397,136 @@ paths:
                 $ref: "#/components/schemas/JobStatusResponse"
               examples:
                 pending:
-                  summary: 等待中
+                  summary: 等待中（无 skill_result）
                   value:
-                    jobId: JOB-SKILL-20260828-001
-                    status: PENDING
-                    createdAt: "2026-08-28T10:00:00Z"
-                running:
-                  summary: 执行中
-                  value:
-                    jobId: JOB-SKILL-20260828-001
-                    status: RUNNING
-                    createdAt: "2026-08-28T10:00:00Z"
-                    startedAt: "2026-08-28T10:00:01Z"
-                completed:
-                  summary: 已完成
-                  value:
-                    jobId: JOB-SKILL-20260828-001
-                    status: COMPLETED
-                    createdAt: "2026-08-28T10:00:00Z"
-                    startedAt: "2026-08-28T10:00:01Z"
-                    completedAt: "2026-08-28T10:02:30Z"
+                    request_id: REQ-JOB-JOB-SKILL-20260828-001
+                    status: OK
                     data:
+                      schema: job_status/v1
+                      job_id: JOB-SKILL-20260828-001
+                      job_type: SKILL
+                      status: PENDING
+                      requested_by: api
+                      idempotency_key: req-20260828-002
+                      input_refs: []
+                      output_refs: []
+                      started_at: "2026-08-28T10:00:00Z"
+                      updated_at: "2026-08-28T10:00:00Z"
+                      finished_at: null
+                      progress: 0
+                      error_code: null
+                      error_message: null
+                      publish_status: NOT_PUBLISHED
+                      version: "1.0"
+                    errors: []
+                    meta:
+                      service_version: "1.0.0"
+                      data_version: active
+                      generated_at: "2026-08-28T10:00:00Z"
+                running:
+                  summary: 执行中（无 skill_result）
+                  value:
+                    request_id: REQ-JOB-JOB-SKILL-20260828-001
+                    status: OK
+                    data:
+                      schema: job_status/v1
+                      job_id: JOB-SKILL-20260828-001
+                      job_type: SKILL
+                      status: RUNNING
+                      requested_by: api
+                      idempotency_key: req-20260828-002
+                      input_refs: []
+                      output_refs: []
+                      started_at: "2026-08-28T10:00:01Z"
+                      updated_at: "2026-08-28T10:00:01Z"
+                      finished_at: null
+                      progress: 40
+                      error_code: null
+                      error_message: null
+                      publish_status: NOT_PUBLISHED
+                      version: "1.0"
+                    errors: []
+                    meta:
+                      service_version: "1.0.0"
+                      data_version: active
+                      generated_at: "2026-08-28T10:00:01Z"
+                completed:
+                  summary: 已完成（含 skill_result）
+                  value:
+                    request_id: REQ-JOB-JOB-SKILL-20260901-001
+                    status: OK
+                    data:
+                      schema: job_status/v1
+                      job_id: JOB-SKILL-20260901-001
+                      job_type: SKILL
+                      status: COMPLETED
+                      requested_by: api
+                      idempotency_key: REQ-SP20-506dc772-2380-417a-860b-0cd25c37a04d
+                      input_refs: []
+                      output_refs: []
+                      started_at: "2026-09-01T18:01:42Z"
+                      updated_at: "2026-09-01T18:02:29Z"
+                      finished_at: "2026-09-01T18:02:29Z"
+                      progress: 100
+                      error_code: null
+                      error_message: null
+                      publish_status: NOT_PUBLISHED
+                      version: "1.0"
                       skill_result:
-                        requestId: req-20260828-002
+                        requestId: REQ-SP20-506dc772-2380-417a-860b-0cd25c37a04d
                         status: ok
                         data:
                           skillId: SP-20
-                          reportUrl: /api/skill/report/req-20260828-002
+                          reportUrl: /api/skill/report/REQ-SP20-506dc772-2380-417a-860b-0cd25c37a04d
+                    errors: []
+                    meta:
+                      service_version: "1.0.0"
+                      data_version: active
+                      generated_at: "2026-09-01T18:02:29Z"
                 failed:
-                  summary: 执行失败
+                  summary: 执行失败（错误码在 data 内，无顶层 error）
                   value:
-                    jobId: JOB-SKILL-20260828-001
-                    status: FAILED
-                    createdAt: "2026-08-28T10:00:00Z"
-                    startedAt: "2026-08-28T10:00:01Z"
-                    completedAt: "2026-08-28T10:00:30Z"
-                    error:
-                      code: SKILL_EXECUTION_ERROR
-                      message: "Context package validation failed"
+                    request_id: REQ-JOB-JOB-SKILL-20260828-001
+                    status: OK
+                    data:
+                      schema: job_status/v1
+                      job_id: JOB-SKILL-20260828-001
+                      job_type: SKILL
+                      status: FAILED
+                      requested_by: api
+                      idempotency_key: req-20260828-002
+                      input_refs: []
+                      output_refs: []
+                      started_at: "2026-08-28T10:00:00Z"
+                      updated_at: "2026-08-28T10:00:30Z"
+                      finished_at: "2026-08-28T10:00:30Z"
+                      progress: 0
+                      error_code: SKILL_EXECUTION_ERROR
+                      error_message: "Context package validation failed"
+                      publish_status: NOT_PUBLISHED
+                      version: "1.0"
+                    errors: []
+                    meta:
+                      service_version: "1.0.0"
+                      data_version: active
+                      generated_at: "2026-08-28T10:00:30Z"
         "404":
-          description: Job 不存在
+          description: |
+            Job 不存在（`ASSET_NOT_FOUND`）。响应体为领域异常形状
+            （`{"detail":{"error":{...}}}`），**不是** `ErrorResponse`。
+
+            **修正记录（2026-09-16，按实现核对）**：原声明为 `ErrorResponse`，实测不符
+            （`read_job_status` 抛 `AssetNotFoundError` → `_handle()` → FastAPI 包一层 `detail`）。
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+              example:
+                detail:
+                  error:
+                    code: ASSET_NOT_FOUND
+                    message: "任务不存在: JOB-NOT-EXIST"
+                    retryable: false
 
   /livez:
     get:
@@ -1008,47 +1139,173 @@ components:
 
     JobStatusResponse:
       type: object
-      required: [jobId, status]
+      description: |
+        标准响应信封（与 `/v1/*` 其余端点一致）；Job 状态记录在 `data` 内。
+
+        **修正记录（2026-09-16，按实现核对）**：本 schema 原声明为**扁平对象**
+        （顶层 `jobId`/`createdAt`/`completedAt`，`data` 仅含 `skill_result`），
+        与实现长期不符——实现返回 `_response()` 信封（`src/kert/api/server.py:502-508`），
+        Job 记录取自 `STATUS.md` front matter（`src/kert/application/jobs.py:236-253`），
+        键为 snake_case，`skill_result` 位于 `data` 内（`jobs.py:324-333`）。
+
+        ⚠ **须通知 GITS（其调用方口径）**：GITS `DshJobPoller` 读 `data.status` 与
+        `data.skill_result`；本次修正**保持**该嵌套位置不变，仅更正键名与信封形状。
+        机械核对：`tests/integration/test_contract_shape_conformance.py`。
+      required: [request_id, status, data]
+      additionalProperties: false
       properties:
-        jobId:
+        request_id:
           type: string
         status:
           type: string
-          enum: [PENDING, RUNNING, COMPLETED, FAILED]
-        createdAt:
-          type: string
-          format: date-time
-        startedAt:
-          type: string
-          format: date-time
-        completedAt:
-          type: string
-          format: date-time
+          description: 信封状态（实现恒为 `OK`，与 `data.status` 不同义）
         data:
+          $ref: "#/components/schemas/JobStatusData"
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        meta:
           type: object
-          description: COMPLETED 时包含 skill_result
-          properties:
-            skill_result:
-              $ref: "#/components/schemas/SkillExecuteResponse"
-        error:
-          type: object
-          description: FAILED 时的错误信息
-          properties:
-            code:
-              type: string
-            message:
-              type: string
+          additionalProperties: true
+
+    JobStatusData:
+      type: object
+      description: |
+        Job 状态记录（`90_control/jobs/<job_id>/STATUS.md` front matter 的只读投影）。
+        字段清单与 `src/kert/application/jobs.py:236-253` 的 `fm` 逐字段一致。
+
+        **修正记录（2026-09-16）**：新增本 schema 以承接原 `JobStatusResponse` 的扁平声明；
+        其中 `job_id` 原写作 `jobId`（camelCase），与实现不符，一并修正。
+        ⚠ **须通知 GITS**：`skill_result` 的位置保持不变（`data.skill_result`）。
+      required: [schema, job_id, job_type, status, progress]
+      additionalProperties: false
+      properties:
+        schema:
+          type: string
+          enum: [job_status/v1]
+        job_id:
+          type: string
+          description: |
+            异步作业 ID（格式 `JOB-SKILL-YYYYMMDD-NNN`）。
+            ⚠ 修正记录：原合同写作 `jobId`，实现为 `job_id`（`jobs.py:238`）。
+        job_type:
+          type: string
+          example: SKILL
+        status:
+          type: string
+          enum: [PENDING, RUNNING, COMPLETED, FAILED]
+          description: Job 业务状态（与信封 `status` 不同义）
+        requested_by:
+          type: string
+        idempotency_key:
+          type: string
+        input_refs:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        output_refs:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        started_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        error_code:
+          type: string
+          nullable: true
+          description: FAILED 时的错误码（否则为 null）
+        error_message:
+          type: string
+          nullable: true
+          description: FAILED 时的错误信息（否则为 null）
+        publish_status:
+          type: string
+          example: NOT_PUBLISHED
+        version:
+          type: string
+        skill_result:
+          description: |
+            异步 Skill 作业**完成时**附加（`90_control/jobs/<job_id>/result.json`），
+            为完整 execute 响应（与同步响应同构）；未完成时**该键不出现**。
+            ⚠ **须通知 GITS**：位置保持在 `data` 内，不得上提至顶层（GITS `DshJobPoller:124-126` 按此读取）。
+          allOf:
+            - $ref: "#/components/schemas/SkillExecuteResponse"
 
     GateListResponse:
       type: object
+      description: |
+        闸门清单（`GATE-BIZ-G0..G5` 资产）。
+
+        **修正记录（2026-09-16，按实现核对）**：`gates[]` 原误声明为 `GateChecklistItem`
+        （`gate`/`state`/`checklist.must`），而实现返回**资产形状**
+        （`gateId`/`name`/`sequence`/`must`/`forbidden`/`assetPath`，
+        见 `src/kert/application/service_proposal.py:114-117`）。三者（`gate`/`state`/`checklist`）
+        在实现中**不存在**，已改为 `GateDefinition`。
+        注意：`GateChecklistItem` 仍被 `GateRecommendations.checklist` 使用（该处与实现相符），故**保留**。
       required: [customerId, gates]
+      additionalProperties: false
       properties:
         customerId:
           type: string
         gates:
           type: array
           items:
-            $ref: "#/components/schemas/GateChecklistItem"
+            $ref: "#/components/schemas/GateDefinition"
+
+    GateDefinition:
+      type: object
+      description: |
+        闸门清单资产条目（`skills/service-proposal/gates/GATE-BIZ-*.md` 的 front matter
+        + 正文「必须完成 / 禁止事项」列表抽取）。
+        字段与 `src/kert/application/service_proposal.py:114-117` 逐字段一致；
+        与 `docs/contracts/schemas/gate.schema.json` 的 `GateDefinition` **同形**
+        （该文件为细节 canonical 层，本处保留字段级定义以便单文件自洽）。
+
+        **修正记录（2026-09-16）**：新增。原 `GateListResponse.gates[]` 误引用
+        `GateChecklistItem`（`gate`/`state`/`checklist` 三键在实现中不存在）。
+      required: [gateId, name, sequence, must, forbidden]
+      additionalProperties: false
+      properties:
+        gateId:
+          type: string
+          description: 闸门资产 ID（形如 `GATE-BIZ-G0`）
+          example: GATE-BIZ-G0
+        name:
+          type: string
+          description: 资产 front matter 的 `name`（当前资产为 `G0`..`G5`）
+          example: G0
+        sequence:
+          type: integer
+          description: 推进顺序（当前资产自 `0` 起）
+        must:
+          type: array
+          items:
+            type: string
+          description: 必须完成项（资产正文「必须完成」）
+        forbidden:
+          type: array
+          items:
+            type: string
+          description: 禁止事项（资产正文「禁止事项」）
+        assetPath:
+          type: string
+          description: 资产相对路径
+          example: skills/service-proposal/gates/GATE-BIZ-G0.md
 
     GateAuditRequest:
       type: object
@@ -1073,16 +1330,67 @@ components:
 
     GateAuditResponse:
       type: object
-      required: [recorded]
+      description: |
+        镜像记录回显。实现返回写入 `90_control/audit/gates.jsonl` 的**同一记录**再叠加
+        `recorded`（`src/kert/application/skills.py:898-920`：`{"recorded": True, **rec}`）。
+
+        **修正记录（2026-09-16，按实现核对）**：原声明 `timestamp`/`auditPath` 两个字段
+        在实现中**不存在**；`recordedAt` 在实现中存在但原合同未声明。已按实现修正。
+      required: [recorded, customerId, gate, decision, decidedBy, recordedAt]
+      additionalProperties: false
       properties:
         recorded:
           type: boolean
-        timestamp:
+        customerId:
+          type: string
+        gate:
+          type: string
+          example: G1
+        decision:
+          type: string
+          enum: [PASSED, BLOCKED, WAIVED]
+        decidedBy:
+          type: string
+        reason:
+          type: string
+          description: 决策原因（实现恒回显该键，可为空串）
+        recordedAt:
           type: string
           format: date-time
-        auditPath:
-          type: string
-          description: 审计记录路径
+          description: 记录时刻（实现生成，见 `skills.py:909`）
+
+    InfrastructureErrorResponse:
+      type: object
+      description: |
+        基础设施/领域异常响应。`KERTException` 经 `src/kert/api/server.py:308-316` 的 `_handle()`
+        转为 `HTTPException(detail={"error": {...}})`，FastAPI 默认序列化为 `{"detail": ...}`
+        ——即真实形状是**多一层 `detail` 包装**，与 `ErrorResponse` 不同。
+
+        **修正记录（2026-09-16）**：新增。`/v1/jobs/{jobId}` 的 404 原误声明为 `ErrorResponse`，
+        实测为 `{"detail":{"error":{"code":"ASSET_NOT_FOUND","message":...,"retryable":false}}}`。
+        ⚠ 其余仍声明 `ErrorResponse` 的响应（如 `/api/skill/execute` 的 `400`/`500`）**尚未**按实测核对，
+        属归并后续批次事项（见 `evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md` §2.5-F4/F5 与 §6）。
+      required: [detail]
+      additionalProperties: false
+      properties:
+        detail:
+          type: object
+          required: [error]
+          additionalProperties: false
+          properties:
+            error:
+              type: object
+              required: [code, message, retryable]
+              additionalProperties: false
+              properties:
+                code:
+                  type: string
+                  description: 领域错误码（`src/kert/domain/errors.py:24-44` 的 `ERROR_CODES`）
+                  example: ASSET_NOT_FOUND
+                message:
+                  type: string
+                retryable:
+                  type: boolean
 
     ErrorResponse:
       type: object
@@ -1120,11 +1428,53 @@ components:
             - KERT_CONTRACT_MISMATCH: 输入/输出不符合合同
             - KERT_EVIDENCE_INCOMPLETE: 结果缺乏必要证据
             - KERT_INTERNAL_ERROR: 未分类技术错误
+            - UNKNOWN_SKILL: Skill 未注册（`/api/skill/execute` 返回 HTTP 404；
+              响应体见 `SkillExecuteErrorResponse`，**不是**本 `ErrorResponse`）
         message:
           type: string
         detail:
           type: object
           additionalProperties: true
+
+    SkillExecuteErrorResponse:
+      type: object
+      description: |
+        `/api/skill/execute` 的**未知 Skill**（HTTP 404）响应体。
+        与 200 **同构**（`status=skill_error`、`errors[].code=UNKNOWN_SKILL`），**不是** `ErrorResponse`。
+        实现由 `src/kert/api/server.py:635-643` 直接复用同步结果体并以 404 返回
+        （`status_code=404 if unknown else 200`）。
+
+        **修正记录（2026-09-16，按实现核对）**：本 404 原误声明为 `ErrorResponse`
+        （`requestId`/`status`/`errors`），与实现长期不符；GITS 调用方已按真实行为编码
+        （`DshHttpSkillExecutionAdapter.java:32`：「未知 skillId → 404, errors[0].code=UNKNOWN_SKILL」），
+        故按实现修正合同。
+      required: [requestId, status, errors]
+      additionalProperties: false
+      properties:
+        requestId:
+          type: string
+        status:
+          type: string
+          enum: [skill_error]
+        data:
+          type: object
+          description: 错误路径下仅含 `reportUrl`（**不含** `skillId`）
+          additionalProperties: true
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+        assemblyTrace:
+          type: array
+          description: 装配追踪（失败路径同样返回；条目见 `docs/contracts/schemas/assembly-trace.schema.json`）
+          items:
+            type: object
+            additionalProperties: true
+        modelCalls:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
 
     # ── v1.5 增量：知识路由与激活计划（纯新增；见 CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md）──
     PlanAsset:
