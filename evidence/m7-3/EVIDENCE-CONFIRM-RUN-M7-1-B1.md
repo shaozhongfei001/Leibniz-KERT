@@ -43,9 +43,26 @@ cd /home/szf/dev/Leibniz-KERT && .venv/bin/python /tmp/m71b_baseline_audit.py
 环境     : python 3.12.8 / pytest 9.1.1 ；探针内真实 pytest_exit = 1
 ```
 
+**工具已落盘（本目录，TL 补落；与 `/tmp` 原件**逐字相同**）**
+
+```text
+evidence/m7-3/confirm-run-m7-1-b1-probe.py            sha256 83678c40…（== /tmp/m71b_confirm_probe.py）
+evidence/m7-3/confirm-run-m7-1-b1-baseline-audit.py   sha256 f67e0cd4…（== /tmp/m71b_baseline_audit.py）
+```
+
+> **定位（TL 裁定，据实照录）**：脚本内含 `/tmp` 绝对路径 ⇒ **作为"证据记录"入库，不是可移植工具**；
+> **口径权威 = 本文件 §2 / §7**（含基线原文与各组 sha256），**不是脚本本身**。
+> 若日后要把它提升为仓内可复用工具（`scripts/`），属**另立议题**。
+> （补落 `baseline-audit` 的价值：它正是本轮出过一次**假差异**的解析器（C 组行内注释并入 node id）⇒
+> 落盘后该类解析问题**可被后人审计**，而不随 `/tmp` 消失。）
+
 ## 3. 四目录原始计数与真实退出码
 
-命令形态（**未用 `pytest … | tail` 取 `$?`**）：`.venv/bin/python -m pytest tests/<dir> -q -p no:warnings -p no:cacheprovider -o addopts="" --tb=no > /tmp/f 2>&1; echo $?`
+命令形态（**E-8 合规，且取其更强形态：根本不经管道**）：
+`.venv/bin/python -m pytest tests/<dir> -q -p no:warnings -p no:cacheprovider -o addopts="" --tb=no > /tmp/f 2>&1; echo $?`
+—— `$?` 即 pytest 自身退出码（无 `tail`/`grep` 参与）；随后 `grep -E "passed|failed"` 打印**原始结果行**、
+`grep -c "^FAILED"` 打印**红测行数**（绿色目录须为 **0**，即 E-8 的"显式 0 failed"检查）。
+（E-8 原文要求"管道后必须取 `${PIPESTATUS[0]}`"；本片**不用管道** ⇒ 满足并强于该要求。）
 
 ```text
 tests/unit        → 3 failed, 976 passed    EXIT=1
@@ -189,5 +206,6 @@ confirm-run-m7-1-b1-sets.json   sha256 fefb082ad00e3679153bc52b8920b4df0314da944
 
 1. `tests/e2e` 未跑（TL 裁定①）⇒ B-2 交付项；
 2. 三条红测归因第三方在途件（本窗口内未变；**若第三方落定后红集变 0，须按"先报再解读"处理**）；
-3. 探针工具（`m71b_confirm_probe.py` / `m71b_baseline_audit.py`）位于 `/tmp`（**易失**）⇒ 其 sha 与口径已固化在本文件；B-2 复跑时若需重建，以本文件 §2/§7 为准；
+3. 探针工具**已落盘**于本目录（`confirm-run-m7-1-b1-probe.py` / `confirm-run-m7-1-b1-baseline-audit.py`，与 `/tmp` 原件逐字相同，见 §2）⇒ 不再依赖 `/tmp` 存活；
+   但其定位为**证据记录**（含 `/tmp` 绝对路径，非可移植工具）⇒ **口径权威仍是本文件 §2/§7**；提升为 `scripts/` 可复用工具属另立议题；
 4. R-G 口径缺口：该系列探针**只包装 `_load_ki` + `_load_ki_from_declaration`**；若 B-2 新增读取点，须同步扩展计数，否则计数会被误读（见方案文档 §6 第 7 项）。
