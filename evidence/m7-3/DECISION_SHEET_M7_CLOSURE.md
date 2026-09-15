@@ -36,6 +36,25 @@ AUTHOR    : Tech Lead
 | **C-1b** | **第二片-B-2（严格 fail-closed）**：**两处语义升级打包**——① 源不可用由"被吞成 `skipped`"改为**显式拒绝**；② **运行时层**声明缺失（`KnowledgeSourceResolver` → `KNOWLEDGE_SOURCE_DECLARATION_ABSENT`）由"回落字面量"改为**拒绝** | **需你裁决** —— 它改的是**已声明业务语义**：`IMPACT-ANALYSIS-M7-1-B.md` 实跑枚举出的 **A 组 29 条**用例即该语义的断言载体（`test_outreach_ok_no_library` / `test_meeting_ok_no_library` / `test_kert_skipped_without_customer_knowledge` 等），**改它们＝改语义**，不得由开发自行改测试对齐实现。⚠ ②虽**不增加**既有用例破面（44 条中无"计划放行+声明缺失"，唯二声明缺失用例已在计划门禁被拒）**但这不等于无风险**：**第二片-A 之前供给过的工作区/手工配置工作区没有该声明** ⇒ 真实部署可达，只是未测。"未测"不得当作"无风险"。附风险：**代码已接线 + 声明未供给 ⇒ 三技能全拒绝**（危险窗口；正常编排已由 `provision` 前置依赖自动闭合） | M7.1 的真实语义落地 |
 | **C-2** | **`required` 强制（M7.3 遗留 (B)）**：必需资产缺失时是否拒绝执行 | 与 v1.3"evidence ok/skipped 不阻塞"纪律冲突 ⇒ 需**域 Owner** 决策；**TL 已裁定不随之升格**，并要求 B-1 加**机械核对**防"未绑定⇒拒绝"顺带把 `required:false` 变成必需 | 失败语义的最终边界 |
 
+| **C-3** | **canonical schema additive 增量**：B-1 会引入两个新 trace 字段（`capabilityId`/`sourceCode`），须**同步** `docs/contracts/schemas/assembly-trace.schema.json` | **待 Contract Owner 追认**（按 v1.5 先例：additive 先行 + 提案 + 登记 §0.1）。理由：只靠 `additionalProperties` 兜底**正是上一轮刚被纠正的**"实现有字段、合同未声明"失实模式，不得重演。**合同本体（`specs/**`、v2 候选）不动**；B-1 实施白名单中新纳入该 schema 文件的"仅追加两字段" | B-1 的观测面孔 |
+
+
+### C-4 B-1 定稿（Q1–Q5，TL 2026-09-16）
+
+> ⚠ **记录纪律（TL 自查纠正）**：本轮 Q1–Q5 此前**只落在 commit message（`d4935f9`）**中，
+> **未落本清单** ⇒ 队友按清单核对时只找到 C-3，并**诚实报告**了这一点。教训：**定稿必须落决策清单**，
+> commit message 不作为可核对记录。另：C-3 原被误插入 D 表（已移回本节）。
+
+| 项 | 定稿（TL） |
+|---|---|
+| **Q1 命名** | `_load_ki_from_declaration`；**签名须与 `_load_ki` 完全一致**（同参同返回 ⇒ 替换机械可判、等价性可证）；前缀刻意保留，使"全部 KI 读取点"可用一个前缀 grep 枚举 |
+| **Q2 字段** | `capabilityId` + `sourceCode`（**须同步 canonical schema**，见 C-3） |
+| **Q3 留痕粒度** | **逐资产一条**；三约束：**不带 `kiId`**（T1）；`message` **不含子串 `KI-`**（T3，故能力标识只走 `capabilityId` 字段）；**只追加在既有序列末尾**（使"剔除新增条目即可还原"机械可判）。附 TL 自我更正：原拟以"trace 条数敏感断言"驳回逐资产粒度，**实查 grep 皆空**（`len(assembly_trace)` / `assembly_trace[i]` 无命中）⇒ 该风险不存在，采纳队友设计 |
+| **Q4 调用点守卫** | **加**，且**白名单精确**：调用点集合 ≠ {outreach, meeting, previsit} 即 FAIL；并显式断言 `_run_supply_chain` **不**调用它（防 D 组被顺手接线）；守卫**不得可静默跳过** |
+| **Q5 先后** | **先冻结态复测、再开工**；复测口径：干净工作树 + `git rev-parse HEAD` + 那份 44 条枚举 + 全量四目录（unit/integration/contract/recovery）**原始计数与退出码**；并须复核"**(γ) 组合在接线前确实零覆盖**"这一前提本身（否则补洞定位需重估） |
+| **实施授权** | **条件性授权（已给，无需再次审批）**：① c20 落定（TL 发**冻结信号**）→ ② 冻结态复测确认"0 变化"**并回报原始计数** ⇒ **即可开工**。白名单：`src/kert/application/skills.py`、**新增**测试文件、`docs/contracts/schemas/assembly-trace.schema.json`（**仅追加两字段**）、`evidence/m7-3/**`；**既有测试文件一字不改**（含 `test_skills.py`）；新测试自带夹具 |
+
+
 ## D. 已知缺口（知情项，不阻塞）
 
 | # | 事项 | 现状 |
@@ -45,7 +64,6 @@ AUTHOR    : Tech Lead
 | **D-3** | `_handle()` 对非 KERT 异常返回 `str(exc)`，与 A-5 新处理器口径不一致 | 列为后续议题，本批不动 |
 | **D-4** | 容器复测约束 | 镜像会"存在但内容陈旧"；`COPY` 取**构建期工作区**而非 HEAD ⇒ 后续片须**先提交再 build**，证据绑定**镜像 sha256 + 镜像内交付物 sha256** |
 | **D-5** | **供给面口径变更（5 → 6 类文件）**：M7.1 第二片-A 起，`90_control/schema/knowledge_sources.json` 纳入供给 ⇒ 新运行的 CLI 输出为"新建 6 / 覆盖 0 / 未变 6" | **历史证据不回填**（`EVIDENCE-PROVISIONING.md`、`EVIDENCE-5B-FULL.md`、`EVIDENCE-E2E-STACK-UP.md` 中的"5"如实反映当时供给面）；本条即口径变更记录。**声明缺失按"不供给、不报错"**处理（与本体引用同口径，已由 TL 复核接受）；若日后要改为"缺失即拒绝"，属**语义升级**，需另裁 |
-| **C-3** | **canonical schema additive 增量**：B-1 会引入两个新 trace 字段（`capabilityId`/`sourceCode`），须**同步** `docs/contracts/schemas/assembly-trace.schema.json` | **待 Contract Owner 追认**（按 v1.5 先例：additive 先行 + 提案 + 登记 §0.1）。理由：只靠 `additionalProperties` 兜底**正是上一轮刚被纠正的**"实现有字段、合同未声明"失实模式，不得重演。**合同本体（`specs/**`、v2 候选）不动**；B-1 实施白名单中新纳入该 schema 文件的"仅追加两字段" | B-1 的观测面孔 |
 | **D-6** | **e2e 假绿风险**：`/api/skill/execute` 对**一切业务错误**返回 **200**（仅 `UNKNOWN_SKILL` 为 404，`server.py` 读码确认），而 e2e 只断言 `status_code in (200,201,202)` + 字段存在 ⇒ **部署工作区未供给时 e2e 仍绿，而技能实际 `skill_error`** | 已登记为 **C-1b 的交付项之一**；**不在 B-1 改 e2e**。若强化断言（须能区分 `ok`/`skill_error`），会牵动 **CI 供给**（未供给即红）⇒ 属**流水线决策**，需你裁 |
 | **D-7** | **读取路径一致性债**：`_run_supply_chain`（技能包 `bank-front-supply-chain-graph`）仍为**字面量驱动**读取，将与能力驱动路径**并存** | **不得**表述为"读取已全部接线"；归 O-6 / M7.2 范围，需另立 |
 | **D-8** | **引用纪律**：`src/kert/api/server.py` 常被并行改动（本轮 c20 在途 +29 行） | 引用该文件必须 **"函数名 + 行号"双锚**，并在文档顶部记**行号基准快照**；并发编辑期间的跑数**不可归因**（见"先冻结再跑"规则） |
