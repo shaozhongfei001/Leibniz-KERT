@@ -128,11 +128,15 @@ subClassOf 新增 = 101，拆解（**四个量；其中两个数值相同，但*
   integration `490 passed, 1 xfailed / rc=0`、contract `53 passed / rc=0`、recovery `18 passed / rc=0`；
   `ruff check src tests` → All checks passed。
 
-- **计数来源口径（与 c20 对齐，2026-09-16）**：本节四目录计数取自 **pytest 汇总行**（`-q` 模式）；
-  其中 integration 的 **`1 xfailed`** = `tests/integration/test_product_recommendation_sp15_chain.py::test_product_loader_from_assets`
-  （Owner 豁免 `WAIVER-2026-09-14-F-L00-07`，**`strict=True`** ⇒ 一旦 XPASS 即判失败、强制移除豁免），
-  **在 junit 中计为 `skipped=1`** ⇒ 与"真实 skip"不同、但与 junit 的 skipped 是**同一条**
-  （我实测 `-rxX` ⇒ `16 passed, 1 xfailed`，XFAIL 行即点名该用例）。**真实 skip = 0**。
+- **报数三要素（范围 + 凭据态 + 计数来源；与 c20 对齐，2026-09-16）**：本节的每个数字都按此三注读：
+  · **范围**：各数字的**选择集不同、不可横比** —— 「四目录」行 = `tests/<dir>` **全目录**（如 integration `499 passed + 1 xfailed`）；
+    **定向选择**行 = 显式列出少数文件（如 §7 的 `11 passed`、下文的 `16 passed`）或单文件，**不得**与全目录数并排比较；
+  · **凭据态**：见下条（本节**全部为不带凭据**）；
+  · **计数来源**：**pytest 汇总行**（`-q` 模式）。其中 integration 的 **`1 xfailed`** =
+    `tests/integration/test_product_recommendation_sp15_chain.py::test_product_loader_from_assets`
+    （Owner 豁免 `WAIVER-2026-09-14-F-L00-07`，**`strict=True`** ⇒ 一旦 XPASS 即判失败、强制移除豁免），
+    **在 junit 中计为 `skipped=1`** ⇒ 与"真实 skip"不同、但与 junit 的 skipped 是**同一条**
+    （我实测 `-rxX` ⇒ `16 passed, 1 xfailed`，XFAIL 行即点名该用例）。**真实 skip = 0**。
 
 - **凭据状态（TL 2026-09-16 新纪律：报跑数必须注明"带凭据 / 不带凭据"）**：本节**全部跑数均为
   不带凭据** —— 实测 `env | grep KERT_LIGHTRAG` 命中数 = **0**（`KERT_LIGHTRAG_*` 未设置）；
