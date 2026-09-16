@@ -268,9 +268,14 @@ def test_positive_shacl_validation_is_non_vacuous_and_recorded(ws_ready, tmp_pat
     assert (assets_dir(ws) / "products.ttl").read_bytes() == (alt / "products.ttl").read_bytes()
     vdir = ws / "04_serve" / SERVICE_ID / "version=shacl-ok"
     fm = json.loads((vdir / "ONTOLOGY_LINEAGE.json").read_text(encoding="utf-8"))
-    assert fm["shaclValidation"] == {"conforms": True, "violations": 0,
-                                     "shapes": out["counts"]["shapes"],
-                                     "instancesFile": "products.ttl"}
+    # D-35：`vacuous` 必须如实——本例的实例**真的**命中 targetClass ⇒ 校验有信息量
+    assert fm["shaclValidation"]["conforms"] is True
+    assert fm["shaclValidation"]["violations"] == 0
+    assert fm["shaclValidation"]["shapes"] == out["counts"]["shapes"]
+    assert fm["shaclValidation"]["instancesFile"] == "products.ttl"
+    assert fm["shaclValidation"]["vacuous"] is False, fm["shaclValidation"]
+    assert fm["shaclValidation"]["targetedInstances"] >= 1
+    assert fm["shaclValidation"]["matchedShapes"] >= 1
     assert fm["counts"]["instanceViolations"] == 0
 
 
