@@ -37,7 +37,20 @@ REAL_MAPS = {
     "KM-CORP-RM-OUTREACH": "OUTREACH_PREPARATION",
     "KM-CORP-RM-MEETING": "MEETING_PREPARATION",
     "KM-CORP-RM-PREVISIT": "PRE_VISIT_PREPARATION",
+    # M7 ②：新增纳入计划门禁的 4 个技能
+    "KM-CORP-RM-SUPPLYCHAIN": "SUPPLY_CHAIN_GRAPH_ANALYSIS",
+    "KM-CORP-RM-PRODUCT": "PRODUCT_RECOMMENDATION_DECISION",
+    "KM-CORP-RM-PROPOSAL": "SERVICE_PROPOSAL_PREPARATION",
+    "KM-CORP-RM-MEMORY": "INTERACTION_MEMORY_EXTRACTION",
 }
+
+#: **按计划读受治理知识资产**的技能（其地图 assetRefs 必须非空）。
+#: 其余地图 assetRefs 为空是**如实**结果（技能读技能包目录 / 请求 context，不读 KI）；
+#: 双向一致性（地图 == 技能自己产出的 trace）由 test_control_plane_consistency.py 机械核对。
+MAPS_WITH_ASSETS = frozenset({
+    "KM-CORP-RM-OUTREACH", "KM-CORP-RM-MEETING", "KM-CORP-RM-PREVISIT",
+    "KM-CORP-RM-SUPPLYCHAIN",
+})
 
 
 def _write_map(ws: Path, filename: str, doc: dict) -> Path:
@@ -71,24 +84,35 @@ def _map_doc(**overrides) -> dict:
 # 真实工作区（集成性质）：三个既有硬编码 mapId 必须都有真实定义
 # --------------------------------------------------------------------------- #
 
-def test_real_workspace_registers_three_maps_with_nonzero_refs():
-    """受控工作区实例必须注册 3 张地图，且每张都有非空 assetRefs/skillRefs。"""
+def test_real_workspace_registers_all_maps_with_refs_matching_skill_kind():
+    """受控工作区实例必须注册 7 张地图；每张都有非空 skillRefs。
+
+    ``assetRefs`` 非空与否必须与"该技能**是否按计划读受治理知识资产**"一致：
+    读取型的必须有非空且连续 sequence 的资产序列；不读的**如实为空**（不得为凑数而虚构资产）。
+    后者由 ``test_control_plane_consistency.py`` 以技能自己产出的 trace 双向机械核对。
+    """
     # 先证明这确实是一个**合法工作区**（有 marker），而不是随手放的目录
     assert is_workspace(REAL_WS), f"{REAL_WS} 不是已初始化的 KERT 工作区"
 
     reg = KnowledgeMapRegistry.load(REAL_WS)
 
     # 反空转：数量与 ID 基数先断言（否则"加载成功"可能什么都没读到）
-    assert len(reg) == 3, f"期望 3 张地图，实际 {len(reg)}：{[m.map_id for m in reg.maps]}"
+    assert len(reg) == 7, f"期望 7 张地图，实际 {len(reg)}：{[m.map_id for m in reg.maps]}"
     assert set(REAL_MAPS) == {m.map_id for m in reg.maps}
     assert set(reg.tasks()) == set(REAL_MAPS.values())
+    assert MAPS_WITH_ASSETS <= set(REAL_MAPS), "资产型地图必须都在 REAL_MAPS 里被登记"
 
     for map_id, task in REAL_MAPS.items():
         m = reg.get(map_id)
-        assert m.asset_refs, f"{map_id} 的 assetRefs 不得为空"
         assert m.skill_refs, f"{map_id} 的 skillRefs 不得为空"
-        # sequence 必须唯一且连续从 1 开始（确定性顺序）
-        assert [r.sequence for r in m.asset_refs] == list(range(1, len(m.asset_refs) + 1))
+        if map_id in MAPS_WITH_ASSETS:
+            assert m.asset_refs, f"{map_id} 是资产型地图，assetRefs 不得为空"
+            # sequence 必须唯一且连续从 1 开始（确定性顺序）
+            assert [r.sequence for r in m.asset_refs] == list(range(1, len(m.asset_refs) + 1))
+        else:
+            assert m.asset_refs == (), (
+                f"{map_id} 的技能当前不读控制面知识资产 ⇒ assetRefs 必须为空；"
+                "若确实开始读取，请同步地图并把它加入 MAPS_WITH_ASSETS")
 
         res = reg.resolve_for_task(task)
         assert res.allowed, f"{task} 应解析到 {map_id}，实际 {res.code}: {res.reason}"

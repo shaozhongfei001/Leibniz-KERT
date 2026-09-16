@@ -15,6 +15,7 @@ import yaml
 from fastapi.testclient import TestClient
 
 from kert.api.server import create_app
+from kert.domain.knowledge_map import KnowledgeMapRegistry
 from kert.domain.workspace import init_workspace
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -109,13 +110,22 @@ def test_list_knowledge_maps(client):
     assert r.status_code == 200
     data = r.json()["data"]
 
-    # 反空转：数量与 ID 先断言
-    assert data["count"] == 3, data
+    # 反空转：数量与 ID 先断言（**从受控源推导**，M7 ② 起为 7 张，不写死）
+    registry = KnowledgeMapRegistry.load(EXAMPLE_WS)
+    expected_ids = {m.map_id for m in registry.maps}
+    assert data["count"] == len(expected_ids) == 7, data
     ids = {m["mapId"] for m in data["maps"]}
-    assert ids == {"KM-CORP-RM-OUTREACH", "KM-CORP-RM-MEETING", "KM-CORP-RM-PREVISIT"}
+    assert ids == expected_ids
+    by_id = {m["mapId"]: m for m in data["maps"]}
     for m in data["maps"]:
-        assert m["assetCount"] > 0 and m["skillCount"] > 0
+        assert m["skillCount"] > 0
         assert m["routePolicyRef"] == "RP-KERT-BANKFRONT-001"
+    # API 必须**如实**转述控制面（不在这里另立一套"哪张该有资产"的口径：
+    # "资产非空 ⇔ 技能按计划读资产"由 test_control_plane_consistency.py 以技能 trace 机械核对）
+    for km in registry.maps:
+        assert by_id[km.map_id]["assetCount"] == len(km.asset_refs), km.map_id
+        assert by_id[km.map_id]["skillCount"] == len(km.skill_refs), km.map_id
+    assert sum(m["assetCount"] for m in data["maps"]) > 0, "防空转：全部地图资产数为 0"
 
     assert data["policy"]["policyId"] == "RP-KERT-BANKFRONT-001"
     assert data["policy"]["defaultDecision"] == "DENY"
@@ -145,6 +155,11 @@ def test_unknown_map_returns_404(client):
     ("MEETING_PREPARATION", "KM-CORP-RM-MEETING", "1.0.0"),
     # 1.0.1：修正 assetRefs（原只列 3 条，属 _run_supply_chain 的读取集）
     ("PRE_VISIT_PREPARATION", "KM-CORP-RM-PREVISIT", "1.0.1"),
+    # M7 ②：新纳入门禁的 4 个任务，同样必须产出放行计划
+    ("SUPPLY_CHAIN_GRAPH_ANALYSIS", "KM-CORP-RM-SUPPLYCHAIN", "1.0.0"),
+    ("PRODUCT_RECOMMENDATION_DECISION", "KM-CORP-RM-PRODUCT", "1.0.0"),
+    ("SERVICE_PROPOSAL_PREPARATION", "KM-CORP-RM-PROPOSAL", "1.0.0"),
+    ("INTERACTION_MEMORY_EXTRACTION", "KM-CORP-RM-MEMORY", "1.0.0"),
 ])
 def test_plan_allowed_for_each_task(client, task, map_id, map_version):
     r = client.post("/v1/routing/plan", json={"taskType": task, "subjectId": "CUST-0001"})
@@ -156,7 +171,8 @@ def test_plan_allowed_for_each_task(client, task, map_id, map_version):
     assert "mapKey" not in plan
     assert plan["planId"].startswith("AP-KERT-" + task)
     assert plan["versions"]["knowledgeMap"] == f"{map_id}@{map_version}"
-    assert plan["versions"]["routePolicy"] == "RP-KERT-BANKFRONT-001@1.0.0"
+    # M7 ②：策略受治理内容变更（3 → 7 条规则）⇒ 版本升为 1.1.0
+    assert plan["versions"]["routePolicy"] == "RP-KERT-BANKFRONT-001@1.1.0"
     assert plan["versions"]["ontology"] == ONTOLOGY_VERSION
     assert plan["versions"]["activationContract"] is None
     assert plan["routeReason"], "计划必须携带路由理由"

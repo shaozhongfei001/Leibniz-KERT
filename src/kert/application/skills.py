@@ -1102,10 +1102,13 @@ class SkillExecutionService:
 
     def _run_supply_chain(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
         customer_id = request.get("customerId") or ""
+        # M7 ②：纳入计划门禁 —— 资产清单由**计划**给出（地图 KM-CORP-RM-SUPPLYCHAIN 的 assetRefs），
+        # 计划被拒（策略缺失/未映射/歧义/地图未注册/本体引用缺失）即拒绝执行，不回落字面量清单。
+        plan = self._route_plan(trace, "KM-CORP-RM-SUPPLYCHAIN", "SUPPLY_CHAIN_GRAPH_ANALYSIS")
+        assets = self._plan_assets(plan)
         ki = self._load_ki(customer_id, trace)
-        self._trace_ki(trace, "KI-FRONT-001", "公司供应链图谱", "KI-FRONT-001" in ki)
-        self._trace_ki(trace, "KI-FRONT-002", "产业链八维研判", "KI-FRONT-002" in ki)
-        self._trace_ki(trace, "KI-FRONT-003", "行内变动行为", "KI-FRONT-003" in ki)
+        for kid in assets:
+            self._trace_ki(trace, kid, self._ki_title(kid), kid in ki)
 
         if self._ckp is None or not self._ckp.available:
             graph = {"nodes": [], "edges": [], "buildStatus": "partial"}
@@ -1132,6 +1135,8 @@ class SkillExecutionService:
     def _run_service_proposal(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
         from ..application.service_proposal import ServiceProposalExecutor
 
+        # M7 ②：纳入计划门禁（与既有 3 个技能同口径）——被拒即拒绝执行，不进执行器。
+        self._route_plan(trace, "KM-CORP-RM-PROPOSAL", "SERVICE_PROPOSAL_PREPARATION")
         if self._sp20 is None:
             self._sp20 = ServiceProposalExecutor()
         return self._sp20.execute(request, trace)
@@ -1139,6 +1144,8 @@ class SkillExecutionService:
     def _run_interaction_memory(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
         from ..application.interaction_memory import InteractionMemoryExecutor
 
+        # M7 ②：纳入计划门禁（与既有 3 个技能同口径）——被拒即拒绝执行，不进执行器。
+        self._route_plan(trace, "KM-CORP-RM-MEMORY", "INTERACTION_MEMORY_EXTRACTION")
         if self._sp21 is None:
             self._sp21 = InteractionMemoryExecutor()
         return self._sp21.execute(request, trace)
@@ -1153,6 +1160,9 @@ class SkillExecutionService:
         """
         from ..application.product_recommendation.sp15_skill import Sp15SkillExecutor
 
+        # M7 ②：纳入计划门禁（与既有 3 个技能同口径）——被拒即拒绝执行，不进执行器。
+        # taskType 沿用激活合同 AC-PRODUCT-RECOMMEND-001 的既有声明（不新造）。
+        self._route_plan(trace, "KM-CORP-RM-PRODUCT", "PRODUCT_RECOMMENDATION_DECISION")
         if self._sp15 is None:
             self._sp15 = Sp15SkillExecutor()
         res = self._sp15.execute(request)

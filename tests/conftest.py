@@ -29,10 +29,12 @@ CONTROL_PLANE_SOURCE = Path(__file__).resolve().parent.parent / "examples" / "ba
 def ws_provisioned(ws):
     """已在 ``ws`` 上供给控制面的工作区。
 
-    M7.3 ⑤b-full 起，customer-engagement 三个技能**按计划**读取资产，且**计划被拒即拒绝
-    执行**（fail-closed）⇒ 任何执行这三个技能的测试都必须用**已供给**的工作区；
-    未供给得到的是拒绝，那本身是有意义的用例，见
-    ``tests/integration/test_skill_routing_trace.py`` 的未供给/无工作区用例。
+    M7.3 ⑤b-full 起，customer-engagement 三个技能**按计划**读取资产；M7 ② 起
+    **另加 4 个技能**（``bank-front-supply-chain-graph`` / ``SP-15`` / ``SP-20`` / ``SP-21``）
+    同口径纳入计划门禁 ⇒ **共 7 个技能**都是「计划被拒即拒绝执行」（fail-closed）
+    ⇒ 任何执行这 7 个技能的测试都必须用**已供给**的工作区；
+    未供给/无工作区得到的是**具名拒绝**，那本身是有意义的用例，见
+    ``tests/integration/test_skill_routing_trace.py`` 与 ``tests/integration/test_skill_route_gate.py``。
     """
     from kert.application.provision import provision_control_plane
 

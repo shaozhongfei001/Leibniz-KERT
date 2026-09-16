@@ -24,8 +24,13 @@ CTX = {
 
 
 @pytest.fixture
-def svc():
-    return SkillExecutionService()
+def svc(ws_provisioned):
+    """SP-21 自 M7 ② 起纳入**计划门禁**：执行前须有已供给控制面的工作区。
+
+    未供给 ⇒ 具名拒绝（``KERT_PERMISSION_DENIED`` + ``detail.routeCode``），
+    该拒绝路径本身由 ``tests/integration/test_skill_route_gate.py`` 覆盖。
+    """
+    return SkillExecutionService(ws_provisioned)
 
 
 class TestSp21:
@@ -136,9 +141,9 @@ class TestApi:
             ids = [s["skillId"] for s in client.get("/api/skill/health").json()["skills"]]
             assert "SP-21" in ids
 
-    def test_execute_sp21(self, ws):
+    def test_execute_sp21(self, ws_provisioned):
         from fastapi.testclient import TestClient
-        app = create_app(ws)
+        app = create_app(ws_provisioned)
         with TestClient(app) as client:
             r = client.post("/api/skill/execute", json={
                 "skillId": "SP-21", "requestId": "sp21-api-1",
