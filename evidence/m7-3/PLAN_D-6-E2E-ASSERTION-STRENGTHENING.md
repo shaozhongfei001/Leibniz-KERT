@@ -98,3 +98,47 @@ DATE      : 2026-09-16
 不代表 D-6 已关闭；不代表任何生产就绪或 UAT 结论。
 `tests/e2e/test_all_skills_execution.py` 与 `.github/workflows/ci.yml` 的行号均为 **HEAD 时点**行号，
 后续若被改动须按 E-2 重新对齐。
+
+## 6. Step 1 交付记录（实施回填；2026-09-16）
+
+> 按 **E-3**（交付记录必须落产物、不只落消息）回填。**Step 2 仍未做**（等放行）。
+
+### 6.1 改动文件与指纹
+
+| 文件 | numstat | sha256(16)（工作区 = 入库，E-5） |
+|---|---|---|
+| `.github/workflows/ci.yml` | `69 0` | `d6f9b979e3eb8a73` |
+
+- 入库提交：**`1a772c8`**。
+- 插入位置：job **`e2e`**，`Start KERT` **之前** —— 供给步 + 就绪断言步。
+  **有意偏离**本方案 Step 1 的"放在 skill readiness 之后"：fail-fast，供给失败即**不启动服务**；已向 TL 披露并获接受。
+- CLI 形态经 `--help` + `src/kert/cli/main.py:101-113` 实测标定，与 `deploy/docker-compose.yml:39-47` 同口径。
+
+### 6.2 变异自证（三例；用 ci.yml 里**逐字的 `run` 文本**执行）
+
+| 例 | 工作区 | 结果 | 退出码 |
+|---|---|---|---|
+| (a) 已供给 | 供给后（源含 activations） | `✓ 控制面供给就绪：8 份声明逐份存在且内容 sha256 一致` | **0** |
+| (b) **撤销供给** | 空目录 | `::error::控制面供给不完整：缺少 [8 项]` | **1** ⇒ 断言有捕获力 |
+| (c) 源缺在途件 | 源副本删 `schema/activations/` | `✓ 控制面供给就绪：6 份…` | **0** ⇒ 不假红 |
+
+### 6.3 before / after 行为对照
+
+- **before**：空 `$RUNNER_TEMP/kert-ws` 起服务 ⇒ 三技能计划门禁拒绝 ⇒ `skill_error` 但 **HTTP 200**
+  ⇒ 既有 e2e 只断言状态码集合 ⇒ **全绿而技能不可用**（假绿）。
+- **after**：供给先行 + 就绪断言（**判据非 HTTP 200**）⇒ 未供给即**显式红**，不再假绿。
+  ⚠ **Step 2 未做** ⇒ e2e 仍不能区分 `ok`/`skill_error`（本步只关闭"供给缺口"这一半）。
+
+### 6.4 一处自查（已升格 **E-12**）：防空转下限必须锚「入库态」
+
+初版把下限写成 `8`；而 `schema/activations/AC-*.json`（2 份）是**第三方在途、未入库**
+⇒ 缺它们时本 job 会**假红**。已改为 **下限 = 入库核心 `6`**
+（`git ls-files` 实测：tracked 8 项 = 3 地图 + route_policy + ontology_reference + knowledge_sources + `README.md` + `.kert_workspace`；**声明核心 6 份**）。
+口径：**源侧声明什么就要求供给什么（含 sha256 一致），但阈值本身只取入库态**。第 (c) 例即该修复的回归。
+
+### 6.5 版本覆盖（E-11）
+
+`ci.yml:22` 的 CI 侧 python = **`3.11`**；本机**只有** `/usr/bin/python3.10`
+（`python3.11` / `python3.12` 系统解释器**均不存在**）⇒ **3.11 无法本地实跑**。
+实测：**3.10.12**（`bash` 跑 `run` 文本）与 **3.12.8**（`.venv/bin/python` 跑从 ci.yml 逐字抽出的脚本体）
+**均通过**（已供给 `EXIT=0`；未供给 `EXIT=1`）⇒ **两版本实测通过 + 3.11 仅静态判断**（脚本仅用 stdlib）。
