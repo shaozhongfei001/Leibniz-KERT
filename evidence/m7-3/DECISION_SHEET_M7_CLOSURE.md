@@ -82,6 +82,14 @@ AUTHOR    : Tech Lead
 `git status` 出现 `?? src/kert/domain/activation_contract.py`（§5.5 ② 激活合同注册/解析，读 `<ws>/90_control/schema/activations/AC-*.json`）—— **非 c20、非 m71**。⇒ 冻结信号须附"`git rev-parse HEAD` + 完整 `git status` 快照"以保归因；并**预告**：该模块读控制面 `schema/`，若纳入部署则**供给面清单将再次扩项**（现行 6 类文件），属后续议题（与 D-5 同族）。
 
 
+| **D-13** | **链路落地状态清点（TL 2026-09-16，回应"知识地图→skill 路由→本体模型→业务语义→lightRAG→本体物化是否均落地"）**：**前 3 环真实落地且在同一子链上连通**（技能→计划→路由→策略+地图→本体引用→plan hash：`skills.py:_route_plan:875→:899`／`route_policy.py:224,249`／`activation_plan.py:199,223,152,233`）；**lightRAG 属"已裁定不引入"（非缺口）**；**"业务语义"无独立语义层**；**"本体物化"缺失**。明细见 D-13a…e | 供范围界定；**不得**把未接线/预留项表述为"已上线" | M7 收口范围 |
+| **D-13a** | **知识地图遍历 API 未接线**：`KnowledgeMapRegistry.resolve_for_task()`（`knowledge_map.py:291`）唯一调用者是 `resolve_via_registry_only()`（`route_policy.py:311`），而后者**在生产代码中无调用点**（唯一调用者是单测 `tests/unit/test_route_policy.py:134`） | 属"**已实现未接线**"；地图实际经 `RouteResolver.load`（`route_policy.py:224`）参与路由 ⇒ **不得**表述为"地图→任务遍历已上线" | 需要 map 级遍历时接线 |
+| **D-13b** | **`activationContractRef` 属显式预留（非缺陷）**：地图可声明（`knowledge_map.py:66`）但三张受控地图留空；plan `versions["activationContract"]` 恒 `None`（`activation_plan.py:243` 注释"预留：本仓暂未引入激活合同"；docstring `:34/:38` 明载"预留槽位、不留占位串、不虚构取值"） | 若 Owner 要"激活合同进计划"，需**另立范围** | M7.2 / 激活合同 |
+| **D-13c** | **路由仅覆盖 3 个技能**：`_route_plan(` 调用点实测**仅 3 个**（`skills.py:961/995/1029`，outreach/meeting/previsit）；SP-15（`:1107`）/SP-20（`:1093`）/SP-21（`:1100`）/供应链（`:1064`）**不经计划门禁** | 与 D-7（供应链字面量债）同族，此处补全其余三项 | 全技能纳入门禁时 |
+| **D-13d** | **本体物化缺失**：本体引用只进 plan hash（`activation_plan.py:152/233`）；全仓**无** OWL/SHACL/SPARQL 解析、仓内 `*.ttl/*.owl/*.rdf` = **0**；已有的物化是**资产投影** `03_core → 04_serve Parquet → Kùzu`（`projection.py:44/305`；`kuzu_builder.py:3/44/51-52`），其**唯一调用点是 CLI**（`cli/main.py:421`）⇒ **投影链与计划链是并列两条、零连线** | **不得**表述为"本体已物化" | 若 Owner 要"本体物化"需新范围 |
+| **D-13e** | **权威状态文件滞后**：`docs/governance/KERT_STATUS_BASELINE_CANDIDATE.yaml:78-79` 仍记 `knowledge_map_registry: DESIGNED_NOT_IMPLEMENTED`，而代码/API/供给/证据均已落地（文件日期 2026-08-26） | 按该文件自身纪律（"唯一权威源"、不静默改写）⇒ 应由 TL 出**修订候选** | 状态权威一致性 |
+
+
 ## D. 已知缺口（知情项，不阻塞）
 
 | # | 事项 | 现状 |
