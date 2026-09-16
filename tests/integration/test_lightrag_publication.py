@@ -25,12 +25,34 @@ from kert.infrastructure.lightrag_client import (
 
 #: 确定性的"不可用"地址：保留端口 9（discard），本机无监听服务。
 DEAD_URL = "http://127.0.0.1:9"
-#: 待发布产物（`04_serve/**` ⇒ 属数据出口白名单）
-ARTIFACT = "04_serve/product_knowledge/version=2026.09.16.1/ONTOLOGY.md"
+#: 数据出口白名单内的**目录**；测试专用产物名建在此处（见 `_probe_rel`）
+ARTIFACT_DIR = "04_serve/product_knowledge/version=2026.09.16.1"
+#: 纯函数（出处标识往返）用例用的路径 —— **不参与任何 HTTP**
+ARTIFACT = f"{ARTIFACT_DIR}/ONTOLOGY.md"
 SOURCE = "04_serve__product_knowledge__version=2026.09.16.1__ONTOLOGY.md"
 
 
-def _write_artifact(ws, rel: str = ARTIFACT, body: str = "") -> str:
+def _probe_rel() -> str:
+    """**测试专用**产物名（带唯一后缀）—— **绝不占用真实产物标识**。
+
+    **实测教训（2026-09-16 清空-重建轮）**：曾直接用真实名 `…/ONTOLOGY.md` ⇒ 与重建语料中的
+    真实文档**撞名** ⇒ ① "先查后写"**正确地**返回 `already_published`（原断言写死 `published` ⇒ 红）；
+    ② `finally` 里的撤回**删掉了真实文档**（实例由 78/86 掉到 61/62）。
+    ⇒ 测试必须自持**唯一**标识，撤回也只能触及自己的探针。
+    """
+    return f"{ARTIFACT_DIR}/P1-PROBE-{uuid.uuid4().hex[:8]}.md"
+
+
+def _pre_clean(client: LightRagClient, file_source: str) -> None:
+    """清掉**上次异常退出**可能残留的同标识条目（否则本次发布只会得到 `already_published`）。"""
+    stale = client.find_documents(file_source)
+    if stale:
+        ids = [d.doc_id for d in stale]
+        client.delete_documents(ids)
+        client.wait_until_absent(ids, timeout=120.0)
+
+
+def _write_artifact(ws, rel: str, body: str = "") -> str:
     path = ws / rel
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(body or "# 本体物化产物\n实体 CUST-CORP-0001。\n", encoding="utf-8")
@@ -99,13 +121,13 @@ class TestPublishFailuresAreNamed:
     def test_dead_endpoint_publish_and_retract(self, ws):
         """不可达 ⇒ 发布与撤回**都**抛具名 `LightRagUnavailable`（不返回空、不 skip）。"""
         client = LightRagClient(base_url=DEAD_URL, api_key="x", timeout=1.0)
-        _write_artifact(ws)
+        rel = _write_artifact(ws, _probe_rel())
         svc = KnowledgeService(ws)
         with pytest.raises(LightRagUnavailable) as ei:
-            svc.publish_artifact(ARTIFACT, client=client)
+            svc.publish_artifact(rel, client=client)
         assert ei.value.code == "LIGHTRAG_UNAVAILABLE"
         with pytest.raises(LightRagUnavailable):
-            svc.retract_artifact(ARTIFACT, client=client)
+            svc.retract_artifact(rel, client=client)
 
     def test_server_409_maps_to_already_published(self, monkeypatch):
         """服务端 409（同 file_source 已存在）⇒ **幂等** `already_published`，不是失败。"""
@@ -131,9 +153,9 @@ class TestPublishFailuresAreNamed:
                                             "status": "processed"}),))
         out = client.publish_text("t", file_source="04_serve__a__b.md")
         assert out.status == ALREADY_PUBLISHED          # 未触及网络（DEAD_URL 也照样返回）
-        _write_artifact(ws)
+        rel = _write_artifact(ws, _probe_rel())
         svc = KnowledgeService(ws)
-        assert svc.publish_artifact(ARTIFACT, client=client)["status"] == ALREADY_PUBLISHED
+        assert svc.publish_artifact(rel, client=client)["status"] == ALREADY_PUBLISHED
 
 
 class TestPublishedIsRetrievableAndRetractable:
@@ -143,7 +165,7 @@ class TestPublishedIsRetrievableAndRetractable:
         server 不可达 / 可达但未授权 ⇒ 走**具名错误**分支并断言（**不 skip**）。
         """
         marker = f"P1MARK{uuid.uuid4().hex[:8].upper()}"
-        _write_artifact(ws, body=(
+        rel = _write_artifact(ws, _probe_rel(), body=(
             f"# 本体物化产物（样例）\n"
             f"实体 CUST-CORP-0001（华东精工装备集团有限公司）的客户画像与供应链融资偏好。\n"
             f"本体物化检索标记 {marker}。\n"))
@@ -153,10 +175,11 @@ class TestPublishedIsRetrievableAndRetractable:
 
         if not client.available():
             with pytest.raises(LightRagUnavailable):
-                svc.publish_artifact(ARTIFACT, client=client)
+                svc.publish_artifact(rel, client=client)
             return
+        _pre_clean(client, artifact_file_source(rel))   # 清掉上次异常退出可能残留的同标识条目
         try:
-            out = svc.publish_artifact(ARTIFACT, client=client)
+            out = svc.publish_artifact(rel, client=client)
         except LightRagHTTPError as exc:
             assert exc.code == "LIGHTRAG_HTTP_ERROR"
             assert any(s in str(exc) for s in ("401", "403")), (
@@ -165,10 +188,10 @@ class TestPublishedIsRetrievableAndRetractable:
 
         try:
             assert out["status"] == "published", out
-            assert out["file_source"] == SOURCE
+            assert out["file_source"] == artifact_file_source(rel)
             assert out["endpoint"] == "/documents/text"
             assert _snapshot(ws) == before, "发布**不得**改动工作区（只读）"
-            again = svc.publish_artifact(ARTIFACT, client=client)
+            again = svc.publish_artifact(rel, client=client)
             assert again["status"] == ALREADY_PUBLISHED, again
             _wait_processed(client, out["file_source"])
             docs = client.find_documents(out["file_source"])
@@ -178,7 +201,7 @@ class TestPublishedIsRetrievableAndRetractable:
             assert out["file_source"] in hits, (
                 f"检索命中但出处未回指 KERT 产物路径：{sorted(hits)}")
         finally:
-            res = svc.retract_artifact(ARTIFACT, client=client)
+            res = svc.retract_artifact(rel, client=client)
             assert isinstance(res["removed"], list) and res["removed"], res
             assert client.find_documents(out["file_source"]) == (), "撤回后仍有残留条目"
             assert _snapshot(ws) == before, "撤回**不得**改动工作区"
