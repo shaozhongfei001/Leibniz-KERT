@@ -81,3 +81,30 @@ provenance 非法 ⇒ `ONTOLOGY_ASSETS_PROVENANCE_INVALID`）。
 2. **不做推理**：未引入 owlready2/推理机；`rdfs:subClassOf` 已有 7 条边，但**未做**传递闭包/一致性推理。
 3. **R2RML / INSTANCES 仅登记与校验**：R2RML 未映射执行；`products.ttl` 只用于 SHACL 校验（conforms 统计）。
 4. 与本片无关但在途：`activation_contract.py` 及第三方 7 项 —— **未碰**；不 commit、不 push。
+
+---
+
+## 7. 推理评估（后续件）：实测**无收益** ⇒ **不引入**（判据 ②）
+
+```text
+底数：OWL 原始三元组 255
+RDFS 闭包    : +200  （其中 rdf:type rdfs:Resource 类公理 193 ⇒ 噪声）
+OWL-RL 闭包  : +570  （自反 sameAs 242、自反 subClassOf 34，其余为 datatype/annotation 记账）
+① 真实类层次闭包（两侧皆**本域具名类**且非自反）：**+0**
+② 实例级类型断言（13 个实例；ontology+instances 合并后闭包）：**+0**
+③ SHACL 校验 inference = None / rdfs / owlrl / both ⇒ **conforms=True, violations=0（四档完全相同）**
+⇒ 差异**非空但全为公理/自反噪声，无业务意义** ⇒ 判据 ② ⇒ **不引入推理、不入产物**
+```
+
+- **依赖面不变**：**不**新增直接依赖（`owlrl` 本来就是 `pyshacl` 的传递依赖，lock 已钉 `owlrl==7.6.2`）；
+  本件只**实测**，不扩依赖。
+- **现有 `inference="rdfs"`**：实测与 `None` 结果相同 ⇒ **中性参数**，保留（不引入新依赖、不改校验语义）。
+- **落地形式（防"漏做"误解）**：① 产物 `ONTOLOGY.md` 增「推理（已评估，未启用）」段；
+  ② 数值钉在 `tests/unit/test_ontology_reasoning_is_neutral.py`（4 用例）——将来若出现**有意义的**差异，
+  该测试变红 ⇒ 强制重新评估并同步证据与 lock。
+- **命令与退出码（E-11）**：`.venv/bin/python -m pytest tests/unit/test_ontology_reasoning_is_neutral.py
+  tests/unit/test_ontology_assets_and_parse.py tests/integration/test_ontology_materialization.py
+  -o addopts="" -p no:warnings` ⇒ **11 passed, rc=0**；
+  四目录：unit `3 failed, 996 passed / rc=1`（红集仍=既有 3 条 `test_provision_cli`，非本片）、
+  integration `490 passed, 1 xfailed / rc=0`、contract `53 passed / rc=0`、recovery `18 passed / rc=0`；
+  `ruff check src tests` → All checks passed。
