@@ -19,6 +19,7 @@ from pathlib import Path
 from ..domain import hashing, timeutil
 from ..domain.contracts import specs
 from ..domain.contracts.base import validate_contract
+from ..domain.query_modes import SEARCH_MODE_FULLTEXT
 from ..infrastructure import markdown
 from ..infrastructure.fs import WorkspaceWriter
 
@@ -328,7 +329,7 @@ class GateReporter:
             findings.append(GateFinding("NOTE", "G5_HEALTH",
                                         f"服务健康，活动投影版本 {version}"))
             # 检索样例
-            r = svc.search("利率", mode="FULLTEXT", top_k=3)
+            r = svc.search("利率", mode=SEARCH_MODE_FULLTEXT, top_k=3)
             if r.data["hit_count"] == 0:
                 findings.append(GateFinding("MAJOR", "G5_SEARCH",
                                             "全文检索样例无命中"))

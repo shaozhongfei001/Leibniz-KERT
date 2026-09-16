@@ -39,6 +39,11 @@ from ..domain.activation_plan import ActivationPlanBuilder, PlanDenial
 from ..domain.errors import KERTException, ServiceNotReadyError
 from ..domain.health import HEALTH_OK
 from ..domain.knowledge_map import KnowledgeMapRegistry
+from ..domain.query_modes import (
+    DIRECTION_OUT,
+    GRAPH_MODE_NEIGHBOR,
+    SEARCH_MODE_FULLTEXT,
+)
 from ..domain.route_policy import load_route_policy
 from ..domain.skill_status import SKILL_ERROR
 from ..infrastructure.observability import (
@@ -171,7 +176,7 @@ class DataQueryRequest(BaseModel):
 class SearchRequest(BaseModel):
     request_id: str
     query: str
-    mode: str = "FULLTEXT"
+    mode: str = SEARCH_MODE_FULLTEXT          # 值域见 domain/query_modes.SEARCH_MODES
     top_k: int = 10
     filters: dict | None = None
 
@@ -180,10 +185,10 @@ class GraphRequest(BaseModel):
     request_id: str
     start_entity_ids: list[str]
     relation_types: list[str] | None = None
-    direction: str = "OUT"
+    direction: str = DIRECTION_OUT            # 值域见 domain/query_modes.GRAPH_DIRECTIONS
     max_depth: int = 1
     max_nodes: int = 100
-    mode: str = "neighbor"  # neighbor | closure | paths（Kùzu 后端）
+    mode: str = GRAPH_MODE_NEIGHBOR           # 值域见 domain/query_modes.GRAPH_MODES（Kùzu 后端）
     service: str = "product_knowledge"  # 服务 ID（如 supply_chain_graph）
     as_of: str | None = None
 

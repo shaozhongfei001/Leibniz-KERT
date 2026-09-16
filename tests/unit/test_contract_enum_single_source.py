@@ -24,6 +24,7 @@ from kert.domain.activation_plan import SCHEMA as ACTIVATION_PLAN_SCHEMA
 from kert.domain.contracts.specs import JOB_STATUS_SCHEMA
 from kert.domain.fact_label import FACT_LABELS
 from kert.domain.health import SKILL_HEALTH_STATES
+from kert.domain.query_modes import GRAPH_DIRECTIONS, GRAPH_MODES, SEARCH_MODES
 from kert.domain.service_result import SERVICE_RESULT_STATES
 from kert.domain.skill_status import (
     EXIT_POLICY_NO_NEW_EVIDENCE,
@@ -77,6 +78,12 @@ MAPPINGS: tuple[tuple[str, str, list], ...] = (
     # D-28 层 2 第三片（清单 #21 `ActivationPlan.schema`）——源**已存在**
     # （`domain/activation_plan.SCHEMA`），本批只补"合同 enum == 命名源"这格。
     ("ActivationPlan", "schema", [ACTIVATION_PLAN_SCHEMA]),
+    # D-28 层 2 第六片：**检索/图谱查询词表**（清单 #23 / #24 / #25）——源 `kert.domain.query_modes`；
+    # 三者互不通用（两个 schema 里都有 `mode` 字段）⇒ 三行各自独立核对；
+    # 闭集校验与 Cypher 箭头查表见 `test_query_modes_single_source.py`。
+    ("SearchRequest", "mode", list(SEARCH_MODES)),
+    ("GraphQueryRequest", "direction", list(GRAPH_DIRECTIONS)),
+    ("GraphQueryRequest", "mode", list(GRAPH_MODES)),
     # D-28 层 2 第四片：**技能执行状态域**（清单 §2 #4）——源 `kert.domain.skill_status`，
     # 生产者为 `application/skills.py`（含 3 分支）+ `sp15_skill.py` + `api/server.py`
     # （含 `result.status == SKILL_ERROR` 的**按名比较**分支）；三态真实路径见
@@ -142,8 +149,8 @@ def test_contract_enum_matches_single_source():
     spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
     checked = _assert_matches(spec)
     # 防空转：本用例不得在"核对项为空/骤减"时静默通过（下限随登记项数同步抬高）
-    assert checked >= 15, f"防空转：实际核对项数 {checked} 少于下限 15"
-    assert len(MAPPINGS) >= 15, "防空转：映射表异常收缩"
+    assert checked >= 18, f"防空转：实际核对项数 {checked} 少于下限 15"
+    assert len(MAPPINGS) >= 18, "防空转：映射表异常收缩"
 
 
 @pytest.mark.parametrize("mode", ["changed_value", "narrowed"])
@@ -154,7 +161,7 @@ def test_contract_enum_mutation_is_detected(mode):
     本用例会失去可红性 ⇒ 自动暴露（把一次性的手工自证固化成机械保护）。
     """
     spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
-    assert _assert_matches(spec) >= 15, "基线合同必须先通过（否则变异证明无意义）"
+    assert _assert_matches(spec) >= 18, "基线合同必须先通过（否则变异证明无意义）"
 
     checked = 0
     for schema, field, _source in MAPPINGS:
@@ -170,7 +177,7 @@ def test_contract_enum_mutation_is_detected(mode):
         with pytest.raises(AssertionError):
             _assert_matches(mutated)
         checked += 1
-    assert checked >= 12, f"防空转：实际变异项数 {checked} 少于下限 12"
+    assert checked >= 15, f"防空转：实际变异项数 {checked} 少于下限 12"
 
 
 @pytest.mark.parametrize("mode", ["changed_value", "extended"])
@@ -191,4 +198,4 @@ def test_source_mutation_is_detected(mode):
         with pytest.raises(AssertionError):
             _assert_matches(spec, [(schema, field, mutated)])
         checked += 1
-    assert checked >= 12, f"防空转：实际变异项数 {checked} 少于下限 12"
+    assert checked >= 15, f"防空转：实际变异项数 {checked} 少于下限 12"

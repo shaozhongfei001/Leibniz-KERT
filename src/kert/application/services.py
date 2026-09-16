@@ -20,6 +20,21 @@ import pyarrow.parquet as pq
 from ..domain import timeutil
 from ..domain.errors import AssetNotFoundError, ServiceNotReadyError, UsageError
 from ..domain.ontology_reference import check_lineage_ontology, lineage_ontology_fields
+from ..domain.query_modes import (
+    DIRECTION_BOTH,
+    DIRECTION_IN,
+    DIRECTION_OUT,
+    GRAPH_CYPHER_ARROWS,
+    GRAPH_DIRECTIONS,
+    GRAPH_MODE_CLOSURE,
+    GRAPH_MODE_NEIGHBOR,
+    GRAPH_MODE_PATHS,
+    GRAPH_MODES,
+    SEARCH_MODE_FULLTEXT,
+    SEARCH_MODE_HYBRID,
+    SEARCH_MODE_VECTOR,
+    SEARCH_MODES,
+)
 from ..domain.rules import dsl
 from ..infrastructure import markdown
 from ..infrastructure.parquet import build_filter
@@ -202,9 +217,9 @@ class KnowledgeService:
 
     def graph(self, start_entity_ids: list[str], *,
               relation_types: list[str] | None = None,
-              direction: str = "OUT", max_depth: int = 1,
+              direction: str = DIRECTION_OUT, max_depth: int = 1,
               max_nodes: int = 100,
-              mode: str = "neighbor") -> ServiceResult:
+              mode: str = GRAPH_MODE_NEIGHBOR) -> ServiceResult:
         """图谱查询（IMP-ADR-011：Kùzu 投影后端，回退内存 BFS）。
 
         mode: neighbor（多级可达，默认）/ closure（递归闭包，去重）/ paths（路径枚举）。
@@ -213,9 +228,9 @@ class KnowledgeService:
             raise UsageError("max_depth 最大为 10")
         if max_nodes > 1000:
             raise UsageError("max_nodes 最大为 1000")
-        if direction not in ("OUT", "IN", "BOTH"):
+        if direction not in GRAPH_DIRECTIONS:
             raise UsageError(f"非法 direction: {direction!r}")
-        if mode not in ("neighbor", "closure", "paths"):
+        if mode not in GRAPH_MODES:
             raise UsageError(f"非法 mode: {mode!r}")
         try:
             from ..infrastructure.graph.kuzu_builder import KuzuGraphBuilder
@@ -230,7 +245,7 @@ class KnowledgeService:
                                   max_depth, max_nodes, mode)
 
     def _graph_memory(self, start_entity_ids, relation_types, direction,
-                      max_depth, max_nodes, mode="neighbor") -> ServiceResult:
+                      max_depth, max_nodes, mode=GRAPH_MODE_NEIGHBOR) -> ServiceResult:
         """内存邻接 BFS（原实现，max_depth 上限放宽到 10；paths 模式返回节点序列）。"""
         ents = {r["entity_id"]: r for r in self._read_table("entities.parquet").to_pylist()}
         rels = self._read_table("relations.parquet").to_pylist()
@@ -238,11 +253,11 @@ class KnowledgeService:
         for rel in rels:
             if relation_types and rel["relation_type"] not in relation_types:
                 continue
-            if direction in ("OUT", "BOTH"):
+            if direction in (DIRECTION_OUT, DIRECTION_BOTH):
                 adj.setdefault(rel["source_id"], []).append(
                     {"target": rel["target_id"], "relation_type": rel["relation_type"],
                      "relation_id": rel["relation_id"], "statement_id": rel.get("statement_id")})
-            if direction in ("IN", "BOTH"):
+            if direction in (DIRECTION_IN, DIRECTION_BOTH):
                 adj.setdefault(rel["target_id"], []).append(
                     {"target": rel["source_id"], "relation_type": rel["relation_type"],
                      "relation_id": rel["relation_id"], "statement_id": rel.get("statement_id")})
@@ -265,13 +280,13 @@ class KnowledgeService:
                               "relation_type": e["relation_type"],
                               "relation_id": e["relation_id"],
                               "statement_id": e["statement_id"]})
-                if mode == "paths":
+                if mode == GRAPH_MODE_PATHS:
                     paths.append([n for n in trail + [e["target"]]])
                 if e["target"] not in visited:
                     queue.append((e["target"], depth + 1, trail + [e["target"]]))
         data = {"nodes": list(nodes.values()), "edges": edges,
                 "node_count": len(nodes), "edge_count": len(edges), "mode": mode}
-        if mode == "paths":
+        if mode == GRAPH_MODE_PATHS:
             data["paths"] = paths
         return ServiceResult(data=data, meta=self._meta(ranking_policy_version="none"))
 
@@ -283,13 +298,14 @@ class KnowledgeService:
         db = kuzu.Database(str(builder.graph_path()))
         con = kuzu.Connection(db)
         depth = max(max_depth, 1)
-        arrow = {"OUT": "->", "IN": "<-", "BOTH": "-"}[direction]
-        rel = f"-[:Rel*1..{depth}]{arrow}" if direction != "BOTH" else f"-[:Rel*1..{depth}]-"
+        arrow = GRAPH_CYPHER_ARROWS[direction]
+        rel = (f"-[:Rel*1..{depth}]{arrow}" if direction != DIRECTION_BOTH
+               else f"-[:Rel*1..{depth}]{GRAPH_CYPHER_ARROWS[DIRECTION_BOTH]}")
         nodes: dict[str, dict] = {}
         edges: list[dict] = []
         paths: list[list[str]] = []
         for s in start_entity_ids:
-            if mode in ("neighbor", "closure"):
+            if mode in (GRAPH_MODE_NEIGHBOR, GRAPH_MODE_CLOSURE):
                 rows = con.execute(
                     f"MATCH p=(a:Company {{eid:$s}}){rel}(b:Company) "
                     "RETURN b.eid, b.name, b.etype, MIN(length(p)) AS d "
@@ -307,11 +323,12 @@ class KnowledgeService:
                 for eid, rt, rid, sid in edge_rows:
                     edges.append({"source": s, "target": eid, "relation_type": rt,
                                   "relation_id": rid, "statement_id": sid})
-            elif mode == "paths":
+            elif mode == GRAPH_MODE_PATHS:
                 # paths 必须方向敏感（BOTH 拆 OUT/IN），避免核心-供应商环路打转
-                dirs = ["OUT", "IN"] if direction == "BOTH" else [direction]
+                dirs = ([DIRECTION_OUT, DIRECTION_IN] if direction == DIRECTION_BOTH
+                        else [direction])
                 for d in dirs:
-                    arrow_p = {"OUT": "->", "IN": "<-"}[d]
+                    arrow_p = GRAPH_CYPHER_ARROWS[d]
                     rows = con.execute(
                         f"MATCH p=(a:Company {{eid:$s}})-[:Rel*1..{depth}]{arrow_p}(b:Company) "
                         "RETURN nodes(p) LIMIT $n",
@@ -323,22 +340,22 @@ class KnowledgeService:
             edges = [e for e in edges if e["relation_type"] in relation_types]
         data = {"nodes": list(nodes.values()), "edges": edges,
                 "node_count": len(nodes), "edge_count": len(edges), "mode": mode}
-        if mode == "paths":
+        if mode == GRAPH_MODE_PATHS:
             data["paths"] = paths
         return ServiceResult(data=data, meta=self._meta(ranking_policy_version="none"))
 
     # ---------------- 检索（FR-SRV-002、§15） ----------------
 
-    def search(self, query: str, *, mode: str = "FULLTEXT", top_k: int = 10,
+    def search(self, query: str, *, mode: str = SEARCH_MODE_FULLTEXT, top_k: int = 10,
                filters: dict | None = None) -> ServiceResult:
-        if mode not in ("FULLTEXT", "VECTOR", "HYBRID"):
+        if mode not in SEARCH_MODES:
             raise UsageError(f"非法检索模式: {mode!r}")
         segs = self._read_table("segments.parquet", filters=filters).to_pylist()
-        if mode in ("FULLTEXT", "HYBRID"):
+        if mode in (SEARCH_MODE_FULLTEXT, SEARCH_MODE_HYBRID):
             ft = _fulltext_score(query, segs)
         else:
             ft = []
-        if mode in ("VECTOR", "HYBRID"):
+        if mode in (SEARCH_MODE_VECTOR, SEARCH_MODE_HYBRID):
             try:
                 vec = self._read_table("vectors.parquet").to_pylist()
             except AssetNotFoundError:
@@ -351,9 +368,9 @@ class KnowledgeService:
                     vs.append((v["segment_id"], _cosine(query_vec, v["embedding"])))
         else:
             vs = []
-        if mode == "FULLTEXT":
+        if mode == SEARCH_MODE_FULLTEXT:
             hits = ft
-        elif mode == "VECTOR":
+        elif mode == SEARCH_MODE_VECTOR:
             hits = vs
         else:
             # 归一化融合：0.5 全文 + 0.5 向量（ranking_policy_version 记录）
@@ -376,15 +393,17 @@ class KnowledgeService:
                 "document_id": seg.get("document_id"),
                 "content_excerpt": _excerpt(seg.get("content", ""), query),
                 "score": round(score, 4),
-                "score_type": "HYBRID" if mode == "HYBRID" else mode,
+                "score_type": (SEARCH_MODE_HYBRID if mode == SEARCH_MODE_HYBRID else mode),
                 "page_from": seg.get("page_from"), "page_to": seg.get("page_to"),
                 "source_version": seg.get("source_release_id"),
                 "evidence_uri": seg.get("source_path"),
             })
         return ServiceResult(
             data={"query": query, "mode": mode, "hits": results,
-                  "hit_count": len(results), "degraded": mode == "VECTOR" and not vs},
-            meta=self._meta(ranking_policy_version="rank/v1" if mode == "HYBRID" else "none"),
+                  "hit_count": len(results),
+                  "degraded": mode == SEARCH_MODE_VECTOR and not vs},
+            meta=self._meta(ranking_policy_version=(
+                "rank/v1" if mode == SEARCH_MODE_HYBRID else "none")),
         )
 
     # ---------------- 客户知识取数（v1.3 数据所有权：按 customerId 读库） ----------------
