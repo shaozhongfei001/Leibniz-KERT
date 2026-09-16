@@ -1,0 +1,30 @@
+{
+  "extractionRunId": "RUN-20260906-c8bb9f1f",
+  "generatedAt": "2026-09-06T12:00:00+08:00",
+  "sourceVersions": [
+    {
+      "byteSize": 4280,
+      "bytesSha256": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "fragmentCount": 19,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-CM-001",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "byteSize": 3509,
+      "bytesSha256": "984fe6cde0c2b17bfad0b1c05d0a6f80ae7701647c8155b85b3ec57c92f375a2",
+      "fragmentCount": 17,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-CM-002",
+      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+    },
+    {
+      "byteSize": 3422,
+      "bytesSha256": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "fragmentCount": 15,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-CM-003",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+    }
+  ]
+}

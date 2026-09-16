@@ -1,0 +1,20 @@
+{
+  "allowedClaimTypes": [
+    "RISK",
+    "ELIGIBILITY",
+    "REGULATORY"
+  ],
+  "authorityLevel": "INTERNAL_POLICY",
+  "byteSize": 3422,
+  "bytesSha256": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+  "ingestedAt": "2026-09-06T12:00:00+08:00",
+  "pageCount": null,
+  "productFamily": "CASH_MANAGEMENT",
+  "provenanceState": "DEMO",
+  "provenanceUrl": null,
+  "sourceId": "SRC-CM-003",
+  "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+  "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+  "supersededBy": null,
+  "zone": "_authoritative"
+}

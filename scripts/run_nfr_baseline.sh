@@ -67,7 +67,7 @@ mkdir -p "$EVIDENCE_DIR"
 # -------------------------------------------------------
 if [[ $SKIP_START -eq 0 ]]; then
     echo ""
-    echo "[1/4] 启动 DKWS 服务（确定性模式）..."
+    echo "[1/4] 启动 KERT 服务（确定性模式）..."
 
     # 检查端口是否已被占用
     if ss -tlnp "sport = :$PORT" 2>/dev/null | grep -q ":$PORT"; then
@@ -163,7 +163,7 @@ echo "  报告已生成"
 # -------------------------------------------------------
 if [[ $SKIP_STOP -eq 0 && -n "$SERVER_PID" ]]; then
     echo ""
-    echo "[4/4] 停止 DKWS 服务..."
+    echo "[4/4] 停止 KERT 服务..."
     kill "$SERVER_PID" 2>/dev/null || true
     # 等待进程退出
     for i in $(seq 1 10); do

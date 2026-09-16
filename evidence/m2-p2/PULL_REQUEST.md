@@ -11,7 +11,7 @@
 
 ## 一、目标
 
-为 DKWS Python Core 建立**生产级异步任务可靠性**：Job 状态持久化、原子领取、
+为 KERT Python Core 建立**生产级异步任务可靠性**：Job 状态持久化、原子领取、
 lease 租约、重试退避、dead-letter，以及**进程崩溃后的完整恢复**。
 
 ## 二、Owner 决策落实
@@ -132,7 +132,7 @@ lease 被回收后原持有者写回一律返回 `None`。
 
 ## 六、变更文件
 
-**新增源码**：`src/dkws/infrastructure/worker.py`
+**新增源码**：`src/kert/infrastructure/worker.py`
 
 **修改源码**：`runtime_store.py`（migration 002 + 13 个新方法）、
 `application/jobs.py`（C′ 改造）、`application/skills.py`（持久化入队）
@@ -144,7 +144,7 @@ lease 被回收后原持有者写回一律返回 `None`。
 **修改测试**（Owner 授权的命名统一）：`test_runtime_store.py`(2)、
 `test_runtime_store_api.py`(1)
 
-**新增文档/工具**：`docs/architecture/DKWS_PERSISTENT_WORKER_M2P2.md`、
+**新增文档/工具**：`docs/architecture/KERT_PERSISTENT_WORKER_M2P2.md`、
 `scripts/run_worker.py`、`scripts/verify_m2p2_worker.py`、`evidence/m2-p2/**`
 
 ## 七、Owner 审核结论与合并前待办（已全部完成）
@@ -163,7 +163,7 @@ Owner 于 2026-08-27 审核：**APPROVE WITH CONDITIONS**，三项合并前待�
 
 ```
 ServiceNotReadyError: 生产 profile 下异步执行必须启用 Runtime Store：
-线程模式在进程崩溃时会丢任务。请设置 DKWS_RUNTIME_STORE_ENABLED=true
+线程模式在进程崩溃时会丢任务。请设置 KERT_RUNTIME_STORE_ENABLED=true
 并启动 Worker（scripts/run_worker.py），或改用同步执行。
 ```
 
@@ -172,7 +172,7 @@ ServiceNotReadyError: 生产 profile 下异步执行必须启用 Runtime Store�
 - **拒绝时不创建任何 Job**，确认未回退 threading（端到端检查 24 专门验证）
 - profile 比较**忽略大小写与空白**，防配置笔误绕过校验
 - **同步执行不受约束**（不依赖 Worker，无丢任务风险）
-- profile 来源：构造参数优先，缺省读 `DKWS_PROFILE`（默认 `dev`）；
+- profile 来源：构造参数优先，缺省读 `KERT_PROFILE`（默认 `dev`）；
   `create_app()` 自动传入 `cfg.profile`
 
 附带改动：`app.state` 暴露 `skill_service`，用于运维自检与校验链路测试
@@ -199,7 +199,7 @@ ServiceNotReadyError: 生产 profile 下异步执行必须启用 Runtime Store�
 
 ## 九、非声明
 
-- 本次**不**代表 DKWS 已生产就绪。
+- 本次**不**代表 KERT 已生产就绪。
 - 本次**不**代表 GITS UAT 已通过。
 - 本次**不**代表安全审计已完成。
 - 本次**不**代表 C′ 受控混合架构已成为正式基线。

@@ -6,14 +6,14 @@ from __future__ import annotations
 import pyarrow.parquet as pq
 import pytest
 
-from dkws.application.extract import KnowledgeExtractor
-from dkws.application.ingest import Ingestor
-from dkws.application.parse_doc import DocumentParserService
-from dkws.application.projection import ProjectionBuilder
-from dkws.application.publish import Publisher
-from dkws.application.review import ReviewService
-from dkws.domain.contracts import specs
-from dkws.domain.contracts.base import validate_contract
+from kert.application.extract import KnowledgeExtractor
+from kert.application.ingest import Ingestor
+from kert.application.parse_doc import DocumentParserService
+from kert.application.projection import ProjectionBuilder
+from kert.application.publish import Publisher
+from kert.application.review import ReviewService
+from kert.domain.contracts import specs
+from kert.domain.contracts.base import validate_contract
 
 
 def _drop_time_cols(table):
@@ -79,7 +79,7 @@ class TestProjection:
         """§18.4：删除 Serve 版本后仅凭 Core 重建，逻辑哈希一致（排除时间列）。"""
         import shutil
 
-        from dkws.domain import hashing as hmod
+        from kert.domain import hashing as hmod
 
         ws = published_core["ws"]
         b = ProjectionBuilder(ws)

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""DKWS v1.3 造数脚本：客户知识落库（本体 FS + 图谱 + 检索投影）+ CRM 主档投影。
+"""KERT v1.3 造数脚本：客户知识落库（本体 FS + 图谱 + 检索投影）+ CRM 主档投影。
 
 客户：
 - CUST-CORP-0001 华东精工装备集团有限公司（主联调户，战略层级）
 - CUST-CORP-0002 华东新能源汽车有限公司（0001 的关键下游客户，演示上下游链）
 
 规则（v1.3）：
-- 客户 ID 同一字符串贯穿 DKWS 实体 / 图节点 / Skill 请求 / GITS customer.customer_id；
+- 客户 ID 同一字符串贯穿 KERT 实体 / 图节点 / Skill 请求 / GITS customer.customer_id；
 - 每个客户：7 条 KI 片段（document_id = customerId）+ 客户实体 + 供应链对手方/关系；
 - 产出 CRM 主档夹具 gits-crm-customer-master.json（交付物 A，枚举/日期/金额内建校验）；
 - 可选 upsert 到 GITS（交付物 B）：--gits-base → PUT {GITS_BASE}/api/v1/engagement/customer/{id}；
@@ -21,12 +21,12 @@ import json
 import re as _re
 from pathlib import Path
 
-from dkws.application.publish import Publisher
-from dkws.application.projection import ProjectionBuilder
-from dkws.application.review import ReviewService
-from dkws.domain import hashing, timeutil
-from dkws.infrastructure import markdown
-from dkws.infrastructure.fs import WorkspaceWriter
+from kert.application.publish import Publisher
+from kert.application.projection import ProjectionBuilder
+from kert.application.review import ReviewService
+from kert.domain import hashing, timeutil
+from kert.infrastructure import markdown
+from kert.infrastructure.fs import WorkspaceWriter
 
 DOMAIN = "customer"
 SERVICE_ID = "customer_knowledge"
@@ -217,6 +217,99 @@ CUSTOMERS: list[dict] = [
             ("CUS-NE001", "华南新能源整车厂A", 220000000, 0.45, "up", "账期 30 天"),
             ("CUS-NE002", "华北新能源整车厂B", 130000000, 0.27, "flat", "账期 30 天"),
             ("CUS-NE003", "西部新能源整车厂C", 80000000, 0.16, "up", "账期 60 天"),
+        ],
+    },
+    {
+        "customerId": "CUST-CORP-0003",
+        "crm": {
+            "customerId": "CUST-CORP-0003",
+            "customerName": "北京绿源环保集团",
+            "customerShortName": "绿源环保",
+            "unifiedSocialCreditCode": "91110000MA1FL8XX5N",
+            "establishedDate": "2008-11-10",
+            "registeredCapitalCny": 100000000,
+            "industry": "ENERGY",
+            "region": "华北",
+            "enterpriseScale": "LARGE",
+            "customerTier": "KEY",
+            "relationshipSince": "2015-09-01",
+            "rmId": "RM-001",
+            "rmName": "张明远",
+            "managingBranch": "北京朝阳支行",
+            "groupFlag": True,
+            "listedStatus": "LISTED",
+            "riskLevel": "LOW",
+            "mainProducts": ["污水处理", "固废处理", "环境监测"],
+            "coreTags": ["环保", "PPP项目", "政府合作"],
+            "relationshipSummary": "重点集团客户，旗下5家子公司，环保行业龙头，PPP项目经验丰富（摘要与 KI-009 身份段一致，不含 KYC 缺口正文）。",
+        },
+        "segments": [
+            {
+                "ki": "KI-009", "title": "企业客户基本信息",
+                "content": (
+                    "北京绿源环保集团（统一社会信用代码 91110000MA1FL8XX5N，成立于 2008-11-10，"
+                    "注册资本 1 亿元）为华北地区大型环保集团，重点客户层级，2015-09-01 起与我行建立合作，"
+                    "管户客户经理 张明远（RM-001），管辖行北京朝阳支行。主营污水处理、固废处理与环境监测，"
+                    "旗下 5 家子公司，环保行业龙头，已上市，PPP 项目经验丰富，风险等级低。"),
+            },
+            {
+                "ki": "KI-FRONT-001", "title": "公司供应链图谱",
+                "content": (
+                    "上游供应商（按年采购额）：①北京碧水环保设备有限公司，年采购 6,500 万元、占比 32%、趋势上升、货到付款；"
+                    "②中冶京诚工程技术有限公司，年采购 5,200 万元、占比 26%、趋势持平、月结 60 天；"
+                    "③德国E+H集团（水质监测），年采购 3,800 万元、占比 19%、趋势上升、信用证结算。"
+                    "下游客户（按年收入）：①北京市水务局，年回款 2.4 亿元、占比 45%、趋势持平、财政拨款；"
+                    "②北京城市排水集团，年回款 1.6 亿元、占比 30%、趋势上升、账期 90 天；"
+                    "③北京首创环保集团，年回款 8,000 万元、占比 15%、趋势上升、账期 60 天。"
+                    "客户处于环保运营服务环节，上游设备供应商集中度 77%，下游以政府/国企客户为主，回款账期偏长。"),
+            },
+            {
+                "ki": "KI-FRONT-002", "title": "产业链八维研判",
+                "content": (
+                    "①产业链位置：环保运营服务中游，承上启下；②需求景气：双碳目标驱动环保需求上行，"
+                    "PPP 项目储备充足；③供给格局：环保设备供给充裕，价格竞争加剧；④竞争格局：水务处理细分头部集中，"
+                    "公司市占率约 15%；⑤政策环境：绿色金融与碳中和专项扶持；⑥技术演进：智慧水务/碳中和技术改造升级中；"
+                    "⑦替代威胁：环保运营资质壁垒高，替代风险低；⑧经营趋势：营收稳中有升，但政府回款账期拉长，现金流承压。"),
+            },
+            {
+                "ki": "KI-FRONT-003", "title": "行内变动行为",
+                "content": (
+                    "近 12 个月行内变动：①结算流水月均 1.2 亿元，同比 +12%，主要来自政府污水处理费回款；"
+                    "②现有项目贷款 3 亿元已提用 60%，出现绿色债券发行融资需求迹象；③6 月发生一笔 5,000 万元大额他行转入，"
+                    "用途待核实；④新增碳中和技术改造项目，计划投入 5 亿元；⑤授信项下无逾期、无欠息记录。"),
+            },
+            {
+                "ki": "KI-FRONT-004", "title": "事实承诺事项 / 沟通话术",
+                "content": (
+                    "近期沟通记录与承诺：①8 月拜访中集团财务总监口头承诺碳中和技术改造优先使用我行绿色信贷；"
+                    "②已递交绿色债券承销意向书；③行长会谈提出 PPP 项目贷款展期与供应链金融需求；"
+                    "④尚未签署任何正式承诺文件，以上均为意向层面。"),
+            },
+            {
+                "ki": "KI-FRONT-005", "title": "KYC 信息缺口",
+                "content": (
+                    "KYC 缺口：①PPP 项目投资总额口径不一致（客户口径 8 亿 vs 公开备案 5 亿）待核实；"
+                    "②旗下 5 家子公司经营状况与关联方清单未完整登记；③5,000 万元大额他行转入的资金用途待核实；"
+                    "④最新一期经审计财报未提供。"),
+            },
+            {
+                "ki": "KI-FRONT-006", "title": "产品候选组合",
+                "content": (
+                    "产品候选组合：①绿色债券承销（匹配 PPP 项目融资需求，拟发行 5 亿）；②技术改造贷款"
+                    "（匹配碳中和技术改造 5 亿投入）；③供应链金融（以政府付费权/运营收入为还款来源的应收账款保理）；"
+                    "④流动资金贷款增额（匹配政府回款账期拉长）；⑤并购贷（若推进固废处理横向并购）。"
+                    "匹配理由：环保龙头、绿色金融政策支持、PPP 项目储备充足。"),
+            },
+        ],
+        "suppliers": [  # 上游：环保设备/工程/监测
+            ("SUP-LV001", "北京碧水环保设备有限公司", 65000000, 0.32, "up", "货到付款"),
+            ("SUP-LV002", "中冶京诚工程技术有限公司", 52000000, 0.26, "flat", "月结 60 天"),
+            ("SUP-LV003", "德国E+H集团", 38000000, 0.19, "up", "信用证结算"),
+        ],
+        "customers": [  # 下游：政府/国企
+            ("CUS-LV001", "北京市水务局", 240000000, 0.45, "flat", "财政拨款"),
+            ("CUS-LV002", "北京城市排水集团", 160000000, 0.30, "up", "账期 90 天"),
+            ("CUS-LV003", "北京首创环保集团", 80000000, 0.15, "up", "账期 60 天"),
         ],
     },
 ]
@@ -509,7 +602,7 @@ def main() -> None:
     else:
         print("  [upsert] 未配置 --gits-base / GITS_BASE，仅提交交付物 A（夹具），未调用 GITS")
     print(f"  [customerId 变更清单] 本次新增/更新: {', '.join(info['customer_ids'])}")
-    from dkws.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
+    from kert.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
     b = KuzuGraphBuilder(ws, service_id=SERVICE_ID)
     fp = b.fingerprint_of(b._active_version())
     print(f"  Kùzu 图谱: {fp['nodes']} 节点 / {fp['edges']} 边（指纹 {fp['hash'][:12]}…）")

@@ -1,10 +1,10 @@
-# AGENTS.md — Leibniz-KERT / DKWS 开发代理指引
+# AGENTS.md — Leibniz-KERT / KERT 开发代理指引
 
 > 本文件是 Codebuddy、Cursor、DeepSeek-Harness 等 AI 代理在本仓库工作时的最高优先级开发规则入口。
 
 ## 1. 项目定位
 
-DKWS 是独立知识工程服务端，目标架构为 C′ 混合架构：
+KERT 是独立知识工程服务端，目标架构为 C′ 混合架构：
 
 - Python Core：唯一公共入口、控制面、知识/数据权威源
 - Java Skill Runtime：内部可替换执行器，不对外

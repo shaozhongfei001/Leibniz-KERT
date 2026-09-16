@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DKWS 持久化异步 Worker 入口（M2.4）。
+"""KERT 持久化异步 Worker 入口（M2.4）。
 
 从 SQLite Runtime Store 领取 Job 并执行，支持 lease 租约、指数退避重试、
 dead-letter 与优雅停机。状态权威在 SQLite，进程崩溃后可完整恢复。
@@ -22,11 +22,11 @@ dead-letter 与优雅停机。状态权威在 SQLite，进程崩溃后可完整�
     # 人工重放某个 dead-letter Job
     python scripts/run_worker.py --workspace ./workspace --requeue JOB-SKILL-20260827-0001
 
-环境变量（可替代命令行）：``DKWS_WORKER_ID`` / ``DKWS_WORKER_JOB_TYPES`` /
-``DKWS_WORKER_LEASE_SECONDS`` / ``DKWS_WORKER_POLL_INTERVAL`` /
-``DKWS_WORKER_RECLAIM_INTERVAL`` / ``DKWS_WORKER_MAX_JOBS`` /
-``DKWS_WORKER_BACKOFF_BASE`` / ``DKWS_WORKER_BACKOFF_FACTOR`` /
-``DKWS_WORKER_BACKOFF_MAX``。
+环境变量（可替代命令行）：``KERT_WORKER_ID`` / ``KERT_WORKER_JOB_TYPES`` /
+``KERT_WORKER_LEASE_SECONDS`` / ``KERT_WORKER_POLL_INTERVAL`` /
+``KERT_WORKER_RECLAIM_INTERVAL`` / ``KERT_WORKER_MAX_JOBS`` /
+``KERT_WORKER_BACKOFF_BASE`` / ``KERT_WORKER_BACKOFF_FACTOR`` /
+``KERT_WORKER_BACKOFF_MAX``。
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ if str(REPO / "src") not in sys.path:
 
 def build_parser() -> argparse.ArgumentParser:
     """构造命令行参数解析器。"""
-    ap = argparse.ArgumentParser(description="DKWS 持久化异步 Worker")
+    ap = argparse.ArgumentParser(description="KERT 持久化异步 Worker")
     ap.add_argument("--workspace", required=True, help="工作区根目录")
     ap.add_argument("--db", default=None,
                     help="数据库路径，默认 <workspace>/90_control/runtime/runtime.db")
@@ -75,7 +75,7 @@ def register_handlers(worker, workspace: Path, store) -> None:
         workspace: 工作区根目录。
         store: Runtime Store（注入 Service，使其感知持久化能力）。
     """
-    from dkws.application.skills import SkillExecutionService
+    from kert.application.skills import SkillExecutionService
 
     service = SkillExecutionService(workspace, runtime_store=store)
 
@@ -85,7 +85,7 @@ def register_handlers(worker, workspace: Path, store) -> None:
         skill_id = payload.get("skillId") or payload.get("skill_id")
         request = payload.get("request") or {}
         if not skill_id:
-            from dkws.infrastructure.worker import NonRetryableJobError
+            from kert.infrastructure.worker import NonRetryableJobError
             raise NonRetryableJobError("payload 缺少 skillId",
                                        error_code="MISSING_SKILL_ID")
         result = service.execute(skill_id, job.job_id, request)
@@ -101,8 +101,8 @@ def main() -> int:
         level=getattr(logging, args.log_level.upper(), logging.INFO),
         format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
-    from dkws.infrastructure.runtime_store import RuntimeStore
-    from dkws.infrastructure.worker import JobWorker, build_worker_config_from_env
+    from kert.infrastructure.runtime_store import RuntimeStore
+    from kert.infrastructure.worker import JobWorker, build_worker_config_from_env
 
     workspace = Path(args.workspace).resolve()
     db_path = (Path(args.db) if args.db

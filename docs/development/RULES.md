@@ -10,7 +10,7 @@
 
 - 不静默覆盖历史文档
 - 新增候选文件，登记 superseded
-- 所有冲突进入 `docs/governance/DKWS_DOCUMENT_CONFLICT_REGISTER.md`
+- 所有冲突进入 `docs/governance/KERT_DOCUMENT_CONFLICT_REGISTER.md`
 
 ## 测试纪律
 

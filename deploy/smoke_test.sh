@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# DKWS 冒烟测试脚本（M2.7）
+# KERT 冒烟测试脚本（M2.7）
 #
 # 快速验证部署是否可用：启动 → 健康检查 → 执行一个 Skill → 停止
 #
 # 前置条件：
 #   - Docker 与 docker compose 已安装
-#   - deploy/.env 已配置（至少 DKWS_API_KEYS）
+#   - deploy/.env 已配置（至少 KERT_API_KEYS）
 #
 # 用法：
 #   ./deploy/smoke_test.sh              # 完整冒烟测试
@@ -40,7 +40,7 @@ for arg in "$@"; do
 done
 
 echo "=========================================="
-echo "DKWS 冒烟测试"
+echo "KERT 冒烟测试"
 echo "=========================================="
 
 # ---------- 0. 前置检查 ----------
@@ -147,7 +147,7 @@ echo "[5/5] 执行 Skill 测试…"
 API_KEY=""
 if [ -f "$ENV_FILE" ]; then
     # 格式：key_id:secret:scope，取 secret
-    KEY_LINE=$(grep '^DKWS_API_KEYS=' "$ENV_FILE" | head -1 | cut -d= -f2-)
+    KEY_LINE=$(grep '^KERT_API_KEYS=' "$ENV_FILE" | head -1 | cut -d= -f2-)
     API_KEY=$(echo "$KEY_LINE" | cut -d',' -f1 | cut -d: -f2)
 fi
 
@@ -155,7 +155,7 @@ if [ -z "$API_KEY" ] || [ "$API_KEY" = "CHANGE_ME_AT_LEAST_16_CHARS" ]; then
     echo "  [SKIP] API Key 未配置真实值，跳过 Skill 执行测试"
 else
     # 尝试列出可用 Skill
-    SKILL_LIST_STATUS=$(curl -sS -o /tmp/dkws_skills.json -w "%{http_code}" \
+    SKILL_LIST_STATUS=$(curl -sS -o /tmp/kert_skills.json -w "%{http_code}" \
         -H "X-API-Key: $API_KEY" \
         "$API_URL/api/skill/list" 2>/dev/null || echo "000")
 
@@ -166,7 +166,7 @@ else
         FIRST_SKILL=$(python3 -c "
 import json, sys
 try:
-    data = json.load(open('/tmp/dkws_skills.json'))
+    data = json.load(open('/tmp/kert_skills.json'))
     items = data.get('data', {}).get('skills', [])
     if items:
         print(items[0].get('id', ''))

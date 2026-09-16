@@ -1,4 +1,4 @@
-# DKWS 部署指南
+# KERT 部署指南
 
 > 版本：0.1.0 | 适用平台：Linux / macOS
 
@@ -77,18 +77,18 @@ python3 -m venv --system-site-packages .venv
 ### 3. 验证安装
 
 ```bash
-.venv/bin/dkws --help
+.venv/bin/kert --help
 ```
 
 ---
 
 ## 配置
 
-DKWS 配置来源优先级（后者覆盖前者）：
+KERT 配置来源优先级（后者覆盖前者）：
 
 1. 代码内默认值
-2. 配置文件（JSON，路径由 `DKWS_CONFIG_FILE` 指定）
-3. 环境变量（`DKWS_*`）
+2. 配置文件（JSON，路径由 `KERT_CONFIG_FILE` 指定）
+3. 环境变量（`KERT_*`）
 4. 构造参数（显式覆盖，供测试使用）
 
 ### 环境变量
@@ -97,88 +97,88 @@ DKWS 配置来源优先级（后者覆盖前者）：
 
 | 环境变量 | 默认值 | 说明 |
 |----------|--------|------|
-| `DKWS_PROFILE` | `dev` | 运行 profile：`dev` 或 `prod` |
-| `DKWS_BIND_HOST` | `127.0.0.1` | API 监听地址 |
-| `DKWS_CONFIG_FILE` | — | JSON 配置文件路径 |
+| `KERT_PROFILE` | `dev` | 运行 profile：`dev` 或 `prod` |
+| `KERT_BIND_HOST` | `127.0.0.1` | API 监听地址 |
+| `KERT_CONFIG_FILE` | — | JSON 配置文件路径 |
 
 #### 认证配置
 
 | 环境变量 | 默认值 | 说明 |
 |----------|--------|------|
-| `DKWS_AUTH_ENABLED` | `false`（dev）/ 强制 `true`（prod） | 是否启用 API Key 认证 |
-| `DKWS_AUTH_HEADER` | `X-API-Key` | 认证请求头名称 |
-| `DKWS_API_KEY` | — | 单个 API Key（格式：`secret` 或 `key_id:secret` 或 `key_id:secret:scope1\|scope2`） |
-| `DKWS_API_KEYS` | — | 多个 API Key，逗号分隔 |
+| `KERT_AUTH_ENABLED` | `false`（dev）/ 强制 `true`（prod） | 是否启用 API Key 认证 |
+| `KERT_AUTH_HEADER` | `X-API-Key` | 认证请求头名称 |
+| `KERT_API_KEY` | — | 单个 API Key（格式：`secret` 或 `key_id:secret` 或 `key_id:secret:scope1\|scope2`） |
+| `KERT_API_KEYS` | — | 多个 API Key，逗号分隔 |
 
 #### 限流配置
 
 | 环境变量 | 默认值 | 说明 |
 |----------|--------|------|
-| `DKWS_RATE_LIMIT_ENABLED` | `false`（dev）/ 强制 `true`（prod） | 是否启用限流 |
-| `DKWS_RATE_LIMIT_RPM` | `600` | 每分钟请求上限 |
-| `DKWS_RATE_LIMIT_BURST` | `60` | 突发额度 |
+| `KERT_RATE_LIMIT_ENABLED` | `false`（dev）/ 强制 `true`（prod） | 是否启用限流 |
+| `KERT_RATE_LIMIT_RPM` | `600` | 每分钟请求上限 |
+| `KERT_RATE_LIMIT_BURST` | `60` | 突发额度 |
 
 #### 请求大小限制
 
 | 环境变量 | 默认值 | 说明 |
 |----------|--------|------|
-| `DKWS_SIZE_LIMIT_ENABLED` | `true` | 是否启用大小限制 |
-| `DKWS_MAX_REQUEST_BYTES` | `1048576`（1 MiB） | 请求体最大字节数 |
-| `DKWS_MAX_RESPONSE_BYTES` | `8388608`（8 MiB） | 响应体最大字节数 |
+| `KERT_SIZE_LIMIT_ENABLED` | `true` | 是否启用大小限制 |
+| `KERT_MAX_REQUEST_BYTES` | `1048576`（1 MiB） | 请求体最大字节数 |
+| `KERT_MAX_RESPONSE_BYTES` | `8388608`（8 MiB） | 响应体最大字节数 |
 
 #### 并发控制
 
 | 环境变量 | 默认值 | 说明 |
 |----------|--------|------|
-| `DKWS_CONCURRENCY_ENABLED` | `false` | 是否启用并发限制 |
-| `DKWS_MAX_IN_FLIGHT` | `32` | 最大在途请求数 |
-| `DKWS_CONCURRENCY_TIMEOUT` | `0.0` | 获取并发槽超时（秒） |
+| `KERT_CONCURRENCY_ENABLED` | `false` | 是否启用并发限制 |
+| `KERT_MAX_IN_FLIGHT` | `32` | 最大在途请求数 |
+| `KERT_CONCURRENCY_TIMEOUT` | `0.0` | 获取并发槽超时（秒） |
 
 #### Runtime Store（SQLite）
 
 | 环境变量 | 默认值 | 说明 |
 |----------|--------|------|
-| `DKWS_RUNTIME_STORE_ENABLED` | `false` | 是否启用运行态持久化 |
-| `DKWS_RUNTIME_STORE_PATH` | `<工作区>/90_control/runtime/runtime.db` | 数据库文件路径 |
-| `DKWS_RUNTIME_STORE_WAL` | `true` | 是否启用 WAL 模式 |
-| `DKWS_RUNTIME_STORE_BUSY_TIMEOUT_MS` | `5000` | SQLite 忙等超时（毫秒） |
-| `DKWS_IDEMPOTENCY_TTL_SECONDS` | `600` | 幂等记录保留时长（秒） |
+| `KERT_RUNTIME_STORE_ENABLED` | `false` | 是否启用运行态持久化 |
+| `KERT_RUNTIME_STORE_PATH` | `<工作区>/90_control/runtime/runtime.db` | 数据库文件路径 |
+| `KERT_RUNTIME_STORE_WAL` | `true` | 是否启用 WAL 模式 |
+| `KERT_RUNTIME_STORE_BUSY_TIMEOUT_MS` | `5000` | SQLite 忙等超时（毫秒） |
+| `KERT_IDEMPOTENCY_TTL_SECONDS` | `600` | 幂等记录保留时长（秒） |
 
 #### 可观测性
 
 | 环境变量 | 默认值 | 说明 |
 |----------|--------|------|
-| `DKWS_STRUCTURED_LOGS` | `false`（dev）/ `true`（prod） | 结构化 JSON 日志 |
-| `DKWS_LOG_LEVEL` | `INFO` | 日志级别 |
-| `DKWS_SERVICE_NAME` | `dkws-python-core` | 服务标识 |
-| `DKWS_METRICS_ENABLED` | `true` | 是否暴露 `/metrics` |
-| `DKWS_METRICS_REQUIRE_ADMIN` | `false` | `/metrics` 是否要求 admin 作用域 |
-| `DKWS_TRACING_ENABLED` | `true` | 是否启用追踪 |
-| `DKWS_TRACE_SAMPLE_RATIO` | `1.0` | 追踪采样率（0.0~1.0） |
-| `DKWS_OTEL_ENABLED` | `false` | 是否桥接 OpenTelemetry SDK |
-| `DKWS_READINESS_REQUIRE_STORE` | `true` | `/readyz` 是否检查 Store 连接 |
+| `KERT_STRUCTURED_LOGS` | `false`（dev）/ `true`（prod） | 结构化 JSON 日志 |
+| `KERT_LOG_LEVEL` | `INFO` | 日志级别 |
+| `KERT_SERVICE_NAME` | `kert-python-core` | 服务标识 |
+| `KERT_METRICS_ENABLED` | `true` | 是否暴露 `/metrics` |
+| `KERT_METRICS_REQUIRE_ADMIN` | `false` | `/metrics` 是否要求 admin 作用域 |
+| `KERT_TRACING_ENABLED` | `true` | 是否启用追踪 |
+| `KERT_TRACE_SAMPLE_RATIO` | `1.0` | 追踪采样率（0.0~1.0） |
+| `KERT_OTEL_ENABLED` | `false` | 是否桥接 OpenTelemetry SDK |
+| `KERT_READINESS_REQUIRE_STORE` | `true` | `/readyz` 是否检查 Store 连接 |
 
 #### 数据脱敏
 
 | 环境变量 | 默认值 | 说明 |
 |----------|--------|------|
-| `DKWS_REDACT_RESPONSE` | `false` | 是否脱敏 API 响应 |
-| `DKWS_REDACT_RESPONSE_TEXT` | `false` | 是否掩码响应中的自由文本 |
-| `DKWS_REDACT_THRESHOLD` | `RESTRICTED` | 响应脱敏分类阈值 |
-| `DKWS_LLM_REDACTION` | `true` | 是否在 LLM 提示词出站前脱敏 |
-| `DKWS_REDACT_LOGS` | `true` | 是否对结构化日志字段脱敏 |
+| `KERT_REDACT_RESPONSE` | `false` | 是否脱敏 API 响应 |
+| `KERT_REDACT_RESPONSE_TEXT` | `false` | 是否掩码响应中的自由文本 |
+| `KERT_REDACT_THRESHOLD` | `RESTRICTED` | 响应脱敏分类阈值 |
+| `KERT_LLM_REDACTION` | `true` | 是否在 LLM 提示词出站前脱敏 |
+| `KERT_REDACT_LOGS` | `true` | 是否对结构化日志字段脱敏 |
 
 #### LLM 适配器（Skill 平台）
 
 | 环境变量 | 默认值 | 说明 |
 |----------|--------|------|
-| `DKWS_LLM_BASE_URL` | — | OpenAI 兼容 API 地址 |
-| `DKWS_LLM_API_KEY` | — | API 密钥 |
-| `DKWS_LLM_MODEL` | — | 模型名称（如 `deepseek-chat`） |
+| `KERT_LLM_BASE_URL` | — | OpenAI 兼容 API 地址 |
+| `KERT_LLM_API_KEY` | — | API 密钥 |
+| `KERT_LLM_MODEL` | — | 模型名称（如 `deepseek-chat`） |
 
 ### 配置文件
 
-通过 `DKWS_CONFIG_FILE` 指定 JSON 配置文件路径。示例：
+通过 `KERT_CONFIG_FILE` 指定 JSON 配置文件路径。示例：
 
 ```json
 {
@@ -220,10 +220,10 @@ DKWS 配置来源优先级（后者覆盖前者）：
 
 ```bash
 # 初始化工作区
-.venv/bin/dkws init --workspace /path/to/workspace --force
+.venv/bin/kert init --workspace /path/to/workspace --force
 
 # 校验工作区
-.venv/bin/dkws validate --workspace /path/to/workspace --mode full
+.venv/bin/kert validate --workspace /path/to/workspace --mode full
 ```
 
 ### HTTP API 模式（可选薄层）
@@ -236,12 +236,12 @@ DKWS 配置来源优先级（后者覆盖前者）：
 ### 生产启动示例
 
 ```bash
-export DKWS_PROFILE=prod
-export DKWS_AUTH_ENABLED=true
-export DKWS_API_KEYS="admin:your-secure-key-at-least-16-chars:admin|read|execute"
-export DKWS_RATE_LIMIT_ENABLED=true
-export DKWS_RUNTIME_STORE_ENABLED=true
-export DKWS_STRUCTURED_LOGS=true
+export KERT_PROFILE=prod
+export KERT_AUTH_ENABLED=true
+export KERT_API_KEYS="admin:your-secure-key-at-least-16-chars:admin|read|execute"
+export KERT_RATE_LIMIT_ENABLED=true
+export KERT_RUNTIME_STORE_ENABLED=true
+export KERT_STRUCTURED_LOGS=true
 
 .venv/bin/python examples/product_demo/serve_api.py \
   --workspace /path/to/workspace --port 8100
@@ -256,7 +256,7 @@ export DKWS_STRUCTURED_LOGS=true
 ### 构建镜像
 
 ```bash
-docker build -f deploy/Dockerfile -t dkws:latest .
+docker build -f deploy/Dockerfile -t kert:latest .
 ```
 
 ### Docker Compose
@@ -272,13 +272,13 @@ docker compose up -d
 
 ## Systemd 部署
 
-项目提供 `deploy/dkws.service` 模板：
+项目提供 `deploy/kert.service` 模板：
 
 ```bash
-sudo cp deploy/dkws.service /etc/systemd/system/
+sudo cp deploy/kert.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable dkws
-sudo systemctl start dkws
+sudo systemctl enable kert
+sudo systemctl start kert
 ```
 
 编辑 service 文件中的 `WorkingDirectory`、`ExecStart`、环境变量等参数。
@@ -287,11 +287,11 @@ sudo systemctl start dkws
 
 ## 生产安全清单
 
-生产 profile（`DKWS_PROFILE=prod`）强制以下安全控制，缺失则 fail-fast：
+生产 profile（`KERT_PROFILE=prod`）强制以下安全控制，缺失则 fail-fast：
 
-- [x] API Key 认证已启用（`DKWS_AUTH_ENABLED=true`）
+- [x] API Key 认证已启用（`KERT_AUTH_ENABLED=true`）
 - [x] 至少配置一个有效 API Key（>= 16 字符）
-- [x] 限流已启用（`DKWS_RATE_LIMIT_ENABLED=true`）
+- [x] 限流已启用（`KERT_RATE_LIMIT_ENABLED=true`）
 - [x] 请求体大小限制已启用
 - [x] 对外监听时（非 127.0.0.1）禁止匿名访问
 - [x] LLM 提示词出站脱敏已启用（默认开启）
@@ -303,13 +303,13 @@ sudo systemctl start dkws
 
 ### 1. `ConfigError: 生产 profile 必须启用 API Key 认证`
 
-**原因**：`DKWS_PROFILE=prod` 但未配置认证。
+**原因**：`KERT_PROFILE=prod` 但未配置认证。
 
 **解决**：
 
 ```bash
-export DKWS_AUTH_ENABLED=true
-export DKWS_API_KEYS="your-secure-key-at-least-16-chars"
+export KERT_AUTH_ENABLED=true
+export KERT_API_KEYS="your-secure-key-at-least-16-chars"
 ```
 
 ### 2. `ConfigError: API Key 'xxx' 长度不足 16 字符`
@@ -331,16 +331,16 @@ export DKWS_API_KEYS="your-secure-key-at-least-16-chars"
 **解决**：Skill 平台未配置 LLM 时自动回退到确定性适配器。如需 LLM 能力：
 
 ```bash
-export DKWS_LLM_BASE_URL=https://api.deepseek.com
-export DKWS_LLM_API_KEY=your-api-key
-export DKWS_LLM_MODEL=deepseek-chat
+export KERT_LLM_BASE_URL=https://api.deepseek.com
+export KERT_LLM_API_KEY=your-api-key
+export KERT_LLM_MODEL=deepseek-chat
 ```
 
 ### 5. Kùzu 图查询失败
 
 **原因**：Kùzu 不可用或图未构建。
 
-**解决**：运行 `dkws build-projection` 构建图谱投影。Kùzu 不可用时自动回退内存 BFS（fail-open）。
+**解决**：运行 `kert build-projection` 构建图谱投影。Kùzu 不可用时自动回退内存 BFS（fail-open）。
 
 ### 6. 工作区校验失败
 
@@ -349,13 +349,13 @@ export DKWS_LLM_MODEL=deepseek-chat
 **解决**：
 
 ```bash
-.venv/bin/dkws validate --workspace W --mode full
+.venv/bin/kert validate --workspace W --mode full
 ```
 
-查看具体错误信息，必要时用 `dkws init --force` 重建目录结构。
+查看具体错误信息，必要时用 `kert init --force` 重建目录结构。
 
 ### 7. SQLite Runtime Store 锁定
 
 **原因**：并发写入或前次进程异常退出。
 
-**解决**：检查 `DKWS_RUNTIME_STORE_BUSY_TIMEOUT_MS` 设置（默认 5000ms），或删除 WAL/SHM 文件后重启。
+**解决**：检查 `KERT_RUNTIME_STORE_BUSY_TIMEOUT_MS` 设置（默认 5000ms），或删除 WAL/SHM 文件后重启。

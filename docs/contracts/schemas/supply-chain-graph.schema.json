@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://dkws.local/contracts/schemas/supply-chain-graph.schema.json",
+  "$id": "https://kert.local/contracts/schemas/supply-chain-graph.schema.json",
   "title": "SupplyChainGraphResult",
   "type": "object",
   "required": [

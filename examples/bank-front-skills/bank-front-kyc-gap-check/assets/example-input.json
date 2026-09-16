@@ -1,7 +1,9 @@
 {
   "customerId": "HZB0000001234",
+  "upstreamStatus": "SUCCESS",
   "conflicts": [
     {
+      "id": "CFL-001",
       "issue": "用电量同比+30%，但近半年营收同比-5%",
       "ruleId": "RUL-FRONT-001-003"
     }

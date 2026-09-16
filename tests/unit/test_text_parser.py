@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.infrastructure.adapters.text_parser import (
+from kert.infrastructure.adapters.text_parser import (
     CsvTextParserAdapter,
     TextParserAdapter,
 )

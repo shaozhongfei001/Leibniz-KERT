@@ -7,9 +7,9 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
-from dkws.api.server import create_app
-from dkws.infrastructure.observability import get_metrics_registry
-from dkws.infrastructure.runtime_config import (
+from kert.api.server import create_app
+from kert.infrastructure.observability import get_metrics_registry
+from kert.infrastructure.runtime_config import (
     DEFAULT_EXEMPT_PATHS,
     ApiKeyRecord,
     AuthConfig,
@@ -191,16 +191,16 @@ class TestMetricsEndpoint:
         client = _client(ws)
         client.get("/livez")
         body = client.get("/metrics").text
-        assert 'dkws_http_requests_total{method="GET",path="/livez",status="200"}' in body
+        assert 'kert_http_requests_total{method="GET",path="/livez",status="200"}' in body
 
     def test_metrics_records_latency_histogram(self, ws):
         """延迟直方图含桶、计数与总和。"""
         client = _client(ws)
         client.get("/livez")
         body = client.get("/metrics").text
-        assert "dkws_http_request_duration_seconds_bucket" in body
-        assert "dkws_http_request_duration_seconds_count" in body
-        assert "dkws_http_request_duration_seconds_sum" in body
+        assert "kert_http_request_duration_seconds_bucket" in body
+        assert "kert_http_request_duration_seconds_count" in body
+        assert "kert_http_request_duration_seconds_sum" in body
 
     def test_metrics_uses_route_template_not_raw_path(self, ws):
         """路径标签使用路由模板，避免路径参数造成高基数。"""
@@ -216,7 +216,7 @@ class TestMetricsEndpoint:
         client = _client(ws, _auth_cfg())
         client.get("/v1/catalog")  # 无密钥 → 401
         body = client.get("/metrics").text
-        assert "dkws_http_client_errors_total" in body
+        assert "kert_http_client_errors_total" in body
 
     def test_metrics_observable_for_rejected_requests(self, ws):
         """被认证拦截的请求同样产生指标（可观测性无盲区）。"""
@@ -228,9 +228,9 @@ class TestMetricsEndpoint:
     def test_metrics_reports_queue_gauges(self, ws):
         """启用 Store 时暴露队列深度指标。"""
         body = _client(ws, _store_cfg()).get("/metrics").text
-        assert "dkws_job_queue_claimable" in body
-        assert "dkws_job_queue_dead_letter" in body
-        assert "dkws_job_queue_expired_leases" in body
+        assert "kert_job_queue_claimable" in body
+        assert "kert_job_queue_dead_letter" in body
+        assert "kert_job_queue_expired_leases" in body
 
     def test_metrics_reports_job_status_counts(self, ws):
         """按状态暴露 Job 计数。"""
@@ -239,17 +239,17 @@ class TestMetricsEndpoint:
         app.state.runtime_store.create_job("J1", "SKILL")
         client = TestClient(app, raise_server_exceptions=False)
         body = client.get("/metrics").text
-        assert 'dkws_job_status_count{status="PENDING"} 1' in body
+        assert 'kert_job_status_count{status="PENDING"} 1' in body
 
     def test_metrics_reports_build_info(self, ws):
         """暴露构建信息，便于版本核对。"""
         body = _client(ws).get("/metrics").text
-        assert "dkws_build_info" in body
+        assert "kert_build_info" in body
         assert 'profile="dev"' in body
 
     def test_metrics_reports_uptime(self, ws):
         """暴露进程运行时长。"""
-        assert "dkws_process_uptime_seconds" in _client(ws).get("/metrics").text
+        assert "kert_process_uptime_seconds" in _client(ws).get("/metrics").text
 
     def test_metrics_can_be_disabled(self, ws):
         """关闭后返回 404。"""

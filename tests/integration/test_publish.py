@@ -5,15 +5,15 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.application.extract import KnowledgeExtractor
-from dkws.application.ingest import Ingestor
-from dkws.application.parse_doc import DocumentParserService
-from dkws.application.publish import Publisher
-from dkws.application.review import ReviewService
-from dkws.application.rollback import RollbackService
-from dkws.domain.contracts import specs
-from dkws.domain.contracts.base import validate_contract
-from dkws.domain.errors import QualityGateError
+from kert.application.extract import KnowledgeExtractor
+from kert.application.ingest import Ingestor
+from kert.application.parse_doc import DocumentParserService
+from kert.application.publish import Publisher
+from kert.application.review import ReviewService
+from kert.application.rollback import RollbackService
+from kert.domain.contracts import specs
+from kert.domain.contracts.base import validate_contract
+from kert.domain.errors import QualityGateError
 
 
 @pytest.fixture
@@ -55,7 +55,7 @@ class TestPublish:
         for item in fm["asset_manifest"]:
             p = version_dir / item["path"]
             assert p.is_file()
-            from dkws.domain import hashing
+            from kert.domain import hashing
             assert hashing.md_semantic_sha256(p.read_text(encoding="utf-8")) == item["sha256"]
 
     def test_publish_sets_current_pointer(self, approved_set):
@@ -107,7 +107,7 @@ class TestPublish:
                 continue
             text = f.read_text(encoding="utf-8")
             schema = validate_contract(text, specs.get_spec(
-                __import__("dkws.infrastructure.markdown", fromlist=["parse_contract_md"])
+                __import__("kert.infrastructure.markdown", fromlist=["parse_contract_md"])
                 .parse_contract_md(text).front_matter.get("schema", ""))).front_matter.get("schema")
             rv = validate_contract(text, specs.get_spec(schema), path=f.name)
             assert rv.ok, (f.name, rv.errors)
@@ -140,7 +140,7 @@ class TestRollback:
     def test_rollback_to_missing_version_rejected(self, approved_set):
         ws = approved_set["ws"]
         Publisher(ws).publish("product", run_id=approved_set["run_id"])
-        from dkws.domain.errors import VersionNotFoundError
+        from kert.domain.errors import VersionNotFoundError
 
         with pytest.raises(VersionNotFoundError):
             RollbackService(ws).rollback("CORE_DOMAIN", "product", "1999.01.01.9",

@@ -1,0 +1,18 @@
+{
+  "packageId": "RULEPKG-PROD-CM-001",
+  "productId": "PROD-CM-001",
+  "assetId": "ASSET-KNOW-PRODUCT-RULES",
+  "version": "0.1.0",
+  "status": "NOT_BUILT",
+  "provenanceState": "DEMO",
+  "rules": [],
+  "expectedRules": [
+    "PRODUCT_VERSION_ACTIVE",
+    "CANDIDATE_NOT_APPROVAL",
+    "ELIGIBILITY_HARD_FILTER",
+    "PORTFOLIO_CONFLICT_CHECK"
+  ],
+  "failurePolicy": "FAIL_CLOSED",
+  "notice": "空规则包：不得据此判定任何准入或适配结论；依赖方必须受控失败，不得退化为模型推断或本地兜底。规则内容须由产品管理部与风险部共同签署后方可置为 BUILT。",
+  "updatedAt": "2026-09-07"
+}

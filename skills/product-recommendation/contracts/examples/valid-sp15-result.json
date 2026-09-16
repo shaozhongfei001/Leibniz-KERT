@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "1.0.0",
+  "runId": "REC-20260831-0001",
+  "skillId": "SP-15",
+  "skillVersion": "2.0.0-candidate",
+  "productKnowledgeSnapshotRef": "PKS-20260831-0001",
+  "ruleExecutionRef": "RULE-RUN-20260831-0001",
+  "evidenceBundleId": "EVB-20260831-0001",
+  "contentHash": "sha256:9f2c1e3a7b6d4f0a8c5e2b1d3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a",
+  "traceId": "TRACE-20260831-0001",
+  "eligibilityResults": [
+    {
+      "productId": "PROD-FIN-WC-001",
+      "productVersion": "2.2",
+      "eligibility": "ELIGIBLE",
+      "ruleResults": [
+        {
+          "ruleId": "PR-VALID-001",
+          "ruleVersion": "1.3",
+          "result": "PASS",
+          "reasonCode": "PRODUCT_VERSION_ACTIVE",
+          "inputFactRefs": ["FACT-PROD-001"],
+          "evidenceRefs": ["EV-PROD-001"]
+        },
+        {
+          "ruleId": "PR-ELIG-001",
+          "ruleVersion": "1.3",
+          "result": "PASS",
+          "reasonCode": "CUSTOMER_TYPE_ALLOWED",
+          "inputFactRefs": ["FACT-CUST-001"],
+          "evidenceRefs": ["EV-CUST-001"]
+        },
+        {
+          "ruleId": "PR-REG-001",
+          "ruleVersion": "2.0",
+          "result": "PASS",
+          "reasonCode": "INDUSTRY_NOT_PROHIBITED",
+          "inputFactRefs": ["FACT-CUST-002"],
+          "evidenceRefs": ["EV-REG-001"]
+        }
+      ],
+      "unknowns": [],
+      "reviewRequirements": []
+    }
+  ],
+  "fitResults": [
+    {
+      "productId": "PROD-FIN-WC-001",
+      "productVersion": "2.2",
+      "rank": 1,
+      "fitScore": 0.82,
+      "dimensionMatches": [
+        {
+          "dimension": "CORE_NEED_FIT",
+          "result": "STRONG",
+          "rationale": "补充流动资金需求与产品核心用途一致",
+          "evidenceRefs": ["EV-NEED-001"]
+        },
+        {
+          "dimension": "BUSINESS_SCENARIO_FIT",
+          "result": "MODERATE",
+          "rationale": "制造业采购结算场景匹配",
+          "evidenceRefs": ["EV-FACT-001"]
+        }
+      ],
+      "matchedNeeds": [
+        {
+          "needId": "NEED-001",
+          "needStatus": "VERIFIED_FACT",
+          "evidenceRefs": ["EV-NEED-001"]
+        }
+      ],
+      "recommendationReasons": [
+        {
+          "text": "流动资金贷款产品能力覆盖客户补充营运资金需求",
+          "evidenceRefs": ["EV-NEED-001", "EV-PROD-001"],
+          "sourceType": "FACT"
+        }
+      ],
+      "conditions": ["需提供近一年财务报表"],
+      "materialGaps": ["尚未取得最新审计报告"],
+      "riskNotes": ["额度与定价以审批为准"],
+      "salesBoundaries": ["不得承诺利率与额度"]
+    }
+  ],
+  "portfolioCandidates": [
+    {
+      "portfolioId": "PORT-001",
+      "primaryProduct": {
+        "productId": "PROD-FIN-WC-001",
+        "productVersion": "2.2",
+        "role": "PRIMARY",
+        "servedNeedId": "NEED-001"
+      },
+      "supportingProducts": [],
+      "dependencies": [],
+      "conflicts": [],
+      "recommendationCategory": "IMMEDIATE_COMMUNICATE"
+    }
+  ],
+  "needProfile": [
+    {
+      "needId": "NEED-001",
+      "needStatus": "VERIFIED_FACT",
+      "evidenceRefs": ["EV-NEED-001"]
+    }
+  ],
+  "unknowns": [],
+  "conflicts": [],
+  "generatedAt": "2026-08-31T09:00:00+08:00"
+}

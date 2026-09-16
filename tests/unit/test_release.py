@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from dkws.infrastructure.release import (
+from kert.infrastructure.release import (
     ReleaseManifest,
     build_release_manifest,
     collect_version_map,
@@ -132,7 +132,7 @@ class TestReleaseManifest:
     def test_dirty_workspace_warned(self, monkeypatch):
         """工作区有未提交变更时明确警示不应用于生产。"""
         monkeypatch.setattr(
-            "dkws.infrastructure.release.git_anchor",
+            "kert.infrastructure.release.git_anchor",
             lambda repo: {"available": True, "commit": "a" * 40,
                           "short_commit": "a" * 12, "branch": "x", "tag": None,
                           "dirty": True, "dirty_file_count": 3,
@@ -142,7 +142,7 @@ class TestReleaseManifest:
 
     def test_missing_git_warned(self, monkeypatch):
         """git 不可用时警示可追溯性受限。"""
-        monkeypatch.setattr("dkws.infrastructure.release.git_anchor",
+        monkeypatch.setattr("kert.infrastructure.release.git_anchor",
                             lambda repo: {"available": False, "note": "n/a"})
         joined = " ".join(build_release_manifest(REPO_ROOT).notes)
         assert "可追溯性受限" in joined
@@ -150,7 +150,7 @@ class TestReleaseManifest:
     def test_as_dict_has_schema(self):
         """含 schema 标识便于版本演进。"""
         data = build_release_manifest(REPO_ROOT).as_dict()
-        assert data["schema"] == "dkws_release_manifest/v1"
+        assert data["schema"] == "kert_release_manifest/v1"
 
     def test_write_manifest(self, tmp_path):
         """清单可写出且含指纹。"""

@@ -9,12 +9,12 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.application.jobs import JobController
-from dkws.application.skills import SkillExecutionService
-from dkws.domain.errors import ConflictError
-from dkws.infrastructure.fs import WorkspaceWriter
-from dkws.infrastructure.runtime_store import RuntimeStore
-from dkws.infrastructure.worker import JobWorker, WorkerConfig
+from kert.application.jobs import JobController
+from kert.application.skills import SkillExecutionService
+from kert.domain.errors import ConflictError
+from kert.infrastructure.fs import WorkspaceWriter
+from kert.infrastructure.runtime_store import RuntimeStore
+from kert.infrastructure.worker import JobWorker, WorkerConfig
 
 SKILL_ID = "skill-customer-outreach-script"
 SKILL_REQUEST = {"customerId": "CUST-CORP-0001"}

@@ -1,0 +1,247 @@
+{
+  "evidenceCount": 10,
+  "evidenceSpans": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCCM003-64330450",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0001",
+      "locator": {
+        "clause": "第一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "为规范集团客户资金集中管理的风险识别、计量与控制，防范集团授信联动风险与资金混同风险，制定本政策。",
+      "quoteHash": "643304501f1c0bd904a043b750630620100c244a82635f9e583e7eb73bb76bf7",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM003-79cdb73c",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0002",
+      "locator": {
+        "clause": "第二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本政策适用于纳入 DEMO-BANK 现金池管理的集团客户及其成员单位。",
+      "quoteHash": "79cdb73c13bf3ae0c7fca055af7d8e775288a9eefdc3ab9d39e1d795fdee96ac",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM003-969d8e2e",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0004",
+      "locator": {
+        "clause": "第四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "集团客户本部内部评级不低于 BBB 级；成员单位中评级低于 B 级的数量占比不得超过百分之三十。",
+      "quoteHash": "969d8e2eafa416e5b0c31b5987780fe5286335df5a5d1d39b18d9c4678d27cab",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM003-4302d512",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0006",
+      "locator": {
+        "clause": "第六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "集团现金池主账户每日最低留存余额为人民币 100 万元，高于单一客户现金池标准，以覆盖集团层面的流动性缓冲需求。",
+      "quoteHash": "4302d512dfad5b826d944b9ece5e16b6bdbe286f9bb13ebd49cf259b85e4fa81",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCCM003-b5a418a0",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0010",
+      "locator": {
+        "clause": "第十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "成员单位之间的资金往来应当建立风险隔离安排，单一成员单位的违约不得直接触发其他成员单位的自动代偿。",
+      "quoteHash": "b5a418a03df0b8be9c3c082ed3323efb95e434a91c46f68ef8d75e6557110937",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCCM003-60ccb5f3",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0011",
+      "locator": {
+        "clause": "第十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "集团客户出现重大信用风险事件的，本行有权暂停资金归集并要求成员单位账户独立管理。",
+      "quoteHash": "60ccb5f39182dd864500acd3609687a64a259e7df4cf96e9e2aefb503bcf32f9",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-SRCCM003-bfb3c6a3",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0012",
+      "locator": {
+        "clause": "第十二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "集团客户资金集中管理应当符合《现金管理暂行条例》及人民币银行结算账户管理相关规定，落实客户身份识别与受益所有人识别要求。",
+      "quoteHash": "bfb3c6a36d1bedb967b9b7336c76ef2bffba59c9b5530796ae7c8a6a6903a63a",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-SRCCM003-34fa3fbd",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0013",
+      "locator": {
+        "clause": "第十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "涉及跨境资金集中管理的，还应当符合跨境人民币结算与外汇管理的相关规定，履行真实性审核与报送义务。",
+      "quoteHash": "34fa3fbd644ffcde62cd4e9388825e6f2f9fcb4df62cffa37e1409fc26a71fe4",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCCM003-3c17e702",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0014",
+      "locator": {
+        "clause": "第十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "经办行应当按季度对集团客户资金集中管理情况开展风险排查，并形成书面报告报一级分行风险管理部。",
+      "quoteHash": "3c17e7022ebaa8ad052dfbc7fe5f8124b48431e342aae1e5f3e57e6f90fe0271",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCCM003-73d3c0c7",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM003-0015",
+      "locator": {
+        "clause": "第十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本政策由 DEMO-BANK 风险管理部负责解释，自发布之日起施行。",
+      "quoteHash": "73d3c0c73eff15fde8f93ac17db9d690df2172f752d611c55ab5d4c1262c6a3b",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29",
+      "sourceId": "SRC-CM-003",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-003.DEMO.md",
+      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1",
+      "usage": "AUTHORITATIVE"
+    }
+  ],
+  "sourceId": "SRC-CM-003",
+  "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+}

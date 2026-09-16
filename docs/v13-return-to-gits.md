@@ -1,14 +1,14 @@
-# v1.3 回传 GITS 交付包（DKWS 侧）
+# v1.3 回传 GITS 交付包（KERT 侧）
 
 > 日期：2026-08-22 ｜ 版本：v1.3 数据所有权 ｜ 主联调客户：`CUST-CORP-0001` 华东精工装备集团有限公司
 
 ## 1. 契约修订说明
 
 ### 1.1 evidence 语义（R1 / 供应链图谱 Skill）
-- `phase=evidence` 的 `ok`/`skipped` **只反映 DKWS 客户知识库**（`customer_knowledge` 服务投影）对
+- `phase=evidence` 的 `ok`/`skipped` **只反映 KERT 客户知识库**（`customer_knowledge` 服务投影）对
   该 `customerId` + `kiId` 是否取到数。
 - 已删除文案：「已使用 request.knowledgeContext / structuredFacts.profile」等；现有文案
-  `读取知识条目 KI-xxx（…），取数完成：DKWS 知识库命中` 与 `知识库无该客户/KI 数据，标记待核实（skipped）`。
+  `读取知识条目 KI-xxx（…），取数完成：KERT 知识库命中` 与 `知识库无该客户/KI 数据，标记待核实（skipped）`。
 - 请求里没有 `structuredFacts`/`knowledgeContext`/`supplyChainMarkdown` **不会**导致 skipped；
   旧字段如仍传入将被忽略（不参与判定）。
 - 库无该客户或该 KI → `skipped`（待核实），不编造成功；`assemblyTrace` 仅为 Debug。
@@ -21,7 +21,7 @@
 
 ### 1.3 R1 `data.sections` 按 KI 出章
 - 每个命中的 KI 一节：`heading` 含 KI 编号与稳定标题（如 `KI-009 企业客户基本信息`），`content` 为库中原文。
-- 未命中的 KI 不出节（不凑假正文）。gits 按 heading 对位展示，**不解析 DKWS HTML 报告页**。
+- 未命中的 KI 不出节（不凑假正文）。gits 按 heading 对位展示，**不解析 KERT HTML 报告页**。
 
 ### 1.4 无新证据策略（保留）
 - R1 未传 `evidenceTimestamp` → `exit_policy_no_new_evidence`；
@@ -30,7 +30,7 @@
 
 ## 2. 交付物 A — CRM 客户主档夹具
 
-路径：`docs/dd/gits-crm-customer-master.json`（DKWS 源：`dkws/examples/output/gits-crm-customer-master.json`）
+路径：`docs/dd/gits-crm-customer-master.json`（KERT 源：`kert/examples/output/gits-crm-customer-master.json`）
 
 - 本次新增/变更的 customerId 清单：**`CUST-CORP-0001`（新增）、`CUST-CORP-0002`（新增，华东新能源汽车有限公司，为 0001 的关键下游客户，演示跨客户上下游链）**
 - 字段约束已内建校验（枚举/日期 YYYY-MM-DD/金额人民币元整数/字符串数组），写中文会直接校验失败：
@@ -44,7 +44,7 @@
 | 项 | 状态 |
 |---|---|
 | 目标接口 | `PUT {GITS_BASE}/api/v1/engagement/customer/{customerId}`，Body = 单条客户对象，语义 = 按 customerId upsert；Header `X-API-KEY`（可选） |
-| DKWS 造数脚本 | 已接入：`scripts/seed_customer_knowledge.py --gits-base <URL> [--api-key <KEY>]`（或环境变量 `GITS_BASE` / `GITS_API_KEY`） |
+| KERT 造数脚本 | 已接入：`scripts/seed_customer_knowledge.py --gits-base <URL> [--api-key <KEY>]`（或环境变量 `GITS_BASE` / `GITS_API_KEY`） |
 | 幂等 | 是（PUT upsert；脚本可重复执行，每次生成新 run_id 落库 + 重放 upsert） |
 | 失败策略 | upsert 任一失败仅告警，**不阻断造数**（GITS upsert 未发布/不可达时，造数与交付物 A 照常完成） |
 | 当前调用 | **未调用**（本次运行未配置 `--gits-base`，仅产出夹具 + customerId 清单） |
@@ -95,17 +95,17 @@ GITS_BASE=http://172.22.90.134:8080 GITS_API_KEY=<key> \
       { "heading": "KI-FRONT-005 KYC 信息缺口", "content": "KYC 缺口…" },
       { "heading": "KI-FRONT-006 产品候选组合", "content": "产品候选组合…" }
     ],
-    "evidenceRefs": [ { "id": "KI-009", "summary": "企业客户基本信息（DKWS 知识库）" }, "…" ],
+    "evidenceRefs": [ { "id": "KI-009", "summary": "企业客户基本信息（KERT 知识库）" }, "…" ],
     "reportUrl": "/api/skill/report/return-sample-0001"
   },
   "errors": [],
   "assemblyTrace": [
     { "phase": "resolve", "status": "ok", "message": "skillId=skill-customer-previsit-report requestId=return-sample-0001" },
     { "phase": "evidence", "status": "ok", "message": "进入知识地图 KM-CORP-RM-PREVISIT，任务 PRE_VISIT_PREPARATION" },
-    { "phase": "evidence", "status": "ok", "kiId": "KI-009", "message": "读取知识条目 KI-009（企业客户基本信息），取数完成：DKWS 知识库命中" },
-    { "phase": "evidence", "status": "ok", "kiId": "KI-FRONT-001", "message": "读取知识条目 KI-FRONT-001（公司供应链图谱），取数完成：DKWS 知识库命中" },
+    { "phase": "evidence", "status": "ok", "kiId": "KI-009", "message": "读取知识条目 KI-009（企业客户基本信息），取数完成：KERT 知识库命中" },
+    { "phase": "evidence", "status": "ok", "kiId": "KI-FRONT-001", "message": "读取知识条目 KI-FRONT-001（公司供应链图谱），取数完成：KERT 知识库命中" },
     "…（KI-FRONT-002～006 同 ok）…",
-    { "phase": "dkws", "status": "ok", "message": "DKWS 客户知识库检索完成（CUST-CORP-0001 命中 7 条 KI）" },
+    { "phase": "kert", "status": "ok", "message": "KERT 客户知识库检索完成（CUST-CORP-0001 命中 7 条 KI）" },
     { "phase": "model", "status": "ok", "message": "模型调用完成" },
     { "phase": "compose", "status": "ok", "message": "结果组装完成" }
   ],
@@ -127,7 +127,7 @@ GITS_BASE=http://172.22.90.134:8080 GITS_API_KEY=<key> \
 `interpretation` 含 supplyChainPosition / bargainingPower / concentrationRisk / keyChanges / overallAssessment /
 followUpQuestions / confidence，`modelCalls[0].model = "library"`（确定性库构建，非 LLM）。
 
-## 7. 验收对照（DKWS 已自测通过）
+## 7. 验收对照（KERT 已自测通过）
 - ✅ 仅 customerId + evidenceTimestamp 调 R1：evidence 7/7 ok 与库一致；message 不提 request.structuredFacts
 - ✅ sections heading 可对位 KI-009 / KI-FRONT-001～006
 - ✅ 仅 customerId 调图谱：result 来自平台库（complete 7 节点/6 边；未知客户 partial 空图不虚构）

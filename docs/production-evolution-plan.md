@@ -1,13 +1,13 @@
-# DKWS 生产级平台演进设计（Production Evolution Plan）
+# KERT 生产级平台演进设计（Production Evolution Plan）
 
 > 2026-08-26 状态更新：本文件为 V1 历史候选，已由
-> `docs/architecture/DKWS_PRODUCTION_EVOLUTION_PLAN_V2_CANDIDATE.md` 替代为当前候选。
+> `docs/architecture/KERT_PRODUCTION_EVOLUTION_PLAN_V2_CANDIDATE.md` 替代为当前候选。
 > 保留本文件用于追溯，不删除。
 
 
 > 版本：2026-08-26
 > 状态：待评审（Owner 离线评审后确认）
-> 适用范围：DKWS 从当前原型/联调底座演进为生产级轻量知识工程运行态
+> 适用范围：KERT 从当前原型/联调底座演进为生产级轻量知识工程运行态
 > 配套评审：`docs/handover-review-2026-08-26.md`
 > 交接入口：`$WS/HANDOVER.md`
 
@@ -17,7 +17,7 @@
 
 本文件回答三个问题：
 
-1. DKWS 当前离生产还差什么？
+1. KERT 当前离生产还差什么？
 2. 应该按什么阶段、什么顺序补齐？
 3. 每个阶段具体要做什么、做到什么程度、如何验收？
 
@@ -38,7 +38,7 @@
 
 - 不追求互联网级微服务化
 - 不引入重型分布式中间件（除非确有必要）
-- 不改变 DKWS 的“文件系统为权威源”核心原则
+- 不改变 KERT 的“文件系统为权威源”核心原则
 - 不破坏 GITS 已对接的 v1.3/v1.4 契约
 
 ### 1.3 设计原则
@@ -60,7 +60,7 @@
 └──────────────────────────────┬──────────────────────────────┘
                                │
 ┌──────────────────────────────▼──────────────────────────────┐
-│                      DKWS Runtime Core                      │
+│                      KERT Runtime Core                      │
 │  FastAPI Routers                                             │
 │  ├── /v1/*         知识服务（兼容）                          │
 │  ├── /api/skill/*  Skill 执行服务（兼容）                    │
@@ -134,7 +134,7 @@
 设计 `AuthMiddleware`：
 
 - 请求头：`Authorization: Bearer <api_key>` 或 `X-API-Key: <api_key>`
-- 支持配置 `DKWS_AUTH_ENABLED=true/false`，默认生产 `true`
+- 支持配置 `KERT_AUTH_ENABLED=true/false`，默认生产 `true`
 - 未带 Key 返回 `401`
 - Key 无效/过期返回 `403`
 - Key 绑定：
@@ -200,15 +200,15 @@ CREATE TABLE api_keys (
 
 #### 4.2.1 配置模型
 
-新增 `src/dkws/config.py`，使用 Pydantic Settings：
+新增 `src/kert/config.py`，使用 Pydantic Settings：
 
 ```python
-class DkwsSettings(BaseSettings):
+class KertSettings(BaseSettings):
     workspace: Path
     listen_host: str = "127.0.0.1"
     listen_port: int = 8106
     auth_enabled: bool = False
-    runtime_db_url: str = "sqlite:///data/dkws-runtime.db"
+    runtime_db_url: str = "sqlite:///data/kert-runtime.db"
     llm_base_url: str | None = None
     llm_api_key: str | None = None
     llm_model: str = "deepseek-chat"
@@ -225,11 +225,11 @@ class DkwsSettings(BaseSettings):
 #### 4.2.2 配置文件示例
 
 ```yaml
-workspace: /data/dkws/workspace
+workspace: /data/kert/workspace
 listen_host: 127.0.0.1
 listen_port: 8106
 auth_enabled: true
-runtime_db_url: sqlite:///data/dkws-runtime/dkws-runtime.db
+runtime_db_url: sqlite:///data/kert-runtime/kert-runtime.db
 llm_base_url: https://api.deepseek.com
 llm_model: deepseek-chat
 llm_timeout_seconds: 60
@@ -245,22 +245,22 @@ log_json: true
 
 所有配置项支持环境变量：
 
-- `DKWS_WORKSPACE`
-- `DKWS_LISTEN_HOST`
-- `DKWS_LISTEN_PORT`
-- `DKWS_AUTH_ENABLED`
-- `DKWS_RUNTIME_DB_URL`
-- `DKWS_LLM_BASE_URL`
-- `DKWS_LLM_API_KEY`
-- `DKWS_LLM_MODEL`
-- `DKWS_LLM_TIMEOUT_SECONDS`
-- `DKWS_LLM_MAX_RETRIES`
-- `DKWS_LLM_CIRCUIT_BREAKER_THRESHOLD`
-- `DKWS_LLM_CIRCUIT_BREAKER_RESET_SECONDS`
-- `DKWS_MAX_ASYNC_WORKERS`
-- `DKWS_JOB_MAX_RETRIES`
-- `DKWS_LOG_LEVEL`
-- `DKWS_LOG_JSON`
+- `KERT_WORKSPACE`
+- `KERT_LISTEN_HOST`
+- `KERT_LISTEN_PORT`
+- `KERT_AUTH_ENABLED`
+- `KERT_RUNTIME_DB_URL`
+- `KERT_LLM_BASE_URL`
+- `KERT_LLM_API_KEY`
+- `KERT_LLM_MODEL`
+- `KERT_LLM_TIMEOUT_SECONDS`
+- `KERT_LLM_MAX_RETRIES`
+- `KERT_LLM_CIRCUIT_BREAKER_THRESHOLD`
+- `KERT_LLM_CIRCUIT_BREAKER_RESET_SECONDS`
+- `KERT_MAX_ASYNC_WORKERS`
+- `KERT_JOB_MAX_RETRIES`
+- `KERT_LOG_LEVEL`
+- `KERT_LOG_JSON`
 
 ### 4.3 持久化 Runtime Store
 
@@ -344,7 +344,7 @@ CREATE INDEX idx_audit_time ON audit_events(event_time);
 {
   "time": "2026-08-26T01:00:00.000Z",
   "level": "INFO",
-  "logger": "dkws.api",
+  "logger": "kert.api",
   "requestId": "req-abc",
   "tenantId": "gits",
   "skillId": "SP-20",
@@ -394,24 +394,24 @@ CREATE INDEX idx_audit_time ON audit_events(event_time);
 - 复制 `pyproject.toml`、安装依赖
 - 复制 `src`、`scripts`、`skills`、`examples/bank-front-skills`
 - 非 root 用户运行
-- 挂载 `/data/dkws/workspace` 和 `/data/dkws-runtime`
-- 启动命令：`python -m uvicorn dkws.api.app:app --host 0.0.0.0 --port 8106`
+- 挂载 `/data/kert/workspace` 和 `/data/kert-runtime`
+- 启动命令：`python -m uvicorn kert.api.app:app --host 0.0.0.0 --port 8106`
 
 #### 4.6.2 docker-compose 服务
 
 ```yaml
 services:
-  dkws:
+  kert:
     build: .
     ports:
       - "127.0.0.1:8106:8106"
     environment:
-      DKWS_WORKSPACE: /data/dkws/workspace
-      DKWS_RUNTIME_DB_URL: sqlite:////data/dkws-runtime/dkws-runtime.db
-      DKWS_AUTH_ENABLED: "true"
+      KERT_WORKSPACE: /data/kert/workspace
+      KERT_RUNTIME_DB_URL: sqlite:////data/kert-runtime/kert-runtime.db
+      KERT_AUTH_ENABLED: "true"
     volumes:
-      - dkws-workspace:/data/dkws/workspace
-      - dkws-runtime:/data/dkws-runtime
+      - kert-workspace:/data/kert/workspace
+      - kert-runtime:/data/kert-runtime
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:8106/livez"]
@@ -427,7 +427,7 @@ services:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs:/etc/nginx/certs:ro
     depends_on:
-      - dkws
+      - kert
 ```
 
 ### 4.7 Phase 1 验收标准
@@ -452,7 +452,7 @@ services:
 
 #### 5.1.1 Worker 模型
 
-- 独立进程 `python -m dkws.worker`
+- 独立进程 `python -m kert.worker`
 - 启动时从 `jobs` 表恢复：
   - `PENDING` → 直接消费
   - `RUNNING` 且 `worker_id` 已死 → 重置为 `PENDING`
@@ -579,35 +579,35 @@ LLM 返回文本
 #### 5.4.1 HTTP 指标
 
 ```text
-dkws_http_requests_total{method,path,status}
-dkws_http_request_duration_seconds{method,path}
-dkws_http_inflight_requests{path}
+kert_http_requests_total{method,path,status}
+kert_http_request_duration_seconds{method,path}
+kert_http_inflight_requests{path}
 ```
 
 #### 5.4.2 Skill 指标
 
 ```text
-dkws_skill_executions_total{skill_id,status}
-dkws_skill_execution_duration_seconds{skill_id}
-dkws_skill_llm_calls_total{skill_id,model,result}
-dkws_skill_llm_tokens_total{skill_id,model,type}
-dkws_skill_llm_estimated_cost_total{skill_id,model}
+kert_skill_executions_total{skill_id,status}
+kert_skill_execution_duration_seconds{skill_id}
+kert_skill_llm_calls_total{skill_id,model,result}
+kert_skill_llm_tokens_total{skill_id,model,type}
+kert_skill_llm_estimated_cost_total{skill_id,model}
 ```
 
 #### 5.4.3 队列指标
 
 ```text
-dkws_jobs_total{status}
-dkws_jobs_duration_seconds{job_type}
-dkws_jobs_retries_total{job_type}
-dkws_worker_heartbeat_age_seconds{worker_id}
+kert_jobs_total{status}
+kert_jobs_duration_seconds{job_type}
+kert_jobs_retries_total{job_type}
+kert_worker_heartbeat_age_seconds{worker_id}
 ```
 
 #### 5.4.4 知识源指标
 
 ```text
-dkws_source_calls_total{source,operation,result}
-dkws_source_duration_seconds{source,operation}
+kert_source_calls_total{source,operation,result}
+kert_source_duration_seconds{source,operation}
 ```
 
 ### 5.5 Tracing
@@ -917,54 +917,54 @@ CREATE TABLE tenants (
 ### 9.1 新增模块
 
 ```text
-src/dkws/config.py                  # Pydantic Settings
-src/dkws/api/middleware/auth.py     # API Key / JWT
-src/dkws/api/middleware/rate_limit.py
-src/dkws/api/middleware/audit.py
-src/dkws/api/health.py              # /livez /readyz /metrics
-src/dkws/runtime/store.py           # SQLite/Postgres 仓储
-src/dkws/runtime/idempotency.py
-src/dkws/runtime/evidence.py
-src/dkws/runtime/jobs.py
-src/dkws/runtime/audit.py
-src/dkws/worker/main.py             # 独立 Worker 进程
-src/dkws/llm/gateway.py
-src/dkws/llm/retry.py
-src/dkws/llm/circuit_breaker.py
-src/dkws/llm/cost.py
-src/dkws/schema/output.py            # Skill 输出模型
-src/dkws/source/base.py
-src/dkws/source/registry.py
-src/dkws/source/parquet_source.py
-src/dkws/source/kuzu_source.py
-src/dkws/source/sql_source.py
-src/dkws/source/object_storage_source.py
-src/dkws/source/vector_source.py
-src/dkws/source/http_source.py
-src/dkws/tools/registry.py
-src/dkws/tools/base.py
-src/dkws/tools/knowledge.py
-src/dkws/tools/customer.py
-src/dkws/tools/proposal.py
-src/dkws/tools/memory.py
-src/dkws/tenant/model.py
-src/dkws/tenant/policy.py
-src/dkws/observability/logging.py
-src/dkws/observability/metrics.py
-src/dkws/observability/tracing.py
+src/kert/config.py                  # Pydantic Settings
+src/kert/api/middleware/auth.py     # API Key / JWT
+src/kert/api/middleware/rate_limit.py
+src/kert/api/middleware/audit.py
+src/kert/api/health.py              # /livez /readyz /metrics
+src/kert/runtime/store.py           # SQLite/Postgres 仓储
+src/kert/runtime/idempotency.py
+src/kert/runtime/evidence.py
+src/kert/runtime/jobs.py
+src/kert/runtime/audit.py
+src/kert/worker/main.py             # 独立 Worker 进程
+src/kert/llm/gateway.py
+src/kert/llm/retry.py
+src/kert/llm/circuit_breaker.py
+src/kert/llm/cost.py
+src/kert/schema/output.py            # Skill 输出模型
+src/kert/source/base.py
+src/kert/source/registry.py
+src/kert/source/parquet_source.py
+src/kert/source/kuzu_source.py
+src/kert/source/sql_source.py
+src/kert/source/object_storage_source.py
+src/kert/source/vector_source.py
+src/kert/source/http_source.py
+src/kert/tools/registry.py
+src/kert/tools/base.py
+src/kert/tools/knowledge.py
+src/kert/tools/customer.py
+src/kert/tools/proposal.py
+src/kert/tools/memory.py
+src/kert/tenant/model.py
+src/kert/tenant/policy.py
+src/kert/observability/logging.py
+src/kert/observability/metrics.py
+src/kert/observability/tracing.py
 ```
 
 ### 9.2 修改现有模块
 
 | 文件 | 改动 |
 |---|---|
-| `src/dkws/api/server.py` | 注入中间件、配置、依赖 |
-| `src/dkws/application/skills.py` | 幂等/evidence 改 Runtime Store；LLM 走 Gateway；输出走 Validator |
-| `src/dkws/application/service_proposal.py` | LLM 走 Gateway；输出走 Validator；异步由 Worker 调度 |
-| `src/dkws/application/interaction_memory.py` | 同上 |
-| `src/dkws/application/customer_knowledge.py` | 实现 KnowledgeSource 接口 |
-| `src/dkws/application/services.py` | 保留 API，底层可接入 Source Registry |
-| `src/dkws/infrastructure/adapters/llm.py` | 保留适配器，由 Gateway 封装 |
+| `src/kert/api/server.py` | 注入中间件、配置、依赖 |
+| `src/kert/application/skills.py` | 幂等/evidence 改 Runtime Store；LLM 走 Gateway；输出走 Validator |
+| `src/kert/application/service_proposal.py` | LLM 走 Gateway；输出走 Validator；异步由 Worker 调度 |
+| `src/kert/application/interaction_memory.py` | 同上 |
+| `src/kert/application/customer_knowledge.py` | 实现 KnowledgeSource 接口 |
+| `src/kert/application/services.py` | 保留 API，底层可接入 Source Registry |
+| `src/kert/infrastructure/adapters/llm.py` | 保留适配器，由 Gateway 封装 |
 | `scripts/serve_skill_service.py` | 改为读取配置，可选启动 Worker |
 
 ### 9.3 兼容性保证

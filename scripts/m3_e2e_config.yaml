@@ -1,8 +1,8 @@
 # M3-P0 E2E 测试配置
 # 用法：python scripts/verify_m3_e2e.py --config scripts/m3_e2e_config.yaml
 
-# DKWS 基础 URL
-dkws_base_url: http://127.0.0.1:8106
+# KERT 基础 URL
+kert_base_url: http://127.0.0.1:8106
 
 # API Key（留空 = 确定性模式，无需 LLM 密钥）
 api_key: ""

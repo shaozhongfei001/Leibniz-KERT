@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# health_check.sh — DKWS 健康检查
+# health_check.sh — KERT 健康检查
 #
 # 用法：
 #   ./health_check.sh [BASE_URL]
@@ -9,7 +9,7 @@
 #   ./health_check.sh http://192.168.1.100:8106
 #
 # 环境变量：
-#   DKWS_API_KEY — API Key（可选）
+#   KERT_API_KEY — API Key（可选）
 #
 # 检查项：
 #   1. /v1/health — 服务整体健康
@@ -20,7 +20,7 @@
 set -euo pipefail
 
 BASE_URL="${1:-http://127.0.0.1:8106}"
-API_KEY="${DKWS_API_KEY:-}"
+API_KEY="${KERT_API_KEY:-}"
 
 HEADERS=(-H "Accept: application/json")
 if [[ -n "$API_KEY" ]]; then
@@ -41,7 +41,7 @@ check_endpoint() {
   fi
 }
 
-echo "=== DKWS Health Check (${BASE_URL}) ==="
+echo "=== KERT Health Check (${BASE_URL}) ==="
 echo ""
 
 check_endpoint "Service Health" "/v1/health"

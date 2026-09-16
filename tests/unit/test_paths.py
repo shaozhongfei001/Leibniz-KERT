@@ -5,8 +5,8 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.domain.errors import PathSafetyError
-from dkws.domain.paths import (
+from kert.domain.errors import PathSafetyError
+from kert.domain.paths import (
     ensure_inside_workspace,
     is_within,
     normalize_ws_rel,

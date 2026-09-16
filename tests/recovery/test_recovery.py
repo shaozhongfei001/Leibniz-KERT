@@ -5,11 +5,11 @@ from __future__ import annotations
 
 import pytest
 
-from dkws.application.extract import KnowledgeExtractor
-from dkws.application.ingest import Ingestor
-from dkws.application.parse_doc import DocumentParserService
-from dkws.application.publish import Publisher
-from dkws.application.review import ReviewService
+from kert.application.extract import KnowledgeExtractor
+from kert.application.ingest import Ingestor
+from kert.application.parse_doc import DocumentParserService
+from kert.application.publish import Publisher
+from kert.application.review import ReviewService
 
 
 @pytest.fixture
@@ -63,14 +63,14 @@ class TestRecovery:
         """§18.4：删除 02_work 后仅用 Core 重建投影。"""
         import shutil
 
-        from dkws.application.projection import ProjectionBuilder
+        from kert.application.projection import ProjectionBuilder
 
         ws = ready_to_publish["ws"]
         Publisher(ws).publish("product", run_id=ready_to_publish["run_id"])
         ProjectionBuilder(ws).build("product")
         # 记录逻辑摘要
         proj = ws / "04_serve" / "product_knowledge" / f"version={proj_version(ws)}"
-        from dkws.domain import hashing
+        from kert.domain import hashing
         pqmod = __import__("pyarrow.parquet", fromlist=["read_table"])
         t1 = pqmod.read_table(proj / "entities.parquet")
         if "recorded_at" in t1.column_names:

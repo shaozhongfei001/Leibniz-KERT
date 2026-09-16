@@ -21,7 +21,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
-from dkws.domain.hashing import parquet_logical_hash
+from kert.domain.hashing import parquet_logical_hash
 
 
 # ---------- helpers ----------

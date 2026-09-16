@@ -1,0 +1,84 @@
+{
+  "compiledAt": "2026-09-06T12:00:00+08:00",
+  "fieldCount": 7,
+  "fields": [
+    {
+      "conflictId": null,
+      "evidenceIds": [],
+      "fieldPath": "identity.productCode",
+      "knowledgeState": "NOT_APPLICABLE",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": null,
+      "evidenceIds": [
+        "EVS-SRCCM001-f9281e09",
+        "EVS-SRCCM003-79cdb73c",
+        "EVS-SRCCM003-969d8e2e"
+      ],
+      "fieldPath": "eligibility.customerSegment",
+      "knowledgeState": "CANDIDATE",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": "CNF-PRODCM001-757c6c3b",
+      "evidenceIds": [
+        "EVS-SRCCM001-7d3f83e8",
+        "EVS-SRCCM001-b8dc5f5f",
+        "EVS-SRCCM001-b92956e2",
+        "EVS-SRCCM003-4302d512"
+      ],
+      "fieldPath": "eligibility.minAccountBalance",
+      "knowledgeState": "SUPPORTED",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": null,
+      "evidenceIds": [
+        "EVS-SRCCM001-14e72136"
+      ],
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": null,
+      "evidenceIds": [],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "NOT_APPLICABLE",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": null,
+      "evidenceIds": [],
+      "fieldPath": "pricing.serviceFee",
+      "knowledgeState": "UNKNOWN",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": null,
+      "evidenceIds": [
+        "EVS-SRCCM001-f92129c2",
+        "EVS-SRCCM001-fb2963c0",
+        "EVS-SRCCM002-68db5549"
+      ],
+      "fieldPath": "process.openingChannel",
+      "knowledgeState": "CANDIDATE",
+      "provenanceState": "DEMO",
+      "value": null
+    }
+  ],
+  "interpretationReady": true,
+  "legacyCardReused": false,
+  "productId": "PROD-CM-001",
+  "productVersionScope": "version=2026.09.06.1",
+  "provenanceState": "DEMO",
+  "recommendationReady": false,
+  "source": "compiled_from_assertions"
+}

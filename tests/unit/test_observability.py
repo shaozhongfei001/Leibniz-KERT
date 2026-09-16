@@ -9,7 +9,7 @@ import threading
 
 import pytest
 
-from dkws.infrastructure.observability import (
+from kert.infrastructure.observability import (
     DEFAULT_LATENCY_BUCKETS,
     JsonLogFormatter,
     MetricsRegistry,

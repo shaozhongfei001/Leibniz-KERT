@@ -5,7 +5,7 @@
   "environment": {
     "python": "3.12.8",
     "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
-    "workspace": "/tmp/dkws-m2p2-e2e-ws"
+    "workspace": "/tmp/kert-m2p2-e2e-ws"
   },
   "checks": [
     {
@@ -121,7 +121,7 @@
     {
       "name": "prod_async_without_store_rejected",
       "passed": true,
-      "detail": "prod + Store 未启用 → 拒绝异步执行，HTTP 503，remediation=DKWS_RUNTIME_STORE_ENABLED=true"
+      "detail": "prod + Store 未启用 → 拒绝异步执行，HTTP 503，remediation=KERT_RUNTIME_STORE_ENABLED=true"
     },
     {
       "name": "prod_async_no_thread_fallback",

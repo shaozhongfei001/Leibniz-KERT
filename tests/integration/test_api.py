@@ -5,18 +5,18 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from dkws.api.server import create_app
+from kert.api.server import create_app
 
 
 @pytest.fixture
 def client(ws, tmp_path):
     """搭建完整数据链路后返回 API 客户端。"""
-    from dkws.application.extract import KnowledgeExtractor
-    from dkws.application.ingest import Ingestor
-    from dkws.application.parse_doc import DocumentParserService
-    from dkws.application.projection import ProjectionBuilder
-    from dkws.application.publish import Publisher
-    from dkws.application.review import ReviewService
+    from kert.application.extract import KnowledgeExtractor
+    from kert.application.ingest import Ingestor
+    from kert.application.parse_doc import DocumentParserService
+    from kert.application.projection import ProjectionBuilder
+    from kert.application.publish import Publisher
+    from kert.application.review import ReviewService
 
     md = tmp_path / "p.md"
     md.write_text("# 政策\n\n产品A利率为3.5%。\n\n产品A需要材料M1。\n\n规则：利率不超过10。\n",

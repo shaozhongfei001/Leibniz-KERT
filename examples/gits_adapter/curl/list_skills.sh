@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# list_skills.sh — 列出 DKWS 可用 Skill
+# list_skills.sh — 列出 KERT 可用 Skill
 #
 # 用法：
 #   ./list_skills.sh [BASE_URL]
@@ -9,12 +9,12 @@
 #   ./list_skills.sh http://192.168.1.100:8106
 #
 # 环境变量：
-#   DKWS_API_KEY — API Key（可选）
+#   KERT_API_KEY — API Key（可选）
 
 set -euo pipefail
 
 BASE_URL="${1:-http://127.0.0.1:8106}"
-API_KEY="${DKWS_API_KEY:-}"
+API_KEY="${KERT_API_KEY:-}"
 
 HEADERS=(-H "Accept: application/json")
 if [[ -n "$API_KEY" ]]; then

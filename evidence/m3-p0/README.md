@@ -20,7 +20,7 @@
 
 | 检查项 | 结果 |
 |--------|------|
-| DKWS 端点提取完整 | ✅ 7 个已实现 + 5 个待实现 |
+| KERT 端点提取完整 | ✅ 7 个已实现 + 5 个待实现 |
 | GITS 适配器分析完整 | ✅ 4 个适配器 + 配置 + 超时参数 |
 | OpenAPI 3.0.3 规范 | ✅ 11 paths, 28 schemas, YAML 语法验证通过 |
 | 契约差异报告 | ✅ 高度兼容，5 项待协调 |
@@ -29,7 +29,7 @@
 
 | 检查项 | 结果 |
 |--------|------|
-| Python DkwsClient | ✅ 同步/异步/轮询/健康/闸门，仅标准库 |
+| Python KertClient | ✅ 同步/异步/轮询/健康/闸门，仅标准库 |
 | curl 参考脚本 | ✅ 5 个脚本（list/execute_sync/execute_async/poll/health） |
 | 错误处理最佳实践 | ✅ fail-closed + 指数退避 + 超时配置 + 错误码映射 |
 
@@ -62,9 +62,9 @@
 ## 交付物清单
 
 ```
-specs/dkws-openapi-v1.yaml                           # OpenAPI 3.0.3 规范
-docs/integration/DKWS_GITS_CONTRACT_DIFF.md           # 契约差异报告
-examples/gits_adapter/python/dkws_client.py           # Python 客户端
+specs/kert-openapi-v1.yaml                           # OpenAPI 3.0.3 规范
+docs/integration/KERT_GITS_CONTRACT_DIFF.md           # 契约差异报告
+examples/gits_adapter/python/kert_client.py           # Python 客户端
 examples/gits_adapter/curl/list_skills.sh             # curl: 列出 Skill
 examples/gits_adapter/curl/execute_skill_sync.sh      # curl: 同步执行
 examples/gits_adapter/curl/execute_skill_async.sh     # curl: 异步提交
@@ -84,19 +84,19 @@ evidence/m3-p0/e2e_report_template.md                 # 报告模板
 | 维度 | 详情 |
 |------|------|
 | 技术栈 | Java 21 + Spring Boot 3.5.16 + MyBatis + H2(dev)/MySQL(prod) + Vue 3 |
-| 已有适配器 | DshHttpSkillExecutionAdapter、DshHttpSkillGateAdapter、V14DkwsIntegrationController |
-| fail-closed | FallbackSkillExecutionAdapter 已实现（DKWS 不可达时拒绝） |
+| 已有适配器 | DshHttpSkillExecutionAdapter、DshHttpSkillGateAdapter、V14KertIntegrationController |
+| fail-closed | FallbackSkillExecutionAdapter 已实现（KERT 不可达时拒绝） |
 | Mock 路径 | MockLlmClient（LLM）、LoggingCrmWritebackChannel（CRM）、H2 内存库 |
-| DKWS 配置 | dkws.base-url、dkws.api-key、dkws.skill-execute-path |
+| KERT 配置 | kert.base-url、kert.api-key、kert.skill-execute-path |
 
 ## 契约差异核心结论
 
-**高度兼容**：GITS 已调用端点与 DKWS 实现完全匹配。
+**高度兼容**：GITS 已调用端点与 KERT 实现完全匹配。
 
 | 优先级 | 待协调项 |
 |--------|----------|
 | P1 | GITS 处理 ruleViolations、releaseBlockedUntil 闸门放行、SP-21 记忆持久化 |
-| P2 | DKWS 实现 /v1/skills、API Key 认证、/metrics；GITS 处理 ruleViolations |
+| P2 | KERT 实现 /v1/skills、API Key 认证、/metrics；GITS 处理 ruleViolations |
 
 ## 下一步：M3 Phase 1
 

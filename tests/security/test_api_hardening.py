@@ -7,8 +7,8 @@ from typing import ClassVar
 
 from fastapi.testclient import TestClient
 
-from dkws.api.server import create_app
-from dkws.infrastructure.runtime_config import (
+from kert.api.server import create_app
+from kert.infrastructure.runtime_config import (
     ApiKeyRecord,
     AuthConfig,
     ConcurrencyConfig,
@@ -128,12 +128,12 @@ def test_admin_endpoint_allows_admin_scope(tmp_path):
 
 def test_custom_header_name_respected(tmp_path):
     """可自定义认证请求头名称。"""
-    cfg = RuntimeConfig(auth=_auth_config(header_name="X-DKWS-Token"))
+    cfg = RuntimeConfig(auth=_auth_config(header_name="X-KERT-Token"))
     client = _client(tmp_path, cfg)
     assert client.get("/v1/knowledge/version",
                       headers={"X-API-Key": VALID_KEY}).status_code == 401
     assert client.get("/v1/knowledge/version",
-                      headers={"X-DKWS-Token": VALID_KEY}).status_code != 401
+                      headers={"X-KERT-Token": VALID_KEY}).status_code != 401
 
 
 def test_error_body_does_not_leak_key(tmp_path):
@@ -201,7 +201,7 @@ def test_rate_limit_refills_over_time():
     """令牌随时间补充后恢复放行（直接驱动中间件，注入可控时间源）。"""
     import asyncio
 
-    from dkws.api.middleware import RateLimitMiddleware, error_response
+    from kert.api.middleware import RateLimitMiddleware, error_response
 
     clock = {"t": 1000.0}
     mw = RateLimitMiddleware(app=None,
@@ -322,7 +322,7 @@ def test_concurrency_limit_rejects_when_saturated(tmp_path):
     """在途请求达到上限时返回 429 CONCURRENCY_LIMITED。"""
     import asyncio
 
-    from dkws.api.middleware import ConcurrencyLimitMiddleware, error_response
+    from kert.api.middleware import ConcurrencyLimitMiddleware, error_response
 
     cfg = ConcurrencyConfig(enabled=True, max_in_flight=1)
 

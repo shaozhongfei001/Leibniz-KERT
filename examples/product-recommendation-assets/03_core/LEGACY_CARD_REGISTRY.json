@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "registryId": "LEGACY-CARD-REGISTRY-001",
+  "version": "1.0.0",
+  "loop": "L03",
+  "generatedAt": "2026-09-05",
+  "generatedBy": "tech_lead",
+  "strategy": "E-3 (保留原样 + 外部台账)",
+  "strategyRationale": "唯一不触碰「禁止手改卡片」红线的方案。卡片文件保持原样，由本台账 + 消费侧 fail-closed 双重阻断误消费。",
+  "authorityStatement": "本台账是 13 张 legacy 产品卡可消费性的唯一判定依据。卡片文件内的 status 字段一律无效，不得作为消费依据。",
+
+  "globalClassification": "LEGACY_SAMPLE / CANDIDATE / NOT_CONSUMABLE",
+
+  "consumptionRule": {
+    "expression": "consumable(card) <=> EXISTS ProductKnowledgeRelease R: R.productIds contains card.productId AND R.lifecycleState = PUBLISHED AND R.purposeFlags[requestedPurpose] = true AND R.staleFlag.isStale = false",
+    "currentReleaseCount": 0,
+    "currentConsumableCount": 0,
+    "fallbackBehavior": "HTTP 404 PRODUCT_KNOWLEDGE_NOT_PUBLISHED",
+    "forbiddenBehavior": "禁止在无 Release 时回退读取卡片文件内容"
+  },
+
+  "evidenceBasis": {
+    "verifiedAt": "2026-09-05",
+    "method": "文件系统扫描 + SHA-256 实算 + EvidenceRef 正则计数",
+    "findings": [
+      "13/13 张卡 front matter 声明 status: ACTIVE",
+      "13/13 张卡 EvidenceRef 引用数 = 0",
+      "10/13 张卡 content_hash 为明显占位（如 sha256:cm001hash）",
+      "3/13 张卡（FINANCING 族）content_hash 为 64 位十六进制，形似真实，但与文件全文 hash 及去 front matter 正文 hash 均不匹配 —— 属伪造/陈旧值，见 FAILURES F-L03-03"
+    ]
+  },
+
+  "cards": [
+    { "productId": "PROD-CM-001", "family": "cash-management", "versionScope": "version=2026.09.01.1", "path": "03_core/cash-management/version=2026.09.01.1/product-cards/PROD-CM-001.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:cm001hash", "evidenceRefCount": 0 },
+    { "productId": "PROD-CM-002", "family": "cash-management", "versionScope": "version=2026.09.01.1", "path": "03_core/cash-management/version=2026.09.01.1/product-cards/PROD-CM-002.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:cm002hash", "evidenceRefCount": 0 },
+    { "productId": "PROD-CM-003", "family": "cash-management", "versionScope": "version=2026.09.01.1", "path": "03_core/cash-management/version=2026.09.01.1/product-cards/PROD-CM-003.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:cm003hash", "evidenceRefCount": 0 },
+    { "productId": "PROD-CB-001", "family": "cross-border", "versionScope": "version=2026.09.01.1", "path": "03_core/cross-border/version=2026.09.01.1/product-cards/PROD-CB-001.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:cb001hash", "evidenceRefCount": 0 },
+    { "productId": "PROD-CB-002", "family": "cross-border", "versionScope": "version=2026.09.01.1", "path": "03_core/cross-border/version=2026.09.01.1/product-cards/PROD-CB-002.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:cb002hash", "evidenceRefCount": 0 },
+    { "productId": "PROD-FIN-001", "family": "financing", "versionScope": "version=2026.08.31.1", "path": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "FALSE_PLAUSIBLE", "declaredContentHash": "sha256:b9ffc0b4227902f4481002386816ce93ea167cf2ce80e5f5405a04b50fc0b240", "hashMismatch": { "actualFileHash": "c8f30dbf365b900c…", "actualBodyHash": "ca8b792542d53b3d…", "matches": "NONE" }, "evidenceRefCount": 0 },
+    { "productId": "PROD-FIN-002", "family": "financing", "versionScope": "version=2026.08.31.1", "path": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-002.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "FALSE_PLAUSIBLE", "declaredContentHash": "sha256:5980a7c401a963f7e65e8965b961af1b291a1e85788213c57225d306ebcb1a3a", "hashMismatch": { "actualFileHash": "6645d63b14d30e74…", "actualBodyHash": "cff50431d1a17a4f…", "matches": "NONE" }, "evidenceRefCount": 0 },
+    { "productId": "PROD-FIN-003", "family": "financing", "versionScope": "version=2026.08.31.1", "path": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "FALSE_PLAUSIBLE", "declaredContentHash": "sha256:d511fc4c629fd99c56d377ad24778b528987fc6bbf4d65ca6a7570b3afb70241", "hashMismatch": { "actualFileHash": "2baf3a6ff2939d93…", "actualBodyHash": "50087f2688b1ae0d…", "matches": "NONE" }, "evidenceRefCount": 0 },
+    { "productId": "PROD-IB-001", "family": "investment-banking", "versionScope": "version=2026.09.01.1", "path": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:ib001hash", "evidenceRefCount": 0 },
+    { "productId": "PROD-SET-001", "family": "settlement", "versionScope": "version=2026.09.01.1", "path": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:set001hash", "evidenceRefCount": 0 },
+    { "productId": "PROD-SET-002", "family": "settlement", "versionScope": "version=2026.09.01.1", "path": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-002.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:set002hash", "evidenceRefCount": 0 },
+    { "productId": "PROD-TF-001", "family": "trade-finance", "versionScope": "version=2026.09.01.1", "path": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-001.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:tf001hash", "evidenceRefCount": 0 },
+    { "productId": "PROD-TF-002", "family": "trade-finance", "versionScope": "version=2026.09.01.1", "path": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md", "declaredStatus": "ACTIVE", "effectiveStatus": "LEGACY_SAMPLE", "consumable": false, "contentHashKind": "PLACEHOLDER", "declaredContentHash": "sha256:tf002hash", "evidenceRefCount": 0 }
+  ],
+
+  "summary": {
+    "totalCards": 13,
+    "consumable": 0,
+    "notConsumable": 13,
+    "byHashKind": { "PLACEHOLDER": 10, "FALSE_PLAUSIBLE": 3 },
+    "byFamily": { "cash-management": 3, "cross-border": 2, "financing": 3, "investment-banking": 1, "settlement": 2, "trade-finance": 2 },
+    "totalEvidenceRefs": 0
+  },
+
+  "prohibitions": [
+    "禁止手改卡片文件的 status / content_hash 字段",
+    "禁止把 legacy card 作为 FieldAssertion 编译输入",
+    "禁止依据卡片自身 status 判定可消费性",
+    "禁止在无 Release 时回退读取卡片内容作兜底"
+  ],
+
+  "ownerDecisionPending": {
+    "questionId": "OQ-E",
+    "question": "13 张 legacy card 的最终处置",
+    "options": [
+      { "id": "E-1", "label": "作废并移入 _legacy_sample/" },
+      { "id": "E-2", "label": "保留并改 status 字段（需 Owner 豁免手改红线）" },
+      { "id": "E-3", "label": "保留原样 + 外部台账（本方案，已实施）" }
+    ],
+    "currentlyApplied": "E-3",
+    "note": "E-3 为可逆的临时保护措施，不预设最终结论。Owner 可随时改判 E-1 或 E-2。"
+  }
+}

@@ -7,8 +7,8 @@ import time
 
 import pytest
 
-from dkws.infrastructure.runtime_store import RuntimeStore
-from dkws.infrastructure.worker import (
+from kert.infrastructure.runtime_store import RuntimeStore
+from kert.infrastructure.worker import (
     JobWorker,
     NonRetryableJobError,
     WorkerConfig,
@@ -61,10 +61,10 @@ def test_heartbeat_interval_derived_from_lease():
 def test_build_config_from_env():
     """从环境变量构造配置。"""
     cfg = build_worker_config_from_env({
-        "DKWS_WORKER_ID": "w-env",
-        "DKWS_WORKER_JOB_TYPES": "SKILL, INGEST ",
-        "DKWS_WORKER_LEASE_SECONDS": "12.5",
-        "DKWS_WORKER_MAX_JOBS": "3",
+        "KERT_WORKER_ID": "w-env",
+        "KERT_WORKER_JOB_TYPES": "SKILL, INGEST ",
+        "KERT_WORKER_LEASE_SECONDS": "12.5",
+        "KERT_WORKER_MAX_JOBS": "3",
     })
     assert cfg.worker_id == "w-env"
     assert cfg.job_types == ("SKILL", "INGEST")
@@ -83,13 +83,13 @@ def test_build_config_defaults_when_env_empty():
 def test_build_config_rejects_invalid_number():
     """非法数字环境变量报错。"""
     with pytest.raises(ValueError, match="需为数字"):
-        build_worker_config_from_env({"DKWS_WORKER_LEASE_SECONDS": "soon"})
+        build_worker_config_from_env({"KERT_WORKER_LEASE_SECONDS": "soon"})
 
 
 def test_build_config_rejects_invalid_int():
     """非法整数环境变量报错。"""
     with pytest.raises(ValueError, match="需为整数"):
-        build_worker_config_from_env({"DKWS_WORKER_MAX_JOBS": "many"})
+        build_worker_config_from_env({"KERT_WORKER_MAX_JOBS": "many"})
 
 
 # ---------------------------------------------------------------- 单次执行

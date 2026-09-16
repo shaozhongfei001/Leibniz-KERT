@@ -11,11 +11,11 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.dkws</groupId>
+    <groupId>com.kert</groupId>
     <artifactId>spring-ai-alibaba-skill-runtime</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-ai-alibaba-skill-runtime</name>
-    <description>DKWS Spring AI Alibaba Skill Runtime PoC</description>
+    <description>KERT Spring AI Alibaba Skill Runtime PoC</description>
 
     <properties>
         <java.version>21</java.version>

@@ -22,20 +22,20 @@
 | `SKILL-ADR-01` | 平台用 TypeScript 实现（设计文档的 main.py/skill_api.py 为示意，不照搬） | DSH 是 Cordis/TS 工程；skill 资产（SKILL.md）保持文档形态 |
 | `SKILL-ADR-02` | HTTP REST 用 `webServer.register`，不引入 Typert 做对外 REST | Typert 面向 client↔host RPC；webServer 是 Host 进程 HTTP 载体 |
 | `SKILL-ADR-03` | 首版以动态插件落地（进程内注册），不改 DSH 部署本体 | HTTP API 常驻、可快速端到端联调；生产固化可迁移为部署插件（cordis.yml 行） |
-| `SKILL-ADR-04` | skill 资产（SKILL.md）存放于 DKWS 项目 `dkws/skills/customer-engagement/` | 随 DKWS 交付、版本控制；DSH 侧通过已知路径读取注册 |
-| `SKILL-ADR-05` | skill 执行可调用 DKWS 知识服务（HTTP 查询）补充知识上下文 | 设计输入契约由 gits 传 `knowledgeContext`；DKWS 为可选增强，不改变契约 |
+| `SKILL-ADR-04` | skill 资产（SKILL.md）存放于 KERT 项目 `kert/skills/customer-engagement/` | 随 KERT 交付、版本控制；DSH 侧通过已知路径读取注册 |
+| `SKILL-ADR-05` | skill 执行可调用 KERT 知识服务（HTTP 查询）补充知识上下文 | 设计输入契约由 gits 传 `knowledgeContext`；KERT 为可选增强，不改变契约 |
 | `SKILL-ADR-06` | `requestId` 幂等采用短窗内存缓存（同 requestId 重复 → 返回缓存或 NO_OP） | 满足 D3；无持久化需求，进程内缓存足够 |
 
 ## 3. 组件设计
 
 ```
-dkws/skills/customer-engagement/          # skill 资产（SKILL.md 族 + 三个子 skill）
+kert/skills/customer-engagement/          # skill 资产（SKILL.md 族 + 三个子 skill）
 ├── SKILL.md                              # 族定义
 ├── outreach-script/SKILL.md
 ├── meeting-script/SKILL.md
 └── previsit-report/SKILL.md
 
-动态插件 Host 半区（dkws-skill-1）：
+动态插件 Host 半区（kert-skill-1）：
 ├── SkillRegistry                         # skillId → {definition, version, executor}
 ├── executors/
 │   ├── outreach.ts                       # 外联脚本（prompt 组装 + llm + 结构化解析）
@@ -46,7 +46,7 @@ dkws/skills/customer-engagement/          # skill 资产（SKILL.md 族 + 三个
 │   │                                     #   GET  /api/skill/health
 ├── model.ts                              # callModel(): llm.stream + usage + 计时 + fail-closed
 ├── policy.ts                             # 无新证据策略 / 幂等 / 脱敏
-└── dkwsClient.ts                         # （可选）DKWS 知识服务查询
+└── kertClient.ts                         # （可选）KERT 知识服务查询
 ```
 
 ### 3.1 执行器接口
@@ -108,27 +108,27 @@ interface SkillExecuteResult {
 | D5 元数据正确、无敏感泄露 | modelCalls 数值断言；日志检查无 key/完整请求 |
 | D6 gits 侧真实调用 | 模拟 gits `SkillExecutionPort` 的 HTTP 调用脚本（RestClient 等价 curl/Node fetch）端到端 |
 
-## 7. DKWS 协作（可选增强）
+## 7. KERT 协作（可选增强）
 
-skill 执行前可经 `dkwsClient` 查询 DKWS 平台（`demo_workspace` 知识投影）：
+skill 执行前可经 `kertClient` 查询 KERT 平台（`demo_workspace` 知识投影）：
 - 实体/声明/证据查询（`/v1/entities/{id}`、`/v1/evidence/{id}`、`/v1/search`）；
-- 命中则注入 `knowledgeContext` 增强（附加 evidenceRefs），不命中不影响主流程（fail-open 于 DKWS 侧）。
-- 实现为可配置（`DKWS_KNOWLEDGE_URL` 环境变量），默认关闭；不影响 D1-D6。
+- 命中则注入 `knowledgeContext` 增强（附加 evidenceRefs），不命中不影响主流程（fail-open 于 KERT 侧）。
+- 实现为可配置（`KERT_KNOWLEDGE_URL` 环境变量），默认关闭；不影响 D1-D6。
 
 ---
 
-## 8. 落地记录（方案 A：DKWS 承载全部）
+## 8. 落地记录（方案 A：KERT 承载全部）
 
-> 2026-08-21 经 Owner 确认：Skill 平台为 **DKWS 工程的一部分能力**（非独立插件，非 DSH 运行时插件）。
+> 2026-08-21 经 Owner 确认：Skill 平台为 **KERT 工程的一部分能力**（非独立插件，非 DSH 运行时插件）。
 > 基线：`SKILL-ADR-03/05` 修订为方案 A。
 
 ### 8.1 最终职责边界
 
 | 端 | 职责 | 交付 |
 |---|---|---|
-| **DKWS 工程**（承载全部） | SkillRegistry + 三 executor + 治理 + HTTP 端点 + LLM 适配器 | `src/dkws/application/skills.py`、`src/dkws/infrastructure/adapters/llm.py`、`api/server.py`（`/api/skill/*`） |
+| **KERT 工程**（承载全部） | SkillRegistry + 三 executor + 治理 + HTTP 端点 + LLM 适配器 | `src/kert/application/skills.py`、`src/kert/infrastructure/adapters/llm.py`、`api/server.py`（`/api/skill/*`） |
 | **DSH 工程**（仅资产） | SKILL.md 资产随 DSH `skills/` 目录供 `ctx.skills` 发现注册（模型可见） | `deepseek-harness/skills/customer-engagement/`（4 个 SKILL.md） |
-| gits 侧 | HTTP 调用方（`DSH_BASE_URL` 指向 DKWS 服务） | 按 gits 端设计实现 `SkillExecutionPort` |
+| gits 侧 | HTTP 调用方（`DSH_BASE_URL` 指向 KERT 服务） | 按 gits 端设计实现 `SkillExecutionPort` |
 
 ### 8.2 端点与契约（不变，设计文档 §7.1）
 
@@ -137,11 +137,11 @@ skill 执行前可经 `dkwsClient` 查询 DKWS 平台（`demo_workspace` 知识�
 
 ### 8.3 验证结果（D1-D6）
 
-- 单元/集成：`tests/integration/test_skills.py`（16 项，含 DKWS 协作注入与 fail-open）；
+- 单元/集成：`tests/integration/test_skills.py`（16 项，含 KERT 协作注入与 fail-open）；
 - 真实 HTTP 端到端：`examples/skill_e2e.py` → **16/16 PASS**（health / 三 skill 执行 / 幂等 / 无新证据 / modelCalls / 404+422）；
 - 全量回归：pytest 全绿（含修复测试硬编码版本号的时间依赖 bug）。
 
 ### 8.4 环境约束（记录）
 
 - DSH checkout（`/home/szf/env/deepseek-harness`）在本会话沙箱中仅允许一次性授权写入；SKILL.md 资产同步已完成（4 文件）。
-- 外部模型未配置时（无 `DKWS_LLM_*` 环境变量），Skill 平台经**确定性适配器**端到端可用（规格 §1.6）；配置 `DKWS_LLM_BASE_URL/API_KEY/MODEL` 后自动切换 OpenAI 兼容真实模型，modelCalls 记录 token/延迟。
+- 外部模型未配置时（无 `KERT_LLM_*` 环境变量），Skill 平台经**确定性适配器**端到端可用（规格 §1.6）；配置 `KERT_LLM_BASE_URL/API_KEY/MODEL` 后自动切换 OpenAI 兼容真实模型，modelCalls 记录 token/延迟。

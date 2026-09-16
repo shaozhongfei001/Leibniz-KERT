@@ -15,7 +15,7 @@
 ## 项目结构
 
 ```text
-src/dkws/
+src/kert/
 ├── api/          # FastAPI 路由
 ├── application/  # 应用服务
 ├── domain/       # 领域模型

@@ -7,11 +7,11 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
-from dkws.api.server import create_app
-from dkws.application.skills import IDEMPOTENCY_SCOPE, SkillExecutionService
-from dkws.domain.errors import ConflictError
-from dkws.infrastructure.runtime_config import RuntimeConfig, RuntimeStoreConfig
-from dkws.infrastructure.runtime_store import RuntimeStore
+from kert.api.server import create_app
+from kert.application.skills import IDEMPOTENCY_SCOPE, SkillExecutionService
+from kert.domain.errors import ConflictError
+from kert.infrastructure.runtime_config import RuntimeConfig, RuntimeStoreConfig
+from kert.infrastructure.runtime_store import RuntimeStore
 
 EXECUTE_PATH = "/api/skill/execute"
 GATE_PATH = "/api/skill/gates/audit"

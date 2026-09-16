@@ -36,7 +36,7 @@
 | scripts/generate_sbom.sh SBOM 生成 | ✅ CycloneDX 格式 |
 | scripts/security_scan.sh 安全扫描 | ✅ pip-audit + bandit |
 | scripts/ci_setup.sh CI 环境初始化 | ✅ 支持 --with-security/--with-lint/--full |
-| 无密钥环境 CI 可通过 | ✅ DKWS_PROFILE=dev |
+| 无密钥环境 CI 可通过 | ✅ KERT_PROFILE=dev |
 
 ### G3: M2.10 NFR 基线
 

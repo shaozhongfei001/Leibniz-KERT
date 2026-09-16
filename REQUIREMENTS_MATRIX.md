@@ -1,6 +1,6 @@
-# DKWS 需求ID实施矩阵、风险与阶段计划
+# KERT 需求ID实施矩阵、风险与阶段计划
 
-> 依据：`文件目录型数据知识服务模拟平台_详细需求与详细设计_V1.0.md`（DKWS-SPEC-001 V1.0，状态 `DRAFT_CANDIDATE`）。
+> 依据：`文件目录型数据知识服务模拟平台_详细需求与详细设计_V1.0.md`（KERT-SPEC-001 V1.0，状态 `DRAFT_CANDIDATE`）。
 > 本文不改变规格状态：OWNER_APPROVED=NO、BASELINED=NO、IMPLEMENTED=NO、ACCEPTED=NO。
 
 ## 1. 需求ID实施矩阵
@@ -38,7 +38,7 @@
 
 | 阶段 | 内容 | 退出条件 |
 |---|---|---|
-| P0 | 项目骨架、需求追踪、工作区初始化 | `dkws init/inspect` 测试通过 | ✅ |
+| P0 | 项目骨架、需求追踪、工作区初始化 | `kert init/inspect` 测试通过 | ✅ |
 | P1 | Markdown 合同框架、Schema、通用校验 | 所有 MD 合法/非法样例通过 | ✅ |
 | P2 | Raw 接入、Manifest、哈希、任务控制 | G0 测试通过 | ✅ |
 | P3 | 结构化数据清洗与 Parquet | 对账、拒绝、血缘通过 | ✅ |

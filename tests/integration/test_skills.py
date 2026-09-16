@@ -1,6 +1,6 @@
 """Skill 运行平台测试（设计文档 D1-D6 + v1.3 数据所有权）。
 
-v1.3：GITS 只传 customerId；evidence ok/skipped 只反映 DKWS 客户知识库
+v1.3：GITS 只传 customerId；evidence ok/skipped 只反映 KERT 客户知识库
 （customer_knowledge 服务投影）对该客户 + KI 是否取到数。
 """
 
@@ -16,9 +16,9 @@ SRC = Path(__file__).resolve().parent.parent.parent / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from dkws.api.server import create_app
-from dkws.application.skills import SkillExecutionService
-from dkws.infrastructure.adapters import llm as llm_mod
+from kert.api.server import create_app
+from kert.application.skills import SkillExecutionService
+from kert.infrastructure.adapters import llm as llm_mod
 
 # 新 GITS 请求：只带 customerId（+ 可选 visitObjective / evidenceTimestamp）
 OUTREACH_REQ = {"customerId": "CUST-CORP-0001"}
@@ -165,18 +165,18 @@ class TestApi:
                    for t in r.json()["assemblyTrace"])
 
 
-class TestDkwsCollaboration:
-    def test_dkws_skipped_without_customer_knowledge(self, ws):
-        """无 customer_knowledge 投影 → dkws skipped（fail-open，不阻塞执行）。"""
+class TestKertCollaboration:
+    def test_kert_skipped_without_customer_knowledge(self, ws):
+        """无 customer_knowledge 投影 → kert skipped（fail-open，不阻塞执行）。"""
         svc = SkillExecutionService(ws)
         r = svc.execute("skill-customer-outreach-script", "t-fo-1", OUTREACH_REQ)
         assert r.status == "ok"
-        assert any(t.get("phase") == "dkws" and t.get("status") == "skipped"
+        assert any(t.get("phase") == "kert" and t.get("status") == "skipped"
                    for t in r.assembly_trace)
 
 
 class TestAssemblyTraceKi:
-    """KI 级知识组装轨迹（v1.3：ok/skipped 由 DKWS 知识库决定）。"""
+    """KI 级知识组装轨迹（v1.3：ok/skipped 由 KERT 知识库决定）。"""
 
     def test_previsit_ki_all_ok_from_library(self, svc_ck):
         """知识库有 CUST-CORP-0001 全部 7 条 KI → evidence 全 ok（请求只带 customerId）。"""
@@ -186,8 +186,8 @@ class TestAssemblyTraceKi:
         ki_ok = {t.get("kiId") for t in r.assembly_trace
                  if t.get("phase") == "evidence" and t.get("status") == "ok" and t.get("kiId")}
         assert ki_ok == set(KI_IDS), ki_ok
-        # dkws 阶段命中（检索路径可用）
-        assert any(t.get("phase") == "dkws" and t.get("status") == "ok"
+        # kert 阶段命中（检索路径可用）
+        assert any(t.get("phase") == "kert" and t.get("status") == "ok"
                    for t in r.assembly_trace)
 
     def test_previsit_sections_per_ki(self, svc_ck):
@@ -237,7 +237,7 @@ class TestAssemblyTraceKi:
 
 
 class TestSupplyChainFromLibrary:
-    """v1.3：bank-front-supply-chain-graph 只认 customerId，从 DKWS 库构建 data.result。"""
+    """v1.3：bank-front-supply-chain-graph 只认 customerId，从 KERT 库构建 data.result。"""
 
     def test_graph_complete_from_library(self, svc_ck):
         r = svc_ck.execute("bank-front-supply-chain-graph", "tr-sc-1",

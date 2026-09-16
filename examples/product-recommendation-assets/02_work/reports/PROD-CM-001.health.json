@@ -1,0 +1,91 @@
+{
+  "blockers": [],
+  "fieldCount": 7,
+  "fields": [
+    {
+      "assertionCount": 2,
+      "conflictId": null,
+      "evidenceCount": 0,
+      "fieldPath": "identity.productCode",
+      "knowledgeState": "NOT_APPLICABLE",
+      "needsHumanReview": false,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "Owner 已裁决",
+      "required": "REQUIRED_HARD"
+    },
+    {
+      "assertionCount": 3,
+      "conflictId": null,
+      "evidenceCount": 3,
+      "fieldPath": "eligibility.customerSegment",
+      "knowledgeState": "CANDIDATE",
+      "needsHumanReview": false,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "待裁决",
+      "required": "REQUIRED_HARD"
+    },
+    {
+      "assertionCount": 6,
+      "conflictId": "CNF-PRODCM001-757c6c3b",
+      "evidenceCount": 9,
+      "fieldPath": "eligibility.minAccountBalance",
+      "knowledgeState": "SUPPORTED",
+      "needsHumanReview": false,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "Owner 已裁决",
+      "required": "REQUIRED_HARD"
+    },
+    {
+      "assertionCount": 1,
+      "conflictId": null,
+      "evidenceCount": 1,
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "needsHumanReview": false,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "待裁决",
+      "required": "REQUIRED_SOFT"
+    },
+    {
+      "assertionCount": 2,
+      "conflictId": null,
+      "evidenceCount": 0,
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "NOT_APPLICABLE",
+      "needsHumanReview": false,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "Owner 已裁决",
+      "required": "REQUIRED_HARD"
+    },
+    {
+      "assertionCount": 1,
+      "conflictId": null,
+      "evidenceCount": 0,
+      "fieldPath": "pricing.serviceFee",
+      "knowledgeState": "UNKNOWN",
+      "needsHumanReview": false,
+      "purposeGate": "INTERPRETATION_ONLY",
+      "reason": "待裁决",
+      "required": "REQUIRED_SOFT"
+    },
+    {
+      "assertionCount": 3,
+      "conflictId": null,
+      "evidenceCount": 3,
+      "fieldPath": "process.openingChannel",
+      "knowledgeState": "CANDIDATE",
+      "needsHumanReview": false,
+      "purposeGate": "INTERPRETATION_ONLY",
+      "reason": "待裁决",
+      "required": "OPTIONAL"
+    }
+  ],
+  "generatedAt": "2026-09-06T12:00:00+08:00",
+  "interpretationReady": true,
+  "policyId": "FLD-CASH_MANAGEMENT-001",
+  "policyOwnerApproved": false,
+  "productId": "PROD-CM-001",
+  "productVersionScope": "version=2026.09.06.1",
+  "recommendationReady": false,
+  "recommendationReadyReason": "DEMO 派生知识（provenanceState=DEMO）不得进入 RECOMMENDATION_READY"
+}

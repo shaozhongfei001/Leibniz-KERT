@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DKWS 部署验证脚本（M2.7）。
+"""KERT 部署验证脚本（M2.7）。
 
 验证 docker-compose up 后服务是否健康：
   - /livez  存活探针
@@ -104,7 +104,7 @@ def wait_for_service(
 def main() -> int:
     """入口。"""
     parser = argparse.ArgumentParser(
-        description="验证 DKWS 部署健康状态")
+        description="验证 KERT 部署健康状态")
     parser.add_argument(
         "--base-url", default="http://localhost:8106",
         help="API 服务基础 URL（默认 http://localhost:8106）")
@@ -167,7 +167,7 @@ def main() -> int:
     # 汇总
     print()
     print("=" * 60)
-    print("DKWS 部署验证报告")
+    print("KERT 部署验证报告")
     print("=" * 60)
     all_passed = True
     for c in checks:

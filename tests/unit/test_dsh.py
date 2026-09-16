@@ -14,7 +14,7 @@ from fastapi.testclient import TestClient
 @pytest.fixture
 def dsh_client(ws):
     """创建挂载了 DSH 的测试客户端。"""
-    from dkws.api.server import create_app
+    from kert.api.server import create_app
 
     app = create_app(ws, service_id="product_knowledge")
     return TestClient(app)
@@ -124,7 +124,7 @@ class TestJobs:
 class TestMountDsh:
     def test_mount_dsh_adds_router(self):
         from fastapi import FastAPI
-        from dkws.dsh.app import mount_dsh
+        from kert.dsh.app import mount_dsh
 
         app = FastAPI()
         app.state.workspace = Path(".")

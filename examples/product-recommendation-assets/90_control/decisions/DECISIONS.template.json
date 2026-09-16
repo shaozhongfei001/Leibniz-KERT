@@ -1,0 +1,16 @@
+{
+  "_notice": "模板：须由 Owner 签署后另存为 signed.json 并通过 --decisions 传入。脚本不会代替 Owner 生成任何决定。",
+  "attestedBy": "",
+  "decisions": [
+    {
+      "decidedBy": "",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-YYYYMMDD-xxxxxxxx",
+      "rationale": "",
+      "subjectId": "CNF-PRODCM001-757c6c3b",
+      "subjectKind": "CONFLICT"
+    }
+  ],
+  "ownerAttested": false
+}

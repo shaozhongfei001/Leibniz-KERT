@@ -12,7 +12,7 @@
 ## 一、派工提示词（复制以下整段发给 Feature Pilot）
 
 ```text
-你是 Leibniz-KERT / DKWS 项目的 Feature Pilot。本次只做任务包 JR1-E2E-SKIP，
+你是 Leibniz-KERT / KERT 项目的 Feature Pilot。本次只做任务包 JR1-E2E-SKIP，
 完成后 STOP，不做任何其他工作。
 
 开场（改任何文件前静默执行）：
@@ -48,7 +48,7 @@ AC-7 探活结果按 URL 缓存，同一 session 不重复等待整个 timeout
 
 强制约束（违反即退回）：
 1. 只改 tests/e2e/conftest.py；如需 marker 可在 pyproject.toml 注册
-2. 禁止改动 src/dkws/** 任何业务源码
+2. 禁止改动 src/kert/** 任何业务源码
 3. 禁止降低断言强度——不得放宽或删除任何 assert
 4. 禁止无条件 skip，必须基于实际探活结果
 5. CI 默认不设 E2E_REQUIRE_SERVICES；联调/UAT 必须显式设为 1

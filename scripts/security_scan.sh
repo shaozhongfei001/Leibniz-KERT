@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DKWS 安全扫描脚本 (M2.8)
+# KERT 安全扫描脚本 (M2.8)
 #
 # 运行 pip-audit（依赖漏洞扫描）+ bandit（代码安全扫描）
 # 输出报告到 evidence/m2-p6/security/ 目录
@@ -27,7 +27,7 @@ fi
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "=== DKWS Security Scan ==="
+echo "=== KERT Security Scan ==="
 echo "Output: $OUTPUT_DIR"
 echo "Python: $($PYTHON --version 2>&1 || echo 'not found')"
 echo "Source: $SRC_DIR"
@@ -131,7 +131,7 @@ echo ""
 # ──────────────────────────────────────────────
 echo "--- 生成安全扫描摘要 ---"
 cat > "$OUTPUT_DIR/scan-summary.md" << 'SUMMARY_HEADER'
-# DKWS 安全扫描摘要
+# KERT 安全扫描摘要
 
 > 自动生成，请勿手动编辑
 

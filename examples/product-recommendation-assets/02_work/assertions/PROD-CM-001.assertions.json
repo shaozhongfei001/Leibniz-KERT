@@ -1,0 +1,399 @@
+{
+  "assertionCount": 18,
+  "assertions": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-36cbaf68",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [],
+      "fieldPath": "identity.productCode",
+      "knowledgeState": "UNKNOWN",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-237b0063",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM001-f9281e09"
+      ],
+      "fieldPath": "eligibility.customerSegment",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本产品适用于以下客户分层：大型企业客户、集团客户、机构客户。小微企业客户不适用本产品，应适用结算类产品。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-29789042",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM003-79cdb73c"
+      ],
+      "fieldPath": "eligibility.customerSegment",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本政策适用于纳入 DEMO-BANK 现金池管理的集团客户及其成员单位。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-daa0c996",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM003-969d8e2e"
+      ],
+      "fieldPath": "eligibility.customerSegment",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "集团客户本部内部评级不低于 BBB 级；成员单位中评级低于 B 级的数量占比不得超过百分之三十。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-991baf6e",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM001-7d3f83e8"
+      ],
+      "fieldPath": "eligibility.minAccountBalance",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "现金池主账户每日最低留存余额为人民币 50 万元，成员账户最低留存余额为人民币 10 万元。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-a6c2dd45",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM001-b92956e2"
+      ],
+      "fieldPath": "eligibility.minAccountBalance",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "连续三十个自然日低于最低留存余额的，本行有权暂停资金自动归集功能，并通知客户补足。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-54d79577",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM001-b8dc5f5f"
+      ],
+      "fieldPath": "eligibility.minAccountBalance",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "客户申请调整最低留存余额的，应当向开户行提交书面申请，由一级分行交易银行部审批。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-629fff8a",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM003-4302d512"
+      ],
+      "fieldPath": "eligibility.minAccountBalance",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "集团现金池主账户每日最低留存余额为人民币 100 万元，高于单一客户现金池标准，以覆盖集团层面的流动性缓冲需求。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-e4bf494e",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM001-14e72136"
+      ],
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "客户评级低于 BB 级但高于 B 级的，须经一级分行交易银行部与风险管理部双签审批，方可受理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-34aac9d6",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "UNKNOWN",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-bacfd6cb",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [],
+      "fieldPath": "pricing.serviceFee",
+      "knowledgeState": "UNKNOWN",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-f4336572",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM001-fb2963c0"
+      ],
+      "fieldPath": "process.openingChannel",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "现金管理业务的开办渠道包括：柜面、企业网银、银企直联及开放银行接口。首次签约必须经柜面完成身份核验与协议签署。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-878b4589",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM001-f92129c2"
+      ],
+      "fieldPath": "process.openingChannel",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "客户通过企业网银办理的，应当使用数字证书或经本行认可的双因素认证方式。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-e434de89",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM002-68db5549"
+      ],
+      "fieldPath": "process.openingChannel",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "首次办理须经柜面核验，后续提款可通过企业网银或银企直联办理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-6a5f4901",
+      "conflictId": "CNF-PRODCM001-757c6c3b",
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM001-7d3f83e8",
+        "EVS-SRCCM001-b8dc5f5f",
+        "EVS-SRCCM001-b92956e2",
+        "EVS-SRCCM003-4302d512"
+      ],
+      "fieldPath": "eligibility.minAccountBalance",
+      "knowledgeState": "CONFLICT",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": null,
+      "supersedes": "ASM-PRODCM001-629fff8a",
+      "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-05016aee",
+      "conflictId": "CNF-PRODCM001-757c6c3b",
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [
+        "EVS-SRCCM001-7d3f83e8"
+      ],
+      "fieldPath": "eligibility.minAccountBalance",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": 500000.0,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "现金池主账户每日最低留存余额为人民币 50 万元，成员账户最低留存余额为人民币 10 万元。",
+      "reviewDecisionId": "DEC-20260906-11111111",
+      "supersedes": "ASM-PRODCM001-6a5f4901",
+      "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-5c74afdc",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [],
+      "fieldPath": "identity.productCode",
+      "knowledgeState": "NOT_APPLICABLE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": "DEC-20260906-22222222",
+      "supersedes": "ASM-PRODCM001-36cbaf68",
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-db80e9d8",
+      "conflictId": null,
+      "createdAt": "2026-09-06T12:00:00+08:00",
+      "createdByRunId": "RUN-20260906-9d34c845",
+      "evidenceIds": [],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "NOT_APPLICABLE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": "DEC-20260906-33333333",
+      "supersedes": "ASM-PRODCM001-34aac9d6",
+      "valueType": "TEXT"
+    }
+  ],
+  "extractionRunId": "RUN-20260906-9d34c845",
+  "policyId": "FLD-CASH_MANAGEMENT-001",
+  "policyOwnerApproved": false,
+  "productId": "PROD-CM-001",
+  "productVersionScope": "version=2026.09.06.1"
+}

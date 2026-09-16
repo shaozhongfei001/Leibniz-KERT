@@ -12,9 +12,9 @@ import inspect
 
 import pytest
 
-from dkws.application.skills import SkillExecutionService
-from dkws.domain.errors import ServiceNotReadyError
-from dkws.infrastructure.runtime_store import RuntimeStore
+from kert.application.skills import SkillExecutionService
+from kert.domain.errors import ServiceNotReadyError
+from kert.infrastructure.runtime_store import RuntimeStore
 
 SKILL_ID = "skill-customer-outreach-script"
 SKILL_REQUEST = {"customerId": "CUST-CORP-0001"}
@@ -54,7 +54,7 @@ class TestProductionRequiresRuntimeStore:
         details = exc.value.details
         assert details["profile"] == "prod"
         assert details["runtime_store_enabled"] is False
-        assert "DKWS_RUNTIME_STORE_ENABLED" in details["remediation"]
+        assert "KERT_RUNTIME_STORE_ENABLED" in details["remediation"]
 
     def test_no_thread_fallback_in_prod(self, ws):
         """拒绝时不得回退线程模式：不应创建任何 Job 目录。"""
@@ -78,26 +78,26 @@ class TestProductionRequiresRuntimeStore:
 
     def test_default_profile_is_dev(self, ws, monkeypatch):
         """未显式指定且无环境变量时默认 dev，允许线程模式。"""
-        monkeypatch.delenv("DKWS_PROFILE", raising=False)
+        monkeypatch.delenv("KERT_PROFILE", raising=False)
         svc = SkillExecutionService(ws)
         assert svc.execute_async(SKILL_ID, "REQ-DEV-2", SKILL_REQUEST)
 
     def test_profile_read_from_env(self, ws, monkeypatch):
-        """缺省时从 DKWS_PROFILE 环境变量读取。"""
-        monkeypatch.setenv("DKWS_PROFILE", "prod")
+        """缺省时从 KERT_PROFILE 环境变量读取。"""
+        monkeypatch.setenv("KERT_PROFILE", "prod")
         svc = SkillExecutionService(ws)
         with pytest.raises(ServiceNotReadyError):
             svc.execute_async(SKILL_ID, "REQ-PROD-6", SKILL_REQUEST)
 
     def test_explicit_profile_overrides_env(self, ws, monkeypatch):
         """显式参数优先于环境变量。"""
-        monkeypatch.setenv("DKWS_PROFILE", "prod")
+        monkeypatch.setenv("KERT_PROFILE", "prod")
         svc = SkillExecutionService(ws, profile="dev")
         assert svc.execute_async(SKILL_ID, "REQ-DEV-3", SKILL_REQUEST)
 
     def test_profile_is_case_insensitive(self, ws, monkeypatch):
         """profile 比较忽略大小写与空白，避免配置笔误绕过校验。"""
-        monkeypatch.delenv("DKWS_PROFILE", raising=False)
+        monkeypatch.delenv("KERT_PROFILE", raising=False)
         svc = SkillExecutionService(ws, profile="  PROD  ")
         with pytest.raises(ServiceNotReadyError):
             svc.execute_async(SKILL_ID, "REQ-PROD-7", SKILL_REQUEST)
@@ -120,8 +120,8 @@ class TestProductionEnforcementViaApi:
 
     def test_api_prod_profile_propagates(self, ws):
         """生产 profile 但未启用 Store 时，API 层的 Service 亦拒绝异步执行。"""
-        from dkws.api.server import create_app
-        from dkws.infrastructure.runtime_config import (
+        from kert.api.server import create_app
+        from kert.infrastructure.runtime_config import (
             ApiKeyRecord,
             AuthConfig,
             RateLimitConfig,
@@ -142,8 +142,8 @@ class TestProductionEnforcementViaApi:
 
     def test_api_prod_with_store_allows_async(self, ws):
         """生产 profile + 启用 Store 时 API 层可正常入队。"""
-        from dkws.api.server import create_app
-        from dkws.infrastructure.runtime_config import (
+        from kert.api.server import create_app
+        from kert.infrastructure.runtime_config import (
             ApiKeyRecord,
             AuthConfig,
             RateLimitConfig,
@@ -166,8 +166,8 @@ class TestProductionEnforcementViaApi:
 
     def test_api_dev_profile_allows_thread_mode(self, ws):
         """dev profile 下 API 装配仍允许线程模式。"""
-        from dkws.api.server import create_app
-        from dkws.infrastructure.runtime_config import RuntimeConfig
+        from kert.api.server import create_app
+        from kert.infrastructure.runtime_config import RuntimeConfig
 
         app = create_app(ws, runtime_config=RuntimeConfig(profile="dev"))
         assert app.state.runtime_config.profile == "dev"

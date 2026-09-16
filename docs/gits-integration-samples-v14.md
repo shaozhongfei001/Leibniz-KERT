@@ -1,9 +1,9 @@
-# DKWS v1.4 × GITS 对接样例包（SP-20 / SP-21 / 闸门 / 记忆）
+# KERT v1.4 × GITS 对接样例包（SP-20 / SP-21 / 闸门 / 记忆）
 
 > 日期：2026-08-23 ｜ 契约：`docs/dd/skill-execute-api-contract.md` v1.3 + v1.4 扩展
 > 全部样例取自 8106 真实运行（真实 DeepSeek），仅截断展示。
 > GITS 侧只需实现 `ProposalPort`（SP-20）+ `InteractionMemoryPort`（SP-21 记忆持久化），
-> 闸门推进与记忆生命周期权威在 GITS；DKWS 提供清单/审计镜像/就绪度建议。
+> 闸门推进与记忆生命周期权威在 GITS；KERT 提供清单/审计镜像/就绪度建议。
 
 ---
 
@@ -197,7 +197,7 @@
 
 **GITS 处理**：`candidateMemories` 全部进入 CANDIDATE → 客户经理确认/修正 → CONFIRMED →
 写入 GITS 记忆库（`InteractionMemoryPort.confirmCandidate`）；`memoryUpdates` 应用置信度增量；
-`memorySupersessions` 将旧记忆置 SUPERSEDED。**DKWS 不存记忆。**
+`memorySupersessions` 将旧记忆置 SUPERSEDED。**KERT 不存记忆。**
 
 ---
 
@@ -227,14 +227,14 @@ POST /api/skill/gates/audit
   "decidedBy": "RM-ZW-001", "reason": "客户核验完成", "recordedAt": "2026-08-23T17:13:12Z" }
 ```
 
-### 4.3 对客版放行流程（GITS 编排，DKWS 配合）
+### 4.3 对客版放行流程（GITS 编排，KERT 配合）
 
 ```
 GITS 推进闸门：G1/G2/G3 依次 PASSED（ProposalPort.advanceGate，人工审批）
   → 可选用 audit 镜像记录（4.2）
   → 重新调用 SP-20 UPDATE（proposalType=UPDATE，
        proposalContext.gateState.passed 含 G1/G2/G3）
-  → DKWS 返回 customerVersion.releaseBlockedUntil = []（可放行）
+  → KERT 返回 customerVersion.releaseBlockedUntil = []（可放行）
   → GITS 前端展示/导出对客版
 ```
 
@@ -243,7 +243,7 @@ sequenceDiagram
     autonumber
     participant RM as 客户经理
     participant G as GITS(ProposalPort)
-    participant D as DKWS(:8106)
+    participant D as KERT(:8106)
     RM->>G: 推进闸门 G3（内部审批）
     G->>G: 状态机校验（GATE_SEQUENCING 顺序）
     G->>D: POST /api/skill/gates/audit（镜像）
@@ -264,7 +264,7 @@ sequenceDiagram
     autonumber
     participant RM as 客户经理
     participant G as GITS
-    participant D as DKWS
+    participant D as KERT
     RM->>G: 访后提交交互纪要
     G->>D: POST /api/skill/execute SP-21（同步）
     D-->>G: candidateMemories[] + updates[] + supersessions[]
@@ -285,7 +285,7 @@ sequenceDiagram
 | 超时 | SP-21 同步 ≤ 60s；SP-20 **必须异步**（202 + 轮询，轮询间隔 3s，总上限 ~3min） |
 | 错误 | 未知 skillId → 404；缺字段 → 422；SP-20 规则违规 → `result.status=PARTIAL` + `ruleViolations`（BLOCKING 不回残缺成功）；job 失败 → `data.status=FAILED` |
 | 幂等 | 同 `requestId` 重发返回首次结果（TTL 10min）；异步同 requestId 幂等（同 job） |
-| 鉴权 | 无（演示环境网络层控制）；如启用由 GITS 侧网关加 X-API-KEY，DKWS 透传不校验 |
+| 鉴权 | 无（演示环境网络层控制）；如启用由 GITS 侧网关加 X-API-KEY，KERT 透传不校验 |
 | DTO | `data.result` ↔ `ProposalServiceResult`（附录 A）；`context` ↔ `ContextPackage`；SP-21 `result.candidateMemories` ↔ `CandidateMemory` |
 | 记忆持久化 | 只写 GITS 记忆库；`memoryUpdates`/`memorySupersessions` 由 GITS 应用 |
 | 对客版 | 仅 `releaseBlockedUntil==[]` 时展示（G1-G3 全过）；展示前可再对 `factLabels` 复核 F/A |

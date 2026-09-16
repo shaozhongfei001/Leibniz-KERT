@@ -34,7 +34,7 @@ source .venv/bin/activate
 pip install ".[api,dev,test,graph]"
 
 # 4. 验证关键包可导入
-python -c "import dkws; import kuzu; import fastapi; print('OK')"
+python -c "import kert; import kuzu; import fastapi; print('OK')"
 ```
 
 ---
@@ -43,7 +43,7 @@ python -c "import dkws; import kuzu; import fastapi; print('OK')"
 
 ```bash
 # 运行全量测试
-DKWS_PROFILE=dev python -m pytest tests -v --tb=short
+KERT_PROFILE=dev python -m pytest tests -v --tb=short
 
 # 预期：813 passed, 0 failed
 # 记录实际结果
@@ -60,7 +60,7 @@ DKWS_PROFILE=dev python -m pytest tests -v --tb=short
 ### 3.1 M2-P1：认证 + 限流 + Runtime Store
 
 ```bash
-DKWS_PROFILE=dev python scripts/verify_m2p1_hardening.py
+KERT_PROFILE=dev python scripts/verify_m2p1_hardening.py
 # 预期：20/20 PASS
 # 关键检查：401/403/413/429、重启幂等、Store schema
 ```
@@ -68,7 +68,7 @@ DKWS_PROFILE=dev python scripts/verify_m2p1_hardening.py
 ### 3.2 M2-P2：持久化异步 Worker
 
 ```bash
-DKWS_PROFILE=dev python scripts/verify_m2p2_worker.py
+KERT_PROFILE=dev python scripts/verify_m2p2_worker.py
 # 预期：27/27 PASS
 # 关键检查：kill -9 崩溃恢复、原子领取、dead-letter、生产强制 Store
 ```
@@ -76,7 +76,7 @@ DKWS_PROFILE=dev python scripts/verify_m2p2_worker.py
 ### 3.3 M2-P3：可观测性
 
 ```bash
-DKWS_PROFILE=dev python scripts/verify_m2p3_observability.py
+KERT_PROFILE=dev python scripts/verify_m2p3_observability.py
 # 预期：25/25 PASS
 # 关键检查：/livez、/readyz、/metrics、结构化日志、Trace Context
 ```
@@ -84,7 +84,7 @@ DKWS_PROFILE=dev python scripts/verify_m2p3_observability.py
 ### 3.4 M2-P4：数据分类与脱敏
 
 ```bash
-DKWS_PROFILE=dev python scripts/verify_m2p4_redaction.py
+KERT_PROFILE=dev python scripts/verify_m2p4_redaction.py
 # 预期：22/22 PASS
 # 关键检查：4 级分类、31 条字段规则、日志/响应/LLM 三层脱敏
 ```
@@ -92,7 +92,7 @@ DKWS_PROFILE=dev python scripts/verify_m2p4_redaction.py
 ### 3.5 M2-P5：备份恢复与升级回滚
 
 ```bash
-DKWS_PROFILE=dev python scripts/verify_m2p5_backup_restore.py
+KERT_PROFILE=dev python scripts/verify_m2p5_backup_restore.py
 # 预期：25/25 PASS
 # 关键检查：备份→校验→恢复→一致性、灾难恢复、升级回滚
 ```
@@ -101,10 +101,10 @@ DKWS_PROFILE=dev python scripts/verify_m2p5_backup_restore.py
 
 ```bash
 # Docker 构建验证
-docker build -f deploy/Dockerfile -t dkws-m2-qa .
+docker build -f deploy/Dockerfile -t kert-m2-qa .
 
 # Docker Compose 语法验证
-DKWS_API_KEYS="qa-test-key:qa_test_key_at_least_16_chars:read|execute" \
+KERT_API_KEYS="qa-test-key:qa_test_key_at_least_16_chars:read|execute" \
   docker compose -f deploy/docker-compose.yml config --quiet
 
 # NFR 基准测试（可选，需启动服务）
@@ -119,7 +119,7 @@ DKWS_API_KEYS="qa-test-key:qa_test_key_at_least_16_chars:read|execute" \
 
 ```bash
 # 启动服务
-DKWS_PROFILE=dev DKWS_API_KEYS="test-key:test_key_at_least_16_chars:read|execute" \
+KERT_PROFILE=dev KERT_API_KEYS="test-key:test_key_at_least_16_chars:read|execute" \
   python scripts/serve_skill_service.py &
 SERVER_PID=$!
 sleep 3
@@ -161,7 +161,7 @@ bash scripts/security_scan.sh
 ```bash
 # 构建并启动
 docker compose -f deploy/docker-compose.yml build
-DKWS_API_KEYS="qa-key:qa_key_at_least_16_chars:read|execute" \
+KERT_API_KEYS="qa-key:qa_key_at_least_16_chars:read|execute" \
   docker compose -f deploy/docker-compose.yml up -d
 
 # 等待启动

@@ -1,0 +1,30 @@
+{
+  "conflictCount": 1,
+  "conflicts": [
+    {
+      "assertionIds": [
+        "ASM-PRODCM001-629fff8a",
+        "ASM-PRODCM001-991baf6e"
+      ],
+      "conflictId": "CNF-PRODCM001-757c6c3b",
+      "conflictType": "VALUE_MISMATCH",
+      "detectedAt": "2026-09-06T12:00:00+08:00",
+      "detectedByRunId": "RUN-20260906-9d34c845",
+      "fieldPath": "eligibility.minAccountBalance",
+      "impactedObjects": [
+        "PROD-CM-001"
+      ],
+      "productId": "PROD-CM-001",
+      "resolution": {
+        "decisionId": "DEC-20260906-11111111",
+        "rationale": "PROD-CM-001 面向单一法人客户现金池，采用 SRC-CM-001 第十条的 50 万元标准；集团客户场景（SRC-CM-003 第六条 100 万元）由集团现金池场景规则另行覆盖，不在本产品卡字段承载。",
+        "resolvedAssertionId": "ASM-PRODCM001-991baf6e",
+        "resolvedAt": "2026-09-06T23:20:00+08:00",
+        "resolvedBy": "owner",
+        "resolvedByRole": "PRODUCT_OWNER"
+      },
+      "status": "RESOLVED"
+    }
+  ],
+  "productId": "PROD-CM-001"
+}

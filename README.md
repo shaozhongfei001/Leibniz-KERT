@@ -1,6 +1,6 @@
-# DKWS — 文件目录型数据知识服务模拟平台
+# KERT — 文件目录型数据知识服务模拟平台
 
-依据 DKWS-SPEC-001 V1.0（`文件目录型数据知识服务模拟平台_详细需求与详细设计_V1.0.md`，状态 `DRAFT_CANDIDATE`）在 DSH 底座上实现的知识服务平台。
+依据 KERT-SPEC-001 V1.0（`文件目录型数据知识服务模拟平台_详细需求与详细设计_V1.0.md`，状态 `DRAFT_CANDIDATE`）在 DSH 底座上实现的知识服务平台。
 
 ## 文档索引
 
@@ -20,7 +20,7 @@
 - 不依赖数据库、消息队列、分布式平台的**单工作区文件系统模拟平台**；
 - 权威源为**契约化 Markdown**（`01_raw`/`02_work`/`03_core`/`04_serve`/`90_control` 五层）；
 - 批量投影为 **Parquet**，服务交换为 **JSON**，原始事件日志为 `.log`；
-- CLI 为强制接口（`dkws`），HTTP API 为可选薄层。
+- CLI 为强制接口（`kert`），HTTP API 为可选薄层。
 
 ## 核心功能
 
@@ -47,7 +47,7 @@
 ## 安装
 
 ```bash
-cd dkws
+cd kert
 python3 -m venv --system-site-packages .venv
 .venv/bin/pip install -e ".[dev]"
 ```
@@ -56,12 +56,12 @@ python3 -m venv --system-site-packages .venv
 
 ```bash
 # 初始化工作区
-.venv/bin/dkws init --workspace ../demo_workspace --force
-.venv/bin/dkws validate --workspace ../demo_workspace
+.venv/bin/kert init --workspace ../demo_workspace --force
+.venv/bin/kert validate --workspace ../demo_workspace
 
 # 端到端黄金场景演示（product 领域，规格 §18.3）
 .venv/bin/python examples/product_demo/run_demo.py \
-  --workspace ../demo_workspace --dkws .venv/bin/dkws
+  --workspace ../demo_workspace --kert .venv/bin/kert
 ```
 
 演示覆盖：接入（22 输入→20 通过/2 拒绝对账）→ 文档解析切片 → 候选抽取（全部 CANDIDATE）→ 同名/矛盾检测 → 审核消歧 → Core 发布（Release+CURRENT）→ Serve 投影（实体/关系/声明/片段/向量/规则/数据集）→ 查询/检索/规则/图谱/溯源 → 全量校验。
@@ -69,21 +69,21 @@ python3 -m venv --system-site-packages .venv
 ## 常用命令
 
 ```bash
-dkws init --workspace W [--force]
-dkws inspect --workspace W [--output json]
-dkws ingest --workspace W --domain product --source f.csv --idempotency-key k
-dkws process-data --workspace W --domain product --batch B --schema product \
+kert init --workspace W [--force]
+kert inspect --workspace W [--output json]
+kert ingest --workspace W --domain product --source f.csv --idempotency-key k
+kert process-data --workspace W --domain product --batch B --schema product \
   --mapping-json '{"key_policy":"product_id","field_mappings":[...]}'
-dkws parse-doc --workspace W --domain product --batch B
-dkws extract --workspace W --domain product --batch B --run-id R
-dkws review --workspace W --domain product --objects <候选路径> \
+kert parse-doc --workspace W --domain product --batch B
+kert extract --workspace W --domain product --batch B --run-id R
+kert review --workspace W --domain product --objects <候选路径> \
   --decision APPROVE --reason 说明
-dkws publish --workspace W --domain product --run-id R
-dkws build-projection --workspace W --domain product
-dkws query-data|search|get-entity|graph|evaluate-rule|trace --workspace W ...
-dkws validate --workspace W --mode full
-dkws job --job-id JOB-...
-dkws rollback --workspace W --scope product --to-version V --reason 原因
+kert publish --workspace W --domain product --run-id R
+kert build-projection --workspace W --domain product
+kert query-data|search|get-entity|graph|evaluate-rule|trace --workspace W ...
+kert validate --workspace W --mode full
+kert job --job-id JOB-...
+kert rollback --workspace W --scope product --to-version V --reason 原因
 ```
 
 退出码：`0` 成功；`2` 参数/合同错误；`3` 质量门禁失败；`4` 冲突/锁；`5` 内部错误（规格 §12.1）。
@@ -105,10 +105,10 @@ dkws rollback --workspace W --scope product --to-version V --reason 原因
 
 ## DSH 集成
 
-运行 `dkws-1` 动态插件（DKWS 知识服务平台面板）后，在 Run 卡片中可直接：
+运行 `kert-1` 动态插件（KERT 知识服务平台面板）后，在 Run 卡片中可直接：
 - 查看工作区概览（五层目录、版本指针、过期锁）；
 - 调用知识服务：检索（全文/向量/混合）、数据查询、规则评估、图谱、证据溯源；
-- 执行任意 `dkws` 子命令（只读服务或写操作均可，服务层保证只读活动投影）。
+- 执行任意 `kert` 子命令（只读服务或写操作均可，服务层保证只读活动投影）。
 
 ## 测试
 
@@ -141,13 +141,13 @@ security（路径穿越/伪装/注入/DOCX 只读）、recovery（半发布/重�
 
 ## 客户经理持续经营 Skill 平台（新增能力）
 
-DKWS 工程内实现"客户经理持续经营 Skill 运行平台"（依据 `docs/dd/改造-客户经理持续经营Skill-v2-*` 两份设计）：
+KERT 工程内实现"客户经理持续经营 Skill 运行平台"（依据 `docs/dd/改造-客户经理持续经营Skill-v2-*` 两份设计）：
 
 - **两个独立 Skill**：外联脚本 / 会面脚本（`skills/customer-engagement/` 资产 + `application/skills.py` 执行器；R1 拜访报告已于 2026-08-21 下线移除）；
-- **端点**（DKWS HTTP API）：`POST /api/skill/execute`、`GET /api/skill/health`；
+- **端点**（KERT HTTP API）：`POST /api/skill/execute`、`GET /api/skill/health`；
 - **治理**：fail-closed、requestId 幂等、assemblyTrace/modelCalls、日志脱敏；
-- **模型**：可插拔 LLM 适配器（`infrastructure/adapters/llm.py`）——配置 `DKWS_LLM_BASE_URL/API_KEY/MODEL` 走 OpenAI 兼容；未配置时确定性适配器端到端；
-- **DKWS 协作**：skill 执行前经平台知识服务检索客户片段，注入知识上下文与证据引用（fail-open）；
+- **模型**：可插拔 LLM 适配器（`infrastructure/adapters/llm.py`）——配置 `KERT_LLM_BASE_URL/API_KEY/MODEL` 走 OpenAI 兼容；未配置时确定性适配器端到端；
+- **KERT 协作**：skill 执行前经平台知识服务检索客户片段，注入知识上下文与证据引用（fail-open）；
 - **DSH 资产**：SKILL.md 同步于 `deepseek-harness/skills/customer-engagement/` 供 DSH `ctx.skills` 发现。
 
 验证：`tests/integration/test_skills.py`（13 项）+ `examples/skill_e2e.py`（D1-D6 真实 HTTP，12/12 PASS）。
@@ -157,8 +157,8 @@ DKWS 工程内实现"客户经理持续经营 Skill 运行平台"（依据 `docs
 
 从 `袁阳` 目录加载 7 个 Skill ZIP（`bank-front-*`：承诺话术/八维/事实对账/KYC 缺口/产品推荐/报告组装/供应链图谱），每个含 `SKILL.md` + `assets/example-input.json` + `references/{input-schema, mock-input-data, output-schema}`。
 
-- **加载**：`scripts/unzip_skills.py` 安全解压（防路径穿越/超限）到 `examples/bank-front-skills/`；DKWS Skill 平台自动发现并注册（`application/skills.py` 外部包加载器：读 SKILL.md 指令 + output-schema 约束，通用契约 executor），`/api/skill/health` 列出 10 个 Skill，示例输入执行 **7/7 运行成功**。
-- **示例数据迁移**（DKWS 五层规划）：`scripts/migrate_bank_front_data.py`
+- **加载**：`scripts/unzip_skills.py` 安全解压（防路径穿越/超限）到 `examples/bank-front-skills/`；KERT Skill 平台自动发现并注册（`application/skills.py` 外部包加载器：读 SKILL.md 指令 + output-schema 约束，通用契约 executor），`/api/skill/health` 列出 10 个 Skill，示例输入执行 **7/7 运行成功**。
+- **示例数据迁移**（KERT 五层规划）：`scripts/migrate_bank_front_data.py`
   - `01_raw/bank_front/batch=*`：每 Skill 一个不可变批次（example_input.json + mock_input_data.json + MANIFEST.md + SHA-256）
   - `02_work/bank_front/run=*`：JSON→Parquet 规范化（主键 customerId，血缘列完整）
   - `04_serve/bank_front_data/version=*`：7 个数据集投影 + PROJECTION.md + CURRENT.md
@@ -167,12 +167,12 @@ DKWS 工程内实现"客户经理持续经营 Skill 运行平台"（依据 `docs
 
 ## Kùzu 图谱投影（IMP-ADR-011 受控变更，2026-08-21）
 
-业务方确认方案 B：DKWS 引入 **Kùzu 嵌入式图数据库**作为知识图谱查询加速层（投影，非权威源）。
+业务方确认方案 B：KERT 引入 **Kùzu 嵌入式图数据库**作为知识图谱查询加速层（投影，非权威源）。
 
 - **构建**：`build-projection` 自动从 entities/relations 投影构建 Kùzu 图（`04_serve/<svc>/version=*/graph` 单文件 + `graph.PROJECTION.json` 指纹）；
 - **查询**：`graph()` 新增 Kùzu 后端（Cypher），`mode=neighbor|closure|paths`，深度上限放宽到 10；kuzu 不可用自动回退内存 BFS（fail-open）；
 - **边界**：图库仅从 `03_core` 投影构建、位于 `04_serve` 可重建层、查询回传权威 ID+证据、纳入可重建性测试；`03_core` 仍为唯一权威源；
-- CLI：`dkws graph --start <实体ID> --depth 3 --mode paths`；
+- CLI：`kert graph --start <实体ID> --depth 3 --mode paths`；
 - 测试：`tests/integration/test_kuzu_graph.py`（构建/可重建/查询后端/validate 豁免）。
 
 ## 供应链演示图谱（2026-08-21）
@@ -205,7 +205,7 @@ DKWS 工程内实现"客户经理持续经营 Skill 运行平台"（依据 `docs
 
 ## v1.3 数据所有权改造（2026-08-22）
 
-知识全在 DKWS，GITS 只传 `customerId`（+ 可选 `visitObjective`/`evidenceTimestamp`）：
+知识全在 KERT，GITS 只传 `customerId`（+ 可选 `visitObjective`/`evidenceTimestamp`）：
 - **客户知识库服务 `customer_knowledge`**：`scripts/seed_customer_knowledge.py` 落库主客户
   `CUST-CORP-0001 华东精工装备集团有限公司`（7 条 KI 片段 + 客户实体 + 6 供应链对手方 + 6 条 SUPPLIES 关系，
   经 review→publish→projection 全链路，Kùzu 图 7 节点/6 边）；投影器新增 `x_*` 扩展字段透传。
@@ -223,10 +223,10 @@ DKWS 工程内实现"客户经理持续经营 Skill 运行平台"（依据 `docs
 ## 系统架构图（2026-08-23）
 
 `docs/architecture.md`（Mermaid 源 + 分层/组件/数据流说明），PNG 渲染见 `docs/assets/`：
-- `dkws-architecture-layers.png`：五层工作区 + 数据管道（01_raw→02_work→03_core→04_serve，90_control 治理）
-- `dkws-architecture-runtime.png`：运行时服务架构（消费方 / API / 应用层 / 基础设施 / 数据 / 外部集成）
-- `dkws-sequence-execute.png`：时序图（GITS 调 execute 完整链路：customerId→取数→evidence→LLM→sections 回传）
-- `dkws-deployment-topology.png`：部署拓扑（8106 / DSH :3080 / GITS :8080 / H2 内存库）
+- `kert-architecture-layers.png`：五层工作区 + 数据管道（01_raw→02_work→03_core→04_serve，90_control 治理）
+- `kert-architecture-runtime.png`：运行时服务架构（消费方 / API / 应用层 / 基础设施 / 数据 / 外部集成）
+- `kert-sequence-execute.png`：时序图（GITS 调 execute 完整链路：customerId→取数→evidence→LLM→sections 回传）
+- `kert-deployment-topology.png`：部署拓扑（8106 / DSH :3080 / GITS :8080 / H2 内存库）
 
 ## v1.4 SP-20 服务建议书（Phase 1，2026-08-23）
 
@@ -247,7 +247,7 @@ DKWS 工程内实现"客户经理持续经营 Skill 运行平台"（依据 `docs
 
 ## v1.4 Phase 3（SP-21 交互记忆抽取，2026-08-23）
 
-- **技能**：`SP-21 交互记忆抽取`（LLM 抽取候选 + 确定性比对 + 3 规则校验；**DKWS 不存记忆**，candidates/updates/supersessions 交 GITS `InteractionMemoryPort` 持久化）
+- **技能**：`SP-21 交互记忆抽取`（LLM 抽取候选 + 确定性比对 + 3 规则校验；**KERT 不存记忆**，candidates/updates/supersessions 交 GITS `InteractionMemoryPort` 持久化）
 - **输入**：`request.context = {interactionId, interactionContent, existingMemories[]}`；输出：`candidateMemories[]`（类别/置信度/建议衰减规则/原文引用）+ `memoryUpdates[]`（REINFORCE）+ `memorySupersessions[]`（否定取代）
 - **规则**：CONFIDENCE_CALIBRATION / DECAY_RULE_APPLICATION / DUPLICATE_DETECTION
 - **激活合同**：`AC-SERVICE-PROPOSAL-002`（UPDATE/MAP_FIRST）+ `AC-ONGOING-ENGAGEMENT-001`（持续经营记忆积累）

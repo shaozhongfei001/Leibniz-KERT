@@ -17,8 +17,8 @@ git pull origin main
 4. `docs/development/WORKFLOWS.md`
 5. `docs/development/PYTHON_STANDARDS.md`
 6. `docs/development/JAVA_STANDARDS.md`
-7. `docs/governance/DKWS_TECH_LEAD_DELIVERY_MASTER_PLAN_V1.0.md`
-8. `docs/development/DKWS_WORK_BREAKDOWN_STRUCTURE_V1.0.md`
+7. `docs/governance/KERT_TECH_LEAD_DELIVERY_MASTER_PLAN_V1.0.md`
+8. `docs/development/KERT_WORK_BREAKDOWN_STRUCTURE_V1.0.md`
 
 ## 第三步：当前第一个任务
 
@@ -31,7 +31,7 @@ M2-P1：Python Core 生产加固基础任务包
 具体任务见：
 
 ```text
-docs/development/DKWS_WORK_BREAKDOWN_STRUCTURE_V1.0.md
+docs/development/KERT_WORK_BREAKDOWN_STRUCTURE_V1.0.md
 → M2 Python Core 生产加固
 → M2.1 认证与安全边界
 → M2.2 限流与大小限制
@@ -50,6 +50,6 @@ docs/development/DKWS_WORK_BREAKDOWN_STRUCTURE_V1.0.md
 
 ## 第五步：遇到不确定事项
 
-- 查看 `docs/governance/DKWS_C_MIXED_ARCH_REMEDIATION_MATRIX.md`
-- 查看 `docs/governance/DKWS_DOCUMENT_CONFLICT_REGISTER.md`
+- 查看 `docs/governance/KERT_C_MIXED_ARCH_REMEDIATION_MATRIX.md`
+- 查看 `docs/governance/KERT_DOCUMENT_CONFLICT_REGISTER.md`
 - 无法决策时记录为 `PENDING_OWNER_DECISION`

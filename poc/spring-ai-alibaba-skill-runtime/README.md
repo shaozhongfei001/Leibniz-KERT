@@ -6,7 +6,7 @@
 ## 目录
 
 ```text
-src/main/java/com/dkws/skillruntime/
+src/main/java/com/kert/skillruntime/
 ├── SkillRuntimeApplication.java
 ├── controller/
 │   ├── SkillAdminController.java

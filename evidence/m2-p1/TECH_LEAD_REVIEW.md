@@ -6,7 +6,7 @@
 - **结论**：**验收通过（有条件）**
 
 > **非声明**
-> - 本次不代表 DKWS 已生产就绪。
+> - 本次不代表 KERT 已生产就绪。
 > - 本次不代表 GITS UAT 已通过。
 > - 本次不代表安全审计已完成。
 > - 本次不代表 C′ 架构已成为正式基线。
@@ -46,7 +46,7 @@
 ### 决策 1 展开：`X-Forwarded-For`
 
 Tech Lead 认定当前实现「正确且安全」。后续如部署在可信反向代理之后，
-再引入显式配置（如 `DKWS_TRUSTED_PROXY=true` 或可信代理 IP 列表）。
+再引入显式配置（如 `KERT_TRUSTED_PROXY=true` 或可信代理 IP 列表）。
 **本次不实现该配置项。**
 
 ### 决策 2 展开：多实例
@@ -56,10 +56,10 @@ Tech Lead 认定当前实现「正确且安全」。后续如部署在可信反�
 
 ### 决策 3 展开：TLS 边界（**唯一产生本次改动的决策**）
 
-Tech Lead 要求：「需要在部署文档中明确：TLS 由 Nginx/网关负责，DKWS 只监听内网/回环。」
+Tech Lead 要求：「需要在部署文档中明确：TLS 由 Nginx/网关负责，KERT 只监听内网/回环。」
 
 核验发现：`docs/adr/ADR-015-single-node-production-profile.md` 与
-`docs/architecture/DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
+`docs/architecture/KERT_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
 **此前均无任何 TLS / 反向代理 / 监听地址表述**。
 
 该缺口同时对应 WBS `M2.1` 中明确列出但此前未落地的条目「TLS 反向代理边界」，
@@ -78,7 +78,7 @@ Tech Lead 要求：「需要在部署文档中明确：TLS 由 Nginx/网关负�
 
 | 文件 | 变更 |
 |---|---|
-| `docs/architecture/DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md` | 新增「2. 网络与 TLS 边界」章节；后续章节编号顺延（原 2~8 → 3~9）；故障降级表补充「反向代理不可达」一行 |
+| `docs/architecture/KERT_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md` | 新增「2. 网络与 TLS 边界」章节；后续章节编号顺延（原 2~8 → 3~9）；故障降级表补充「反向代理不可达」一行 |
 | `evidence/m2-p1/TECH_LEAD_REVIEW.md` | 本文件（决策台账） |
 
 新增章节内容要点：

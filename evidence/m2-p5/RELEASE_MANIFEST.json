@@ -1,5 +1,5 @@
 {
-  "schema": "dkws_release_manifest/v1",
+  "schema": "kert_release_manifest/v1",
   "release_id": "636b2147ac19",
   "created_at": "2026-08-27T09:54:28Z",
   "git": {

@@ -1,0 +1,295 @@
+{
+  "evidenceCount": 12,
+  "evidenceSpans": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM001-dbe96c76",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0001",
+      "locator": {
+        "clause": "第一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "为规范现金管理业务经营行为，明确客户准入与服务边界，防范操作风险与合规风险，制定本办法。",
+      "quoteHash": "dbe96c760df6a6e329c6fe356d4667969981d7376d08d43b4a6dbe6d851dc44e",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCCM001-c432a8b8",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0002",
+      "locator": {
+        "clause": "第二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本办法适用于 DEMO-BANK 各级机构办理的现金管理业务，包括资金归集、账户透支、流动性管理及相关增值服务。",
+      "quoteHash": "c432a8b8af31f4ae77fa38d69fcc750b5f174099d6b523d5c88145ba34978bef",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM001-f9281e09",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0005",
+      "locator": {
+        "clause": "第五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本产品适用于以下客户分层：大型企业客户、集团客户、机构客户。小微企业客户不适用本产品，应适用结算类产品。",
+      "quoteHash": "f9281e09ded6fd46ac563262d5376a9874bb96a264e95f88dfda9909c055e4ff",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM001-1b0d5dfe",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0006",
+      "locator": {
+        "clause": "第六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本产品不适用于以下情形：一、客户被列入本行制裁或限制名单；二、客户评级低于本办法第八条要求；三、客户存在重大未决诉讼或重大失信记录。",
+      "quoteHash": "1b0d5dfe48e5a80740717132e3a35d2fa4fde71865bcfa47c49df38d2166090b",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCCM001-86d171f2",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0007",
+      "locator": {
+        "clause": "第七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "申请办理现金管理业务的客户，应当同时满足下列条件：一、在本行开立单位银行结算账户；二、内部评级不低于 BB 级；三、申请日前连续十二个月无重大结算违规记录。",
+      "quoteHash": "86d171f23da566ae5f71e3c65570e566fd85a066fd1e3345b3ea2cfb7d47716b",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM001-14e72136",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0008",
+      "locator": {
+        "clause": "第八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "客户评级低于 BB 级但高于 B 级的，须经一级分行交易银行部与风险管理部双签审批，方可受理。",
+      "quoteHash": "14e72136af9dd3bbcca82f8dc5da9060f3c3327b246f14a3fadc86c737e6ba29",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM001-7d3f83e8",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0010",
+      "locator": {
+        "clause": "第十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "现金池主账户每日最低留存余额为人民币 50 万元，成员账户最低留存余额为人民币 10 万元。",
+      "quoteHash": "7d3f83e885da5c546d16552893b7c3820693f4ff79be6fa90f92cae653e2f024",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM001-b92956e2",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0011",
+      "locator": {
+        "clause": "第十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "连续三十个自然日低于最低留存余额的，本行有权暂停资金自动归集功能，并通知客户补足。",
+      "quoteHash": "b92956e2b05d433d26ddb1396acf148315e076a7db4d63ec3efce3dd01a9067e",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCCM001-b8dc5f5f",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0012",
+      "locator": {
+        "clause": "第十二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "客户申请调整最低留存余额的，应当向开户行提交书面申请，由一级分行交易银行部审批。",
+      "quoteHash": "b8dc5f5f1b8e3280ed4c9f5337091a00934a8351fbe98380922f0ba03b8c2c81",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCCM001-fb2963c0",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0013",
+      "locator": {
+        "clause": "第十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "现金管理业务的开办渠道包括：柜面、企业网银、银企直联及开放银行接口。首次签约必须经柜面完成身份核验与协议签署。",
+      "quoteHash": "fb2963c01a52e8a2b4c3283c2e785633588f0d699263072888481f1f69a2883f",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCCM001-f92129c2",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0014",
+      "locator": {
+        "clause": "第十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "客户通过企业网银办理的，应当使用数字证书或经本行认可的双因素认证方式。",
+      "quoteHash": "f92129c26b1d04e12fcb608f59e9260ba1325e8c23d3a612640f9587208f775b",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCCM001-726c8668",
+      "extractionRunId": "RUN-20260906-9d34c845",
+      "fragmentId": "FRG-SRCCM001-0015",
+      "locator": {
+        "clause": "第十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "业务办理流程为：客户申请、尽职调查、评级核验、额度与留存参数配置、协议签署、系统开通、回访核验。",
+      "quoteHash": "726c8668800709122369d786a7745c1f0383f577676f47ed9669fbd0ff53724f",
+      "retrievedAt": "2026-09-06T12:00:00+08:00",
+      "sourceBytesHash": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+      "sourceId": "SRC-CM-001",
+      "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814",
+      "usage": "AUTHORITATIVE"
+    }
+  ],
+  "sourceId": "SRC-CM-001",
+  "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+}

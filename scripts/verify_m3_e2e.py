@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""M3-P0 端到端验收：GITS ↔ DKWS 集成场景验证。
+"""M3-P0 端到端验收：GITS ↔ KERT 集成场景验证。
 
 验证内容：
   场景 1：R1 基本访前 — 列出 Skill → 同步执行 outreach-script → 验证响应
@@ -8,10 +8,10 @@
   场景 4：供应链图谱 — 同步执行 → 验证图谱数据
   场景 5：闸门协作 — 查询闸门状态 → 推进闸门
 
-确定性模式：无需 LLM 密钥，DKWS 使用确定性适配器返回预设响应。
+确定性模式：无需 LLM 密钥，KERT 使用确定性适配器返回预设响应。
 
 用法：
-    python scripts/verify_m3_e2e.py [--dkws-url http://127.0.0.1:8106]
+    python scripts/verify_m3_e2e.py [--kert-url http://127.0.0.1:8106]
                                     [--config scripts/m3_e2e_config.yaml]
                                     [--out evidence/m3-p0]
 """
@@ -58,7 +58,7 @@ def _load_config(config_path: Path | None) -> dict:
 
 def _default_config() -> dict:
     return {
-        "dkws_base_url": "http://127.0.0.1:8106",
+        "kert_base_url": "http://127.0.0.1:8106",
         "api_key": "",
         "test_customer_id": "CUST-E2E-001",
         "timeout_seconds": 30,
@@ -504,8 +504,8 @@ def scenario_gate_collaboration(report: dict, base_url: str, customer_id: str,
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="M3-P0 端到端验收")
-    ap.add_argument("--dkws-url", default=None,
-                    help="DKWS 基础 URL（默认从配置文件读取）")
+    ap.add_argument("--kert-url", default=None,
+                    help="KERT 基础 URL（默认从配置文件读取）")
     ap.add_argument("--config", default=str(REPO / "scripts" / "m3_e2e_config.yaml"),
                     help="E2E 配置文件路径")
     ap.add_argument("--out", default=str(REPO / "evidence" / "m3-p0"),
@@ -516,7 +516,7 @@ def main() -> int:
     args = ap.parse_args()
 
     config = _load_config(Path(args.config) if args.config else None)
-    base_url = args.dkws_url or config.get("dkws_base_url", "http://127.0.0.1:8106")
+    base_url = args.kert_url or config.get("kert_base_url", "http://127.0.0.1:8106")
     customer_id = config.get("test_customer_id", "CUST-E2E-001")
     timeout = float(config.get("timeout_seconds", 30))
     poll_interval = float(config.get("poll_interval_seconds", 2))
@@ -532,9 +532,9 @@ def main() -> int:
 
     report: dict = {
         "task_package": "M3-P0",
-        "scope": "GITS ↔ DKWS 集成场景端到端验收",
+        "scope": "GITS ↔ KERT 集成场景端到端验收",
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-        "dkws_base_url": base_url,
+        "kert_base_url": base_url,
         "test_customer_id": customer_id,
         "deterministic_mode": not bool(api_key),
         "checks": [],
@@ -542,7 +542,7 @@ def main() -> int:
 
     print("=" * 60, flush=True)
     print("M3-P0 端到端验收", flush=True)
-    print(f"DKWS: {base_url}", flush=True)
+    print(f"KERT: {base_url}", flush=True)
     print(f"客户: {customer_id}", flush=True)
     print(f"模式: {'确定性' if not api_key else 'LLM'}", flush=True)
     print("=" * 60, flush=True)
@@ -550,10 +550,10 @@ def main() -> int:
     # 健康检查
     r = _request(f"{base_url}/v1/health", headers=headers, timeout=5)
     if r["error"]:
-        print(f"\n[ERROR] DKWS 服务不可达：{r['error']}", file=sys.stderr)
-        print("请先启动 DKWS 服务：python scripts/serve_skill_service.py", file=sys.stderr)
+        print(f"\n[ERROR] KERT 服务不可达：{r['error']}", file=sys.stderr)
+        print("请先启动 KERT 服务：python scripts/serve_skill_service.py", file=sys.stderr)
         return 1
-    print(f"[health] DKWS 服务就绪（status={r['status']}）\n", flush=True)
+    print(f"[health] KERT 服务就绪（status={r['status']}）\n", flush=True)
 
     scenario = args.scenario or "all"
 
@@ -604,7 +604,7 @@ def _write_md_report(report: dict, path: Path) -> None:
         f"- **任务包**: {report.get('task_package', '')}",
         f"- **范围**: {report.get('scope', '')}",
         f"- **生成时间**: {report.get('generated_at', '')}",
-        f"- **DKWS URL**: {report.get('dkws_base_url', '')}",
+        f"- **KERT URL**: {report.get('kert_base_url', '')}",
         f"- **测试客户**: {report.get('test_customer_id', '')}",
         f"- **模式**: {'确定性' if report.get('deterministic_mode') else 'LLM'}",
         f"",

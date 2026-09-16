@@ -1,0 +1,159 @@
+{
+  "fragmentCount": 19,
+  "fragments": [
+    {
+      "contentSha256": "40f59d09e98927f153bab715c78b2f26a046ba06ad0e1908c868af4e89daed7b",
+      "contentText": "**第一条** 为规范现金管理业务经营行为，明确客户准入与服务边界，防范操作风险与合规风险，制定本办法。",
+      "fragmentId": "FRG-SRCCM001-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "b747d57403f0aeec6b813aef5f16fbe85a0c29116f9080ccd3df891737c34667",
+      "contentText": "**第二条** 本办法适用于 DEMO-BANK 各级机构办理的现金管理业务，包括资金归集、账户透支、流动性管理及相关增值服务。",
+      "fragmentId": "FRG-SRCCM001-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "818937ce0942ef90e4fee4dd6921909539972baf6d7ed431b59e8f0c3751e089",
+      "contentText": "**第三条** 现金管理业务应当遵循依法合规、客户自愿、风险可控、权责清晰的原则，不得变相突破授信、定价与适当性管理要求。",
+      "fragmentId": "FRG-SRCCM001-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "7f8391d6a496966a7e13171d5bab406ab57bedf36dd3e849f8592428d7c5857e",
+      "contentText": "**第四条** 现金管理服务产品代码统一为 `CM-CASH-POOL-001`，产品简称「现金池」，适用范围为境内依法设立、具有独立法人资格的企业法人客户。",
+      "fragmentId": "FRG-SRCCM001-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "7a2590358f870f8295660d39ba16f689739972cdafb4382cb96fa16a13f3899a",
+      "contentText": "**第五条** 本产品适用于以下客户分层：大型企业客户、集团客户、机构客户。小微企业客户不适用本产品，应适用结算类产品。",
+      "fragmentId": "FRG-SRCCM001-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "9940e0cc32baa977fb77c362bdcc7b990c5430f5890dffef5746ded1290a53e2",
+      "contentText": "**第六条** 本产品不适用于以下情形：一、客户被列入本行制裁或限制名单；二、客户评级低于本办法第八条要求；三、客户存在重大未决诉讼或重大失信记录。",
+      "fragmentId": "FRG-SRCCM001-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "c89fb80215c4462f2cc338ac744a5aaeb8ce46a3bb2143fe5f4843eecc58aa79",
+      "contentText": "**第七条** 申请办理现金管理业务的客户，应当同时满足下列条件：一、在本行开立单位银行结算账户；二、内部评级不低于 BB 级；三、申请日前连续十二个月无重大结算违规记录。",
+      "fragmentId": "FRG-SRCCM001-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "10765837aab453c84912b3f342335ac7eade1ae9a062521a0c3a68a5a50edbd1",
+      "contentText": "**第八条** 客户评级低于 BB 级但高于 B 级的，须经一级分行交易银行部与风险管理部双签审批，方可受理。",
+      "fragmentId": "FRG-SRCCM001-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "b95add4cd6b92cc513b7fa6a4c7025721425c6958b8b66d1850c285e37d5c45b",
+      "contentText": "**第九条** 单一客户纳入资金归集的成员单位不少于三家，且归集主账户与成员账户须属同一集团或同一实际控制人。",
+      "fragmentId": "FRG-SRCCM001-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "7ab053ac1cbc622068aa3c9be3c2af01456b3b311f2bc5d55586d6e2c4474c06",
+      "contentText": "**第十条** 现金池主账户每日最低留存余额为人民币 50 万元，成员账户最低留存余额为人民币 10 万元。",
+      "fragmentId": "FRG-SRCCM001-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "93f77961f3c25b1d4f16379db251d4aae44aa1187ba905cd42aa35dddcf7ff9d",
+      "contentText": "**第十一条** 连续三十个自然日低于最低留存余额的，本行有权暂停资金自动归集功能，并通知客户补足。",
+      "fragmentId": "FRG-SRCCM001-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "502c8d28e7d03734c7ef471cca1c04edd551253c18a65c916eb64549ae104bf5",
+      "contentText": "**第十二条** 客户申请调整最低留存余额的，应当向开户行提交书面申请，由一级分行交易银行部审批。",
+      "fragmentId": "FRG-SRCCM001-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "a85dbaeda0203fb34bd6b673a7424c42be2cee886aa3b83b25378d587a035d24",
+      "contentText": "**第十三条** 现金管理业务的开办渠道包括：柜面、企业网银、银企直联及开放银行接口。首次签约必须经柜面完成身份核验与协议签署。",
+      "fragmentId": "FRG-SRCCM001-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "77b65ef42725c37259a72cdbe90110f4322b237bab5c02567299a39edd5f3d4a",
+      "contentText": "**第十四条** 客户通过企业网银办理的，应当使用数字证书或经本行认可的双因素认证方式。",
+      "fragmentId": "FRG-SRCCM001-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "c91d4000457cd69be6d3b4db9ac6289d8e5e9f71a6f47e190c74756080b73e42",
+      "contentText": "**第十五条** 业务办理流程为：客户申请、尽职调查、评级核验、额度与留存参数配置、协议签署、系统开通、回访核验。",
+      "fragmentId": "FRG-SRCCM001-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "3e4bc88a356d992e09b7dc5bf33f8a5b63511a6454fa83a72611f8faa7812a72",
+      "contentText": "**第十六条** 现金管理服务费按照协议约定收取，收费标准应当符合《商业银行服务价格管理办法》关于市场调节价公示与告知的要求。",
+      "fragmentId": "FRG-SRCCM001-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "5d89fe73a5059450422887e210d0ed4c11881d8f6e65a2818432fef870c69b53",
+      "contentText": "**第十七条** 服务费的收取、减免与调整须经一级分行价格管理岗审核，减免幅度超过标准费率百分之五十的报总行审批。",
+      "fragmentId": "FRG-SRCCM001-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "d20750b9158fdab05f85d775a3b7d309d9ec9b5aec481dc77e58cc4263b5ee1b",
+      "contentText": "**第十八条** 本办法由 DEMO-BANK 交易银行部负责解释与修订。",
+      "fragmentId": "FRG-SRCCM001-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    },
+    {
+      "contentSha256": "870ac52a10a1c16c4d7d47e031f730ceb5cfa0e7064fb50103b0ef545d2fd28a",
+      "contentText": "**第十九条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCCM001-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+    }
+  ],
+  "sourceId": "SRC-CM-001",
+  "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+}

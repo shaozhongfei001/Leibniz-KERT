@@ -46,7 +46,7 @@ Owner 审核结论：**APPROVE WITH CONDITIONS**。三项合并前待办已全�
 - **生成时间**：2026-08-27
 
 > **非声明**
-> - 本次不代表 DKWS 已生产就绪。
+> - 本次不代表 KERT 已生产就绪。
 > - 本次不代表 GITS UAT 已通过。
 > - 本次不代表安全审计已完成。
 > - 本次不代表 C′ 受控混合架构已成为正式基线。
@@ -114,7 +114,7 @@ tests/recovery/test_recovery.py::TestRecovery::test_failed_publish_job_recorded 
 ### 3.3 静态检查
 
 ```
-ruff check src/dkws/infrastructure/worker.py src/dkws/infrastructure/runtime_store.py \
+ruff check src/kert/infrastructure/worker.py src/kert/infrastructure/runtime_store.py \
            scripts/run_worker.py scripts/verify_m2p2_worker.py \
            tests/unit/test_job_queue.py tests/unit/test_worker.py \
            tests/recovery/test_worker_crash_recovery.py \
@@ -122,7 +122,7 @@ ruff check src/dkws/infrastructure/worker.py src/dkws/infrastructure/runtime_sto
 → All checks passed!
 ```
 
-`src/dkws/application/jobs.py` 与 `skills.py` 的既有告警数量**改动前后完全一致**
+`src/kert/application/jobs.py` 与 `skills.py` 的既有告警数量**改动前后完全一致**
 （分别 10 处、11 处，均为存量），已用 `git stash` 对比确认非本次引入。
 
 ## 4. 端到端验证（真实进程 + kill -9）
@@ -153,7 +153,7 @@ ruff check src/dkws/infrastructure/worker.py src/dkws/infrastructure/runtime_sto
 | 20 | `cli_stats_works` | `--stats` 输出合法 JSON 队列概览 |
 | 21 | `cli_list_dead_letters_works` | `--list-dead-letters` 退出码 0 |
 | 22 | `cli_requeue_rejects_unknown` | 重放不存在的 Job 返回退出码 1 |
-| 23 | `prod_async_without_store_rejected` | **prod + Store 未启用 → 拒绝异步执行，HTTP 503**，`remediation=DKWS_RUNTIME_STORE_ENABLED=true` |
+| 23 | `prod_async_without_store_rejected` | **prod + Store 未启用 → 拒绝异步执行，HTTP 503**，`remediation=KERT_RUNTIME_STORE_ENABLED=true` |
 | 24 | `prod_async_no_thread_fallback` | 拒绝时未创建任何 SKILL Job 目录，确认**未回退 threading 模式** |
 | 25 | `dev_async_still_allowed` | dev profile 未启用 Store 时仍可异步执行（不破坏开发流程） |
 | 26 | `recover_stale_jobs_marked_deprecated` | docstring 含 deprecated 标记并指向 `reclaim_expired_leases` |
@@ -204,16 +204,16 @@ M2.4 新增的 `reclaim_expired_leases()` 只回收 lease **已过期**者，
 
 | 文件 | 说明 |
 |---|---|
-| `src/dkws/infrastructure/worker.py` | Worker 运行时：Handler 注册、轮询、lease 续约线程、退避重试、优雅停机、环境变量配置 |
+| `src/kert/infrastructure/worker.py` | Worker 运行时：Handler 注册、轮询、lease 续约线程、退避重试、优雅停机、环境变量配置 |
 
 ### 6.2 修改（源码）
 
 | 文件 | 变更 |
 |---|---|
-| `src/dkws/infrastructure/runtime_store.py` | migration 002；`JobRecord` 扩展 10 字段 + 2 辅助方法；新增 `claim_job` / `heartbeat_job` / `complete_job` / `fail_job` / `reclaim_expired_leases` / `list_dead_letters` / `requeue_dead_letter` / `cancel_job` / `queue_stats` / `find_job_by_idem` / `max_job_seq` / `sync_job_state` / `set_job_payload`；`create_job` 支持 `max_attempts`/`idem_key`/`available_at` |
-| `src/dkws/application/jobs.py` | `JobController` 接受 `runtime_store`；幂等判定改走 SQLite（保留文件回落）；各状态变更先同步库再派生写文件 |
-| `src/dkws/application/skills.py` | `execute_async` 增加持久化入队模式（注入 Store 时仅入队，交 Worker 执行）；保留线程模式；**新增 `profile` 参数与生产强制校验**（Owner 决策 3） |
-| `src/dkws/api/server.py` | 向 `SkillExecutionService` 传入 `cfg.profile`；`app.state` 暴露 `skill_service` 以支持运维自检与校验链路测试 |
+| `src/kert/infrastructure/runtime_store.py` | migration 002；`JobRecord` 扩展 10 字段 + 2 辅助方法；新增 `claim_job` / `heartbeat_job` / `complete_job` / `fail_job` / `reclaim_expired_leases` / `list_dead_letters` / `requeue_dead_letter` / `cancel_job` / `queue_stats` / `find_job_by_idem` / `max_job_seq` / `sync_job_state` / `set_job_payload`；`create_job` 支持 `max_attempts`/`idem_key`/`available_at` |
+| `src/kert/application/jobs.py` | `JobController` 接受 `runtime_store`；幂等判定改走 SQLite（保留文件回落）；各状态变更先同步库再派生写文件 |
+| `src/kert/application/skills.py` | `execute_async` 增加持久化入队模式（注入 Store 时仅入队，交 Worker 执行）；保留线程模式；**新增 `profile` 参数与生产强制校验**（Owner 决策 3） |
+| `src/kert/api/server.py` | 向 `SkillExecutionService` 传入 `cfg.profile`；`app.state` 暴露 `skill_service` 以支持运维自检与校验链路测试 |
 | `scripts/run_worker.py` | `register_handlers` 传入 `store`，使 Worker 侧 Service 亦感知持久化能力；docstring 标注幂等性评审要求 |
 
 ### 6.3 新增（测试）
@@ -231,7 +231,7 @@ M2.4 新增的 `reclaim_expired_leases()` 只回收 lease **已过期**者，
 
 ### 6.5 新增（文档 / 工具）
 
-- `docs/architecture/DKWS_PERSISTENT_WORKER_M2P2.md`
+- `docs/architecture/KERT_PERSISTENT_WORKER_M2P2.md`
 - `scripts/run_worker.py`（Worker 入口 + `--stats`/`--list-dead-letters`/`--requeue` 运维子命令）
 - `scripts/verify_m2p2_worker.py`（端到端验证）
 - `evidence/m2-p2/**`

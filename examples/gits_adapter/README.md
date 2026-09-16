@@ -1,6 +1,6 @@
-# DKWS GITS Adapter 参考实现
+# KERT GITS Adapter 参考实现
 
-> DKWS 独立知识工程服务端与 GITS 集成的适配器参考实现。
+> KERT 独立知识工程服务端与 GITS 集成的适配器参考实现。
 > 与 GITS `DshHttpSkillExecutionAdapter` / `DshHttpSkillGateAdapter` 功能对齐。
 
 ## 目录结构
@@ -9,7 +9,7 @@
 examples/gits_adapter/
 ├── README.md                          # 本文件
 ├── python/
-│   └── dkws_client.py                 # Python 客户端（标准库，无第三方依赖）
+│   └── kert_client.py                 # Python 客户端（标准库，无第三方依赖）
 └── curl/
     ├── list_skills.sh                  # 列出可用 Skill
     ├── execute_skill_sync.sh           # 同步执行 Skill
@@ -42,9 +42,9 @@ examples/gits_adapter/
 ### Python 客户端
 
 ```python
-from dkws_client import DkwsClient, execute_skill
+from kert_client import KertClient, execute_skill
 
-client = DkwsClient(base_url="http://127.0.0.1:8106", api_key="your-key")
+client = KertClient(base_url="http://127.0.0.1:8106", api_key="your-key")
 
 # 同步执行
 result = client.execute_skill_sync("R1", "req-001", customer_id="CUST-001")
@@ -63,7 +63,7 @@ health = client.skill_health()
 
 ### 1. Fail-Closed 原则
 
-**核心思想**：当 DKWS 不可达或返回异常时，GITS 必须以"最安全"的方式失败，绝不补数或降级为假数据。
+**核心思想**：当 KERT 不可达或返回异常时，GITS 必须以"最安全"的方式失败，绝不补数或降级为假数据。
 
 GITS 的 `FallbackSkillExecutionAdapter` 明确**禁止本地补数**：
 
@@ -79,14 +79,14 @@ Python 客户端实现：
 ```python
 # 非 ok 状态直接抛异常，不返回部分结果
 if status != "ok":
-    raise DkwsSkillError(message=err_msg, error_code=err_code, detail=resp)
+    raise KertSkillError(message=err_msg, error_code=err_code, detail=resp)
 ```
 
 **规则**：
 - 5xx 错误 → 重试 → 仍失败 → 抛异常 → GITS 走 Fallback（空结果）
 - 4xx 错误 → 不重试 → 直接抛异常
 - 网络超时/连接失败 → 重试 → 仍失败 → 抛异常
-- **绝不**：用缓存数据、默认值、或本地计算替代 DKWS 结果
+- **绝不**：用缓存数据、默认值、或本地计算替代 KERT 结果
 
 ### 2. 重试策略（指数退避）
 
@@ -124,7 +124,7 @@ if status != "ok":
 
 ### 4. 错误码映射表
 
-| DKWS 错误码 | HTTP 状态码 | 语义 | GITS 处理 |
+| KERT 错误码 | HTTP 状态码 | 语义 | GITS 处理 |
 |---|---|---|---|
 | `INVALID_PARAMETER` | 400 | 请求参数错误 | 不重试，抛 SkillExecutionException |
 | `SKILL_NOT_FOUND` | 404 | Skill 未注册 | 不重试，抛 SkillExecutionException |
@@ -146,9 +146,9 @@ if status != "ok":
 | 异步提交 | `DshHttpSkillExecutionAdapter.execute()` + async | `client.execute_skill_async()` |
 | Job 轮询 | `DshJobPoller.pollUntilComplete()` | `client.poll_job()` |
 | 健康检查 | `DshHttpSkillGateAdapter.checkHealth()` | `client.skill_health()` |
-| 闸门查询 | `V14DkwsIntegrationController.getGates()` | `client.get_gates()` |
-| 闸门审计 | `V14DkwsIntegrationController.auditGate()` | `client.audit_gate()` |
-| Fail-closed | `FallbackSkillExecutionAdapter`（禁止补数） | 抛 `DkwsSkillError` |
+| 闸门查询 | `V14KertIntegrationController.getGates()` | `client.get_gates()` |
+| 闸门审计 | `V14KertIntegrationController.auditGate()` | `client.audit_gate()` |
+| Fail-closed | `FallbackSkillExecutionAdapter`（禁止补数） | 抛 `KertSkillError` |
 | 重试 | Spring RetryTemplate | 手动指数退避 |
 | 超时 | RestTemplate connect/read timeout | urllib timeout |
 | 认证 | 暂无（演示环境） | `X-API-Key` header |
@@ -169,4 +169,4 @@ if status != "ok":
 | `/readyz` | GET | 就绪探针 |
 | `/metrics` | GET | Prometheus 指标 |
 
-完整规范见 `specs/dkws-openapi-v1.yaml`。
+完整规范见 `specs/kert-openapi-v1.yaml`。

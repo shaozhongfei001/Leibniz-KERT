@@ -45,8 +45,8 @@ def _log(report: dict, name: str, passed: bool, detail: str) -> None:
 
 def _build_workspace(root: Path) -> Path:
     """构造含真实内容与运行态的工作区。"""
-    from dkws.domain import workspace as ws_mod
-    from dkws.infrastructure.runtime_store import RuntimeStore
+    from kert.domain import workspace as ws_mod
+    from kert.infrastructure.runtime_store import RuntimeStore
 
     if root.exists():
         shutil.rmtree(root)
@@ -86,8 +86,8 @@ def _build_workspace(root: Path) -> Path:
 
 def check_backup(report: dict, ws: Path, dest: Path) -> tuple[Path, dict]:
     """场景 1-3：备份产生与范围。"""
-    from dkws.domain.errors import ConflictError
-    from dkws.infrastructure.backup import create_backup
+    from kert.domain.errors import ConflictError
+    from kert.infrastructure.backup import create_backup
 
     try:
         create_backup(ws, ws / "inner-backup")
@@ -127,7 +127,7 @@ def check_backup(report: dict, ws: Path, dest: Path) -> tuple[Path, dict]:
          "失效锁被排除（锁含 pid/host，恢复到新主机必然失效）")
 
     _log(report, "backup_includes_marker",
-         (payload / ".dkws_workspace").is_file(),
+         (payload / ".kert_workspace").is_file(),
          "工作区标记已备份（缺失会导致恢复后所有命令拒绝执行）")
 
     report["backup_elapsed_seconds"] = round(elapsed, 3)
@@ -136,7 +136,7 @@ def check_backup(report: dict, ws: Path, dest: Path) -> tuple[Path, dict]:
 
 def check_verify(report: dict, root: Path, dest: Path, ws: Path) -> None:
     """场景 4：完整性校验。"""
-    from dkws.infrastructure.backup import create_backup, verify_backup
+    from kert.infrastructure.backup import create_backup, verify_backup
 
     _log(report, "verify_passes_on_intact", verify_backup(root) == [],
          "完整备份逐文件 sha256 比对通过")
@@ -160,9 +160,9 @@ def check_verify(report: dict, root: Path, dest: Path, ws: Path) -> None:
 
 def check_restore(report: dict, root: Path, target: Path) -> None:
     """场景 5-7、12：恢复与 RTO 观测。"""
-    from dkws.domain import workspace as ws_mod
-    from dkws.infrastructure.backup import restore_backup
-    from dkws.infrastructure.runtime_store import RuntimeStore
+    from kert.domain import workspace as ws_mod
+    from kert.infrastructure.backup import restore_backup
+    from kert.infrastructure.runtime_store import RuntimeStore
 
     if target.exists():
         shutil.rmtree(target)
@@ -222,8 +222,8 @@ def check_restore(report: dict, root: Path, target: Path) -> None:
 
 def check_corrupted_refused(report: dict, tampered_root: Path, tmp: Path) -> None:
     """场景 8：损坏备份被拒绝。"""
-    from dkws.domain.errors import ConflictError
-    from dkws.infrastructure.backup import restore_backup
+    from kert.domain.errors import ConflictError
+    from kert.infrastructure.backup import restore_backup
 
     try:
         restore_backup(tampered_root, tmp / "should-not-exist")
@@ -238,9 +238,9 @@ def check_corrupted_refused(report: dict, tampered_root: Path, tmp: Path) -> Non
 
 def check_disaster_recovery(report: dict, ws: Path, root: Path) -> None:
     """场景 9：灾难演练——源工作区被摧毁后恢复。"""
-    from dkws.domain import workspace as ws_mod
-    from dkws.infrastructure.backup import restore_backup
-    from dkws.infrastructure.runtime_store import RuntimeStore
+    from kert.domain import workspace as ws_mod
+    from kert.infrastructure.backup import restore_backup
+    from kert.infrastructure.runtime_store import RuntimeStore
 
     shutil.rmtree(ws)
     destroyed = not ws.exists()
@@ -262,7 +262,7 @@ def check_disaster_recovery(report: dict, ws: Path, root: Path) -> None:
 
 def check_release_manifest(report: dict, out_dir: Path) -> None:
     """场景 10-11：发布清单与比对。"""
-    from dkws.infrastructure.release import (
+    from kert.infrastructure.release import (
         build_release_manifest,
         compare_manifests,
         write_release_manifest,
@@ -273,7 +273,7 @@ def check_release_manifest(report: dict, out_dir: Path) -> None:
     git = manifest.git
     _log(report, "release_manifest_has_git_anchor",
          git.get("available") is True and len(git.get("commit", "")) == 40,
-         f"git 锚点已补齐（治理文档原登记 dkws_git_commit_anchor=null）："
+         f"git 锚点已补齐（治理文档原登记 kert_git_commit_anchor=null）："
          f"commit={git.get('short_commit')} branch={git.get('branch')} "
          f"dirty={git.get('dirty')}")
 
@@ -313,7 +313,7 @@ def main() -> int:
     """执行演练并写出报告。"""
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(REPO / "evidence" / "m2-p5"))
-    ap.add_argument("--tmp", default="/tmp/dkws-m2p5-drill")
+    ap.add_argument("--tmp", default="/tmp/kert-m2p5-drill")
     args = ap.parse_args()
 
     out_dir = Path(args.out)

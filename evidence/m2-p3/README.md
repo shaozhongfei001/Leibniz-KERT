@@ -6,7 +6,7 @@
 - **生成时间**：2026-08-27
 
 > **非声明**
-> - 本次不代表 DKWS 已生产就绪。
+> - 本次不代表 KERT 已生产就绪。
 > - 本次不代表 GITS UAT 已通过。
 > - 本次不代表安全审计已完成。
 > - 本次不代表 C′ 受控混合架构已成为正式基线。
@@ -94,7 +94,7 @@ Owner 验收标准：**指标与日志可采集，`/livez`、`/readyz`、`/metri
 | 19 | `logs_are_single_line_json` | 捕获 28 条单行 JSON |
 | 20 | `logs_have_access_events` | 事件码 `HTTP_ACCESS` |
 | 21 | `logs_have_correlation_fields` | `request_id` + `trace_id` + `duration_ms` |
-| 22 | `logs_have_service_field` | `service=dkws-python-core` |
+| 22 | `logs_have_service_field` | `service=kert-python-core` |
 | 23 | `logs_do_not_leak_api_keys` | **日志中无任何 API Key 明文** |
 | 24 | `prod_profile_probes_public` | 生产 profile 匿名访问三端点：`{200, 200, 200}` |
 | 25 | `prod_profile_business_still_protected` | 业务端点仍 401 |
@@ -163,15 +163,15 @@ Owner 验收标准：**指标与日志可采集，`/livez`、`/readyz`、`/metri
 
 | 文件 | 行数 | 说明 |
 |---|---|---|
-| `src/dkws/infrastructure/observability.py` | 559 | 请求上下文、JSON 日志、正文脱敏、指标注册表、追踪 |
+| `src/kert/infrastructure/observability.py` | 559 | 请求上下文、JSON 日志、正文脱敏、指标注册表、追踪 |
 
 ### 6.2 修改（源码）
 
 | 文件 | 变更 |
 |---|---|
-| `src/dkws/infrastructure/runtime_config.py` | 新增 `ObservabilityConfig`（10 字段）与 `_env_float`；`DEFAULT_PUBLIC_PATHS` 加入 `/livez`+`/readyz`；新增 `DEFAULT_EXEMPT_PATHS`；采样率范围校验 |
-| `src/dkws/api/middleware.py` | 新增 `ObservabilityMiddleware`；`_publish_identity()` 经 ASGI scope 传递身份；限流豁免改用 `DEFAULT_EXEMPT_PATHS`（原为硬编码 2 个路径）；`/metrics` 鉴权交由端点 |
-| `src/dkws/api/server.py` | 新增 `/livez`、`/readyz`、`/metrics`；`create_app` 装配日志/注册表/追踪器并暴露 `app.state`；**`recover_stale_jobs` → `reclaim_expired_leases`**（修正 M2.4 遗留）；evidence 审计的静默 `try-pass` 补上日志与指标 |
+| `src/kert/infrastructure/runtime_config.py` | 新增 `ObservabilityConfig`（10 字段）与 `_env_float`；`DEFAULT_PUBLIC_PATHS` 加入 `/livez`+`/readyz`；新增 `DEFAULT_EXEMPT_PATHS`；采样率范围校验 |
+| `src/kert/api/middleware.py` | 新增 `ObservabilityMiddleware`；`_publish_identity()` 经 ASGI scope 传递身份；限流豁免改用 `DEFAULT_EXEMPT_PATHS`（原为硬编码 2 个路径）；`/metrics` 鉴权交由端点 |
+| `src/kert/api/server.py` | 新增 `/livez`、`/readyz`、`/metrics`；`create_app` 装配日志/注册表/追踪器并暴露 `app.state`；**`recover_stale_jobs` → `reclaim_expired_leases`**（修正 M2.4 遗留）；evidence 审计的静默 `try-pass` 补上日志与指标 |
 
 ### 6.3 新增（测试）
 
@@ -186,13 +186,13 @@ Owner 验收标准：**指标与日志可采集，`/livez`、`/readyz`、`/metri
 
 ### 6.5 新增（文档 / 工具）
 
-- `docs/architecture/DKWS_OBSERVABILITY_M2P3.md`
+- `docs/architecture/KERT_OBSERVABILITY_M2P3.md`
 - `scripts/verify_m2p3_observability.py`
 - `evidence/m2-p3/**`
 
 ### 6.6 修改（文档）
 
-- `docs/architecture/DKWS_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
+- `docs/architecture/KERT_HYBRID_DEPLOYMENT_AND_OPERATIONS_V1.0_CANDIDATE.md`
   §6 可观测性落地化（探针语义表、采集侧要求、Worker 无端点说明）
 
 ## 7. 顺带修复的既有问题

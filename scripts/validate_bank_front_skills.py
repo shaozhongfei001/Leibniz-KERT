@@ -122,6 +122,19 @@ def validate_skill(base: str, ws: Path, skill_id: str, sk_id: str,
     elif sk_id == "SK-FRONT-004":  # 事实对账
         check("indicators 非空", bool(result.get("indicators")))
         check("conflicts 为列表", isinstance(result.get("conflicts"), list))
+        # 执行状态（R3）：必须为受控枚举，且不得在无指标时标 SUCCESS
+        es = result.get("executionStatus")
+        check("executionStatus 为受控枚举",
+              es in ("SUCCESS", "PARTIAL", "NOT_RUN", "FAILED"), str(es))
+        check("executionStatus 未误用（无指标不得标 SUCCESS）",
+              not (not result.get("indicators") and es == "SUCCESS"), str(es))
+        # 规则编号（R5）：禁止占位符
+        bad_rules = [c for c in (result.get("conflicts") or [])
+                     if not (c or {}).get("ruleId") or "xxx" in str((c or {}).get("ruleId"))]
+        check("conflicts[].ruleId 无占位符", not bad_rules, str(bad_rules)[:80])
+        # 冲突实例标识（R4）
+        no_id = [c for c in (result.get("conflicts") or []) if not (c or {}).get("id")]
+        check("conflicts[].id 齐备", not no_id, str(no_id)[:80])
     elif sk_id == "SK-FRONT-005":  # 承诺话术
         coms = result.get("commitments") or []
         check("commitments 非空", bool(coms))
@@ -130,6 +143,16 @@ def validate_skill(base: str, ws: Path, skill_id: str, sk_id: str,
     elif sk_id == "SK-FRONT-006":  # KYC 缺口
         gaps = result.get("kycGaps") or []
         check("kycGaps 非空", bool(gaps))
+        # 覆盖状态（R1）：必填、受控枚举
+        cs = result.get("coverageStatus")
+        check("coverageStatus 为受控枚举",
+              cs in ("SUCCESS", "PARTIAL", "NOT_RUN", "FAILED"), str(cs))
+        check("coverageStatusReason 在非 SUCCESS 时必填",
+              cs == "SUCCESS" or bool(result.get("coverageStatusReason")), str(cs))
+        # 缺口状态（R2）
+        st = [(g or {}).get("status") for g in gaps]
+        check("kycGaps[].status 均为受控枚举",
+              all(s in ("OPEN", "PENDING", "CLOSED") for s in st), str(st))
     elif sk_id == "SK-FRONT-007":  # 产品组合
         cands = result.get("candidates") or []
         check("candidates 非空", bool(cands))

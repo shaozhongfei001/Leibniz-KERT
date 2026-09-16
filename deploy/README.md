@@ -1,6 +1,6 @@
-# DKWS 部署指南（M2.7）
+# KERT 部署指南（M2.7）
 
-> 本文档描述 DKWS（Data Knowledge Workspace Service）的单节点部署流程。
+> 本文档描述 KERT（Data Knowledge Workspace Service）的单节点部署流程。
 
 ## 目录
 
@@ -14,7 +14,7 @@
 
 ## 架构概览
 
-DKWS 采用单机单实例架构（ADR-015），由两个服务组成：
+KERT 采用单机单实例架构（ADR-015），由两个服务组成：
 
 ```
                     ┌─────────────┐
@@ -23,12 +23,12 @@ DKWS 采用单机单实例架构（ADR-015），由两个服务组成：
                     └──────┬──────┘
                            │ :443 → :8106
                     ┌──────┴──────┐
-                    │  DKWS API   │  Python Core，唯一公共入口
+                    │  KERT API   │  Python Core，唯一公共入口
                     │  :8106      │  (FastAPI + Uvicorn)
                     └──────┬──────┘
                            │ 共享 workspace volume
                     ┌──────┴──────┐
-                    │ DKWS Worker │  持久化异步 Worker（无 HTTP）
+                    │ KERT Worker │  持久化异步 Worker（无 HTTP）
                     │             │  消费 Job Queue
                     └─────────────┘
 ```
@@ -59,8 +59,8 @@ DKWS 采用单机单实例架构（ADR-015），由两个服务组成：
 ### 1. 克隆仓库
 
 ```bash
-git clone <repo-url> /opt/dkws
-cd /opt/dkws
+git clone <repo-url> /opt/kert
+cd /opt/kert
 git checkout <target-branch>
 ```
 
@@ -75,7 +75,7 @@ chmod 600 deploy/.env
 
 ```bash
 # 生成安全的 API Key（每个至少 16 字符）
-DKWS_API_KEYS=gits-caller:$(openssl rand -hex 24):read|execute,ops-admin:$(openssl rand -hex 24):read|execute|admin
+KERT_API_KEYS=gits-caller:$(openssl rand -hex 24):read|execute,ops-admin:$(openssl rand -hex 24):read|execute|admin
 ```
 
 > **安全警告**：`CHANGE_ME_AT_LEAST_16_CHARS` 是占位值，生产 profile 会拒绝启动。
@@ -111,9 +111,9 @@ bash deploy/smoke_test.sh
 
 ```bash
 # 参考 Nginx 配置模板
-cp deploy/nginx/dkws.conf.example /etc/nginx/sites-available/dkws
+cp deploy/nginx/kert.conf.example /etc/nginx/sites-available/kert
 # 编辑 server_name、TLS 证书路径等
-ln -s /etc/nginx/sites-available/dkws /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/kert /etc/nginx/sites-enabled/
 nginx -t && systemctl reload nginx
 ```
 
@@ -125,17 +125,17 @@ nginx -t && systemctl reload nginx
 
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
-| `DKWS_API_KEYS` | **是** | — | API 密钥声明，格式 `id:secret:scope1\|scope2` |
-| `DKWS_LOG_LEVEL` | 否 | `INFO` | 日志级别 |
-| `DKWS_RATE_LIMIT_RPM` | 否 | `600` | 每分钟请求限流 |
-| `DKWS_METRICS_REQUIRE_ADMIN` | 否 | `true` | `/metrics` 是否要求 admin 权限 |
-| `DKWS_WORKER_LEASE_SECONDS` | 否 | `30` | Worker 任务租约时长 |
-| `DKWS_WORKER_POLL_INTERVAL` | 否 | `1.0` | Worker 空闲轮询间隔（秒） |
+| `KERT_API_KEYS` | **是** | — | API 密钥声明，格式 `id:secret:scope1\|scope2` |
+| `KERT_LOG_LEVEL` | 否 | `INFO` | 日志级别 |
+| `KERT_RATE_LIMIT_RPM` | 否 | `600` | 每分钟请求限流 |
+| `KERT_METRICS_REQUIRE_ADMIN` | 否 | `true` | `/metrics` 是否要求 admin 权限 |
+| `KERT_WORKER_LEASE_SECONDS` | 否 | `30` | Worker 任务租约时长 |
+| `KERT_WORKER_POLL_INTERVAL` | 否 | `1.0` | Worker 空闲轮询间隔（秒） |
 
 **不要在 `.env` 中配置的变量：**
 
-- `DKWS_PROFILE` — 已在 compose 中固定为 `prod`
-- `DKWS_BIND_HOST` — 容器内固定 `0.0.0.0`，对外暴露由 ports 回环绑定控制
+- `KERT_PROFILE` — 已在 compose 中固定为 `prod`
+- `KERT_BIND_HOST` — 容器内固定 `0.0.0.0`，对外暴露由 ports 回环绑定控制
 - LLM 凭据 — 由外部密钥管理注入，不写入 `.env`
 
 ### Docker Compose 服务
@@ -150,8 +150,8 @@ nginx -t && systemctl reload nginx
 
 | Volume | 挂载点 | 说明 |
 |--------|--------|------|
-| `dkws_workspace` | `/data/workspace` | 知识资产（权威源，必须持久化） |
-| `dkws_backups` | `/data/backups` | 备份集输出目录 |
+| `kert_workspace` | `/data/workspace` | 知识资产（权威源，必须持久化） |
+| `kert_backups` | `/data/backups` | 备份集输出目录 |
 
 ## 验证方法
 
@@ -200,48 +200,48 @@ bash deploy/smoke_test.sh
 docker compose -f deploy/docker-compose.yml --env-file deploy/.env run --rm backup
 
 # 查看备份集
-docker run --rm -v dkws_backups:/data/backups busybox ls -la /data/backups/
+docker run --rm -v kert_backups:/data/backups busybox ls -la /data/backups/
 
 # 将备份集复制到宿主机
-docker cp dkws-backup:/data/backups/<backup-dir> /var/backups/dkws/
+docker cp kert-backup:/data/backups/<backup-dir> /var/backups/kert/
 ```
 
 ### Systemd 部署备份
 
 ```bash
 # 手动触发
-sudo systemctl start dkws-backup
+sudo systemctl start kert-backup
 
 # 查看定时器状态
-sudo systemctl list-timers dkws-backup.timer
+sudo systemctl list-timers kert-backup.timer
 
 # 查看备份日志
-journalctl -u dkws-backup
+journalctl -u kert-backup
 ```
 
 ### 恢复
 
 ```bash
 # 从备份集恢复（建议恢复到新目录，勿直接覆盖生产）
-python scripts/dkws_ops.py restore \
-    --backup /var/backups/dkws/backup-<timestamp> \
+python scripts/kert_ops.py restore \
+    --backup /var/backups/kert/backup-<timestamp> \
     --target /tmp/restore-drill
 
 # 校验备份集完整性
-python scripts/dkws_ops.py verify \
-    --backup /var/backups/dkws/backup-<timestamp>
+python scripts/kert_ops.py verify \
+    --backup /var/backups/kert/backup-<timestamp>
 ```
 
 ## 常见问题
 
 ### Q: 启动报错 "需在 .env 中配置 API Key"
 
-**原因**：`DKWS_API_KEYS` 未配置或仍为占位值。
+**原因**：`KERT_API_KEYS` 未配置或仍为占位值。
 
 **解决**：
 ```bash
 # 检查 .env 文件
-cat deploy/.env | grep DKWS_API_KEYS
+cat deploy/.env | grep KERT_API_KEYS
 # 确保密钥长度 >= 16 字符
 ```
 
@@ -277,7 +277,7 @@ curl -s http://localhost:8106/readyz | python3 -m json.tool
 curl -H "X-API-Key: <admin-key>" http://localhost:8106/metrics
 
 # 方案 2：关闭密钥要求（仅限内网监控场景）
-# 在 .env 中设置 DKWS_METRICS_REQUIRE_ADMIN=false
+# 在 .env 中设置 KERT_METRICS_REQUIRE_ADMIN=false
 ```
 
 ### Q: 如何查看容器日志
@@ -322,6 +322,6 @@ Systemd 配置文件在 `deploy/systemd/`，安装方法见各 `.service` 文件
 
 **相关文档：**
 - [环境变量模板](.env.example)
-- [Nginx 配置模板](nginx/dkws.conf.example)
+- [Nginx 配置模板](nginx/kert.conf.example)
 - [Systemd 服务配置](systemd/)
 - [Dockerfile](Dockerfile)

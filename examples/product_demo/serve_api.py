@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""启动 DKWS HTTP API（规格 §13）服务于指定工作区。
+"""启动 KERT HTTP API（规格 §13）服务于指定工作区。
 
 用法：python serve_api.py --workspace ../demo_workspace [--port 8100]
 """
@@ -19,7 +19,7 @@ def main() -> None:
     ap.add_argument("--host", default="127.0.0.1")
     args = ap.parse_args()
 
-    from dkws.api.server import create_app
+    from kert.api.server import create_app
 
     app = create_app(Path(args.workspace).resolve())
     uvicorn.run(app, host=args.host, port=args.port, log_level="warning")

@@ -18,7 +18,7 @@
 
 ```text
 poc/spring-ai-alibaba-skill-runtime/
-├── src/main/java/com/dkws/skillruntime/
+├── src/main/java/com/kert/skillruntime/
 │   ├── config/
 │   ├── controller/
 │   ├── service/
@@ -36,6 +36,6 @@ poc/spring-ai-alibaba-skill-runtime/
 ## 禁止
 
 - Java Runtime 不直接写 SQLite
-- Java Runtime 不直接访问 DKWS 五层工作区
+- Java Runtime 不直接访问 KERT 五层工作区
 - 不向 GITS 暴露 Java Runtime API
 - 生产禁用 autoReload
