@@ -872,6 +872,9 @@ _run_supply_chain     = 3  （不变 ⇒ D 组未接线）
 - (γ) 夹具必须带 `evidenceTimestamp`，否则 R1 无新证据策略在**取数之前**拦截（走不到读取层）；
 - **未做**：未改任何既有测试（唯一新增红 = 2-A 白名单门禁 ⇒ **已由 TL 裁定 (a) 并授权修改**，见 §10.7）；未动 `customer_knowledge.py` / `api/**` / `specs/**` / `deploy/**` / 2-A 声明文件；未 commit、未 push。
 
+> 本节为 **B-1 交付时**的边界口径。**B-2② 交付后的「未做」口径以 §11.2 为准**
+> （B-1 已入库 `c073c93`，B-2② 已入库 `470adfb`）。
+
 ### 10.7 TL 裁定落实（A-10 与两项口径修正）与**红集不变量恢复**
 
 | # | 裁定 | 落实内容 | 结果 |
@@ -913,4 +916,107 @@ V14 基线红集=3          变异红集=4(=3+1)         恢复红集=3  ✓
 
 ⇒ **变异只增加其目标捕获用例，从未影响基准红灯集**（每一段的基线/恢复红集都恰为基准 3 条）；
 E-1 三重比对基线：golden sha `1677173c…`、`wc -l = 1188`、`git diff --numstat = 249 3`；14 条恢复后 sha 均回原值。
+
+---
+
+## 11. B-2② 实施记录与「未做」边界证明（2026-09-16；入库 `470adfb`）
+
+> **范围**：本片**只**做 **②**（运行时层：声明**缺失 / 非法 ⇒ 拒绝**，fail-closed）；
+> **①**（源不可用 ⇒ **回落** + `status=degraded`）**一字未动**（证据见 §11.3）。
+> **本节 §11.2 的每一项（含行号）已由 TL 独立核实通过**（非自述）。
+
+### 11.1 落地清单（入库提交 `470adfb`；HEAD 与工作区**逐字一致**）
+
+```text
+文件                                                numstat    行数   sha256 前 16 位（E-5：HEAD / 工作区）
+M src/kert/application/skills.py                     +44/-5    1227   bcb1ecc4194c2794 / bcb1ecc4194c2794
+M tests/unit/test_skills_capability_swap_guards.py   +43/-37     476   ea86874e48c77c39 / ea86874e48c77c39
+M tests/integration/test_skills_capability_swap.py   +52/-31     422   51f0b0322bb3305a / 51f0b0322bb3305a
+```
+
+> E-5：两列均**整条取自命令输出**，`HEAD` 值用 `git show HEAD:<path> | sha256sum`、工作区值用 `sha256sum <path>`，
+> **相等 ⇒ 无未提交增量**。**既有测试文件零改动**（本片只改我方自建的两个测试文件）。
+
+### 11.2 「未做」边界证明 —— refusal 码集 = **{`ABSENT`, `INVALID`}**（机械可证）
+
+**第 1 步（拒绝路径唯一）**：全片**只有一处**拒绝调用：
+
+```text
+src/kert/application/skills.py:651   load = self._declaration_load()
+src/kert/application/skills.py:652   if not load.allowed:
+src/kert/application/skills.py:653       # B-2②（Owner 已批 2026-09-16）：声明缺失 / 非法 ⇒ 拒绝（不再回落）
+src/kert/application/skills.py:655       return self._refuse_ki(trace, load.code)
+```
+
+**第 2 步（该处可收到的码集，由 domain 契约**源码闭合**）**：`load.code` 只可能来自
+`resolve_declaration`，其返回分支**穷尽为三条**：
+
+```text
+src/kert/domain/knowledge_source.py:454-455   declaration 非法（SchemaValidationError）⇒ CODE_DECLARATION_INVALID
+src/kert/domain/knowledge_source.py:458-460   declaration 缺失（decl is None）        ⇒ CODE_DECLARATION_ABSENT
+src/kert/domain/knowledge_source.py:464       合法                                   ⇒ CODE_OK
+```
+
+⇒ `_refuse_ki` **在结构上不可能**收到 `DISABLED` / `AMBIGUOUS` / `CONTRACT_MISMATCH` /
+`UNBOUND` / `LIMIT_EXCEEDED` / `ASSET_REF_UNMATCHED`（这些码**只**由 resolver 级产生，
+**不经过** `DeclarationLoad`）。
+
+**第 3 步（resolver 级码一律回落，非拒绝）**：
+
+```text
+src/kert/application/skills.py:665   if not resolution.allowed:
+src/kert/application/skills.py:667       return self._fallback_ki(customer_id, trace, resolution.code, …)
+```
+
+同层另有两条**仍为回落**的具名分支：`skills.py:679`（`CODE_CONTRACT_MISMATCH`）、
+`skills.py:685`（`CODE_UNAVAILABLE`）；`skills.py:674` 为**防御性**回落的
+`CODE_DECLARATION_INVALID`（解析器保证 `bindings` 非空 ⇒ 不可达；即便到达也是回落）。
+
+**结论（写入口径）**
+
+| 码 | 当前去向 | 归属 |
+|---|---|---|
+| `KNOWLEDGE_SOURCE_DECLARATION_ABSENT` | **拒绝**（`SkillError KERT_PERMISSION_DENIED` + `status=blocked` 具名留痕） | ② 裁定范围内 —— **已做** |
+| `KNOWLEDGE_SOURCE_DECLARATION_INVALID` | **拒绝**（同上） | ② 裁定范围内 —— **已做** |
+| `KNOWLEDGE_SOURCE_UNAVAILABLE` | 回落 + `degraded` | **① 语义（刻意保持）** |
+| `KNOWLEDGE_SOURCE_DISABLED` | 回落 + `degraded` | **未做** |
+| `KNOWLEDGE_SOURCE_AMBIGUOUS` | 回落 + `degraded` | **未做** |
+| `KNOWLEDGE_SOURCE_CONTRACT_MISMATCH` | 回落 + `degraded` | **未做** |
+| `KNOWLEDGE_SOURCE_UNBOUND` | 回落 + `degraded` | **未做** |
+| `KNOWLEDGE_SOURCE_LIMIT_EXCEEDED` | 回落 + `degraded` | **未做** |
+| `KNOWLEDGE_SOURCE_ASSET_REF_UNMATCHED` | 回落 + `degraded` | **未做** |
+
+> ⛔ **禁止读法**：本片**不得**被读作"知识源能力已全部 fail-closed"。上表除前两行外
+> **7 个码仍回落**（`_fallback_ki` + `status=degraded`），其中 `UNAVAILABLE` 是 **①** 的刻意语义。
+
+### 11.3 不变量核对（B-2② 后；**预跑口径，非官方**）
+
+```text
+tests/unit → 3 failed, 976 passed, exit 1
+红集（逐条 node id，与基准 3 条**逐条一致**）:
+  tests/unit/test_provision_cli.py::test_apply_then_idempotent_rerun
+  tests/unit/test_provision_cli.py::test_json_output_follows_standard_envelope
+  tests/unit/test_provision_cli.py::test_init_flag_initializes_fresh_volume_then_provisions
+  （归因：第三方在途批次把供给面 6 → 8 条目、`test_provision_cli.py` 计数断言未同步 ⇒ **baseline/第三方，非本片变化**）
+```
+
+- **① 载体保持绿且**未改**：`test_trace_field_discipline_and_append_only[×3]`、
+  `test_beta_unavailable_falls_back_with_named_trace`（二者钉 ① 的"回落 + `degraded`"）；
+- **C-2**：`test_required_flag_does_not_escalate` **不升格、仍绿**；
+- **翻转集 = 6 个 def**（原报 9 系**过度包含**；上述 3+1 条按边界**不得翻转**）
+  ⇒ 口径：**"不超过我方自建集；实际 6"**（TL 已采纳，清单 C-1b 已由 9 改 6）。
+
+### 11.4 待做（窗口协议）
+
+1. **官方复跑待** TL 的"**1.6.0 已落地**"信号（c20 的 A-6/A-9/D-10 批落定后）；届时**一次做全**：
+   `git rev-parse HEAD` + 完整 `git status` 原文 / 四目录**原始计数与退出码分行** /
+   **node-id 级三分类 diff**（SAME · ONLY_IN_BASELINE · ONLY_IN_CURRENT）/ 红集逐条
+   （**变多、变少都报**）/ 第三方 3 条逐条 node id 标注 / 证据落盘 + **E-6 单次定稿**。
+2. **窗口守卫（D-13「外部写入者」前例，必做）**：复跑**跑前**记 `skills.py` sha256
+   （须 = `bcb1ecc4194c2794…`），**跑后再记一次**；**两次不一致 ⇒ 该跑数作废、重跑**
+   （此类污染静默、不报错，只会让结论失真）。
+3. **白名单收紧（TL 2026-09-16）**：第 3 组**仅限我方自有文件**（本文件 + 我方新建证据文件）；
+   `evidence/m7-3/**` 下**他人文件一律不动**（c20 的 `PLAN_D-6-…`／`INVENTORY_V1_LINE_REFERENCES.md`／
+   `PROPOSAL_REGISTER_…`／`CANDIDATE-CONTRACT-MERGE-V1-V2.md`，TL 的 `DECISION_SHEET_M7_CLOSURE.md`）——
+   仅**只读引用**。
 
