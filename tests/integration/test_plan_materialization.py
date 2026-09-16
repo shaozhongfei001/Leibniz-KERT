@@ -17,6 +17,7 @@ from pathlib import Path
 import pyarrow.parquet as pq
 import pytest
 
+from kert.application import services
 from kert.application.extract import KnowledgeExtractor
 from kert.application.ingest import Ingestor
 from kert.application.parse_doc import DocumentParserService
@@ -78,6 +79,21 @@ class TestPlanDrivenMaterialization:
                 encoding="utf-8"))
         assert declared  # 声明存在（值域由供给源决定，此处只断言非空）
 
+        # ②' 本体**输入面**：顶层 `ontology` 子块（5 键，逐字取自既有 helper），且校验放行
+        from kert.domain.activation_plan import ActivationPlanBuilder
+        from kert.domain.ontology_reference import (
+            LINEAGE_ONTOLOGY_FIELDS,
+            check_lineage_ontology,
+        )
+
+        block = lineage["ontology"]
+        assert tuple(sorted(block)) == tuple(sorted(LINEAGE_ONTOLOGY_FIELDS))
+        assert all(isinstance(v, str) and v.strip() for v in block.values())
+        assert block["version"] == lineage["versions"]["ontology"]  # 与计划版本同值
+        resolution = ActivationPlanBuilder.load(ws).ontology_resolution()
+        chk = check_lineage_ontology(resolution, lineage)
+        assert chk.allowed, chk.reason
+
         # ③ 可查询：Kùzu 图已建，且图查询命中节点
         from kert.infrastructure.graph.kuzu_builder import KuzuGraphBuilder
 
@@ -109,3 +125,69 @@ class TestPlanDrivenMaterialization:
             svc.materialize_from_plan("OUTREACH_PREPARATION", domain="product")
         assert "不物化" in str(ei.value)
         assert not (ws / "04_serve" / SERVICE_ID).exists()
+
+    def test_tampered_ontology_input_is_refused_and_nothing_materialized(
+            self, ws_plan_ready, monkeypatch):
+        """反例：**写入口径偏差**（本体面被篡改）⇒ `MISMATCH` ⇒ **不产出投影**（fail-closed）。
+
+        篡改点只作用于**写入侧**（`kert.application.services.lineage_ontology_fields`）；
+        校验侧 `check_lineage_ontology` 仍取**真实**期望值 ⇒ 二者不一致必须被拒。
+        """
+        from kert.domain.errors import UsageError
+
+        real = services.lineage_ontology_fields
+
+        def _tampered(resolution):
+            fields = real(resolution)
+            if fields is None:
+                return None
+            fields = dict(fields)
+            fields["contentSha256"] = "0" * 64
+            return fields
+
+        monkeypatch.setattr(services, "lineage_ontology_fields", _tampered)
+        ws = ws_plan_ready
+        svc = KnowledgeService(ws, service_id=SERVICE_ID)
+
+        with pytest.raises(UsageError) as ei:
+            svc.materialize_from_plan("OUTREACH_PREPARATION", domain="product")
+        assert "不一致" in str(ei.value)
+        assert not (ws / "04_serve" / SERVICE_ID).exists()
+
+    def test_tampered_written_artifact_is_refused(self, ws_plan_ready):
+        """反例（TL 硬要求③）：**篡改已写产物**后校验 ⇒ `MISMATCH`。
+
+        该反例同时证明「**产物形状 == 校验器期望的形状**」：若形状不对（例如本体块仍在
+        ``versions.ontology`` 字符串里、或缺顶层对象块），校验会恒判 `ABSENT`，
+        接线"成功"也无意义。故先断言**未篡改即放行**，再篡改 `contentSha256` 断言 `MISMATCH`。
+        ⚠ 不拿 `authorityRepo`/`authoritySource` 当拒绝理由（依既有 D-3：来源路径环境相关、
+        必记但不据以拒绝）—— 该口径由 m71 侧用例覆盖，本文件不重复。
+        """
+        from kert.domain.activation_plan import ActivationPlanBuilder
+        from kert.domain.ontology_reference import (
+            CODE_LINEAGE_MISMATCH,
+            LINEAGE_ONTOLOGY_KEY,
+            check_lineage_ontology,
+        )
+
+        ws = ws_plan_ready
+        out = KnowledgeService(ws, service_id=SERVICE_ID).materialize_from_plan(
+            "OUTREACH_PREPARATION", domain="product")
+        p = ws / out["lineage_path"]
+        resolution = ActivationPlanBuilder.load(ws).ontology_resolution()
+
+        # 未篡改 ⇒ 放行（形状与校验器期望对齐）
+        assert check_lineage_ontology(resolution, json.loads(p.read_text(
+            encoding="utf-8"))).allowed
+
+        # 篡改**已写产物**并回写 ⇒ 必判 MISMATCH
+        fm = json.loads(p.read_text(encoding="utf-8"))
+        good = fm[LINEAGE_ONTOLOGY_KEY]["contentSha256"]
+        fm[LINEAGE_ONTOLOGY_KEY]["contentSha256"] = (
+            "0" if good[0] != "0" else "1") + good[1:]
+        p.write_text(json.dumps(fm, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+        chk = check_lineage_ontology(resolution, json.loads(p.read_text(encoding="utf-8")))
+        assert not chk.allowed
+        assert chk.code == CODE_LINEAGE_MISMATCH
+        assert "contentSha256" in chk.reason

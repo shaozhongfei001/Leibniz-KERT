@@ -18,6 +18,7 @@ import pyarrow.parquet as pq
 
 from ..domain import timeutil
 from ..domain.errors import AssetNotFoundError, ServiceNotReadyError, UsageError
+from ..domain.ontology_reference import check_lineage_ontology, lineage_ontology_fields
 from ..domain.rules import dsl
 from ..infrastructure import markdown
 from ..infrastructure.parquet import build_filter
@@ -381,11 +382,15 @@ class KnowledgeService:
         - **不另起一套投影实现**：复用既有
           :class:`~kert.application.projection.ProjectionBuilder`（含其 G4 门禁与 Kùzu 图谱分支），
           本方法只做「计划门禁 → 调用既有 builder → 写血缘」；
-        - **计划身份 + 本体引用写入产物元数据（血缘）**：血缘**逐键取自计划本身**
-          （``planId`` / ``planHash`` / ``versions.ontology`` …，见
-          :meth:`~kert.domain.activation_plan.ActivationPlan.to_dict`），**不新造字段**；
-        - **fail-closed**：计划未放行（路由未放行 / 本体引用缺失或非法）⇒ 直接抛出，
-          **不产出任何投影产物**（与计划构建器「没有第三态」的口径一致）。
+        - **计划身份 + 本体引用写入产物元数据（血缘）**：血缘 = ``plan.to_dict()`` **原样照抄**
+          （``planId`` / ``planHash`` / ``versions.ontology`` …，含计划身份与 planHash），
+          **追加**一个**顶层** ``ontology`` 子块**= 既有 helper
+          :func:`~kert.domain.ontology_reference.lineage_ontology_fields` 的输出**
+          （5 键，键名全部取自既有声明与计划，**不新造字段**、**不自行反解** ``versions.ontology``
+          字符串）；计划未放行时该 helper 返回 ``None`` ⇒ **不写占位串**；
+        - **fail-closed**：计划未放行（路由未放行 / 本体引用缺失或非法）⇒ 直接抛出；
+          **血缘本体面与计划不一致** ⇒ 同样抛出，**两种情况都不产出任何投影产物**
+          （校验**先于**调用 projection builder，与计划构建器「没有第三态」的口径一致）。
 
         :param task_type: 计划任务类型（如 ``OUTREACH_PREPARATION``）。
         :param domain: ``03_core`` 下的域（投影输入）。
@@ -398,16 +403,30 @@ class KnowledgeService:
         from ..domain.activation_plan import ActivationPlanBuilder
         from .projection import ProjectionBuilder
 
-        plan = ActivationPlanBuilder.load(self.ws).build(task_type, subject_id=subject_id)
+        # **同一实例**同时供门禁与血缘取值 ⇒ 本体输入面与计划门禁同源，不留时间窗口
+        builder = ActivationPlanBuilder.load(self.ws)
+        plan = builder.build(task_type, subject_id=subject_id)
         if not plan.allowed:
             raise UsageError(f"计划未放行 ⇒ 不物化（{plan.code}）：{plan.reason}")
+        resolution = builder.ontology_resolution()
+        ontology_block = lineage_ontology_fields(resolution)
+        if ontology_block is None:
+            raise UsageError(
+                f"计划本体引用未放行 ⇒ 不物化（{resolution.code}）：{resolution.reason}")
+
+        lineage = plan.to_dict()
+        lineage["ontology"] = dict(ontology_block)
+        # 校验先于产出：不一致 ⇒ 不产出投影（血缘是下游唯一可追溯凭证）
+        check = check_lineage_ontology(resolution, lineage)
+        if not check.allowed:
+            raise UsageError(
+                f"血缘本体引用与计划不一致 ⇒ 不物化（{check.code}）：{check.reason}")
 
         target_service = service_id or self.service_id
         result = ProjectionBuilder(self.ws, owner="plan_materializer").build(
             domain, service_id=target_service, include_vectors=include_vectors,
             idempotency_key=f"plan:{plan.plan_hash}")
 
-        lineage = plan.to_dict()
         lineage_rel = (f"04_serve/{target_service}/version={result.projection_version}"
                        f"/PLAN_LINEAGE.json")
         (self.ws / lineage_rel).write_text(
