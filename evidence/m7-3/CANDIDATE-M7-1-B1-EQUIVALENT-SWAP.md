@@ -1011,12 +1011,36 @@ tests/unit → 3 failed, 976 passed, exit 1
 - **翻转集 = 6 个 def**（原报 9 系**过度包含**；上述 3+1 条按边界**不得翻转**）
   ⇒ 口径：**"不超过我方自建集；实际 6"**（TL 已采纳，清单 C-1b 已由 9 改 6）。
 
-### 11.4 待做（窗口协议）
+### 11.4 窗口协议与**官方复跑结果**（2026-09-16）
 
 1. **官方复跑待** TL 的"**1.6.0 已落地**"信号（c20 的 A-6/A-9/D-10 批落定后）；届时**一次做全**：
    `git rev-parse HEAD` + 完整 `git status` 原文 / 四目录**原始计数与退出码分行** /
    **node-id 级三分类 diff**（SAME · ONLY_IN_BASELINE · ONLY_IN_CURRENT）/ 红集逐条
    （**变多、变少都报**）/ 第三方 3 条逐条 node id 标注 / 证据落盘 + **E-6 单次定稿**。
+
+**✅ 官方复跑已完成（TL 于 2026-09-16 放行"1.6.0 已落地"后执行）**
+
+```text
+证据文件 : evidence/m7-3/EVIDENCE-OFFICIAL-RERUN-M7-1-B1-B2.md
+           267 行 / e8c14f92862ae4ad2267881bf0cab9fb42bec358365ed0d54f2797b282179abb（工作区版；新增文件，无入库版）
+HEAD     : 跑前 1bc5972a… → 收工 4d85b4b3…（窗口内 5 提交**全 docs**，仅 DECISION_SHEET 5+/3-；零代码/零测试/零 specs）
+D-13 守卫 : 跑前 == 跑后 == bcb1ecc4194c2794…  ⇒ **PASS**（未发生回写）
+四目录   : unit 3 failed / 976 passed / rc=1  ｜ integration 479 passed / 1 xfailed / rc=0
+           contract 53 passed / rc=0          ｜ recovery 18 passed / rc=0
+红集     : **恰好 3 条**（`test_provision_cli.py` 计数三条），node id 与基线**逐条一致**
+           ⇒ 红集三分类：SAME=3 / ONLY_IN_BASELINE=**0** / ONLY_IN_CURRENT=**0**（"不得新增红灯"成立）
+枚举三分类 : SAME=61 / ONLY_IN_BASELINE=7 / ONLY_IN_CURRENT=8
+           （旧 7 = **6 条重命名旧名** + 1 条异步归属竞态归 **E**；新 8 = 6 条重命名新名 + 1 条 B-1 期新增
+             + 1 条**用例两树皆在、纯探针归属差**）
+R-A 集合  : A∩B = **69**；仅 A = ∅；仅 B = 1（`test_queue_stats_reflects_enqueued` ⇒ 归 **E**）
+与预期不符 : ① TL 记"3 条红灯现已不存在" —— **本树仍红**（`test_provision_cli.py` 为提交态、仍断言 6，
+               而第三方**未提交**的 `provision.py` 已供给 8 条目 ⇒ "改实现未同步断言"）；
+             ② unit 采集 **979** vs 记录 973（差 **6**）；本树 `tests/unit` **零 skip 标记**
+               ⇒ 记录中的 "1 skipped" 在本树**无来源**，需 c20 的**精确命令 + 树 sha** 才能闭环
+               （**不反向凑数**；干净树复算须先扣掉未跟踪文件的 **44** 条）。
+```
+
+> 本节至此**不再改动**（符合 TL"防记录回环"约定）；后续引用请以本表与上述证据文件为准。
 2. **窗口守卫（D-13「外部写入者」前例，必做）**：复跑**跑前**记 `skills.py` sha256
    （须 = `bcb1ecc4194c2794…`），**跑后再记一次**；**两次不一致 ⇒ 该跑数作废、重跑**
    （此类污染静默、不报错，只会让结论失真）。
