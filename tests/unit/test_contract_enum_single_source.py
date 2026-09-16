@@ -22,7 +22,9 @@ from kert.application.interaction_memory import DECAY_RULES, MEMORY_CATEGORIES
 from kert.application.service_proposal import GATE_STATES, OVERALL_READINESS_STATES
 from kert.domain.activation_plan import SCHEMA as ACTIVATION_PLAN_SCHEMA
 from kert.domain.contracts.specs import JOB_STATUS_SCHEMA
+from kert.domain.fact_label import FACT_LABELS
 from kert.domain.health import SKILL_HEALTH_STATES
+from kert.domain.service_result import SERVICE_RESULT_STATES
 from kert.domain.skill_status import (
     EXIT_POLICY_NO_NEW_EVIDENCE,
     SKILL_ERROR,
@@ -80,6 +82,14 @@ MAPPINGS: tuple[tuple[str, str, list], ...] = (
     # （含 `result.status == SKILL_ERROR` 的**按名比较**分支）；三态真实路径见
     # `test_skill_status_single_source.py`。
     ("SkillExecuteResponse", "status", list(SKILL_EXECUTION_STATES)),
+    # D-28 层 2 第五片：**断言事实标签域**（清单 #7）——源 `kert.domain.fact_label`，
+    # 消费者为 `proposal_rules`（必填校验）/`service_proposal`（对客版过滤）/`report`（译名+上色）；
+    # 键完备性与真实路径见 `test_fact_label_single_source.py`。
+    ("Citation", "factLabel", list(FACT_LABELS)),
+    # D-28 层 2 第五片：**服务结果状态域**（清单 #5/#6）——**一个源、两个合同 enum**；
+    # 跨域映射（→ 轨迹条目域）由 `test_service_result_single_source.py` 成对钉住。
+    ("ServiceResult", "status", list(SERVICE_RESULT_STATES)),
+    ("InteractionMemoryResult", "status", list(SERVICE_RESULT_STATES)),
     ("SkillExecuteErrorResponse", "status", [SKILL_ERROR]),        # 404 未知技能体：子集
     ("ErrorResponse", "status", [SKILL_ERROR, EXIT_POLICY_NO_NEW_EVIDENCE]),  # 500 信封：子集
 )
@@ -132,8 +142,8 @@ def test_contract_enum_matches_single_source():
     spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
     checked = _assert_matches(spec)
     # 防空转：本用例不得在"核对项为空/骤减"时静默通过（下限随登记项数同步抬高）
-    assert checked >= 12, f"防空转：实际核对项数 {checked} 少于下限 12"
-    assert len(MAPPINGS) >= 12, "防空转：映射表异常收缩"
+    assert checked >= 15, f"防空转：实际核对项数 {checked} 少于下限 15"
+    assert len(MAPPINGS) >= 15, "防空转：映射表异常收缩"
 
 
 @pytest.mark.parametrize("mode", ["changed_value", "narrowed"])
@@ -144,7 +154,7 @@ def test_contract_enum_mutation_is_detected(mode):
     本用例会失去可红性 ⇒ 自动暴露（把一次性的手工自证固化成机械保护）。
     """
     spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
-    assert _assert_matches(spec) >= 12, "基线合同必须先通过（否则变异证明无意义）"
+    assert _assert_matches(spec) >= 15, "基线合同必须先通过（否则变异证明无意义）"
 
     checked = 0
     for schema, field, _source in MAPPINGS:
@@ -160,7 +170,7 @@ def test_contract_enum_mutation_is_detected(mode):
         with pytest.raises(AssertionError):
             _assert_matches(mutated)
         checked += 1
-    assert checked >= 9, f"防空转：实际变异项数 {checked} 少于下限 9"
+    assert checked >= 12, f"防空转：实际变异项数 {checked} 少于下限 12"
 
 
 @pytest.mark.parametrize("mode", ["changed_value", "extended"])
@@ -181,4 +191,4 @@ def test_source_mutation_is_detected(mode):
         with pytest.raises(AssertionError):
             _assert_matches(spec, [(schema, field, mutated)])
         checked += 1
-    assert checked >= 9, f"防空转：实际变异项数 {checked} 少于下限 9"
+    assert checked >= 12, f"防空转：实际变异项数 {checked} 少于下限 12"

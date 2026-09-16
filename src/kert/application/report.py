@@ -15,6 +15,14 @@ from functools import lru_cache
 from pathlib import Path
 
 # D-28a：闸门状态语汇的**单一源**（生产者与本模块共用；本模块不再自留字面量地图）。
+from ..domain.fact_label import (
+    LABEL_ASSERTION,
+    LABEL_BELIEF,
+    LABEL_FACT,
+    LABEL_HYPOTHESIS,
+    LABEL_INFERENCE,
+    LABEL_PREDICTION,
+)
 from .service_proposal import GATE_STATE_CSS
 
 _VENDOR_JS = (Path(__file__).resolve().parents[3]
@@ -363,8 +371,12 @@ def render_generic_report(payload: dict) -> str:
 
 # ---------------- SP-20 服务建议书报告（v1.4） ----------------
 
-LABEL_CN = {"F": "已核验事实", "C": "推断结论", "B": "行为事实", "H": "假设", "P": "计划承诺", "A": "已批准"}
-LABEL_COLOR = {"F": "#2dd4a7", "C": "#4d9fff", "B": "#fbbf24", "H": "#a78bfa", "P": "#f97316", "A": "#34d399"}
+# 两张映射的**键**必须与单一源 `kert.domain.fact_label.FACT_LABELS` **集合相等**
+# （键用常量书写 ⇒ 拼错即 NameError；完备性由 `test_fact_label_single_source.py` 机械核对）。
+LABEL_CN = {LABEL_FACT: "已核验事实", LABEL_INFERENCE: "推断结论", LABEL_BELIEF: "行为事实",
+            LABEL_HYPOTHESIS: "假设", LABEL_PREDICTION: "计划承诺", LABEL_ASSERTION: "已批准"}
+LABEL_COLOR = {LABEL_FACT: "#2dd4a7", LABEL_INFERENCE: "#4d9fff", LABEL_BELIEF: "#fbbf24",
+               LABEL_HYPOTHESIS: "#a78bfa", LABEL_PREDICTION: "#f97316", LABEL_ASSERTION: "#34d399"}
 
 
 def _md_to_html(text: str) -> str:

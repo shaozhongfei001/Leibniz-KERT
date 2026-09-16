@@ -16,6 +16,14 @@ import time
 from pathlib import Path
 
 from ..domain import timeutil
+from ..domain.fact_label import (
+    CUSTOMER_SAFE_LABELS,
+    LABEL_INFERENCE,
+    NON_CUSTOMER_SAFE_LABELS,
+    PENDING_LABEL,
+    RISK_LABELS,
+)
+from ..domain.service_result import SERVICE_PARTIAL, SERVICE_SUCCESS
 from ..infrastructure.adapters import llm as llm_mod
 from . import proposal_rules
 
@@ -110,7 +118,7 @@ class ServiceProposalExecutor:
             self.chapters.append({
                 "id": fm.get("chapterId") or f.stem,
                 "name": fm.get("name") or f.stem,
-                "label": fm.get("requiredFactLabel", "C"),
+                "label": fm.get("requiredFactLabel", LABEL_INFERENCE),
                 "sources": fm.get("dataSources") or [],
                 "instr": doc["body"],
             })
@@ -208,9 +216,11 @@ class ServiceProposalExecutor:
         # 3) 规则校验
         rule_result = proposal_rules.evaluate(chapters_out, merged["customerVersion"], gate_state)
         merged["ruleViolations"] = rule_result["violations"]
-        status = "SUCCESS" if not rule_result["blocking"] else "PARTIAL"
+        status = SERVICE_SUCCESS if not rule_result["blocking"] else SERVICE_PARTIAL
         merged["status"] = status
-        trace.append({"phase": "compose", "status": "ok" if status == "SUCCESS" else "failed",
+        # 跨域映射：域值 → **轨迹条目域**（`ok`/`failed`）。判据端引用单一源常量；
+        # 目标端属轨迹域（assembly-trace），与本域相交不等、**不得合并**。
+        trace.append({"phase": "compose", "status": "ok" if status == SERVICE_SUCCESS else "failed",
                       "message": f"规则校验：违规 {len(rule_result['violations'])} 条（{status}）"})
 
         model_call = self._aggregate(model_calls)
@@ -327,8 +337,8 @@ class ServiceProposalExecutor:
             customer_version = {
                 "content": customer["content"],
                 "filteringNotes": customer["notes"],
-                "includes": ["F", "A"],
-                "excludes": ["C", "B", "H", "P"],
+                "includes": list(CUSTOMER_SAFE_LABELS),
+                "excludes": list(NON_CUSTOMER_SAFE_LABELS),
                 "releaseBlockedUntil": release_blocked,
             }
         customer_note = ("对客版已生成（仅 F/A 内容），等待 G1/G2/G3 闸门通过后由 GITS 放行。"
@@ -350,8 +360,8 @@ class ServiceProposalExecutor:
         }
 
     def _internal_sections(self, claims: list[dict]) -> str:
-        risk = [c for c in claims if c.get("factLabel") in ("C", "B")]
-        pending = [c for c in claims if c.get("factLabel") == "P"]
+        risk = [c for c in claims if c.get("factLabel") in RISK_LABELS]
+        pending = [c for c in claims if c.get("factLabel") == PENDING_LABEL]
         parts = ["\n## 内部判断（不进对客版）\n"]
         parts.append("\n".join(f"- [{c.get('factLabel')}] {c['claim']}（{c.get('chapterRef')}）"
                                for c in risk) or "- 无风险红旗")
@@ -369,7 +379,7 @@ class ServiceProposalExecutor:
         kept, notes = [], []
         for para in draft.split("\n\n"):
             cs = para_map.get(para, [])
-            if any(c.get("factLabel") not in ("F", "A") for c in cs):
+            if any(c.get("factLabel") not in CUSTOMER_SAFE_LABELS for c in cs):
                 if cs:
                     notes.append(f"移除段落（含非 F/A 断言：{[c.get('factLabel') for c in cs]}）：{para[:40]}…")
                 continue
