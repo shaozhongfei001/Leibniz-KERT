@@ -23,6 +23,11 @@ from kert.application.service_proposal import GATE_STATES, OVERALL_READINESS_STA
 from kert.domain.activation_plan import SCHEMA as ACTIVATION_PLAN_SCHEMA
 from kert.domain.contracts.specs import JOB_STATUS_SCHEMA
 from kert.domain.health import SKILL_HEALTH_STATES
+from kert.domain.skill_status import (
+    EXIT_POLICY_NO_NEW_EVIDENCE,
+    SKILL_ERROR,
+    SKILL_EXECUTION_STATES,
+)
 from kert.domain.states import JOB_STATES
 
 SPEC = Path(__file__).resolve().parents[2] / "specs" / "kert-openapi-v1.yaml"
@@ -34,6 +39,15 @@ SUBSET_DECLARATIONS: dict[str, str] = {
         "202 受理体的 `status` **恒为** `PENDING`（实现为 `server.py` 的**手写信封**，不走 `_response()`）"
         "⇒ 声明为 `JOB_STATES` 的**单值子集**：这是**语义**，不是漏登记；"
         "若要改宽或改值，必须**显式改本登记**（不得无声改动）。"),
+    "SkillExecuteErrorResponse.status": (
+        "未知 `skillId` 的 **404** 响应体**直接复用**同步结果体（`server.py:skill_execute` 的 "
+        "`unknown` 分支：`status_code=404 if unknown else 200`）⇒ 该 schema 下 `status` **恒为** "
+        "`skill_error`（单值子集）；spec 内已有同口径修正记录（2026-09-16 按实现核对）。"),
+    "ErrorResponse.status": (
+        "**通用异常信封**（500，`server.py:341-345` 的 app 级处理器）复用技能错误状态词，"
+        "实现**只发** `skill_error`（`INTERNAL_ERROR`）⇒ 声明为真子集。"
+        "⚠ 事实（登记待裁）：`exit_policy_no_new_evidence` 在**信封路径无产生点**"
+        "（该值只由 `/api/skill/execute` 的 200 体产生）⇒ 若裁定收窄，须**显式改本登记**。"),
 }
 
 #: （schema, field, 单一源）—— 源与合同 `enum` **必须等值**（除非在上表显式登记）
@@ -61,6 +75,13 @@ MAPPINGS: tuple[tuple[str, str, list], ...] = (
     # D-28 层 2 第三片（清单 #21 `ActivationPlan.schema`）——源**已存在**
     # （`domain/activation_plan.SCHEMA`），本批只补"合同 enum == 命名源"这格。
     ("ActivationPlan", "schema", [ACTIVATION_PLAN_SCHEMA]),
+    # D-28 层 2 第四片：**技能执行状态域**（清单 §2 #4）——源 `kert.domain.skill_status`，
+    # 生产者为 `application/skills.py`（含 3 分支）+ `sp15_skill.py` + `api/server.py`
+    # （含 `result.status == SKILL_ERROR` 的**按名比较**分支）；三态真实路径见
+    # `test_skill_status_single_source.py`。
+    ("SkillExecuteResponse", "status", list(SKILL_EXECUTION_STATES)),
+    ("SkillExecuteErrorResponse", "status", [SKILL_ERROR]),        # 404 未知技能体：子集
+    ("ErrorResponse", "status", [SKILL_ERROR, EXIT_POLICY_NO_NEW_EVIDENCE]),  # 500 信封：子集
 )
 
 
@@ -111,8 +132,8 @@ def test_contract_enum_matches_single_source():
     spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
     checked = _assert_matches(spec)
     # 防空转：本用例不得在"核对项为空/骤减"时静默通过（下限随登记项数同步抬高）
-    assert checked >= 9, f"防空转：实际核对项数 {checked} 少于下限 9"
-    assert len(MAPPINGS) >= 9, "防空转：映射表异常收缩"
+    assert checked >= 12, f"防空转：实际核对项数 {checked} 少于下限 12"
+    assert len(MAPPINGS) >= 12, "防空转：映射表异常收缩"
 
 
 @pytest.mark.parametrize("mode", ["changed_value", "narrowed"])
@@ -123,7 +144,7 @@ def test_contract_enum_mutation_is_detected(mode):
     本用例会失去可红性 ⇒ 自动暴露（把一次性的手工自证固化成机械保护）。
     """
     spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
-    assert _assert_matches(spec) >= 9, "基线合同必须先通过（否则变异证明无意义）"
+    assert _assert_matches(spec) >= 12, "基线合同必须先通过（否则变异证明无意义）"
 
     checked = 0
     for schema, field, _source in MAPPINGS:
@@ -139,7 +160,7 @@ def test_contract_enum_mutation_is_detected(mode):
         with pytest.raises(AssertionError):
             _assert_matches(mutated)
         checked += 1
-    assert checked >= 8, f"防空转：实际变异项数 {checked} 少于下限 8"
+    assert checked >= 9, f"防空转：实际变异项数 {checked} 少于下限 9"
 
 
 @pytest.mark.parametrize("mode", ["changed_value", "extended"])
@@ -160,4 +181,4 @@ def test_source_mutation_is_detected(mode):
         with pytest.raises(AssertionError):
             _assert_matches(spec, [(schema, field, mutated)])
         checked += 1
-    assert checked >= 8, f"防空转：实际变异项数 {checked} 少于下限 8"
+    assert checked >= 9, f"防空转：实际变异项数 {checked} 少于下限 9"

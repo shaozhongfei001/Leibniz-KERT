@@ -52,6 +52,7 @@ from kert.application.product_recommendation.need_profile import NeedProfileReso
 from kert.application.product_recommendation.portfolio import PortfolioConstraintChecker
 from kert.application.product_recommendation.ranker import CandidateRanker
 from kert.domain.hashing import sha256_hex
+from kert.domain.skill_status import SKILL_ERROR, SKILL_OK
 
 # ---------------------------------------------------------------------------
 # Skill 身份常量（对齐 SP-15.md front matter / recommendation-result.schema.json）
@@ -570,7 +571,7 @@ def _to_response_errors(entries: list[dict]) -> list[dict]:
 def _error_result(request_id: str, run_id: str, errors: list[dict],
                   trace: list[dict]) -> Sp15ExecutionResult:
     return Sp15ExecutionResult(
-        ok=False, status="skill_error", request_id=request_id, run_id=run_id,
+        ok=False, status=SKILL_ERROR, request_id=request_id, run_id=run_id,
         data=None, errors=_to_response_errors(errors), assembly_trace=trace, model_calls=[],
     )
 
@@ -841,7 +842,7 @@ class Sp15SkillExecutor:
         })
 
         return Sp15ExecutionResult(
-            ok=True, status="ok", request_id=request_id, run_id=run_id,
+            ok=True, status=SKILL_OK, request_id=request_id, run_id=run_id,
             data=result, errors=[], assembly_trace=trace, model_calls=[],
         )
 
