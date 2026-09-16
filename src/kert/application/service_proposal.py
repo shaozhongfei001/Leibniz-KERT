@@ -53,8 +53,11 @@ GATE_STATES: tuple[str, ...] = tuple(GATE_STATE_CSS)
 #: 具名常量：生产者**不得**再散落状态字面量（改名 / 新增只动单一源）。
 ST_PASSED, ST_READY_FOR_REVIEW, ST_BLOCKED, ST_PENDING = GATE_STATES
 
-#: ``overallReadiness`` 的值域（同一域的另一字段，同样单源）。
-OVERALL_READY, OVERALL_BLOCKED = ("READY", "BLOCKED")
+#: ``overallReadiness`` 的值域（**同一域的另一字段**，同样单源）：先立**值域**、再由它派生出
+#: 具名常量（与 :data:`GATE_STATE_CSS` 同形态）⇒ 「合同 `enum` == 命名源」可机械核对
+#: （登记在 `tests/unit/test_contract_enum_single_source.py` 的 ``MAPPINGS``）。
+OVERALL_READINESS_STATES: tuple[str, ...] = ("READY", "BLOCKED")
+OVERALL_READY, OVERALL_BLOCKED = OVERALL_READINESS_STATES
 
 
 def _load_md(path: Path) -> dict:
