@@ -238,6 +238,19 @@ async def get_job(request: Request, job_id: str):
         raise HTTPException(status_code=404, detail=str(exc))
 
 
+# ──────────────────────── 六环工作台（人可点击的链路走查） ────────────────────────
+
+@router.get("/rings", response_class=HTMLResponse, include_in_schema=False)
+async def rings_page(request: Request):
+    """**六环工作台**：静态页（vanilla JS，无框架）**同源**调本地 API，供人逐步点击核链路。
+
+    ⚠ 非声明（防误读）：本页是**人侧可见面**（"人看到了什么"），**不是**机械断言；
+    六环的断言在 `tests/integration/test_six_ring_chain_end_to_end.py` 与 CI job 里。
+    路径放在 SPA 兜底之前注册 ⇒ 不会被 `/{path:path}` 吃掉。
+    """
+    return _serve_page("rings.html", "六环工作台")
+
+
 # ──────────────────────── SPA 入口（必须放最后） ────────────────────────
 
 @router.get("/", response_class=HTMLResponse, include_in_schema=False)
@@ -254,11 +267,17 @@ async def spa_path(request: Request, path: str = ""):
     return _serve_spa()
 
 
+def _serve_page(name: str, title: str) -> HTMLResponse:
+    """托管 static/ 下的一个静态页；缺失 ⇒ 503 且**明说**缺哪个文件（不静默）。"""
+    page = _STATIC_DIR / name
+    if not page.is_file():
+        return HTMLResponse(f"<h1>{title}未安装</h1><p>static/{name} 不存在</p>",
+                            status_code=503)
+    return HTMLResponse(content=page.read_text(encoding="utf-8"))
+
+
 def _serve_spa() -> HTMLResponse:
-    index = _STATIC_DIR / "index.html"
-    if not index.is_file():
-        return HTMLResponse("<h1>DSH 界面未安装</h1><p>static/index.html 不存在</p>", status_code=503)
-    return HTMLResponse(content=index.read_text(encoding="utf-8"))
+    return _serve_page("index.html", "DSH 界面")
 
 
 # ──────────────────────── 辅助 ────────────────────────
@@ -276,10 +295,18 @@ def _get_skill_service(request: Request):
 def mount_dsh(app) -> None:
     """将 DSH 子应用挂载到主 FastAPI 应用。
 
+    - **先**挂载静态文件目录（见下方顺序说明）
     - 注册 DSH API 路由
-    - 挂载静态文件目录
     - 在 app.state 上暴露 workspace / knowledge_service
+
+    ⚠ **顺序是语义的（缺陷修复）**：Starlette 按 `app.routes` 的**注册顺序**匹配。
+    本 router 末尾有 SPA 兜底 `/{path:path}`（对非 `api/`、非 `static/` 路径返回首页）。
+    若先 `include_router` 再 `app.mount("/dsh/static", …)`，则 `/dsh/static/*` 会**先**被兜底吃掉
+    ⇒ 连 `style.css` / `app.js` 都 404（实测：`/dsh/static/style.css` = 404，页面能开但**无样式、无脚本**）。
+    ⇒ 必须让静态挂载**先注册**（先匹配），兜底只兜"非静态"路径。
     """
+    if _STATIC_DIR.is_dir():
+        app.mount("/dsh/static", StaticFiles(directory=str(_STATIC_DIR)), name="dsh-static")
     app.include_router(router)
     # 暴露 workspace 供 DSH API 使用
     if not hasattr(app.state, "workspace"):
@@ -296,7 +323,4 @@ def mount_dsh(app) -> None:
             app.state.knowledge_service = svc
         except Exception:
             app.state.knowledge_service = None
-    # 挂载静态文件
-    if _STATIC_DIR.is_dir():
-        app.mount("/dsh/static", StaticFiles(directory=str(_STATIC_DIR)), name="dsh-static")
     _log.info("DSH Web 界面已挂载到 /dsh/")

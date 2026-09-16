@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六环工作台 — KERT</title>
+  <link rel="stylesheet" href="/dsh/static/style.css">
+  <style>
+    /* 仅本页使用（不动共享 style.css，避免全局污染） */
+    .ring-step { margin-bottom: 18px; }
+    .ring-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .ring-title { font-size: 15px; font-weight: 600; }
+    .ring-badge { font-size: 12px; padding: 2px 8px; border-radius: 10px;
+                  background: #eef2f7; color: #445; }
+    .pill { font-size: 12px; padding: 2px 8px; border-radius: 10px; }
+    .pill-ok { background: #e6f6ec; color: #12643a; }
+    .pill-err { background: #fdecec; color: #8c1d1d; }
+    .pill-idle { background: #f2f3f5; color: #555; }
+    .ring-actions { margin: 8px 0; display: flex; gap: 8px; flex-wrap: wrap; }
+    .ring-summary { margin: 6px 0; padding: 8px 10px; border-left: 3px solid #c9d4e3;
+                    background: #fafbfd; font-size: 13px; line-height: 1.6; }
+    .ring-raw { display: none; margin: 6px 0; }
+    .ring-raw pre { max-height: 260px; overflow: auto; font-size: 12px;
+                    background: #0f172a0a; padding: 8px; border-radius: 6px; }
+    .ring-raw.show { display: block; }
+    .chain-note { font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>六环工作台</h1>
+      <span class="subtitle">KERT 链路走查（人可点击）</span>
+    </div>
+    <ul class="nav-list">
+      <li><a href="#" class="nav-link active" data-jump="step-health">0 · 服务与工作区</a></li>
+      <li><a href="#" class="nav-link" data-jump="step-ring1">环 1 · 知识地图</a></li>
+      <li><a href="#" class="nav-link" data-jump="step-ring2">环 2/3 · 路由计划</a></li>
+      <li><a href="#" class="nav-link" data-jump="step-ring4">环 4 · 业务技能</a></li>
+      <li><a href="#" class="nav-link" data-jump="step-ring56">环 5/6 · 链路取回</a></li>
+      <li><a href="#" class="nav-link" data-jump="step-jobs">作业状态</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="/dsh/" class="nav-link">← 返回 DSH 仪表盘</a><br>
+      <a href="/docs" class="nav-link">API 控制台（Swagger）</a>
+      <div class="chain-note" style="margin-top:8px">
+        本页只做「按环点击 + 看原始响应」；<br>机械断言在 tests/ 与 CI job 里。
+      </div>
+    </div>
+  </nav>
+
+  <main class="content">
+    <h2>六环工作台 <span id="conn-pill" class="pill pill-idle">未探测</span></h2>
+    <div class="ring-actions">
+      <button id="run-all" class="btn btn-primary">一键走一遍（0 → 5/6）</button>
+      <button id="show-raw" class="btn">显示/隐藏 全部原始 JSON</button>
+    </div>
+    <div class="info-bar" id="run-summary">尚未执行。点上面的按钮，或逐步点每一环的「执行」。</div>
+
+    <section class="card ring-step" id="step-health">
+      <div class="ring-head">
+        <span class="ring-title">0 · 服务与工作区</span>
+        <span class="ring-badge">GET /v1/health · /dsh/api/dashboard</span>
+        <span class="pill pill-idle" id="pill-health">未执行</span>
+      </div>
+      <div class="ring-actions"><button class="btn" data-run="health">执行</button></div>
+      <div class="ring-summary" id="sum-health">—</div>
+      <div class="ring-raw" id="raw-health"><pre></pre></div>
+    </section>
+
+    <section class="card ring-step" id="step-ring1">
+      <div class="ring-head">
+        <span class="ring-title">环 1 · 这类任务该按哪张地图走</span>
+        <span class="ring-badge">GET /v1/knowledge-maps</span>
+        <span class="pill pill-idle" id="pill-ring1">未执行</span>
+      </div>
+      <div class="ring-actions"><button class="btn" data-run="ring1">执行</button></div>
+      <div class="ring-summary" id="sum-ring1">—</div>
+      <div class="ring-raw" id="raw-ring1"><pre></pre></div>
+    </section>
+
+    <section class="card ring-step" id="step-ring2">
+      <div class="ring-head">
+        <span class="ring-title">环 2/3 · 给的不是答案，是「放行的计划」</span>
+        <span class="ring-badge">POST /v1/routing/plan</span>
+        <span class="pill pill-idle" id="pill-ring2">未执行</span>
+      </div>
+      <div class="ring-actions">
+        <button class="btn" data-run="ring2">执行</button>
+        <span class="chain-note">任务类型：</span>
+        <select id="task-type" class="form-input" style="max-width:240px">
+          <option value="OUTREACH_PREPARATION">OUTREACH_PREPARATION</option>
+          <option value="MEETING_PREPARATION">MEETING_PREPARATION</option>
+          <option value="PRE_VISIT_PREPARATION">PRE_VISIT_PREPARATION</option>
+        </select>
+      </div>
+      <div class="ring-summary" id="sum-ring2">—</div>
+      <div class="ring-raw" id="raw-ring2"><pre></pre></div>
+    </section>
+
+    <section class="card ring-step" id="step-ring4">
+      <div class="ring-head">
+        <span class="ring-title">环 4 · 让技能出业务产物（含「没新证据就不出」）</span>
+        <span class="ring-badge">POST /api/skill/execute</span>
+        <span class="pill pill-idle" id="pill-ring4">未执行</span>
+      </div>
+      <div class="ring-actions">
+        <button class="btn" data-run="ring4-ok">执行（带证据时间）</button>
+        <button class="btn" data-run="ring4-blocked">执行（不给新证据）</button>
+      </div>
+      <div class="ring-summary" id="sum-ring4">—</div>
+      <div class="ring-raw" id="raw-ring4"><pre></pre></div>
+    </section>
+
+    <section class="card ring-step" id="step-ring56">
+      <div class="ring-head">
+        <span class="ring-title">环 5/6 · 用同一个计划 ID 把链路取回来</span>
+        <span class="ring-badge">GET /v1/evidence/{planId}</span>
+        <span class="pill pill-idle" id="pill-ring56">未执行</span>
+      </div>
+      <div class="ring-actions">
+        <button class="btn" data-run="ring56">执行</button>
+        <span class="chain-note">用环 2 拿到的 <code>planId</code>（同一 id 串起 计划 → 物化 → 出口锚点）</span>
+      </div>
+      <div class="ring-summary" id="sum-ring56">—</div>
+      <div class="ring-raw" id="raw-ring56"><pre></pre></div>
+    </section>
+
+    <section class="card ring-step" id="step-jobs">
+      <div class="ring-head">
+        <span class="ring-title">作业状态 · 长任务回来看</span>
+        <span class="ring-badge">GET /v1/jobs/{job_id}</span>
+        <span class="pill pill-idle" id="pill-jobs">未执行</span>
+      </div>
+      <div class="ring-actions">
+        <button class="btn" data-run="jobs">执行</button>
+        <input type="text" id="job-id" class="form-input" placeholder="JOB-SKILL-…（留空则只列目录）"
+               style="max-width:320px">
+      </div>
+      <div class="ring-summary" id="sum-jobs">—</div>
+      <div class="ring-raw" id="raw-jobs"><pre></pre></div>
+    </section>
+  </main>
+
+  <script src="/dsh/static/rings.js"></script>
+</body>
+</html>
