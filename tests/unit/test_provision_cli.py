@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -47,15 +48,35 @@ def _run(args: list[str]):
     return CliRunner().invoke(cli_app, args)
 
 
+_COUNTS_RE = re.compile(r"新建 (\d+) / 覆盖 (\d+) / 未变 (\d+)")
+
+
+def _counts(output: str) -> tuple[int, int, int]:
+    """从 CLI 文本输出取（新建 / 覆盖 / 未变）三元组。
+
+    **刻意不硬编码总数**：源侧声明数会随"第三方在途"件入库而变化
+    （`schema/activations/AC-*.json` 未入库时 6 份、入库后 8 份）。
+    把总数写死会把"源内容变动"误报成"供给逻辑错误" —— 实测于 PR #6：
+    3 条用例因 `8 vs 6` 变红，而供给逻辑本身正确。
+    本文件断言的是**关系**（首次全新建 / 复跑全未变），与总数无关。
+    """
+    m = _COUNTS_RE.search(output)
+    assert m, f"未找到计数行（新建/覆盖/未变）：{output!r}"
+    created, overwritten, unchanged = (int(x) for x in m.groups())
+    return created, overwritten, unchanged
+
+
 def test_apply_then_idempotent_rerun(target):
     r = _run(["provision", "-w", str(target), "-s", str(SOURCE)])
     assert r.exit_code == 0, r.output
-    assert "新建 8 / 覆盖 0 / 未变 0" in r.output
+    created, overwritten, unchanged = _counts(r.output)
+    assert created > 0 and overwritten == 0 and unchanged == 0
     assert "RP-KERT-BANKFRONT-001@1.0.0" in r.output
 
     r2 = _run(["provision", "-w", str(target), "-s", str(SOURCE)])
     assert r2.exit_code == 0, r2.output
-    assert "新建 0 / 覆盖 0 / 未变 8" in r2.output
+    # 幂等：复跑**零新建、零覆盖**，且"未变"恰好等于首次供给份数
+    assert _counts(r2.output) == (0, 0, created)
 
 
 def test_json_output_follows_standard_envelope(target):
@@ -63,9 +84,9 @@ def test_json_output_follows_standard_envelope(target):
     assert r.exit_code == 0, r.output
     payload = json.loads(r.output)
     assert payload["status"] == "OK"
-    assert payload["data"]["counts"]["CREATED"] == 8
+    items = payload["data"]["items"]
+    assert payload["data"]["counts"]["CREATED"] == len(items) > 0
     assert payload["data"]["policyId"] == "RP-KERT-BANKFRONT-001"
-    assert len(payload["data"]["items"]) == 8
     assert any(i["relPath"].endswith("knowledge_sources.json")
                for i in payload["data"]["items"])
 
@@ -101,12 +122,13 @@ def test_init_flag_initializes_fresh_volume_then_provisions(tmp_path):
     assert "已初始化工作区" in r.output
     assert (ws / ".kert_workspace").is_file()
     assert len(list((ws / CATALOG).glob("KM-*.json"))) == 3
+    created, _, _ = _counts(r.output)
 
     # 已初始化 ⇒ no-op，且照常幂等供给
     r2 = _run(["provision", "-w", str(ws), "-s", str(SOURCE), "--init"])
     assert r2.exit_code == 0, r2.output
     assert "跳过 init" in r2.output
-    assert "新建 0 / 覆盖 0 / 未变 8" in r2.output
+    assert _counts(r2.output) == (0, 0, created)
 
 
 def test_without_init_flag_uninitialized_target_fails_closed(tmp_path):

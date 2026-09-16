@@ -131,6 +131,12 @@ jobs:
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
+    env:
+      # 非 editable 安装（`pip install ".[api,dev]"`）下，`__file__` 落在 site-packages，
+      # 仓内 `examples/` 资源（SP-15 产品资产/规则）按上溯找不到，旧兜底会落到
+      # `<site-packages>/../examples` ⇒ e2e 报 KERT_PRODUCT_KNOWLEDGE_STALE（实测于 PR #6 复跑）。
+      # 与 KERT_SKILL_PACKAGES 同一先例：**显式**给仓库根，不靠猜。
+      KERT_REPO_ROOT: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v4
 
