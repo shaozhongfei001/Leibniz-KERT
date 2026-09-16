@@ -244,7 +244,7 @@ jobs:
           ont = sorted(k for k in want if k.startswith(ONTOLOGY_PREFIX))
           if len(ont) < ONTOLOGY_MIN:
               print("::error::防空转失败：源侧内置本体声明只有 %d 份（应 ≥%d：OWL/SHACL/INSTANCES/"
-                    "R2RML + PROVENANCE.json）—— 检查 %s%s"
+                    "R2RML + PROVENANCE.json）—— 检查 %s/%s"
                     % (len(ont), ONTOLOGY_MIN, SRC, ONTOLOGY_PREFIX))
               sys.exit(1)
           print("✓ 控制面供给就绪：%d 份声明逐份存在且内容 sha256 一致" % len(want))
