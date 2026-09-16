@@ -404,67 +404,73 @@ def _provisioned_no_decl(ws: Path) -> Path:
     return ws
 
 
-def test_declaration_absent_is_visible_but_never_refused(tmp_path):
-    """声明缺失 ⇒ **回落 + 具名留痕**，技能照常完成、**零拒绝**（硬规则 E0）—— V11。
+def test_declaration_absent_is_refused(tmp_path):
+    """**② B-2**（Owner 已批 2026-09-16）：声明缺失 ⇒ **拒绝执行**（fail-closed）。
 
-    若实现写成"声明缺失 ⇒ 拒绝"（B-2 语义提前），本用例的 status/errors 断言必 FAIL。
+    B-1 时本用例断言"回落 + 零拒绝"（硬规则 E0）；② 生效后**按裁定翻转**为拒绝。
+    属**我方自建用例**的翻转（既有测试文件一字未改）。
     """
     from kert.application.skills import SkillExecutionService as Svc
 
     ws = _provisioned_no_decl(tmp_path / "no_decl")
     r = Svc(ws).execute("skill-customer-outreach-script", "guard-absent-1",
                         {"customerId": CUSTOMER_ID})
-    assert r.status == "ok", (r.status, r.errors)
-    assert r.errors == []
-    assert _codes(r.assembly_trace) == [CODE_DECLARATION_ABSENT], _codes(r.assembly_trace)
-    # 声明缺失时**没有**能力可指 ⇒ 不出现 capabilityId（不伪造占位 ID）
-    assert "capabilityId" not in _source_entries(r.assembly_trace)[0]
-    # 回落可见：既有 kert 条目仍在，且逐知识条目条目行为不变（无投影 ⇒ 一律 skipped）
-    assert any(t.get("phase") == "kert" and t.get("status") == "skipped"
-               for t in r.assembly_trace)
-    ki_entries = [t for t in r.assembly_trace if t.get("kiId")]
-    assert ki_entries, "计划资产仍有逐条轨迹（既有行为：每条都记 skipped）"
-    assert all(t.get("status") == "skipped" for t in ki_entries), (
-        f"无投影时逐知识条目条目不得为 ok：{ki_entries}")
+    # ② 拒绝：fail-closed（无半成品 + 既有拒绝码 + detail.sourceCode）
+    assert r.status == "skill_error", (r.status, r.errors)
+    assert r.data == {}, "fail-closed：不得返回残缺数据"
+    assert r.errors and r.errors[0]["code"] == "KERT_PERMISSION_DENIED", r.errors
+    entries = _source_entries(r.assembly_trace)
+    assert _codes(r.assembly_trace) == [CODE_DECLARATION_ABSENT], r.assembly_trace
+    assert entries[0]["status"] == "blocked", entries[0]      # ②：拒绝，不再是 degraded 回落
+    assert "capabilityId" not in entries[0], "声明缺失 ⇒ 无能力可指（不伪造占位 ID）"
+    assert "KI-" not in entries[0]["message"], entries[0]["message"]
+    # **回落已不再发生**的机械证据：字面量路径若被走到，必留 `kert` 条目
+    assert not any(t.get("phase") == "kert" for t in r.assembly_trace), (
+        "② 生效后不得再走回落路径（`kert` 条目 = 回落发生的标志）")
 
 
-def test_declaration_invalid_is_visible_but_never_refused(tmp_path):
-    """声明非法（含未声明字段）⇒ 与缺失不同的**具名码**，同样**零拒绝** —— V7/V11。"""
+def test_declaration_invalid_is_refused(tmp_path):
+    """**② B-2**：声明非法（含未声明字段）⇒ 与缺失**不同码**、同样**拒绝**。"""
     from kert.application.skills import SkillExecutionService as Svc
-    from kert.domain import workspace as ws_mod
-    from kert.application.provision import provision_control_plane
 
-    ws = tmp_path
-    ws_mod.init_workspace(ws)
-    provision_control_plane(ws, REPO_ROOT / "examples" / "bank-front-knowledge-maps")
+    ws = _provisioned(tmp_path / "invalid_ws")
     doc = json.loads(REAL_DECL.read_text(encoding="utf-8"))
     doc["capabilities"][0]["未声明字段"] = 1
     declaration_path(ws).write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
 
     r = Svc(ws).execute("skill-customer-meeting-script", "guard-invalid-1",
                         {"customerId": CUSTOMER_ID})
-    assert r.status == "ok" and r.errors == []
-    assert _codes(r.assembly_trace) == [CODE_DECLARATION_INVALID], _codes(r.assembly_trace)
+    assert r.status == "skill_error" and r.data == {}, (r.status, r.errors)
+    assert r.errors and r.errors[0]["code"] == "KERT_PERMISSION_DENIED", r.errors
+    assert _codes(r.assembly_trace) == [CODE_DECLARATION_INVALID], r.assembly_trace
+    assert _source_entries(r.assembly_trace)[0]["status"] == "blocked"
+    assert not any(t.get("phase") == "kert" for t in r.assembly_trace)
 
 
-def test_unavailable_code_differs_from_absent(tmp_path, ws_provisioned):
-    """三态可区分：``UNAVAILABLE`` ≠ ``ABSENT`` ≠ ``INVALID``（不得混码）—— V7。"""
+def test_unavailable_still_falls_back_while_absent_refuses(tmp_path, ws_provisioned):
+    """**①/② 分野**：``UNAVAILABLE``（源不可用）**仍按 B-1 回落**；``ABSENT``/``INVALID`` **拒绝**。
+
+    三码仍须**互不相同**（V7）。本条是"② 的实现**不得**顺手改掉 ①"的机械载体（TL 边界 2）。
+    """
     from kert.application.skills import SkillExecutionService as Svc
 
-    # 注意：`ws_provisioned` 与 `tmp_path` 指向同一目录，故另建子目录，
-    # 避免"删声明"污染本条用例中的可用性夹具。
+    # ①：声明存在、投影缺失 ⇒ 回落 + degraded（与 B-1 逐字相同）
     r_unavail = Svc(ws_provisioned).execute("skill-customer-previsit-report",
                                             "guard-tri-1", REQS["skill-customer-previsit-report"])
+    assert r_unavail.status == "ok" and r_unavail.errors == []
+    assert _codes(r_unavail.assembly_trace) == [CODE_UNAVAILABLE], r_unavail.assembly_trace
+    assert _source_entries(r_unavail.assembly_trace)[0]["status"] == "degraded"
+    assert any(t.get("phase") == "kert" for t in r_unavail.assembly_trace), (
+        "① 必须仍走回落路径（`kert` 条目在场）")
+
+    # ②：删声明（同一供给面）⇒ 拒绝
     ws_absent = _provisioned_no_decl(tmp_path / "absent_ws")
     r_absent = Svc(ws_absent).execute("skill-customer-previsit-report",
                                       "guard-tri-2", REQS["skill-customer-previsit-report"])
-
-    assert _codes(r_unavail.assembly_trace) == [CODE_UNAVAILABLE], r_unavail.assembly_trace
+    assert r_absent.status == "skill_error" and r_absent.data == {}
     assert _codes(r_absent.assembly_trace) == [CODE_DECLARATION_ABSENT], r_absent.assembly_trace
+    assert _source_entries(r_absent.assembly_trace)[0]["status"] == "blocked"
+    assert not any(t.get("phase") == "kert" for t in r_absent.assembly_trace)
+
     assert len({CODE_UNAVAILABLE, CODE_DECLARATION_ABSENT, CODE_DECLARATION_INVALID}) == 3, (
         "三个码必须互不相同（混码会让归因错位）")
-    for r in (r_unavail, r_absent):
-        assert r.status == "ok" and r.errors == []
-        assert not any(e.get("status") in {"failed", "blocked"}
-                       and _is_source_entry(e) for e in r.assembly_trace), (
-            "B-1 的知识源留痕**不得**是失败/阻塞态（E0：一律回落，不是拒绝）")

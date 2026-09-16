@@ -140,6 +140,13 @@ _SOURCE_MESSAGES: dict[str, str] = {
     CODE_LIMIT_EXCEEDED: "知识源读取超过契约条数上限，已回落既有读取路径",
 }
 
+#: **② B-2**：声明**缺失 / 非法 ⇒ 拒绝**时的具名文案（同样**不含** ``KI-``）。
+#: 只有这两个码会**拒绝**（Owner 已批 2026-09-16）；① 源不可用仍回落、用 ``_SOURCE_MESSAGES``。
+_SOURCE_REFUSAL_MESSAGES: dict[str, str] = {
+    CODE_DECLARATION_ABSENT: "控制面未声明知识源能力，拒绝执行（fail-closed；B-2②，Owner 已批）",
+    CODE_DECLARATION_INVALID: "知识源能力声明非法，拒绝执行（fail-closed；B-2②，Owner 已批）",
+}
+
 #: 能力解析通过时的留痕文案（同样不含 ``KI-``）。
 _SOURCE_OK_MESSAGE = "知识源能力读取完成（按控制面声明的读取契约取数）"
 
@@ -606,10 +613,15 @@ class SkillExecutionService:
         2. **读取范围不裁剪**：仍返回该客户的**全部**知识条目（与
            ``CustomerKnowledgeProvider.ki_map`` 等价），**不**顺带裁成"只读计划里的资产"
            —— 后者会改变 ``ki`` 内容，属后续片。
-        3. **失败一律回落、绝不拒绝**（硬规则 E0）：声明缺失 / 声明非法 / 能力不可用 /
-           契约不匹配 / 读取异常 ⇒ 回落 :meth:`_load_ki` 的既有路径，行为与接线前
-           **逐字一致**，**不**抛 ``SkillError``、**不**改 ``status``、**不**产生 KI 级拒绝。
-           "声明缺失 ⇒ 拒绝"属 B-2，**本片严禁**（含任何"顺手把拒绝当异常抛"的间接写法）。
+        3. **失败分野（B-1 → **B-2②** 后更新；Owner 已批 2026-09-16）**：
+           - **② 已实施**：**运行时层声明缺失 / 非法 ⇒ 拒绝**（fail-closed）
+             —— 留一条 ``status="blocked"`` 的具名条目 + 抛 :class:`SkillError`
+             （``KERT_PERMISSION_DENIED``，具体码放 ``detail.sourceCode``）；**不再回落**字面量路径；
+           - **① 未授权改动、保持 B-1 语义**：**源不可用（投影缺失）⇒ 回落** :meth:`_load_ki`
+             + ``status="degraded"`` 留痕（不得因实现 ② 被顺手改掉）；
+           - **其余声明级失败（停用 / 歧义 / 契约不匹配等）本片仍回落** —— 不在本次 Owner 裁定范围内，属后续片；
+           - **禁止未授权的拒绝**：除上述 ② 的**两个码**（``..._ABSENT`` / ``..._INVALID``）外，
+             **不得**在本方法内新增任何 ``SkillError`` 抛出点。
         4. **回落必须可见**：每次读取**追加一条**具名留痕（``capabilityId`` /
            ``sourceCode`` / 指纹），即"隐式正则约定 → 显式声明绑定"的观测面
            —— 现状的隐式正则见 ``src/kert/application/customer_knowledge.py:31``
@@ -638,7 +650,9 @@ class SkillExecutionService:
         """
         load = self._declaration_load()
         if not load.allowed:
-            return self._fallback_ki(customer_id, trace, load.code)
+            # B-2②（Owner 已批 2026-09-16）：运行时层**声明缺失 / 非法 ⇒ 拒绝**（不再回落）。
+            # ⚠ ①（源不可用）不在此列 ⇒ 仍走 _fallback_ki（见本方法 docstring 第 3 条与 _refuse_ki）。
+            return self._refuse_ki(trace, load.code)
 
         declaration = load.declaration
         assert declaration is not None  # allowed ⇒ 非空（见 DeclarationLoad.allowed）
@@ -748,6 +762,31 @@ class SkillExecutionService:
         if binding_sha256:
             entry["assetVersion"] = binding_sha256
         return entry
+
+    def _refuse_ki(self, trace: list[dict], source_code: str) -> dict:
+        """**② B-2**：声明**缺失 / 非法 ⇒ 拒绝执行**（fail-closed；Owner 已批 2026-09-16）。
+
+        与 ① 的分野（本片**只**做 ②）：**源不可用（投影缺失）仍按 B-1 语义回落**
+        （:meth:`_fallback_ki` + ``status="degraded"`` 留痕），**不得**因本实现被顺手改掉。
+
+        形态与既有拒绝一致（同 :meth:`_route_plan` 的 fail-closed）：trace 留一条
+        ``status="blocked"`` 的**具名**条目（只带 ``sourceCode``；声明不可用 ⇒ 无能力可指，
+        **不伪造**占位能力 ID），再抛 :class:`SkillError`（``KERT_PERMISSION_DENIED``，
+        具体码放 ``detail.sourceCode``）。
+        """
+        trace.append({
+            "phase": "evidence",
+            "status": "blocked",
+            "sourceCode": source_code,
+            "message": _SOURCE_REFUSAL_MESSAGES.get(
+                source_code, "知识源声明不可用，拒绝执行（fail-closed）"),
+        })
+        raise SkillError(
+            "KERT_PERMISSION_DENIED",
+            f"知识源声明不可用（{source_code}）⇒ 拒绝执行：声明缺失/非法不得回落字面量读取"
+            "（B-2②；Owner 已批 2026-09-16）",
+            detail={"sourceCode": source_code},
+        )
 
     def _fallback_ki(self, customer_id: str, trace: list[dict], source_code: str,
                      *, capability: KnowledgeSourceCapability | None = None,

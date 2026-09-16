@@ -202,11 +202,15 @@ def test_beta_unavailable_falls_back_with_named_trace(ws_provisioned):
 
 
 # --------------------------------------------------------------------------- #
-# (γ) 声明缺失 + 任意投影：回落（本片**补洞**的组合）
+# (γ→②) 声明缺失 + 任意投影：**B-2② 起 ⇒ 拒绝**（B-1 时为"回落"，已按裁定翻转）
 # --------------------------------------------------------------------------- #
 
-def test_gamma_declaration_absent_falls_back_to_literal(ws_ki_seeded):
-    """(γ)：删声明后计划仍放行、技能照常完成、走**字面量回落**路径、**零拒绝**。"""
+def test_gamma_declaration_absent_is_refused(ws_ki_seeded):
+    """**② B-2**：删声明后**计划仍放行**，但读取层**拒绝**（不再回落字面量路径）。
+
+    B-1 时本用例断言"回落、仍读到 7 条、与参照逐字等价"；② 生效后按裁定翻转为拒绝。
+    **同时**保留"计划仍放行"这一前提断言：证明拒绝**来自读取层**，而非计划门禁漂移。
+    """
     decl = declaration_path(ws_ki_seeded)
     original = decl.read_text(encoding="utf-8")
     decl.unlink()
@@ -215,22 +219,24 @@ def test_gamma_declaration_absent_falls_back_to_literal(ws_ki_seeded):
         plan = ActivationPlanBuilder.load(ws_ki_seeded).build("PRE_VISIT_PREPARATION")
         assert not isinstance(plan, PlanDenial), getattr(plan, "reason", plan)
 
-        rid = "gamma-absent"
-        req = REQS["skill-customer-previsit-report"]
-        r = _run(ws_ki_seeded, "skill-customer-previsit-report", rid, req)
-        ref = _reference_run(ws_ki_seeded, "skill-customer-previsit-report", rid, req)
-
-        _no_refusal(r)
-        assert _codes(r.assembly_trace) == [CODE_DECLARATION_ABSENT]
-        assert _hit_ids(r.assembly_trace) == set(KI_IDS), "回落路径必须仍读到 7 条"
-        assert r.data == ref.data
-        assert _strip_source(r.assembly_trace) == ref.assembly_trace
+        r = _run(ws_ki_seeded, "skill-customer-previsit-report", "gamma-absent",
+                 REQS["skill-customer-previsit-report"])
+        # ② 拒绝（fail-closed）
+        assert r.status == "skill_error", (r.status, r.errors)
+        assert r.data == {}, "fail-closed：不得返回残缺数据"
+        assert r.errors and r.errors[0]["code"] == "KERT_PERMISSION_DENIED", r.errors
+        assert _codes(r.assembly_trace) == [CODE_DECLARATION_ABSENT], r.assembly_trace
+        assert _source_entry(r.assembly_trace)["status"] == "blocked"
+        # **回落已不再发生**：库可用（本夹具已种 7 条），若仍回落则必然读满 7 条并留 `kert` 条目
+        assert _hit_ids(r.assembly_trace) == set(), "② 生效后不得再读到任何条目"
+        assert not any(t.get("phase") == "kert" for t in r.assembly_trace), (
+            "`kert` 条目 = 回落发生的标志 ⇒ 声明缺失时不应出现")
     finally:
         decl.write_text(original, encoding="utf-8")
 
 
-def test_gamma_prime_absent_and_unavailable(ws_provisioned):
-    """(γ)′：声明缺失 **且** 库不可用 ⇒ A 组行为在"声明缺失"下同样成立、零拒绝。"""
+def test_gamma_prime_absent_is_refused_regardless_of_projection(ws_provisioned):
+    """**② B-2**：声明缺失 **且** 源不可用 ⇒ 仍按 **②** 拒绝（声明缺失优先，不被 ① 覆盖）。"""
     from kert.application.provision import provision_control_plane
 
     ws = ws_provisioned
@@ -241,12 +247,11 @@ def test_gamma_prime_absent_and_unavailable(ws_provisioned):
     try:
         r = _run(ws, "skill-customer-meeting-script", "gamma-prime-1",
                  REQS["skill-customer-meeting-script"])
-        _no_refusal(r)
-        assert _codes(r.assembly_trace) == [CODE_DECLARATION_ABSENT]
-        assert any(t.get("phase") == "kert" and t.get("status") == "skipped"
-                   for t in r.assembly_trace)
-        ki_entries = [t for t in r.assembly_trace if t.get("kiId")]
-        assert ki_entries and all(t.get("status") == "skipped" for t in ki_entries)
+        assert r.status == "skill_error" and r.data == {}, (r.status, r.errors)
+        assert _codes(r.assembly_trace) == [CODE_DECLARATION_ABSENT], r.assembly_trace
+        assert _source_entry(r.assembly_trace)["status"] == "blocked"
+        assert not any(t.get("phase") == "kert" for t in r.assembly_trace)
+        assert not any(t.get("kiId") for t in r.assembly_trace)
     finally:
         decl.write_text(original, encoding="utf-8")
 
@@ -322,39 +327,55 @@ def test_binding_fingerprint_is_not_hardcoded(ws_provisioned):
 # 三态可区分 + required **不**升格（变异 V4 / V7）
 # --------------------------------------------------------------------------- #
 
-def test_three_declaration_forms_have_distinct_codes_and_no_refusal(tmp_path, ws_provisioned):
-    """声明缺失 / 非法 / 能力不可用：三个码互不相同，且**都**不拒绝（V7 + E0）。"""
+def test_three_declaration_forms_have_distinct_codes_with_2_refusing(tmp_path, ws_provisioned):
+    """三态**可区分** + **①/② 分野**：``UNAVAILABLE`` 仍回落（①），``INVALID``/``ABSENT`` 拒绝（②）。
+
+    B-1 时三者"都不拒绝"；② 生效后**只有声明缺失/非法**拒绝 —— 本用例同时钉住
+    "② 不得顺手改掉 ①"（TL 边界 2）与"三码互不相同"（V7）。
+    """
     from kert.domain import workspace as ws_mod
     from kert.application.provision import provision_control_plane
 
-    # 不可用：声明合法、但无投影
+    # ① 不可用：声明合法、但无投影 ⇒ 回落（与 B-1 相同）
     r_unavail = _run(ws_provisioned, "skill-customer-outreach-script", "tri-u",
                      REQS["skill-customer-outreach-script"])
 
-    # 非法：多写一个未声明字段
+    # ② 非法：多写一个未声明字段 ⇒ 拒绝
     ws_invalid = tmp_path / "invalid_ws"
     ws_mod.init_workspace(ws_invalid)
-    provision_control_plane(ws_invalid, REPO_ROOT / "examples/bank-front-knowledge-maps")
+    provision_control_plane(ws_invalid, REPO_ROOT / "examples" / "bank-front-knowledge-maps")
     doc = _decl_doc()
     doc["capabilities"][0]["未声明字段"] = 1
     _write_decl(ws_invalid, doc)
     r_invalid = _run(ws_invalid, "skill-customer-outreach-script", "tri-i",
                      REQS["skill-customer-outreach-script"])
 
-    # 缺失：删声明
+    # ② 缺失：删声明 ⇒ 拒绝
     ws_absent = tmp_path / "absent_ws"
     ws_mod.init_workspace(ws_absent)
-    provision_control_plane(ws_absent, REPO_ROOT / "examples/bank-front-knowledge-maps")
+    provision_control_plane(ws_absent, REPO_ROOT / "examples" / "bank-front-knowledge-maps")
     declaration_path(ws_absent).unlink()
     r_absent = _run(ws_absent, "skill-customer-outreach-script", "tri-a",
                     REQS["skill-customer-outreach-script"])
 
+    # 三码互不相同（V7）
     assert _codes(r_unavail.assembly_trace) == [CODE_UNAVAILABLE]
     assert _codes(r_invalid.assembly_trace) == [CODE_DECLARATION_INVALID]
     assert _codes(r_absent.assembly_trace) == [CODE_DECLARATION_ABSENT]
-    assert len({CODE_UNAVAILABLE, CODE_DECLARATION_INVALID, CODE_DECLARATION_ABSENT}) == 3
-    for r in (r_unavail, r_invalid, r_absent):
-        _no_refusal(r)
+    assert len({CODE_UNAVAILABLE, CODE_DECLARATION_INVALID, CODE_DECLARATION_ABSENT}) == 3, (
+        "三个码必须互不相同（混码会让归因错位）")
+
+    # ①：回落（ok + degraded + 仍走 `kert` 路径）
+    _no_refusal(r_unavail)
+    assert _source_entry(r_unavail.assembly_trace)["status"] == "degraded"
+    assert any(t.get("phase") == "kert" for t in r_unavail.assembly_trace)
+
+    # ②：拒绝（skill_error + blocked + 未走回落）
+    for r in (r_invalid, r_absent):
+        assert r.status == "skill_error" and r.data == {}, (r.status, r.errors)
+        assert r.errors and r.errors[0]["code"] == "KERT_PERMISSION_DENIED", r.errors
+        assert _source_entry(r.assembly_trace)["status"] == "blocked"
+        assert not any(t.get("phase") == "kert" for t in r.assembly_trace)
 
 
 def test_required_flag_does_not_escalate(ws_provisioned):
