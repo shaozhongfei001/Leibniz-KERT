@@ -458,3 +458,270 @@ jobs:
         run: python -m pytest tests/performance/ -q -m "perf or not perf"
         env:
           KERT_PROFILE: dev
+
+  # ──────────────────────────────────────────────
+  # Retrieval Loop：**检索环（数据出口）在 CI 内真跑**
+  #
+  # 解决的问题（原状，ADR-017 ⑦-a 登记）：CI 无知识库实例 ⇒
+  # `tests/integration/test_lightrag_{publication,retrieval}.py` 与六环链一律走
+  # 「**具名不可达**」分支 ⇒ **CI 绿 ≠ 检索环被验**。
+  #
+  # 本 job 在 CI 内起**真实 lightrag-server**（`lightrag-hku[api]==1.5.7`，**仅本 job 安装**，
+  # 不进 `pyproject`、不进运行时依赖），模型面接**确定性 mock**
+  # （`scripts/ci/lightrag_mock_llm.py`：词法性嵌入 + 文档派生抽取 ⇒ 同一输入同结论、
+  # 零外部模型、零网络）⇒「**发布 → 检索（出处回指）→ 撤回 → 重发**」在 CI 内**真跑**。
+  #
+  # ⚠ 本 job **验什么 / 不验什么**（防误读，口径同 e2e job 的"CI 绿 ≠ 跨服务链路已验证"）：
+  #   - **验**：接入口径（端点/载荷/形状/异步可见性/幂等/撤回守卫）在**真实 lightrag-server**
+  #     上成立；引用 `filePath` **回指** KERT 产物路径；六环链环 5 的 发布/检索/撤回/重发
+  #     ⇒ 出处集合一致；D-34 归属校验在真实例上仍**拒绝**内容不匹配的撤回。
+  #   - **不验**：检索**质量**、真实模型/embedding 行为、图规模 —— 模型是确定性的**假模型**。
+  #     带真实模型 + 凭据的全量 E2E 仍属 **opt-in**（ADR-017 ⑦-a 的 opt-in 命令）。
+  #
+  # 三道防线（禁止以 skip / 空跑洗绿）：
+  #   ① 启动步骤 fail-closed：mock / lightrag 未就绪即 exit 1，并打印服务端日志；
+  #   ② `scripts/ci/retrieval_loop_readiness.py`（跑在 pytest **之前**）：不可达 / 未授权 /
+  #      写不进 / 索引未完成 / 检索无出处回指 / 撤回未落地 ⇒ **具名失败**。这一条**不可绕过**：
+  #      上述用例的"不可达分支"本身是**通过**的（正是假绿的来源）。
+  #   ③ pytest 之后：junit **现场重算**（failures=0、errors=0、skipped=0、cases≥下限）
+  #      **并且** 服务端访问日志中确实出现 `POST /documents/text`、`POST /query/data`、
+  #      `DELETE /documents/delete_document`（**服务端地面真值**；假绿时这三个计数为 0）。
+  # ──────────────────────────────────────────────
+  retrieval-loop-e2e:
+    name: Retrieval Loop (real lightrag-server + deterministic mock models)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      KERT_PROFILE: dev
+      KERT_LIGHTRAG_URL: http://127.0.0.1:9621
+      KERT_LIGHTRAG_API_KEY: ci-retrieval-key
+      LIGHTRAG_VERSION: "1.5.7"
+      MOCK_LLM_PORT: "9630"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies (project + lightrag server; CI-only)
+        run: |
+          set -euo pipefail
+          pip install --upgrade pip
+          # 与其余 job 同口径装项目依赖；lightrag 只在本 job 装（**不进 pyproject**）。
+          # `-c requirements-lock.txt` 是必要的：不加约束时 lightrag 的依赖可能把共享依赖
+          # （fastapi/starlette/httpx/numpy…）顶掉，使本 job 的失败与本次改动无关。
+          # 实测：加锁后两段安装均成功，且共享 web 栈未被改动。
+          if [ -f requirements-lock.txt ]; then
+            pip install -c requirements-lock.txt ".[api,dev]"
+            pip install -c requirements-lock.txt "lightrag-hku[api]==${LIGHTRAG_VERSION}"
+          else
+            pip install ".[api,dev]" "lightrag-hku[api]==${LIGHTRAG_VERSION}"
+          fi
+
+      - name: Start deterministic mock LLM/embedding (offline, no network)
+        run: |
+          set -euo pipefail
+          nohup python scripts/ci/lightrag_mock_llm.py "$MOCK_LLM_PORT" \
+            > "$RUNNER_TEMP/mock-llm.log" 2>&1 &
+          for i in $(seq 1 15); do
+            if curl -fsS --max-time 2 "http://127.0.0.1:${MOCK_LLM_PORT}/v1/models" >/dev/null; then
+              echo "✓ 确定性 mock 就绪（第 ${i} 秒）"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::确定性 mock 未能在 15 秒内就绪 —— 拒绝以 skip 掩盖"
+          cat "$RUNNER_TEMP/mock-llm.log"
+          exit 1
+
+      - name: Start lightrag-server (real ${{ env.LIGHTRAG_VERSION }}, mock models) — fail closed
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/lightrag-storage"
+          env \
+            LLM_BINDING=openai \
+            LLM_BINDING_HOST="http://127.0.0.1:${MOCK_LLM_PORT}/v1" \
+            LLM_BINDING_API_KEY=ci-dummy \
+            LLM_MODEL=mock \
+            EMBEDDING_BINDING=openai \
+            EMBEDDING_BINDING_HOST="http://127.0.0.1:${MOCK_LLM_PORT}/v1" \
+            EMBEDDING_BINDING_API_KEY=ci-dummy \
+            EMBEDDING_MODEL=mock-embed \
+            EMBEDDING_DIM=64 \
+            WORKING_DIR="$RUNNER_TEMP/lightrag-storage" \
+            LIGHTRAG_API_KEY="$KERT_LIGHTRAG_API_KEY" \
+            nohup lightrag-server --host 127.0.0.1 --port 9621 --workers 1 \
+            > "$RUNNER_TEMP/lightrag-server.log" 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 2 "$KERT_LIGHTRAG_URL/health" >/dev/null; then
+              echo "✓ lightrag-server 就绪（第 ${i} 秒）："
+              curl -fsS --max-time 2 "$KERT_LIGHTRAG_URL/health"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::lightrag-server 未能在 60 秒内就绪 —— 拒绝以 skip 掩盖"
+          cat "$RUNNER_TEMP/lightrag-server.log"
+          exit 1
+
+      - name: Seed one document via the data egress CLI
+        run: |
+          set -euo pipefail
+          # `test_lightrag_retrieval.py` 的「可达 ⇒ 真检索非空」断言假设**库里有语料**；
+          # 空库会得出"可达但全空"（那是环境，不是缺陷）⇒ 先经**数据出口**种一篇种子文档。
+          # 顺带把 `kert egress publish`（本批 C-① 的运维面）也在 CI 里真跑一次。
+          kert init -w "$RUNNER_TEMP/retrieval-ws"
+          SEED_DIR="$RUNNER_TEMP/retrieval-ws/04_serve/product_knowledge/version=ci.20260917"
+          mkdir -p "$SEED_DIR"
+          cat > "$SEED_DIR/RETRIEVAL-SEED.md" <<'MD'
+          # 检索环 CI 种子
+
+          对公客户最近的融资需求与产品组合建议：客户 CUST-CORP-0001（华东精工装备集团有限公司）
+          近期融资需求为流动资金贷款，需核对日均存款、授信使用率与代发薪情况。
+          MD
+          kert egress publish \
+            "04_serve/product_knowledge/version=ci.20260917/RETRIEVAL-SEED.md" \
+            -w "$RUNNER_TEMP/retrieval-ws"
+
+      - name: Assert retrieval-loop readiness and real round trip (fail-closed)
+        run: |
+          # 这一条是**不可绕过**的闸门：上述用例的"不可达分支"本身是通过的，
+          # 故必须在 pytest 之前证明实例真的在、真的能写、真的能被检索到出处、真的能撤回。
+          python scripts/ci/retrieval_loop_readiness.py --workspace "$RUNNER_TEMP/retrieval-ws"
+
+      - name: Assert the unmatched-credential state is named (three-state discipline)
+        env:
+          # 故意用**无效**凭据（服务端应回 401/403）——注意这只覆盖本步，
+          # 其余步骤仍用 job 级 env 里的有效 key。
+          KERT_LIGHTRAG_API_KEY: "definitely-not-the-key"
+        run: |
+          # 三态口径（不可达 / **可达但未授权** / 可达已授权）：
+          #   上一步的 fail-closed 启动覆盖"不可达"；readiness 与用例覆盖"已授权"；
+          #   本步补"可达但凭据无效" ⇒ 服务端必须**拒绝**，且客户端必须**具名**抛
+          #   `LightRagHTTPError`（401/403），**不得**返回空结果或静默降级。
+          python - <<'PY'
+          import sys
+
+          from kert.infrastructure.lightrag_client import (
+              LightRagClient, LightRagHTTPError, LightRagUnavailable,
+          )
+
+          client = LightRagClient.from_env()
+          if not client.available():
+              print("::error::[LIGHTRAG_UNAVAILABLE] 实例不可达 ⇒ 无法断言未授权态（拒绝静默通过）")
+              sys.exit(1)
+          try:
+              client.documents()
+          except LightRagHTTPError as exc:
+              if not any(code in str(exc) for code in ("401", "403")):
+                  print("::error::[LIGHTRAG_HTTP_ERROR] 可达却非鉴权失败 ⇒ 接入口径可能变了：%s" % exc)
+                  sys.exit(1)
+              print("✓ 未授权态已具名断言（%s）" % str(exc)[:160])
+              raise SystemExit(0)
+          except LightRagUnavailable as exc:
+              print("::error::[LIGHTRAG_UNAVAILABLE] 断言未授权态时实例消失：%s" % exc)
+              sys.exit(1)
+          print("::error::[EXPECTED_401_403] 无效凭据竟然通过 ⇒ 实例未强制鉴权，"
+                "该态**未**被验证（口径漂移，须显式处理）")
+          sys.exit(1)
+          PY
+
+      - name: Run retrieval-loop tests (no skip allowed)
+        run: |
+          # 记录 pytest **之前**的服务端动词计数：下一步要求之后必须**增加**。
+          # 少了这一步就有漏洞：日志是**累计**的 ⇒ 若实例在 pytest 阶段才挂掉，
+          # 用例会静默走"具名不可达"分支并**通过**，而日志里仍有前面步骤留下的行。
+          LOG="$RUNNER_TEMP/lightrag-server.log"
+          : > "$RUNNER_TEMP/lightrag-log-before.txt"
+          for verb in "POST /documents/text" "POST /query/data" "DELETE /documents/delete_document"; do
+            printf '%s=%s\n' "$verb" "$(grep -c -- "$verb" "$LOG" 2>/dev/null || true)" \
+              >> "$RUNNER_TEMP/lightrag-log-before.txt"
+          done
+          cat "$RUNNER_TEMP/lightrag-log-before.txt"
+          # 不传 `-q`：pyproject 的 addopts 已含 `-q`，再传会变 `-qq` 并抑制汇总行。
+          # `-rs` 打印 skip 原因（本 job 口径下 skip 即失败，见下一步）。
+          python -m pytest \
+            tests/integration/test_lightrag_publication.py \
+            tests/integration/test_lightrag_retrieval.py \
+            tests/integration/test_six_ring_chain_end_to_end.py \
+            tests/integration/test_egress_ops_live.py \
+            -rs --junitxml="$RUNNER_TEMP/retrieval-junit.xml"
+
+      - name: Assert no skip/no failure + server-side ground truth
+        if: always()
+        run: |
+          python - <<'PY'
+          import os
+          import sys
+          import xml.etree.ElementTree as ET
+
+          tmp = os.environ["RUNNER_TEMP"]
+          junit = os.path.join(tmp, "retrieval-junit.xml")
+          if not os.path.exists(junit):
+              print("::error::junit 缺失（%s）—— pytest 未正常完成，拒绝判定为通过" % junit)
+              sys.exit(1)
+          root = ET.parse(junit).getroot()
+          cases = root.findall(".//testcase")
+          failed = root.findall(".//failure")
+          errors = root.findall(".//error")
+          skipped = root.findall(".//skipped")
+          print("检索环：cases=%d failures=%d errors=%d skipped=%d"
+                % (len(cases), len(failed), len(errors), len(skipped)))
+
+          problems = []
+          if failed:
+              problems.append("failures=%d" % len(failed))
+          if errors:
+              problems.append("errors=%d" % len(errors))
+          if skipped:
+              problems.append("skipped=%d（本 job 口径**禁 skip**：不可达必须具名失败，"
+                              "见 ADR-017 ⑦-a）" % len(skipped))
+          # 下限 = 本批该四文件的收集数（21）；**只作防空跑**（0 用例 / 整文件被误删），
+          # 不是精确计数 —— 新增用例不受影响；若主动删除用例使下限不足，须显式更新本处。
+          if len(cases) < 21:
+              problems.append("cases=%d < 下限 21（防空跑）" % len(cases))
+          # 服务端**地面真值**：假绿时这三个动词在 **pytest 阶段**的增量会是 0。
+          before = {}
+          before_file = os.path.join(tmp, "lightrag-log-before.txt")
+          if os.path.exists(before_file):
+              for line in open(before_file, encoding="utf-8"):
+                  key, _, num = line.strip().rpartition("=")
+                  before[key] = int(num or 0)
+          log = os.path.join(tmp, "lightrag-server.log")
+          text = open(log, encoding="utf-8", errors="replace").read() if os.path.exists(log) else ""
+          for label, path in (("发布", "POST /documents/text"),
+                              ("检索", "POST /query/data"),
+                              ("撤回", "DELETE /documents/delete_document")):
+              now = text.count(path)
+              was = before.get(path, 0)
+              print("  服务端地面真值 %s：%s 共 %d 次（pytest 前 %d 次 ⇒ 本阶段 +%d）"
+                    % (label, path, now, was, now - was))
+              if now <= was:
+                  problems.append("服务端日志中 %s 在 pytest 阶段**未增加**（%d→%d）"
+                                  "⇒ 该步**未**在真实例上发生" % (path, was, now))
+          if problems:
+              for problem in problems:
+                  print("::error::检索环断言失败：%s" % problem)
+              sys.exit(1)
+          print("✓ 检索环断言通过（0F / 0E / 0skip + 服务端三个动词均有实际调用）")
+          PY
+
+      - name: Upload retrieval-loop evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: retrieval-loop-evidence
+          path: |
+            ${{ runner.temp }}/retrieval-junit.xml
+            ${{ runner.temp }}/lightrag-server.log
+            ${{ runner.temp }}/mock-llm.log
+          retention-days: 30
+
+      - name: Stop mock and lightrag-server
+        if: always()
+        run: |
+          pkill -f "lightrag-server --host 127.0.0.1 --port 9621" || true
+          pkill -f "scripts/ci/lightrag_mock_llm.py" || true
