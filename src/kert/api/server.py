@@ -12,6 +12,9 @@ POST /v1/graph/query
 POST /v1/rules/evaluate
 GET  /v1/evidence/{object_id}
 GET  /v1/catalog
+GET  /v1/knowledge-maps            （v1.5：知识地图注册查询）
+GET  /v1/knowledge-maps/{map_id}   （v1.5：单张地图详情）
+POST /v1/routing/plan              （v1.5：路由裁决 + 激活计划，fail-closed）
 
 发布/审核/回滚不暴露为远程 API（§13.1）。
 """
@@ -24,20 +27,24 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi import Response as FastApiResponse
-from fastapi.responses import PlainTextResponse
-from pydantic import BaseModel, Field
+from fastapi.responses import JSONResponse, PlainTextResponse
+from pydantic import BaseModel, ConfigDict, Field
 
 from ..application import report as report_mod
 from ..application.jobs import read_job_status
 from ..application.services import KnowledgeService
 from ..application.skills import SkillExecutionService
 from ..domain import timeutil
+from ..domain.activation_plan import ActivationPlanBuilder, PlanDenial
 from ..domain.errors import KERTException, ServiceNotReadyError
+from ..domain.knowledge_map import KnowledgeMapRegistry
+from ..domain.route_policy import load_route_policy
 from ..infrastructure.observability import (
     configure_structured_logging,
     get_metrics_registry,
     get_tracer,
     log_event,
+    new_request_id,
     otel_available,
     prometheus_client_available,
 )
@@ -48,6 +55,7 @@ from ..infrastructure.runtime_config import (
 )
 from ..infrastructure.runtime_store import RuntimeStore
 from .middleware import (
+    STATE_REQUEST_ID,
     ApiKeyAuthMiddleware,
     ConcurrencyLimitMiddleware,
     ObservabilityMiddleware,
@@ -184,6 +192,19 @@ class RuleRequest(BaseModel):
     facts: dict
 
 
+class RoutingPlanRequest(BaseModel):
+    """v1.5 路由裁决请求（合同 `RoutingPlanRequest`）。
+
+    字段命名沿用 Skill/Gate 面的 camelCase 约定；``extra="forbid"`` 兑现合同中的
+    ``additionalProperties: false`` —— 未知字段一律 422，不静默忽略。
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    taskType: str
+    subjectId: str | None = None
+
+
 def _response(request_id: str, data: dict, meta: dict | None = None) -> dict:
     return {
         "request_id": request_id,
@@ -295,6 +316,32 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         return HTTPException(status_code=500,
                              detail={"error": {"code": "INTERNAL_ERROR",
                                                "message": str(exc)}})
+
+    @app.exception_handler(Exception)
+    async def _unhandled_exception(request: Request, exc: Exception) -> JSONResponse:
+        """未捕获异常 ⇒ 合同声明的 `ErrorResponse` 信封（HTTP 500）。
+
+        修正记录（2026-09-16，Contract Owner 授权；对应失实项 F4c）：
+        此前未捕获异常落到 FastAPI 默认 500（**纯文本** `Internal Server Error`），
+        与 `specs/kert-openapi-v1.yaml` 中 `/api/skill/execute` 的 `500` 声明
+        （`ErrorResponse` 信封：`requestId`/`status`/`errors[]`）不符。
+        本处理器使**实际响应**与合同一致（只影响 5xx 兜底路径，2xx 与中间件行为不变）。
+
+        安全口径：响应体**只**给通用 `INTERNAL_ERROR` 消息，**不回显** `str(exc)`
+        （异常细节仅进服务端日志）；回传 `requestId` 供排障关联。
+        登记：`evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md`；用例
+        `tests/integration/test_contract_shape_conformance.py`。
+        """
+        request_id = (getattr(request.state, STATE_REQUEST_ID, None)
+                      or new_request_id())
+        _log.error("未捕获异常已转为 ErrorResponse 信封：request_id=%s method=%s path=%s",
+                   request_id, request.method, request.url.path,
+                   exc_info=(type(exc), exc, exc.__traceback__))
+        return JSONResponse(status_code=500, content={
+            "requestId": request_id,
+            "status": "skill_error",
+            "errors": [{"code": "INTERNAL_ERROR", "message": "内部错误"}],
+        })
 
     @app.get("/livez")
     def livez():
@@ -652,6 +699,80 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         return rec
+
+    # ── v1.5：知识路由与激活计划（控制面读）──
+    # 合同：specs/kert-openapi-v1.yaml（Routing tag）；变更提案见
+    # evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md
+
+    def _map_summary(m) -> dict:
+        """地图摘要（合同 `KnowledgeMapSummary`；不含资产逐条明细）。"""
+        return {
+            "mapId": m.map_id,
+            "version": m.version,
+            "title": m.title,
+            "domain": m.domain,
+            "tasks": list(m.tasks),
+            "priority": m.priority,
+            "assetCount": len(m.asset_refs),
+            "skillCount": len(m.skill_refs),
+            "routePolicyRef": m.route_policy_ref,
+        }
+
+    @app.get("/v1/knowledge-maps")
+    def list_knowledge_maps():
+        """列出本工作区注册的知识地图。
+
+        控制面未注册任何地图时返回**空列表**（不报错）——但空列表**不等于"可用"**：
+        此时 ``/v1/routing/plan`` 会按 fail-closed 默认拒绝。
+        """
+        try:
+            registry = KnowledgeMapRegistry.load(ws)
+            policy = load_route_policy(ws)
+        except KERTException as exc:
+            raise _handle(exc)
+        return _response(f"REQ-KM-{timeutil.ts_utc()[:19]}", {
+            "maps": [_map_summary(m) for m in registry.maps],
+            "count": len(registry),
+            "policy": None if policy is None else {
+                "policyId": policy.policy_id,
+                "version": policy.version,
+                "defaultDecision": policy.default_decision,
+            },
+        })
+
+    @app.get("/v1/knowledge-maps/{map_id}")
+    def get_knowledge_map(map_id: str):
+        """单张知识地图详情；未注册 ⇒ 404（协议级"资源不存在"）。"""
+        try:
+            registry = KnowledgeMapRegistry.load(ws)
+        except KERTException as exc:
+            raise _handle(exc)
+        if map_id not in registry:
+            raise HTTPException(status_code=404, detail={"error": {
+                "code": "KNOWLEDGE_MAP_NOT_REGISTERED",
+                "message": f"知识地图未注册: {map_id}",
+                "retryable": False}})
+        return _response(f"REQ-KM-{map_id}", _map_summary(registry.get(map_id)))
+
+    @app.post("/v1/routing/plan")
+    def routing_plan(req: RoutingPlanRequest):
+        """解析任务并产出**可重放**激活计划（fail-closed）。
+
+        拒绝是**预期业务结果**（策略缺失 / 任务未映射 / 同优先级歧义 / 地图未注册 /
+        策略错配 / 本体引用缺失或非法）：返回 **200** 且 ``allowed=false`` + ``denial``。
+        ``allowed`` 只可能是 ``true``（带 ``plan``）或 ``false``（带 ``denial``）——没有第三态。
+        """
+        try:
+            decision = ActivationPlanBuilder.load(ws).build(
+                req.taskType, subject_id=req.subjectId)
+        except KERTException as exc:
+            raise _handle(exc)
+        if isinstance(decision, PlanDenial):
+            data = {"allowed": False, "plan": None,
+                    "denial": {"code": decision.code, "reason": decision.reason}}
+        else:
+            data = {"allowed": True, "plan": decision.to_dict(), "denial": None}
+        return _response(f"REQ-RPLAN-{timeutil.ts_utc()[:19]}", data)
 
     # ── DSH Web 界面 ──
     from ..dsh.app import mount_dsh

@@ -1,0 +1,14 @@
+[基线]            plan_hash=97f2933073121ccd  versions.ontology=CTR-SEM-002@sha256:705578d6324abd0c
+[只改来源]        plan_hash=97f2933073121ccd  versions.ontology=CTR-SEM-002@sha256:705578d6324abd0c
+  ⇒ PASS：来源改变**不**影响 plan_hash ✓
+[改内容哈希]      plan_hash=0bad46e875abf2a6  versions.ontology=CTR-SEM-002@sha256:1111111122222222
+  ⇒ PASS：内容哈希改变**必**使 plan_hash 变 ✓
+[恢复]            plan_hash=97f2933073121ccd
+  ⇒ PASS：恢复后逐字段回到基线（可重放）✓
+[声明缺失]        PlanDenial code=ONTOLOGY_REFERENCE_ABSENT
+  ⇒ PASS：缺失即拒绝（不产出计划）✓
+[声明非法]        PlanDenial code=ONTOLOGY_REFERENCE_INVALID
+  ⇒ PASS：非法即拒绝且码与缺失区分 ✓
+
+TL 独立对照：全部通过（4 项断言 + 2 项拒绝语义）
+real_example_declaration_sha256 = 653f3ac8050f66e4

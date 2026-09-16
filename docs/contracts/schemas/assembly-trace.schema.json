@@ -55,13 +55,48 @@
       }
     },
     "assetVersion": {
-      "type": "string"
+      "type": "string",
+      "description": "M7.1-B1（additive，待 Contract Owner 追认；C-3 追认包：两个新字段 + 本处 description 澄清）：既有的资产/绑定版本槽位；自 M7.1-B1 起亦承载知识源读取的绑定指纹 binding_sha256（64 位小写 hex，取自控制面声明 knowledge_sources.json 的确定性哈希，见 src/kert/domain/knowledge_source.py:compute_binding_sha256）。"
     },
     "policyId": {
       "type": "string"
     },
     "errorCode": {
       "type": "string"
+    },
+    "mapId": {
+      "type": "string",
+      "description": "v1.5：解析出的知识地图 ID（技能路由 trace）"
+    },
+    "mapExpected": {
+      "type": "string",
+      "description": "v1.5：该技能自身 KI 清单对应的知识地图 ID（失配时与 mapId 不同）"
+    },
+    "mapMismatch": {
+      "type": "boolean",
+      "description": "v1.5：计划所选地图 ≠ 技能组装知识条目所用地图 ⇒ true（分歧必须可见）"
+    },
+    "planHash": {
+      "type": "string",
+      "description": "v1.5：可重放激活计划哈希（与 /v1/routing/plan 同源同值）"
+    },
+    "capabilityId": {
+      "type": "string",
+      "description": "M7.1-B1（additive，待 Contract Owner 追认）：本步骤经控制面声明的知识源能力 ID（如 KS-CUSTOMER-KI-PARQUET）。仅在确实解析出能力时出现；不伪造占位能力 ID。不得与 kiId/mapId 混用。"
+    },
+    "sourceCode": {
+      "type": "string",
+      "description": "M7.1-B1（additive，待 Contract Owner 追认）：知识源能力解析结果码（KNOWLEDGE_SOURCE_* 闭集；OK 表示解析通过）。B-1 中解析失败一律回落既有读取路径，此时 status=degraded；该码不是拒绝码，也不改变技能 status。"
+    },
+    "versions": {
+      "type": "object",
+      "description": "v1.5：版本快照（knowledgeMap / routePolicy / ontology / activationContract）",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
     },
     "redactedMessage": {
       "type": "string"

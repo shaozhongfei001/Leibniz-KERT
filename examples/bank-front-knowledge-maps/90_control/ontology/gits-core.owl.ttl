@@ -1,0 +1,364 @@
+@prefix gits: <https://gientech.com/gits/kno/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gits:CoreOntology a owl:Ontology ;
+  rdfs:label "GITS Knowledge Engineering core ontology"@en ;
+  rdfs:comment "Operational control-plane classes plus domain reference classes declared in semantic contracts (ADR-0001, ADR-0010)."@en .
+
+gits:OperatingCase a owl:Class .
+gits:Interaction a owl:Class ; rdfs:subClassOf prov:Activity .
+gits:Claim a owl:Class ; rdfs:subClassOf prov:Entity .
+gits:Evidence a owl:Class ; rdfs:subClassOf prov:Entity .
+gits:HumanConfirmation a owl:Class ; rdfs:subClassOf prov:Activity .
+gits:Action a owl:Class ; rdfs:subClassOf prov:Activity .
+gits:Receipt a owl:Class ; rdfs:subClassOf prov:Entity .
+gits:Evaluation a owl:Class ; rdfs:subClassOf prov:Activity .
+
+# Domain reference class (semantic contract). Not an operational control-plane entity.
+# Authoritative physical source: CTR-DATA-002 (EDWCRM.A_ZHCX_CUST_BASE). ADR-0010.
+gits:Customer a owl:Class ;
+  rdfs:label "Customer"@en ;
+  rdfs:comment "Bank customer domain reference. Mapped from EDWCRM.A_ZHCX_CUST_BASE; not stored as operational control-plane state."@en .
+
+gits:customerId a owl:DatatypeProperty ;
+  rdfs:domain gits:Customer ;
+  rdfs:range xsd:string ;
+  rdfs:comment "Maps from A_ZHCX_CUST_BASE.CUSTID."@en .
+
+gits:belongsToCase a owl:ObjectProperty ;
+  rdfs:range gits:OperatingCase .
+
+gits:supportedBy a owl:ObjectProperty ;
+  rdfs:domain gits:Claim ;
+  rdfs:range gits:Evidence .
+
+gits:authorizedBy a owl:ObjectProperty ;
+  rdfs:domain gits:Action ;
+  rdfs:range gits:HumanConfirmation .
+
+gits:producedReceipt a owl:ObjectProperty ;
+  rdfs:domain gits:Action ;
+  rdfs:range gits:Receipt .
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 知识地图所引用 ID 空间的权威定义（GK-KE 统一地图承担者论证 V1.0 §3.3 硬约束 2）
+#
+# 背景（实测）：knowledge map 的 front matter 已引用 `assetRefs` / `skillRefs` /
+# `activationContractRefs` / `entrypoints.tasks`，例如
+#   specs/knowledge-architecture/maps/corporate-rm/previsit-preparation.md
+# 但这些 ID 空间（ASSET-* / SP-* / AC-* / 任务类型）在本体合同中**没有任何权威定义**
+# ⇒ 地图引用无法锚定，只能静态校验（"引用不存在的个体"无法被本体层拒绝）。
+#
+# 本段**只做 ID 空间的身份定义**，不引入地图中不存在的业务语义：
+# 每个类均对应地图/注册中心中**已存在**的字段或登记表。
+# 依据：建议书 V2.0 §4.3「本体层规定对象身份和关系含义」。
+# ══════════════════════════════════════════════════════════════════════════════
+
+gits:KnowledgeMap a owl:Class ;
+  rdfs:label "Knowledge map"@en ;
+  rdfs:comment "知识地图（ROOT/DOMAIN/TASK）。ID 空间 KM-*；权威源 specs/knowledge-architecture/maps/。"@en .
+
+gits:TaskType a owl:Class ;
+  rdfs:label "Task type"@en ;
+  rdfs:comment "任务类型。取值见 activation-contract/knowledge-map 合同的 entrypoints.tasks（如 PRE_VISIT_PREPARATION）。"@en .
+
+gits:Asset a owl:Class ;
+  rdfs:label "Knowledge asset"@en ;
+  rdfs:comment "可激活资产。ID 空间 ASSET-*；登记处为 specs/knowledge-architecture/assets/ 的 manifest front matter（字段 assetId）。注意 registry/AssetVersion.json 只登记 SIM-ASSET-* 夹具，不是 ASSET-* 的权威登记处（2026-09-15 实测修正）。"@en .
+
+gits:Skill a owl:Class ;
+  rdfs:label "Skill"@en ;
+  rdfs:comment "可调用技能。ID 空间 SP-*；登记于 specs/knowledge-architecture/skills/。"@en .
+
+gits:ActivationContract a owl:Class ;
+  rdfs:label "Activation contract"@en ;
+  rdfs:comment "激活合同。ID 空间 AC-*；登记于 specs/knowledge-architecture/activations/。"@en .
+
+gits:hasTaskType a owl:ObjectProperty ;
+  rdfs:label "has task type"@en ;
+  rdfs:domain gits:KnowledgeMap ;
+  rdfs:range gits:TaskType ;
+  rdfs:comment "对应 knowledge-map.entrypoints.tasks。"@en .
+
+gits:referencesAsset a owl:ObjectProperty ;
+  rdfs:label "references asset"@en ;
+  rdfs:domain gits:KnowledgeMap ;
+  rdfs:range gits:Asset ;
+  rdfs:comment "对应 knowledge-map.assetRefs。"@en .
+
+gits:referencesSkill a owl:ObjectProperty ;
+  rdfs:label "references skill"@en ;
+  rdfs:domain gits:KnowledgeMap ;
+  rdfs:range gits:Skill ;
+  rdfs:comment "对应 knowledge-map.skillRefs。"@en .
+
+gits:governedByContract a owl:ObjectProperty ;
+  rdfs:label "governed by activation contract"@en ;
+  rdfs:domain gits:KnowledgeMap ;
+  rdfs:range gits:ActivationContract ;
+  rdfs:comment "对应 knowledge-map.activationContractRefs。"@en .
+
+# ══════════════════════════════════════════════════════════════════════════════
+# W1/WP1.1 设计点名对象：公司 / 集团 / 产品
+#
+# 依据：建议书 V2.0 §4.3「本体层规定对象身份和关系含义，例如公司、集团、账户、
+# 产品、文档、断言、任务、能力及其关系」。
+#
+# 每个类均标注**实据来源**（Java record 或注册表）；无实据者不补、不猜。
+# 与既有 `gits:Customer` 同一模式：可标注"域引用类"（GITS 侧无运营类，物理源在他处）。
+# ══════════════════════════════════════════════════════════════════════════════
+
+gits:CorporateGroup a owl:Class ;
+  rdfs:label "Corporate group"@en ;
+  rdfs:comment "集团身份。由 LegalEntity.groupId 与 GroupRelationship.groupId 引用；GITS 侧无独立运营类（域引用类）。"@en .
+
+gits:LegalEntity a owl:Class ;
+  rdfs:label "Legal entity"@en ;
+  rdfs:comment "法人/公司。实据 modules/operational-ontology/com/gien/gits/ontology/LegalEntity（entityId）。"@en .
+
+gits:GroupRelationship a owl:Class ;
+  rdfs:label "Group relationship"@en ;
+  rdfs:comment "集团内成员关系。实据 GroupRelationship（id, groupId, fromEntityId, toEntityId, relationshipType, ownershipRatio）。"@en .
+
+gits:Product a owl:Class ;
+  rdfs:label "Product"@en ;
+  rdfs:comment "产品身份（域引用类）。权威物理源为 KERT 产品卡 product_id（03_core/*/product-cards/PROD-*.md）；GITS 侧无产品运营类。"@en .
+
+gits:ProductKnowledgeCard a owl:Class ;
+  rdfs:label "Product knowledge card"@en ;
+  rdfs:comment "产品知识卡。实据 ProductKnowledgeCard（productId）。"@en .
+
+gits:ProductKnowledgeVersion a owl:Class ;
+  rdfs:label "Product knowledge version"@en ;
+  rdfs:comment "产品知识版本。实据 ProductKnowledgeVersion（versionId）。"@en .
+
+# ══════════════════════════════════════════════════════════════════════════════
+# W1/WP1.4 任务与能力
+# ══════════════════════════════════════════════════════════════════════════════
+
+gits:Task a owl:Class ;
+  rdfs:label "Task"@en ;
+  rdfs:comment "任务。实据 modules/human-action com.gien.gits.action.domain.Task（taskId）。"@en .
+
+gits:Capability a owl:Class ;
+  rdfs:label "Capability"@en ;
+  rdfs:comment "能力。权威源 specs/knowledge-architecture/registry/Capability.json（capabilityId）。"@en .
+
+gits:memberOfGroup a owl:ObjectProperty ;
+  rdfs:label "member of group"@en ;
+  rdfs:domain gits:LegalEntity ;
+  rdfs:range gits:CorporateGroup ;
+  rdfs:comment "对应 LegalEntity.groupId。"@en .
+
+gits:relatesToGroup a owl:ObjectProperty ;
+  rdfs:label "relates to group"@en ;
+  rdfs:domain gits:GroupRelationship ;
+  rdfs:range gits:CorporateGroup ;
+  rdfs:comment "对应 GroupRelationship.groupId。"@en .
+
+gits:connectsFrom a owl:ObjectProperty ;
+  rdfs:label "connects from"@en ;
+  rdfs:domain gits:GroupRelationship ;
+  rdfs:range gits:LegalEntity ;
+  rdfs:comment "对应 GroupRelationship.fromEntityId。"@en .
+
+gits:connectsTo a owl:ObjectProperty ;
+  rdfs:label "connects to"@en ;
+  rdfs:domain gits:GroupRelationship ;
+  rdfs:range gits:LegalEntity ;
+  rdfs:comment "对应 GroupRelationship.toEntityId。"@en .
+
+gits:refersToCustomer a owl:ObjectProperty ;
+  rdfs:label "refers to customer"@en ;
+  rdfs:domain gits:LegalEntity ;
+  rdfs:range gits:Customer ;
+  rdfs:comment "对应 LegalEntity.bankCustomerId。"@en .
+
+gits:cardOfProduct a owl:ObjectProperty ;
+  rdfs:label "card of product"@en ;
+  rdfs:domain gits:ProductKnowledgeCard ;
+  rdfs:range gits:Product ;
+  rdfs:comment "对应 ProductKnowledgeCard.productId。"@en .
+
+gits:versionOfProduct a owl:ObjectProperty ;
+  rdfs:label "version of product"@en ;
+  rdfs:domain gits:ProductKnowledgeVersion ;
+  rdfs:range gits:Product ;
+  rdfs:comment "对应 ProductKnowledgeVersion.productId。"@en .
+
+gits:supersedesVersion a owl:ObjectProperty ;
+  rdfs:label "supersedes version"@en ;
+  rdfs:domain gits:ProductKnowledgeVersion ;
+  rdfs:range gits:ProductKnowledgeVersion ;
+  rdfs:comment "对应 ProductKnowledgeVersion.previousVersionId。"@en .
+
+gits:inCase a owl:ObjectProperty ;
+  rdfs:label "in operating case"@en ;
+  rdfs:domain gits:Task ;
+  rdfs:range gits:OperatingCase ;
+  rdfs:comment "对应 Task.operatingCaseId。"@en .
+
+gits:ofCustomer a owl:ObjectProperty ;
+  rdfs:label "of customer"@en ;
+  rdfs:domain gits:Task ;
+  rdfs:range gits:Customer ;
+  rdfs:comment "对应 Task.customerId。"@en .
+
+gits:fromInteraction a owl:ObjectProperty ;
+  rdfs:label "from interaction"@en ;
+  rdfs:domain gits:Task ;
+  rdfs:range gits:Interaction ;
+  rdfs:comment "对应 Task.interactionId。"@en .
+
+gits:subTaskOf a owl:ObjectProperty ;
+  rdfs:label "sub-task of"@en ;
+  rdfs:domain gits:Task ;
+  rdfs:range gits:Task ;
+  rdfs:comment "对应 Task.parentTaskId。"@en .
+
+gits:invokesCapability a owl:ObjectProperty ;
+  rdfs:label "invokes capability"@en ;
+  rdfs:domain gits:Task ;
+  rdfs:range gits:Capability ;
+  rdfs:comment "任务调用能力（对应激活合同的 skills 与能力注册表绑定）。"@en .
+
+# ══════════════════════════════════════════════════════════════════════════════
+# W1/WP1.3 产品关系谓词 —— **关系类型**的权威在本体（见 WP1.3 裁定）
+#
+# 裁定：**关系类型的权威 = 本体（谓词语义）**；**关系实例的权威 = 产品卡**
+# （产品 Owner 维护，KERT 03_core product-cards front matter 的
+# prerequisite_product_ids / mutex_product_ids / complementary_products）；
+# **投影方向单向**：产品卡 → 本体个体。本体不得反向承载关系实例，
+# 地图不得复述关系。（依据：建议书 V2.0 第 185 行「不能同时手工维护两份可
+# 独立修改的定义」。）
+# ══════════════════════════════════════════════════════════════════════════════
+
+gits:requiresProduct a owl:ObjectProperty ;
+  rdfs:label "requires product"@en ;
+  rdfs:domain gits:Product ;
+  rdfs:range gits:Product ;
+  rdfs:comment "前置产品关系类型。实例源自产品卡 prerequisite_product_ids（单向投影）。"@en .
+
+gits:mutuallyExclusiveWith a owl:ObjectProperty ;
+  rdfs:label "mutually exclusive with"@en ;
+  rdfs:domain gits:Product ;
+  rdfs:range gits:Product ;
+  rdfs:comment "互斥产品关系类型。实例源自产品卡 mutex_product_ids（单向投影）。"@en .
+
+gits:complementsProduct a owl:ObjectProperty ;
+  rdfs:label "complements product"@en ;
+  rdfs:domain gits:Product ;
+  rdfs:range gits:Product ;
+  rdfs:comment "配套产品关系类型。实例源自产品卡 complementary_products（单向投影）。"@en .
+
+# ══════════════════════════════════════════════════════════════════════════════
+# W1/WP1.2 系统既有对象（modules/operational-ontology，标识字段均实测取自 record）
+#
+# 去重核对（避免同类重复，重复类同样违反约束①）：
+#   - ControlledAction ≡ 既有 gits:Action（"受控动作"）⇒ **不新建**
+#   - ActionReceipt    ≡ 既有 gits:Receipt（"受控动作的权威结果回执"）⇒ **不新建**
+# ══════════════════════════════════════════════════════════════════════════════
+
+gits:Opportunity a owl:Class ;
+  rdfs:label "Opportunity"@en ;
+  rdfs:comment "商机。实据 Opportunity（opportunityId）。"@en .
+
+gits:OpportunitySignal a owl:Class ;
+  rdfs:label "Opportunity signal"@en ;
+  rdfs:comment "商机信号。实据 OpportunitySignal（signalId，UUID）。"@en .
+
+gits:Commitment a owl:Class ;
+  rdfs:label "Commitment"@en ;
+  rdfs:comment "承诺。实据 Commitment（commitmentId，UUID）。"@en .
+
+gits:KycGapProfile a owl:Class ;
+  rdfs:label "KYC gap profile"@en ;
+  rdfs:comment "KYC 缺口画像。实据 KycGapProfile（profileId）。"@en .
+
+gits:HumanGate a owl:Class ;
+  rdfs:label "Human gate"@en ;
+  rdfs:comment "人工门禁。实据 HumanGate（gateId）。与 gits:HumanConfirmation（人的处置）区分：门禁是待裁决项，确认是裁决结果。"@en .
+
+gits:PolicyRule a owl:Class ;
+  rdfs:label "Policy rule"@en ;
+  rdfs:comment "策略规则。实据 PolicyRule（ruleId）。"@en .
+
+gits:ExternalEvent a owl:Class ;
+  rdfs:label "External event"@en ;
+  rdfs:comment "外部事件。实据 ExternalEvent（eventId）。"@en .
+
+gits:InteractionExtension a owl:Class ;
+  rdfs:label "Interaction extension"@en ;
+  rdfs:comment "互动扩展（录音同意、关联承诺/任务/商机）。实据 InteractionExtension（extensionId）。"@en .
+
+gits:AuditTraceEntry a owl:Class ;
+  rdfs:label "Audit trace entry"@en ;
+  rdfs:comment "审计轨迹条目。实据 AuditTraceEntry（traceId）。"@en .
+
+gits:RelationshipReport a owl:Class ;
+  rdfs:label "Relationship report"@en ;
+  rdfs:comment "关系报告。实据 RelationshipReport（reportId，UUID）。"@en .
+
+gits:opportunityOfCustomer a owl:ObjectProperty ;
+  rdfs:label "opportunity of customer"@en ;
+  rdfs:domain gits:Opportunity ;
+  rdfs:range gits:Customer ;
+  rdfs:comment "对应 Opportunity.customerId。"@en .
+
+gits:opportunityInCase a owl:ObjectProperty ;
+  rdfs:label "opportunity in operating case"@en ;
+  rdfs:domain gits:Opportunity ;
+  rdfs:range gits:OperatingCase ;
+  rdfs:comment "对应 Opportunity.operatingCaseId。"@en .
+
+gits:opportunityForProduct a owl:ObjectProperty ;
+  rdfs:label "opportunity for product"@en ;
+  rdfs:domain gits:Opportunity ;
+  rdfs:range gits:Product ;
+  rdfs:comment "对应 Opportunity.productId。"@en .
+
+gits:signalInCase a owl:ObjectProperty ;
+  rdfs:label "signal in operating case"@en ;
+  rdfs:domain gits:OpportunitySignal ;
+  rdfs:range gits:OperatingCase ;
+  rdfs:comment "对应 OpportunitySignal.operatingCaseId。"@en .
+
+gits:commitmentInCase a owl:ObjectProperty ;
+  rdfs:label "commitment in operating case"@en ;
+  rdfs:domain gits:Commitment ;
+  rdfs:range gits:OperatingCase ;
+  rdfs:comment "对应 Commitment.operatingCaseId。"@en .
+
+gits:profileOfCustomer a owl:ObjectProperty ;
+  rdfs:label "profile of customer"@en ;
+  rdfs:domain gits:KycGapProfile ;
+  rdfs:range gits:Customer ;
+  rdfs:comment "对应 KycGapProfile.customerId。"@en .
+
+gits:gateOfCustomer a owl:ObjectProperty ;
+  rdfs:label "gate of customer"@en ;
+  rdfs:domain gits:HumanGate ;
+  rdfs:range gits:Customer ;
+  rdfs:comment "对应 HumanGate.customerId。"@en .
+
+gits:gateInCase a owl:ObjectProperty ;
+  rdfs:label "gate in operating case"@en ;
+  rdfs:domain gits:HumanGate ;
+  rdfs:range gits:OperatingCase ;
+  rdfs:comment "对应 HumanGate.operatingCaseId。"@en .
+
+gits:extensionOfInteraction a owl:ObjectProperty ;
+  rdfs:label "extension of interaction"@en ;
+  rdfs:domain gits:InteractionExtension ;
+  rdfs:range gits:Interaction ;
+  rdfs:comment "对应 InteractionExtension.interactionId。"@en .
+
+gits:reportInCase a owl:ObjectProperty ;
+  rdfs:label "report in operating case"@en ;
+  rdfs:domain gits:RelationshipReport ;
+  rdfs:range gits:OperatingCase ;
+  rdfs:comment "对应 RelationshipReport.operatingCaseId。"@en .

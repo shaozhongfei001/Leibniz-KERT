@@ -6,9 +6,66 @@ info:
 
     - v1.3 基线：单客户技能执行、健康检查、报告查看
     - v1.4 增量：SP-20 服务建议书（异步）、SP-21 交互记忆抽取、闸门协作端点
+    - v1.5 增量：知识路由与激活计划（知识地图注册查询 / 路由裁决 / 可重放计划），**纯新增**
+    - v1.5 修正：`assemblyTrace` 类型 `object` → `array`（合同长期与实现不符，已改正）
+    - v1.5 修正（**2026-09-16，按实现核对**；由冲突 C-20 的归并候选分析发现，
+      `evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md` §2.5 的 F1/F3/F4/F5）：
+      ① `JobStatusResponse` 扁平对象 → **标准信封**，新增 `JobStatusData`（`job_id` 等 snake_case 键）；
+      ② `GateListResponse.gates[]` 的 `GateChecklistItem` → 新增 `GateDefinition`（资产形状）；
+      ③ `GateAuditResponse` 去掉实现不存在的 `timestamp`/`auditPath`，改为回显真实记录；
+      ④ `/api/skill/execute` 的 `404`：`ErrorResponse` → 新增 `SkillExecuteErrorResponse`（与 200 同构）；
+      ⑤ `/v1/jobs/{jobId}` 的 `404`：`ErrorResponse` → 新增 `InfrastructureErrorResponse`。
+      以上均为**按已运行实现**修正（未改实现、未改 `src/**`）。
+      **须通知 GITS**：`data.status` 与 `data.skill_result` 的嵌套位置**保持不变**（GITS `DshJobPoller` 按此读取）。
+      机械核对用例：`tests/integration/test_contract_shape_conformance.py`。
+      仍待后续批次（本轮未做）：`/api/skill/execute` 的 `400`/`500` 声明、
+      `/api/skill/report` 的 404 体、`/v1/knowledge-maps` 的 `422`/`500` 体均未按实测核对；
+      `OpenAPI` 方言（3.0.3 vs 校验器要求的 3.1.0）与 8 处 `nullable` 亦未处理（归并 P2 验收条件）。
+      另记一条**观察（不在本合同范围、本批不修）**：`_handle()` 对**非** `KERTException`
+      的兜底分支会把 `str(exc)` 放进 `detail.error.message`（`_handle()` @ `src/kert/api/server.py:310-318`），
+      与新增的未捕获异常处理器（只给通用 `INTERNAL_ERROR`）**口径不一致**，存在内部信息外泄面；
+      列为后续议题（需另立批次，涉及 `_handle()` 全量调用点的行为变更）。
+    - **v1.5.1 补丁（2026-09-16，更正性，非语义增量）**：
+      Contract Owner 于 2026-09-15 追认的对象是 **`1.5.0` 的 additive 增量**
+      （`docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md` §0.1）；
+      其后本文件被更正两次（`assemblyTrace` 类型：commit `62b967a`；形状更正：commit `f7749af`）
+      ⇒ 同一版本号承载了两份内容，会让"追认"失去确切对象。故 bump 至 `1.5.1`：
+      **追认覆盖 v1.5 的 additive 增量，本补丁为形状/错误响应更正**，不含新增能力。
+      本补丁内容：① `/api/skill/execute` 的 `400`（**实测不可达**）→ `422` + `ValidationErrorResponse`；
+      ② `/api/skill/report/{requestId}` 的 `404` 如实化（新增 `StringDetailErrorResponse`）；
+      ③ `/v1/knowledge-maps` 的 `422`/`500` 如实化；
+      ④ 新增 app 级异常处理器，使**未捕获异常**返回本合同声明的 `ErrorResponse` 信封（F4c，实现侧改动）；
+      ⑤ `SkillHealthResponse` / `SkillBriefInfo` 按实测补齐 `service` 与 `skills[].version`（F7）。
+      另：`/v1/*` 下 **9 条已实现但未登记**的路径属 **additive 扩展**（非形状更正），
+      不并入本补丁，另出提案待 Contract Owner 追认：
+      `evidence/m7-3/PROPOSAL_REGISTER_UNDECLARED_V1_PATHS.md`。
+    - **v1.6.0（2026-09-16，Contract Owner 已批：A-6 选 A / A-9 删除）**：
+      ① **A-6（additive）**：登记 9 条**已实现但合同未声明**的 `/v1/*` 路径 ——
+      `/v1/extractions`、`/v1/extractions/{job_id}/result`、`/v1/entities/{entity_id}`、
+      `/v1/data/query`、`/v1/search`、`/v1/graph/query`、`/v1/rules/evaluate`、
+      `/v1/evidence/{object_id}`、`/v1/catalog`。**不改**任何既有路径 / 字段 / 状态码；
+      每条配**机械核对用例**（`tests/integration/test_contract_shape_conformance.py`）
+      与**集合级防复发断言**（合同 `/v1/*` 路径集合 == 实现 `app.routes` 集合 ± 显式豁免清单）。
+      提案：`evidence/m7-3/PROPOSAL_REGISTER_UNDECLARED_V1_PATHS.md`。
+      ② **A-9（删除项，单列，不计入上述"9 条新增"计数）**：`GET /v1/skills` **已从本合同移除**
+      （Owner 裁定 2026-09-16）—— 该端点**声明了但实现不存在**（"声明了但不存在"比"未声明"更坏）；
+      同轮同步 3 处孤儿引用：`examples/gits_adapter/python/kert_client.py`、
+      `examples/gits_adapter/curl/list_skills.sh`（已失去意义 ⇒ **删除**）、
+      `docs/development/M3_PLAN_GITS_INTEGRATION.md`。
+    - **v1.6.1 补丁（2026-09-16，更正性，非语义增量）**：**值域更正** —— `JobStatusData.status.enum`
+      原声明 **4 值**（`[PENDING, RUNNING, COMPLETED, FAILED]`）**窄于实现**：实现可达域为 `JOB_STATES`
+      （`src/kert/domain/states.py:11-14`，**9 值**），且仓内合同源 `src/kert/domain/contracts/specs.py:585`
+      （`FieldSpec("status", …, enum=list(JOB_STATES))`）**早已是 9 值** ⇒ 本合同与该源**不一致**，
+      属"合同窄于实现"的**更正**（**不改**任何请求/响应形状、不改状态机、不改状态码）。
+      同轮落**值域机械核对用例**（`tests/unit/test_contract_enum_single_source.py`）：
+      合同 `enum == list(JOB_STATES)`；**若日后合同要写子集 ⇒ 必须显式登记 + 写明理由**，否则该用例红。
 
     权威契约：`docs/skill-execute-api-contract-v1.4.md`
-  version: "1.4.0"
+    v1.5 变更说明：`evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md`
+    **追认：Contract Owner 于 2026-09-15 批准**（含上述 assemblyTrace 类型修正）；
+    登记：`docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md` §0.1
+    本文档为**运行中权威**（服务实际实现）；v2 候选未批准，归并列 W8/Phase 0 收口（冲突 C-20）
+  version: "1.6.1"
   contact:
     name: KERT Team
   license:
@@ -29,6 +86,8 @@ tags:
     description: 闸门协作
   - name: Observability
     description: 可观测性
+  - name: Routing
+    description: 知识路由与激活计划
 
 paths:
   /v1/health:
@@ -76,48 +135,283 @@ paths:
                 $ref: "#/components/schemas/SkillHealthResponse"
               example:
                 status: ok
+                service: customer-engagement
                 skills:
                   - skillId: R1
                     name: 对公客户画像
+                    version: "1.0.0"
                   - skillId: SP-20
                     name: 对公客户服务建议书生成
+                    version: "1.0.0"
                   - skillId: SP-21
                     name: 交互记忆抽取
+                    version: "1.0.0"
 
-  /v1/skills:
-    get:
-      tags: [Skill]
-      summary: 列出可用 Skill
-      description: 返回所有已注册 Skill 的详细信息，包括参数定义和闸门要求
-      operationId: listSkills
+  # ── v1.6.0 / A-6：9 条「已实现但合同未声明」的 /v1/* 路径 ──
+  # 依据：evidence/m7-3/PROPOSAL_REGISTER_UNDECLARED_V1_PATHS.md（Owner 已批：A-6 选 A）
+  # 机械核对用例：tests/integration/test_contract_shape_conformance.py
+  # 说明：新增条目一律写法与实现逐字段对齐；**查询参数 `as_of` 等此前无从得知者**
+  # 在 description 中显式标注「实现有、此前未声明」。
+  /v1/extractions:
+    post:
+      tags: [Query]
+      summary: 提交领域抽取作业（异步，202）
+      description: |
+        **v1.6.0 新增（A-6）**：此前已实现但合同未声明。
+        实现 `extract()` @ `src/kert/api/server.py:499-528`；请求模型 `ExtractionRequest`（`:151-158`）。
+        ⚠ 本响应**不走** `_response()` 生成器：实现**手写信封**（`:516-526`），
+        `status` 取值为 **`ACCEPTED`**（与其余 `/v1/*` 端点的 `OK` **不同义**）。
+      operationId: createExtraction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExtractionRequest"
       responses:
-        "200":
-          description: Skill 列表
+        "202":
+          description: 已受理（写 Work）
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SkillListResponse"
-              example:
-                skills:
-                  - skillId: R1
-                    name: 对公客户画像
-                    description: 基于知识图谱生成对公客户 360 度画像
-                    version: "1.0.0"
-                    parameters:
-                      - name: customerId
-                        type: string
-                        required: true
-                        description: 客户 ID
-                  - skillId: SP-20
-                    name: 对公客户服务建议书生成
-                    description: 生成对公客户服务建议书（含事实标签、双版本、闸门检查）
-                    version: "1.0.0"
-                    async: true
-                    parameters:
-                      - name: context
-                        type: object
-                        required: true
-                        description: ContextPackage（含 customerId、schemaVersion 等）
+                $ref: "#/components/schemas/ExtractionsAcceptedResponse"
+        "422":
+          description: 领域 / 用法错误（`KERTException` → `_handle()`）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+        "500":
+          description: 未捕获异常（app 级处理器 → `ErrorResponse` 信封）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/extractions/{job_id}/result:
+    get:
+      tags: [Query]
+      summary: 查询抽取作业结果摘要
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `extraction_result()` @ `src/kert/api/server.py:538-548`；
+        响应为**标准信封**（`_response()`），结果摘要位于 `data` 内。
+      operationId: getExtractionResult
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: 抽取结果摘要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtractionResultResponse"
+        "404":
+          description: 作业不存在（`KERTException` → `_handle()`）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/entities/{entity_id}:
+    get:
+      tags: [Query]
+      summary: 查询实体及其陈述
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `entity()` @ `src/kert/api/server.py:550-556`；
+        数据由 `KnowledgeService.get_entity` 给出（`src/kert/application/services.py:96-109`）。
+        ⚠ 查询参数 **`as_of`**：**实现有、此前无从得知** —— 非空时按时间点过滤陈述。
+      operationId: getEntity
+      parameters:
+        - name: entity_id
+          in: path
+          required: true
+          schema: {type: string}
+        - name: as_of
+          in: query
+          required: false
+          schema: {type: string, format: date-time}
+          description: 时间点；仅返回该时点有效的陈述（实现 `_active_on` 过滤）
+      responses:
+        "200":
+          description: 实体与其陈述
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityResponse"
+        "422":
+          description: 实体不存在（`AssetNotFoundError` → `_handle()`）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/data/query:
+    post:
+      tags: [Query]
+      summary: 数据集查询
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `data_query()` @ `src/kert/api/server.py:558-565`；
+        数据由 `KnowledgeService.data_query` 给出（`services.py:80-92`；`limit` **上限 1000**，超出抛 `UsageError`）。
+      operationId: queryDataset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DataQueryRequest"
+      responses:
+        "200":
+          description: 数据集记录
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataQueryResponse"
+        "422":
+          description: 用法错误（如 `limit > 1000`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/search:
+    post:
+      tags: [Query]
+      summary: 片段检索（FULLTEXT / VECTOR / HYBRID）
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `search()` @ `src/kert/api/server.py:567-574`；
+        数据由 `KnowledgeService.search` 给出（`services.py:242-298`）。
+      operationId: searchSegments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+      responses:
+        "200":
+          description: 检索命中
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        "422":
+          description: 用法错误（非法 `mode`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/graph/query:
+    post:
+      tags: [Query]
+      summary: 图谱查询（neighbor / closure / paths）
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `graph()` @ `src/kert/api/server.py:576-587`；
+        数据由 `KnowledgeService.graph` 给出（`services.py:113-238`，Kùzu 后端回退内存 BFS）。
+        ⚠ 与 v2 候选（`docs/contracts/openapi/kert-openapi-v2.yaml`）的差异**以实现为准**：
+        实现 `required` 为 `request_id` + `start_entity_ids`（v2 为 `start_entity_ids` + `mode`），
+        且实现**多**一个 `as_of`、`max_depth` 默认 `1`、`max_nodes` 默认 `100`。
+      operationId: queryGraph
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GraphQueryRequest"
+      responses:
+        "200":
+          description: 图谱结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GraphQueryResponse"
+        "422":
+          description: 用法错误（`max_depth > 10` / `max_nodes > 1000` / 非法 `direction`/`mode`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/rules/evaluate:
+    post:
+      tags: [Query]
+      summary: 规则评估
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `rules()` @ `src/kert/api/server.py:589-595`；
+        数据由 `KnowledgeService.evaluate_rule` 给出（`services.py:318-369`）。
+      operationId: evaluateRules
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RuleEvaluateRequest"
+      responses:
+        "200":
+          description: 规则评估结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleEvaluateResponse"
+        "422":
+          description: 领域 / 用法错误 → `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/evidence/{object_id}:
+    get:
+      tags: [Query]
+      summary: 证据溯源链
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `evidence()` @ `src/kert/api/server.py:597-620`；
+        数据由 `KnowledgeService.trace` 给出（`services.py:373-...`）。
+        附注：实现会在查询同时向 Runtime Store 写**审计镜像**（副作用，失败不阻断主流程，见 `:601-617`）。
+      operationId: getEvidence
+      parameters:
+        - name: object_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: 溯源链
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvidenceResponse"
+        "422":
+          description: 领域错误（如无活动投影 `ServiceNotReadyError`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/catalog:
+    get:
+      tags: [Query]
+      summary: 服务目录（服务 ID / 活动版本 / 投影文件清单）
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `catalog()` @ `src/kert/api/server.py:622-633`；
+        投影清单由 `version_dir.rglob("*.parquet")` 机械列举（排序后）。
+      operationId: getCatalog
+      responses:
+        "200":
+          description: 服务目录
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogResponse"
+        "422":
+          description: 无活动投影（`ServiceNotReadyError`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
 
   /api/skill/execute:
     post:
@@ -187,20 +481,65 @@ paths:
               example:
                 jobId: JOB-SKILL-20260828-001
                 status: PENDING
-        "400":
-          description: 请求参数错误
+        "422":
+          description: |
+            请求体校验失败（FastAPI / Pydantic）。**本端点没有 `400` 路径**：
+            参数错误一律 422。
+
+            **修正记录（2026-09-16，按实测核对）**：原声明 `400` + `ErrorResponse`
+            与实现不符——该路由没有 `try/except`（`skill_execute()` @ `src/kert/api/server.py:647-671`），
+            请求体校验由 Pydantic 直接完成并返回 **422**，响应体是 FastAPI 校验体
+            `{"detail": [ {type, loc, msg, input}, ... ]}`。
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ValidationErrorResponse"
               example:
-                requestId: req-20260828-001
-                status: skill_error
-                errors:
-                  - code: INVALID_PARAMETER
-                    message: "customerId is required"
+                detail:
+                  - type: missing
+                    loc: ["body", "skillId"]
+                    msg: "Field required"
+                    input: {}
         "404":
-          description: Skill 不存在
+          description: |
+            Skill 不存在。响应体与 200 **同构**（`status=skill_error`、
+            `errors[0].code=UNKNOWN_SKILL`），而**不是** `ErrorResponse`。
+
+            **修正记录（2026-09-16，按实现核对）**：原声明为 `ErrorResponse` 并给
+            `SKILL_NOT_FOUND` 示例，与实现不符；实现（`skill_execute() 的 404 段 @ `src/kert/api/server.py:663-671`）把
+            同步结果体原样以 404 返回。GITS 调用方已按真实行为编码
+            （`DshHttpSkillExecutionAdapter.java:32`），故按实现修正合同。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillExecuteErrorResponse"
+              example:
+                requestId: req-20260828-001
+                status: skill_error
+                data:
+                  reportUrl: /api/skill/report/req-20260828-001
+                errors:
+                  - code: UNKNOWN_SKILL
+                    message: "未知 skillId: UNKNOWN"
+                assemblyTrace:
+                  - phase: resolve
+                    status: ok
+                    message: "skillId=UNKNOWN requestId=req-20260828-001"
+                  - phase: resolve
+                    status: failed
+                    message: "未知 skillId"
+                modelCalls: []
+        "500":
+          description: |
+            服务内部错误。响应体为 `ErrorResponse` 信封
+            （`requestId` / `status=skill_error` / `errors[]`），错误码 `INTERNAL_ERROR`，
+            消息为**通用**文案（不回显异常内容）。
+
+            **修正记录（2026-09-16，双向对齐）**：本节声明原本就是 `ErrorResponse`，
+            但实现此前落到 FastAPI 默认 500（**纯文本** `Internal Server Error`）⇒ 声明失实。
+            已按"合同为准"在实现侧补齐 app 级未捕获异常处理器
+            （`src/kert/api/server.py` 的 `_unhandled_exception`），
+            使实际响应与本节一致（对应失实项 F4c）。
           content:
             application/json:
               schema:
@@ -209,14 +548,8 @@ paths:
                 requestId: req-20260828-001
                 status: skill_error
                 errors:
-                  - code: SKILL_NOT_FOUND
-                    message: "Skill UNKNOWN not registered"
-        "500":
-          description: 服务内部错误
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                  - code: INTERNAL_ERROR
+                    message: "内部错误"
 
   /api/skill/report/{requestId}:
     get:
@@ -242,7 +575,18 @@ paths:
               schema:
                 type: object
         "404":
-          description: 报告不存在
+          description: |
+            报告不存在或已过期（执行结果仅缓存约 10 分钟）。
+            响应体是 `{"detail": "<字符串>"}`（实现以 `HTTPException(detail=str)` 抛出，
+            `skill_report() 的 404 段 @ `src/kert/api/server.py:681-685`），**不是** `ErrorResponse`。
+
+            **修正记录（2026-09-16，按实测核对）**：原声明未给响应体，实测为字符串 `detail`。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StringDetailErrorResponse"
+              example:
+                detail: "报告不存在或已过期（执行结果仅缓存 10 分钟，请重新执行）"
 
   /api/skill/gates/{customerId}:
     get:
@@ -269,22 +613,22 @@ paths:
               example:
                 customerId: CUST-001
                 gates:
-                  - gate: G0
-                    name: 证据准备
-                    state: PASSED
-                    checklist:
-                      must:
-                        - "客户基本信息完整"
-                      forbidden:
-                        - "过期证据"
-                  - gate: G1
-                    name: 事实核验
-                    state: READY_FOR_REVIEW
-                    checklist:
-                      must:
-                        - "所有事实标签已标注"
-                      forbidden:
-                        - "未标注来源的断言"
+                  - gateId: GATE-BIZ-G0
+                    name: G0
+                    sequence: 0
+                    must:
+                      - "证据与客户数据就绪（ContextPackage 完整、无关键 unknown）"
+                    forbidden:
+                      - "编造数据 / 无来源断言进入建议书"
+                    assetPath: skills/service-proposal/gates/GATE-BIZ-G0.md
+                  - gateId: GATE-BIZ-G1
+                    name: G1
+                    sequence: 1
+                    must:
+                      - "客户核验完成（F 标签断言与客户确认一致）"
+                    forbidden:
+                      - "未核验数据进入对客版"
+                    assetPath: skills/service-proposal/gates/GATE-BIZ-G1.md
         "404":
           description: 客户无闸门资产
 
@@ -317,8 +661,12 @@ paths:
                 $ref: "#/components/schemas/GateAuditResponse"
               example:
                 recorded: true
-                timestamp: "2026-08-28T10:30:00Z"
-                auditPath: "90_control/audit/gates.jsonl"
+                customerId: CUST-001
+                gate: G1
+                decision: PASSED
+                decidedBy: user-zhangsan
+                reason: "所有事实标签已标注完成"
+                recordedAt: "2026-08-28T10:30:00Z"
 
   /v1/jobs/{jobId}:
     get:
@@ -326,7 +674,18 @@ paths:
       summary: 查询异步 Job 状态
       description: |
         查询异步 Skill 执行 Job 的状态。
+        响应为**标准信封**（`request_id`/`status`/`data`/`errors`/`meta`），
+        Job 记录在 `data` 内（键为 snake_case；`data.status` 为业务状态）。
         COMPLETED 时 `data.skill_result` 为完整 execute 响应（与同步响应同构）。
+
+        **修正记录（2026-09-16，按实现核对）**：本端点的 200 响应原声明为**扁平对象**
+        （顶层 `jobId`/`status`/`createdAt`/`completedAt`），404 原声明为 `ErrorResponse`；
+        两者均与实现不符，已按实现修正（见 `JobStatusResponse`/`JobStatusData`/
+        `InfrastructureErrorResponse` 三个 schema 的修正记录）。
+
+        ⚠ **须通知 GITS（其调用方口径）**：GITS `DshJobPoller` 读取 `data.status`（强制非空）
+        与 `data.skill_result`；本次修正**保持**该嵌套位置不变，仅更正键名与信封形状。
+        机械核对用例：`tests/integration/test_contract_shape_conformance.py`。
       operationId: getJob
       parameters:
         - name: jobId
@@ -344,50 +703,136 @@ paths:
                 $ref: "#/components/schemas/JobStatusResponse"
               examples:
                 pending:
-                  summary: 等待中
+                  summary: 等待中（无 skill_result）
                   value:
-                    jobId: JOB-SKILL-20260828-001
-                    status: PENDING
-                    createdAt: "2026-08-28T10:00:00Z"
-                running:
-                  summary: 执行中
-                  value:
-                    jobId: JOB-SKILL-20260828-001
-                    status: RUNNING
-                    createdAt: "2026-08-28T10:00:00Z"
-                    startedAt: "2026-08-28T10:00:01Z"
-                completed:
-                  summary: 已完成
-                  value:
-                    jobId: JOB-SKILL-20260828-001
-                    status: COMPLETED
-                    createdAt: "2026-08-28T10:00:00Z"
-                    startedAt: "2026-08-28T10:00:01Z"
-                    completedAt: "2026-08-28T10:02:30Z"
+                    request_id: REQ-JOB-JOB-SKILL-20260828-001
+                    status: OK
                     data:
+                      schema: job_status/v1
+                      job_id: JOB-SKILL-20260828-001
+                      job_type: SKILL
+                      status: PENDING
+                      requested_by: api
+                      idempotency_key: req-20260828-002
+                      input_refs: []
+                      output_refs: []
+                      started_at: "2026-08-28T10:00:00Z"
+                      updated_at: "2026-08-28T10:00:00Z"
+                      finished_at: null
+                      progress: 0
+                      error_code: null
+                      error_message: null
+                      publish_status: NOT_PUBLISHED
+                      version: "1.0"
+                    errors: []
+                    meta:
+                      service_version: "1.0.0"
+                      data_version: active
+                      generated_at: "2026-08-28T10:00:00Z"
+                running:
+                  summary: 执行中（无 skill_result）
+                  value:
+                    request_id: REQ-JOB-JOB-SKILL-20260828-001
+                    status: OK
+                    data:
+                      schema: job_status/v1
+                      job_id: JOB-SKILL-20260828-001
+                      job_type: SKILL
+                      status: RUNNING
+                      requested_by: api
+                      idempotency_key: req-20260828-002
+                      input_refs: []
+                      output_refs: []
+                      started_at: "2026-08-28T10:00:01Z"
+                      updated_at: "2026-08-28T10:00:01Z"
+                      finished_at: null
+                      progress: 40
+                      error_code: null
+                      error_message: null
+                      publish_status: NOT_PUBLISHED
+                      version: "1.0"
+                    errors: []
+                    meta:
+                      service_version: "1.0.0"
+                      data_version: active
+                      generated_at: "2026-08-28T10:00:01Z"
+                completed:
+                  summary: 已完成（含 skill_result）
+                  value:
+                    request_id: REQ-JOB-JOB-SKILL-20260901-001
+                    status: OK
+                    data:
+                      schema: job_status/v1
+                      job_id: JOB-SKILL-20260901-001
+                      job_type: SKILL
+                      status: COMPLETED
+                      requested_by: api
+                      idempotency_key: REQ-SP20-506dc772-2380-417a-860b-0cd25c37a04d
+                      input_refs: []
+                      output_refs: []
+                      started_at: "2026-09-01T18:01:42Z"
+                      updated_at: "2026-09-01T18:02:29Z"
+                      finished_at: "2026-09-01T18:02:29Z"
+                      progress: 100
+                      error_code: null
+                      error_message: null
+                      publish_status: NOT_PUBLISHED
+                      version: "1.0"
                       skill_result:
-                        requestId: req-20260828-002
+                        requestId: REQ-SP20-506dc772-2380-417a-860b-0cd25c37a04d
                         status: ok
                         data:
                           skillId: SP-20
-                          reportUrl: /api/skill/report/req-20260828-002
+                          reportUrl: /api/skill/report/REQ-SP20-506dc772-2380-417a-860b-0cd25c37a04d
+                    errors: []
+                    meta:
+                      service_version: "1.0.0"
+                      data_version: active
+                      generated_at: "2026-09-01T18:02:29Z"
                 failed:
-                  summary: 执行失败
+                  summary: 执行失败（错误码在 data 内，无顶层 error）
                   value:
-                    jobId: JOB-SKILL-20260828-001
-                    status: FAILED
-                    createdAt: "2026-08-28T10:00:00Z"
-                    startedAt: "2026-08-28T10:00:01Z"
-                    completedAt: "2026-08-28T10:00:30Z"
-                    error:
-                      code: SKILL_EXECUTION_ERROR
-                      message: "Context package validation failed"
+                    request_id: REQ-JOB-JOB-SKILL-20260828-001
+                    status: OK
+                    data:
+                      schema: job_status/v1
+                      job_id: JOB-SKILL-20260828-001
+                      job_type: SKILL
+                      status: FAILED
+                      requested_by: api
+                      idempotency_key: req-20260828-002
+                      input_refs: []
+                      output_refs: []
+                      started_at: "2026-08-28T10:00:00Z"
+                      updated_at: "2026-08-28T10:00:30Z"
+                      finished_at: "2026-08-28T10:00:30Z"
+                      progress: 0
+                      error_code: SKILL_EXECUTION_ERROR
+                      error_message: "Context package validation failed"
+                      publish_status: NOT_PUBLISHED
+                      version: "1.0"
+                    errors: []
+                    meta:
+                      service_version: "1.0.0"
+                      data_version: active
+                      generated_at: "2026-08-28T10:00:30Z"
         "404":
-          description: Job 不存在
+          description: |
+            Job 不存在（`ASSET_NOT_FOUND`）。响应体为领域异常形状
+            （`{"detail":{"error":{...}}}`），**不是** `ErrorResponse`。
+
+            **修正记录（2026-09-16，按实现核对）**：原声明为 `ErrorResponse`，实测不符
+            （`read_job_status` 抛 `AssetNotFoundError` → `_handle()` → FastAPI 包一层 `detail`）。
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+              example:
+                detail:
+                  error:
+                    code: ASSET_NOT_FOUND
+                    message: "任务不存在: JOB-NOT-EXIST"
+                    retryable: false
 
   /livez:
     get:
@@ -441,6 +886,113 @@ paths:
               schema:
                 type: string
 
+  /v1/knowledge-maps:
+    get:
+      tags: [Routing]
+      summary: 列出已注册的知识地图
+      description: |
+        返回本工作区 `90_control/catalog/KM-*.json` 注册的知识地图摘要，以及当前路由策略的版本。
+        控制面未注册任何地图时返回**空列表**（不报错）；此时路由裁决会**默认拒绝**。
+      operationId: listKnowledgeMaps
+      responses:
+        "200":
+          description: 知识地图列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeMapListResponse"
+        "422":
+          description: |
+            控制面地图定义非法（`KERTException` ⇒ `_handle()` 转
+            `HTTPException(detail={"error": ...})`，FastAPI 序列化为 `{"detail": ...}`）。
+
+            **修正记录（2026-09-16，按实测核对）**：原声明未给响应体。
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+              example:
+                detail:
+                  error:
+                    code: SCHEMA_VALIDATION_FAILED
+                    message: "知识地图定义非法"
+                    retryable: false
+        "500":
+          description: |
+            内部错误。**两种形状均可能**（故用 `oneOf`）：
+            ① 领域异常经 `_handle()` ⇒ `{"detail":{"error":{...}}}`（`InfrastructureErrorResponse`）；
+            ② 未捕获异常经 app 级处理器 ⇒ `ErrorResponse` 信封。
+
+            **修正记录（2026-09-16，按实测核对）**：原声明未给响应体；实测两形状并存。
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/InfrastructureErrorResponse"
+                  - $ref: "#/components/schemas/ErrorResponse"
+              example:
+                detail:
+                  error:
+                    code: INTERNAL_ERROR
+                    message: "内部错误"
+                    retryable: true
+
+  /v1/knowledge-maps/{mapId}:
+    get:
+      tags: [Routing]
+      summary: 获取单张知识地图
+      operationId: getKnowledgeMap
+      parameters:
+        - name: mapId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "知识地图 ID（形如 KM-CORP-RM-PREVISIT）"
+      responses:
+        "200":
+          description: 地图详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeMapDetail"
+        "404":
+          description: 地图未注册（协议级资源不存在）
+        "422":
+          description: 地图定义非法
+        "500":
+          description: 内部错误
+
+  /v1/routing/plan:
+    post:
+      tags: [Routing]
+      summary: 解析任务并产出激活计划（fail-closed）
+      description: |
+        按路由策略把 `taskType` 解析为**唯一**知识地图，并产出**可重放**的激活计划
+        （资产 / Skill / 版本快照 / planHash）。
+
+        **拒绝是预期业务结果**（策略缺失、任务未映射、同优先级歧义、地图未注册、策略错配、
+        本体引用缺失或非法），此时返回 **HTTP 200** 且 `data.allowed=false` + `data.denial`。
+        `allowed` 只可能是 `true`（带 `plan`）或 `false`（带 `denial`）——**没有第三态**。
+      operationId: buildRoutingPlan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoutingPlanRequest"
+      responses:
+        "200":
+          description: 计划或**显式拒绝**（两者都是 200）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoutingPlanResponse"
+        "422":
+          description: 输入或控制面定义非法（schema 校验失败）
+        "500":
+          description: 内部错误
+
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -466,11 +1018,27 @@ components:
 
     SkillHealthResponse:
       type: object
-      required: [status, skills]
+      description: |
+        Skill 子系统健康（`GET /api/skill/health`，GITS 适配器使用）。
+
+        **修正记录（2026-09-16，按实测核对；F7）**：原声明只有 `status`/`skills`，
+        而实现**恒返回 `service`**（`skill_health()` @ `src/kert/api/server.py:637-645` 的字典字面量：
+        `{"status", "service", "skills"}`）⇒ 声明不完整。按实测补 `service`（必填）。
+
+        **闭集论证**（`additionalProperties: false` 的依据）：实现返回的是**字面量字典**、
+        仅上述 3 键（`skill_health()` @ `src/kert/api/server.py:637-645`），不存在条件增删分支 ⇒ 响应确为闭集。
+        ⚠ 附注：`service` 目前**写死** `customer-engagement`（`skill_health()` 的 `service` 行 @ `src/kert/api/server.py:642`），
+        与冲突 `C-14`（"产品中立"）同源；是否改为配置化由 Contract Owner 决策。
+      required: [status, service, skills]
+      additionalProperties: false
       properties:
         status:
           type: string
           enum: [ok, degraded]
+        service:
+          type: string
+          description: 服务标识（实现当前写死 `customer-engagement`；见 C-14）
+          example: customer-engagement
         skills:
           type: array
           items:
@@ -502,12 +1070,21 @@ components:
 
     SkillBriefInfo:
       type: object
-      required: [skillId, name]
+      description: |
+        健康接口的技能摘要。
+        **修正记录（2026-09-16，按实测核对；F7）**：补 `version`——实现恒返回
+        `{"skillId", "name", "version"}`（`skill_health()` 的 `skills` 推导 @ `src/kert/api/server.py:643-644`），原声明缺席。
+        **闭集论证**：实现为字典字面量、仅上述 3 键、无条件分支 ⇒ 响应确为闭集。
+      required: [skillId, name, version]
+      additionalProperties: false
       properties:
         skillId:
           type: string
         name:
           type: string
+        version:
+          type: string
+          example: "1.0.0"
 
     SkillParameter:
       type: object
@@ -526,14 +1103,9 @@ components:
         default:
           description: 参数默认值
 
-    SkillListResponse:
-      type: object
-      required: [skills]
-      properties:
-        skills:
-          type: array
-          items:
-            $ref: "#/components/schemas/SkillInfo"
+    # v1.6.0 / A-9（Owner 裁定 2026-09-16）：`SkillListResponse` 随 `GET /v1/skills` 一并移除
+    # ——该端点"声明了但实现不存在"。⚠ 注意：`SkillInfo` / `SkillParameter` **保留**，
+    # 它们仍被 `HealthResponse.skills` 引用（勿连带删除）。
 
     SkillExecuteRequest:
       type: object
@@ -623,9 +1195,16 @@ components:
           items:
             $ref: "#/components/schemas/ErrorDetail"
         assemblyTrace:
-          type: object
-          description: 知识装配追踪
-          additionalProperties: true
+          type: array
+          description: |
+            知识装配追踪。**每项**为 ``AssemblyTraceStep``；字段（含 ``phase``/``status``
+            词表与 ``kiId``/``errorCode``/``mapId``/``planHash`` 等）的权威定义见
+            ``docs/contracts/schemas/assembly-trace.schema.json``，本处不复写。
+            修正记录：v1.5 前本字段误写为 ``type: object``，与实现返回的数组不符
+            （Contract Owner 于 2026-09-15 批准修正）。
+          items:
+            type: object
+            additionalProperties: true
         modelCalls:
           type: array
           description: 模型调用记录
@@ -917,47 +1496,173 @@ components:
 
     JobStatusResponse:
       type: object
-      required: [jobId, status]
+      description: |
+        标准响应信封（与 `/v1/*` 其余端点一致）；Job 状态记录在 `data` 内。
+
+        **修正记录（2026-09-16，按实现核对）**：本 schema 原声明为**扁平对象**
+        （顶层 `jobId`/`createdAt`/`completedAt`，`data` 仅含 `skill_result`），
+        与实现长期不符——实现返回 `_response()` 信封（`job()` @ `src/kert/api/server.py:530-536`），
+        Job 记录取自 `STATUS.md` front matter（`src/kert/application/jobs.py:236-253`），
+        键为 snake_case，`skill_result` 位于 `data` 内（`jobs.py:324-333`）。
+
+        ⚠ **须通知 GITS（其调用方口径）**：GITS `DshJobPoller` 读 `data.status` 与
+        `data.skill_result`；本次修正**保持**该嵌套位置不变，仅更正键名与信封形状。
+        机械核对：`tests/integration/test_contract_shape_conformance.py`。
+      required: [request_id, status, data]
+      additionalProperties: false
       properties:
-        jobId:
+        request_id:
           type: string
         status:
           type: string
-          enum: [PENDING, RUNNING, COMPLETED, FAILED]
-        createdAt:
-          type: string
-          format: date-time
-        startedAt:
-          type: string
-          format: date-time
-        completedAt:
-          type: string
-          format: date-time
+          description: 信封状态（实现恒为 `OK`，与 `data.status` 不同义）
         data:
+          $ref: "#/components/schemas/JobStatusData"
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        meta:
           type: object
-          description: COMPLETED 时包含 skill_result
-          properties:
-            skill_result:
-              $ref: "#/components/schemas/SkillExecuteResponse"
-        error:
-          type: object
-          description: FAILED 时的错误信息
-          properties:
-            code:
-              type: string
-            message:
-              type: string
+          additionalProperties: true
+
+    JobStatusData:
+      type: object
+      description: |
+        Job 状态记录（`90_control/jobs/<job_id>/STATUS.md` front matter 的只读投影）。
+        字段清单与 `src/kert/application/jobs.py:236-253` 的 `fm` 逐字段一致。
+
+        **修正记录（2026-09-16）**：新增本 schema 以承接原 `JobStatusResponse` 的扁平声明；
+        其中 `job_id` 原写作 `jobId`（camelCase），与实现不符，一并修正。
+        ⚠ **须通知 GITS**：`skill_result` 的位置保持不变（`data.skill_result`）。
+      required: [schema, job_id, job_type, status, progress]
+      additionalProperties: false
+      properties:
+        schema:
+          type: string
+          enum: [job_status/v1]
+        job_id:
+          type: string
+          description: |
+            异步作业 ID（格式 `JOB-SKILL-YYYYMMDD-NNN`）。
+            ⚠ 修正记录：原合同写作 `jobId`，实现为 `job_id`（`jobs.py:238`）。
+        job_type:
+          type: string
+          example: SKILL
+        status:
+          type: string
+          enum: [PENDING, RUNNING, VALIDATING, COMPLETED, FAILED, CANCEL_REQUESTED, CANCELLED, RETRYING, BLOCKED]
+          description: Job 业务状态（与信封 `status` 不同义）；v1.6.1 起与 `JOB_STATES` 九值对齐
+        requested_by:
+          type: string
+        idempotency_key:
+          type: string
+        input_refs:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        output_refs:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        started_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        error_code:
+          type: string
+          nullable: true
+          description: FAILED 时的错误码（否则为 null）
+        error_message:
+          type: string
+          nullable: true
+          description: FAILED 时的错误信息（否则为 null）
+        publish_status:
+          type: string
+          example: NOT_PUBLISHED
+        version:
+          type: string
+        skill_result:
+          description: |
+            异步 Skill 作业**完成时**附加（`90_control/jobs/<job_id>/result.json`），
+            为完整 execute 响应（与同步响应同构）；未完成时**该键不出现**。
+            ⚠ **须通知 GITS**：位置保持在 `data` 内，不得上提至顶层（GITS `DshJobPoller:124-126` 按此读取）。
+          allOf:
+            - $ref: "#/components/schemas/SkillExecuteResponse"
 
     GateListResponse:
       type: object
+      description: |
+        闸门清单（`GATE-BIZ-G0..G5` 资产）。
+
+        **修正记录（2026-09-16，按实现核对）**：`gates[]` 原误声明为 `GateChecklistItem`
+        （`gate`/`state`/`checklist.must`），而实现返回**资产形状**
+        （`gateId`/`name`/`sequence`/`must`/`forbidden`/`assetPath`，
+        见 `src/kert/application/service_proposal.py:114-117`）。三者（`gate`/`state`/`checklist`）
+        在实现中**不存在**，已改为 `GateDefinition`。
+        注意：`GateChecklistItem` 仍被 `GateRecommendations.checklist` 使用（该处与实现相符），故**保留**。
       required: [customerId, gates]
+      additionalProperties: false
       properties:
         customerId:
           type: string
         gates:
           type: array
           items:
-            $ref: "#/components/schemas/GateChecklistItem"
+            $ref: "#/components/schemas/GateDefinition"
+
+    GateDefinition:
+      type: object
+      description: |
+        闸门清单资产条目（`skills/service-proposal/gates/GATE-BIZ-*.md` 的 front matter
+        + 正文「必须完成 / 禁止事项」列表抽取）。
+        字段与 `src/kert/application/service_proposal.py:114-117` 逐字段一致；
+        与 `docs/contracts/schemas/gate.schema.json` 的 `GateDefinition` **同形**
+        （该文件为细节 canonical 层，本处保留字段级定义以便单文件自洽）。
+
+        **修正记录（2026-09-16）**：新增。原 `GateListResponse.gates[]` 误引用
+        `GateChecklistItem`（`gate`/`state`/`checklist` 三键在实现中不存在）。
+      required: [gateId, name, sequence, must, forbidden]
+      additionalProperties: false
+      properties:
+        gateId:
+          type: string
+          description: 闸门资产 ID（形如 `GATE-BIZ-G0`）
+          example: GATE-BIZ-G0
+        name:
+          type: string
+          description: 资产 front matter 的 `name`（当前资产为 `G0`..`G5`）
+          example: G0
+        sequence:
+          type: integer
+          description: 推进顺序（当前资产自 `0` 起）
+        must:
+          type: array
+          items:
+            type: string
+          description: 必须完成项（资产正文「必须完成」）
+        forbidden:
+          type: array
+          items:
+            type: string
+          description: 禁止事项（资产正文「禁止事项」）
+        assetPath:
+          type: string
+          description: 资产相对路径
+          example: skills/service-proposal/gates/GATE-BIZ-G0.md
 
     GateAuditRequest:
       type: object
@@ -982,16 +1687,117 @@ components:
 
     GateAuditResponse:
       type: object
-      required: [recorded]
+      description: |
+        镜像记录回显。实现返回写入 `90_control/audit/gates.jsonl` 的**同一记录**再叠加
+        `recorded`（`src/kert/application/skills.py:898-920`：`{"recorded": True, **rec}`）。
+
+        **修正记录（2026-09-16，按实现核对）**：原声明 `timestamp`/`auditPath` 两个字段
+        在实现中**不存在**；`recordedAt` 在实现中存在但原合同未声明。已按实现修正。
+      required: [recorded, customerId, gate, decision, decidedBy, recordedAt]
+      additionalProperties: false
       properties:
         recorded:
           type: boolean
-        timestamp:
+        customerId:
+          type: string
+        gate:
+          type: string
+          example: G1
+        decision:
+          type: string
+          enum: [PASSED, BLOCKED, WAIVED]
+        decidedBy:
+          type: string
+        reason:
+          type: string
+          description: 决策原因（实现恒回显该键，可为空串）
+        recordedAt:
           type: string
           format: date-time
-        auditPath:
+          description: 记录时刻（实现生成，见 `skills.py:909`）
+
+    InfrastructureErrorResponse:
+      type: object
+      description: |
+        基础设施/领域异常响应。`KERTException` 经 `_handle()` @ `src/kert/api/server.py:310-318`
+        转为 `HTTPException(detail={"error": {...}})`，FastAPI 默认序列化为 `{"detail": ...}`
+        ——即真实形状是**多一层 `detail` 包装**，与 `ErrorResponse` 不同。
+
+        **修正记录（2026-09-16）**：新增。`/v1/jobs/{jobId}` 的 404 原误声明为 `ErrorResponse`，
+        实测为 `{"detail":{"error":{"code":"ASSET_NOT_FOUND","message":...,"retryable":false}}}`。
+        ⚠ 其余仍声明 `ErrorResponse` 的响应（如 `/api/skill/execute` 的 `400`/`500`）**尚未**按实测核对，
+        属归并后续批次事项（见 `evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md` §2.5-F4/F5 与 §6）。
+      required: [detail]
+      additionalProperties: false
+      properties:
+        detail:
+          type: object
+          required: [error]
+          additionalProperties: false
+          properties:
+            error:
+              type: object
+              required: [code, message, retryable]
+              additionalProperties: false
+              properties:
+                code:
+                  type: string
+                  description: 领域错误码（`src/kert/domain/errors.py:24-44` 的 `ERROR_CODES`）
+                  example: ASSET_NOT_FOUND
+                message:
+                  type: string
+                retryable:
+                  type: boolean
+
+    ValidationErrorResponse:
+      type: object
+      description: |
+        请求体校验失败响应（FastAPI / Pydantic 默认形状）：`{"detail": [ ... ]}`。
+        用于 `/api/skill/execute` 的 `422`（该端点**没有** `400` 路径）。
+
+        **修正记录（2026-09-16）**：新增。原合同对该端点声明 `400` + `ErrorResponse`，
+        实测为 **422** + 本形状（`skill_execute()` @ `src/kert/api/server.py:647-671` 无 `try/except`，
+        校验由 Pydantic 直接完成）。
+        说明：`detail[]` 各项由 FastAPI 生成，字段集随校验错误类型而异，
+        故此处**宽松描述**（只钉住 `type`/`loc`/`msg`/`input` 四个常见键）。
+      required: [detail]
+      additionalProperties: false
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
+            description: 单条校验错误（FastAPI 标准项）
+            required: [type, loc, msg]
+            properties:
+              type:
+                type: string
+                example: missing
+              loc:
+                type: array
+                items:
+                  type: string
+                example: ["body", "skillId"]
+              msg:
+                type: string
+                example: Field required
+              input:
+                description: 触发错误的输入（可能缺席）
+                additionalProperties: true
+            additionalProperties: true
+
+    StringDetailErrorResponse:
+      type: object
+      description: |
+        `HTTPException(detail=<字符串>)` 的默认序列化形状：`{"detail": "<字符串>"}`。
+        用于 `/api/skill/report/{requestId}` 的 `404`（`skill_report() 的 404 段 @ `src/kert/api/server.py:681-685`）。
+
+        **修正记录（2026-09-16）**：新增。原合同对该 404 未给响应体，实测为字符串 `detail`。
+      required: [detail]
+      additionalProperties: false
+      properties:
+        detail:
           type: string
-          description: 审计记录路径
 
     ErrorResponse:
       type: object
@@ -1029,8 +1835,598 @@ components:
             - KERT_CONTRACT_MISMATCH: 输入/输出不符合合同
             - KERT_EVIDENCE_INCOMPLETE: 结果缺乏必要证据
             - KERT_INTERNAL_ERROR: 未分类技术错误
+            - UNKNOWN_SKILL: Skill 未注册（`/api/skill/execute` 返回 HTTP 404；
+              响应体见 `SkillExecuteErrorResponse`，**不是**本 `ErrorResponse`）
         message:
           type: string
         detail:
           type: object
           additionalProperties: true
+
+    SkillExecuteErrorResponse:
+      type: object
+      description: |
+        `/api/skill/execute` 的**未知 Skill**（HTTP 404）响应体。
+        与 200 **同构**（`status=skill_error`、`errors[].code=UNKNOWN_SKILL`），**不是** `ErrorResponse`。
+        实现由 `skill_execute() 的 404 段 @ `src/kert/api/server.py:663-671`` 直接复用同步结果体并以 404 返回
+        （`status_code=404 if unknown else 200`）。
+
+        **修正记录（2026-09-16，按实现核对）**：本 404 原误声明为 `ErrorResponse`
+        （`requestId`/`status`/`errors`），与实现长期不符；GITS 调用方已按真实行为编码
+        （`DshHttpSkillExecutionAdapter.java:32`：「未知 skillId → 404, errors[0].code=UNKNOWN_SKILL」），
+        故按实现修正合同。
+      required: [requestId, status, errors]
+      additionalProperties: false
+      properties:
+        requestId:
+          type: string
+        status:
+          type: string
+          enum: [skill_error]
+        data:
+          type: object
+          description: 错误路径下仅含 `reportUrl`（**不含** `skillId`）
+          additionalProperties: true
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+        assemblyTrace:
+          type: array
+          description: 装配追踪（失败路径同样返回；条目见 `docs/contracts/schemas/assembly-trace.schema.json`）
+          items:
+            type: object
+            additionalProperties: true
+        modelCalls:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+
+    # ── v1.5 增量：知识路由与激活计划（纯新增；见 CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md）──
+    PlanAsset:
+      type: object
+      required: [assetId, required, sequence]
+      properties:
+        assetId:
+          type: string
+          description: 资产（知识条目）ID
+        required:
+          type: boolean
+        sequence:
+          type: integer
+          minimum: 1
+          description: 激活顺序（同一地图内唯一）
+    PlanDenial:
+      type: object
+      required: [code, reason]
+      properties:
+        code:
+          type: string
+          description: |
+            拒绝码（**三族并列，互不混用**）：
+            - `ROUTE_*`：策略缺失 / 任务未映射 / 同优先级歧义 / 地图未注册 / 策略错配
+            - `KNOWLEDGE_MAP_*`：地图注册与解析（未注册 / 未映射 / 歧义）
+            - `ONTOLOGY_REFERENCE_*`：本体引用缺失（`ONTOLOGY_REFERENCE_ABSENT`）或非法（`ONTOLOGY_REFERENCE_INVALID`）
+        reason:
+          type: string
+          description: 人类可读的拒绝原因（含可排障信息）
+    ActivationPlan:
+      type: object
+      description: "激活计划快照；字段与实现 ActivationPlan.to_dict() 逐字段一致"
+      required: [schema, planId, taskType, subjectId, routeReason, versions, assets, skills, planHash]
+      properties:
+        schema:
+          type: string
+          enum: [activation_plan/v1]
+        planId:
+          type: string
+          description: 由 planHash 派生（确定性）
+        taskType:
+          type: string
+        subjectId:
+          type: string
+          nullable: true
+          description: 主体标识；仅记录，**不**入 planHash
+        routeReason:
+          type: string
+          description: 路由理由（必须可解释）
+        versions:
+          type: object
+          description: "版本快照；ontology 为「契约引用 + 内容哈希版本」形式（如 CTR-SEM-002@sha256:…）"
+          properties:
+            knowledgeMap:
+              type: string
+              nullable: true
+            routePolicy:
+              type: string
+              nullable: true
+            activationContract:
+              type: string
+              nullable: true
+            ontology:
+              type: string
+              nullable: true
+        assets:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlanAsset"
+        skills:
+          type: array
+          items:
+            type: string
+        planHash:
+          type: string
+          description: 可重放计划哈希（sha256 前 16 位）；只覆盖确定性字段，**不含**主体/权限/时刻/路径
+    RoutingPlanRequest:
+      type: object
+      required: [taskType]
+      additionalProperties: false
+      properties:
+        taskType:
+          type: string
+          example: PRE_VISIT_PREPARATION
+        subjectId:
+          type: string
+          description: 主体标识（如 customerId）；仅记录，不影响 planHash
+    RoutingPlanResponse:
+      type: object
+      description: "标准响应信封（与 /v1/* 其余端点一致）；裁决结果在 data 内。修正记录：v1.5 初版误把 allowed 写在顶层，已改正（2026-09-16）。"
+      required: [request_id, status, data]
+      properties:
+        request_id:
+          type: string
+        status:
+          type: string
+        data:
+          type: object
+          required: [allowed]
+          properties:
+            allowed:
+              type: boolean
+              description: 只可能为 true（带 plan）或 false（带 denial）——**没有第三态**
+            plan:
+              description: "allowed=true 时存在"
+              allOf:
+                - $ref: "#/components/schemas/ActivationPlan"
+            denial:
+              description: "allowed=false 时存在"
+              allOf:
+                - $ref: "#/components/schemas/PlanDenial"
+        errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        meta:
+          type: object
+          additionalProperties: true
+    KnowledgeMapSummary:
+      type: object
+      required: [mapId, version, domain, tasks, priority, assetCount, skillCount]
+      properties:
+        mapId:
+          type: string
+        version:
+          type: string
+        title:
+          type: string
+          nullable: true
+        domain:
+          type: string
+        tasks:
+          type: array
+          items:
+            type: string
+        priority:
+          type: integer
+        assetCount:
+          type: integer
+        skillCount:
+          type: integer
+        routePolicyRef:
+          type: string
+          nullable: true
+    KnowledgeMapListResponse:
+      type: object
+      required: [request_id, status, data]
+      properties:
+        request_id:
+          type: string
+        status:
+          type: string
+        data:
+          type: object
+          required: [maps, count]
+          properties:
+            maps:
+              type: array
+              items:
+                $ref: "#/components/schemas/KnowledgeMapSummary"
+            count:
+              type: integer
+            policy:
+              type: object
+              nullable: true
+              properties:
+                policyId:
+                  type: string
+                version:
+                  type: string
+                defaultDecision:
+                  type: string
+    KnowledgeMapDetail:
+      type: object
+      required: [request_id, status, data]
+      properties:
+        request_id:
+          type: string
+        status:
+          type: string
+        data:
+          $ref: "#/components/schemas/KnowledgeMapSummary"
+
+    # ── v1.6.0 / A-6 新增：9 条路径的请求与响应 schema ──
+    # 约定（与实现逐字段对齐，不凭记忆）：
+    #   · 请求模型**不声明** `additionalProperties: false` —— 实现用 pydantic `BaseModel`，
+    #     默认**不拒绝**未知字段（唯一例外是 `RoutingPlanRequest`，其自带 `extra="forbid"`）；
+    #     在此声明"闭集"会与实现不符。
+    #   · 响应侧：凡经 `_response()`（`src/kert/api/server.py:208-217`）者，
+    #     恒含 `request_id`/`status`/`data`/`errors`/`meta` **五个键** ⇒ 一律全部声明。
+    #   · 仅当"键集合确为闭集"（无条件分支）时才写 `additionalProperties: false`；
+    #     含条件键者（`graph.paths` / `evidence.blocker`）改为**开集 + 显式声明全部可能键**，
+    #     理由写在各自 description（不得把条件键塞进 `required` 造假闭集）。
+    #   · 叶级 schema 采用 flow 风格（`{type: string}`）以控制文件体积；结构化层级仍用块风格。
+
+    ExtractionRequest:
+      type: object
+      description: |
+        `POST /v1/extractions` 请求体（实现 `ExtractionRequest` @ `src/kert/api/server.py:151-158`）。
+      required: [request_id, idempotency_key, domain, input]
+      properties:
+        request_id: {type: string}
+        idempotency_key: {type: string}
+        domain: {type: string}
+        input:
+          type: object
+          additionalProperties: true
+          description: 抽取输入。实现取 `input.path` 并从其中的 `batch=<ID>` 解析批次号（`server.py:507-513`）
+        extraction_types:
+          type: array
+          items: {type: string}
+          default: [ENTITY, RELATION, STATEMENT, RULE]
+        schema_versions:
+          type: array
+          items: {type: string}
+          nullable: true
+        options: {type: object, additionalProperties: true}
+
+    ExtractionsAcceptedResponse:
+      type: object
+      description: |
+        `POST /v1/extractions` 的 **202** 响应。
+        ⚠ 实现**手写信封**（`extract()` @ `src/kert/api/server.py:516-526`），
+        `status` 恒为 **`ACCEPTED`**（与其余 `/v1/*` 端点的 `OK` **不同义**）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string, enum: [ACCEPTED]}
+        data:
+          type: object
+          required: [job_id, result_status, publish_status]
+          additionalProperties: false
+          properties:
+            job_id: {type: string}
+            result_status: {type: string, example: CANDIDATE}
+            publish_status: {type: string, example: NOT_PUBLISHED}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta:
+          type: object
+          additionalProperties: true
+          description: 实现给定 `service_version` / `data_version` / `generated_at`（`server.py:523-525`）
+
+    ExtractionResultResponse:
+      type: object
+      description: |
+        `GET /v1/extractions/{job_id}/result` 的 200 响应（`_response()`，
+        `extraction_result()` @ `src/kert/api/server.py:538-548`）。
+        `data.status` 取自 Job 状态记录，与信封 `status` **不同义**。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string, description: 信封状态（实现恒为 `OK`）}
+        data:
+          type: object
+          required: [job_id, status, publish_status, output_refs]
+          additionalProperties: false
+          properties:
+            job_id: {type: string}
+            status: {type: string, nullable: true}
+            publish_status: {type: string, nullable: true}
+            output_refs: {type: array, items: {type: object, additionalProperties: true}}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    EntityResponse:
+      type: object
+      description: |
+        `GET /v1/entities/{entity_id}` 的 200 响应（`_response()`）。
+        数据由 `KnowledgeService.get_entity` 给出（`src/kert/application/services.py:96-109`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [entity, statements, statement_count]
+          additionalProperties: false
+          properties:
+            entity: {type: object, additionalProperties: true, description: 实体行（投影 `entities.parquet` 原始行）}
+            statements: {type: array, items: {type: object, additionalProperties: true}}
+            statement_count: {type: integer, minimum: 0}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true, description: 含 `entity_id`（`services.py:108`）}
+
+    DataQueryRequest:
+      type: object
+      description: 请求体 —— `POST /v1/data/query`（实现 `DataQueryRequest` @ `src/kert/api/server.py:161-167`）。
+      required: [request_id, dataset]
+      properties:
+        request_id: {type: string}
+        dataset: {type: string}
+        select: {type: array, items: {type: string}, nullable: true}
+        where: {type: object, additionalProperties: true, nullable: true}
+        limit: {type: integer, default: 100, maximum: 1000, description: 实现上限 1000，超出抛 `UsageError`}
+
+    DataQueryResponse:
+      type: object
+      description: 响应 —— `POST /v1/data/query` 的 200（`src/kert/application/services.py:80-92`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [dataset, records, count]
+          additionalProperties: false
+          properties:
+            dataset: {type: string}
+            records: {type: array, items: {type: object, additionalProperties: true}}
+            count: {type: integer, minimum: 0}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    SearchRequest:
+      type: object
+      description: 请求体 —— `POST /v1/search`（实现 `SearchRequest` @ `src/kert/api/server.py:169-175`）。
+      required: [request_id, query]
+      properties:
+        request_id: {type: string}
+        query: {type: string}
+        mode: {type: string, enum: [FULLTEXT, VECTOR, HYBRID], default: FULLTEXT}
+        top_k: {type: integer, default: 10}
+        filters: {type: object, additionalProperties: true, nullable: true}
+
+    SearchResponse:
+      type: object
+      description: 响应 —— `POST /v1/search` 的 200（`src/kert/application/services.py:242-298`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [query, mode, hits, hit_count, degraded]
+          additionalProperties: false
+          properties:
+            query: {type: string}
+            mode: {type: string}
+            hit_count: {type: integer, minimum: 0}
+            degraded: {type: boolean, description: 当 `mode=VECTOR` 且无向量数据时为 true（`services.py:296`）}
+            hits:
+              type: array
+              items:
+                type: object
+                required: [segment_id, document_id, content_excerpt, score, score_type, page_from, page_to, source_version, evidence_uri]
+                additionalProperties: false
+                properties:
+                  segment_id: {type: string}
+                  document_id: {type: string, nullable: true}
+                  content_excerpt: {type: string}
+                  score: {type: number}
+                  score_type: {type: string}
+                  page_from: {type: integer, nullable: true}
+                  page_to: {type: integer, nullable: true}
+                  source_version: {type: string, nullable: true}
+                  evidence_uri: {type: string, nullable: true}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true, description: 含 `ranking_policy_version`（`services.py:297`）}
+
+    GraphQueryRequest:
+      type: object
+      description: |
+        `POST /v1/graph/query` 请求体（实现 `GraphRequest` @ `src/kert/api/server.py:177-187`）。
+        ⚠ **以实现为准**：`required` 为 `request_id` + `start_entity_ids`（v2 候选为
+        `start_entity_ids` + `mode`），且实现**多**一个 `as_of`（v2 候选无此字段）。
+      required: [request_id, start_entity_ids]
+      properties:
+        request_id: {type: string}
+        start_entity_ids: {type: array, items: {type: string}}
+        relation_types: {type: array, items: {type: string}, nullable: true}
+        direction: {type: string, enum: [OUT, IN, BOTH], default: OUT}
+        max_depth: {type: integer, default: 1, maximum: 10, description: 实现上限 10（`services.py:122-123`）}
+        max_nodes: {type: integer, default: 100, maximum: 1000, description: 实现上限 1000（`services.py:124-125`）}
+        mode: {type: string, enum: [neighbor, closure, paths], default: neighbor}
+        service: {type: string, default: product_knowledge}
+        as_of: {type: string, nullable: true, description: 实现有、v2 候选无}
+
+    GraphQueryResponse:
+      type: object
+      description: |
+        `POST /v1/graph/query` 的 200 响应（`services.py:113-238`）。
+        ⚠ `data` 为**开集**：`paths` **仅在 `mode=paths` 时出现**（`services.py:236-237`），
+        故此处如实**声明全部可能键 + `additionalProperties: true`**，而非把条件键塞进 `required` 造假闭集。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          additionalProperties: true
+          required: [nodes, edges, node_count, edge_count, mode]
+          properties:
+            nodes:
+              type: array
+              items:
+                type: object
+                required: [entity_id, name, entity_type, depth]
+                additionalProperties: false
+                properties:
+                  entity_id: {type: string}
+                  name: {type: string, nullable: true}
+                  entity_type: {type: string, nullable: true}
+                  depth: {type: integer}
+            edges:
+              type: array
+              items:
+                type: object
+                required: [source, target, relation_type, relation_id, statement_id]
+                additionalProperties: false
+                properties:
+                  source: {type: string}
+                  target: {type: string}
+                  relation_type: {type: string}
+                  relation_id: {type: string}
+                  statement_id: {type: string, nullable: true}
+            node_count: {type: integer, minimum: 0}
+            edge_count: {type: integer, minimum: 0}
+            mode: {type: string}
+            paths:
+              type: array
+              description: 仅 `mode=paths` 时出现
+              items: {type: array, items: {type: object, additionalProperties: true}}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    RuleEvaluateRequest:
+      type: object
+      description: 请求体 —— `POST /v1/rules/evaluate`（实现 `RuleRequest` @ `src/kert/api/server.py:189-192`）。
+      required: [request_id, facts]
+      properties:
+        request_id: {type: string}
+        rule_set: {type: string, nullable: true, description: 传入时仅评估该 `rule_id`}
+        facts: {type: object, additionalProperties: true}
+
+    RuleEvaluateResponse:
+      type: object
+      description: 响应 —— `POST /v1/rules/evaluate` 的 200（`src/kert/application/services.py:356-369`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [evaluation_id, rule_set_version, matched_rules, outcomes, missing_inputs, evidence_refs, human_confirmation_required, explanation_trace]
+          additionalProperties: false
+          properties:
+            evaluation_id: {type: string}
+            rule_set_version: {type: string}
+            matched_rules:
+              type: array
+              items:
+                type: object
+                required: [rule_id, name, rule_type, priority, execution_mode]
+                additionalProperties: false
+                properties:
+                  rule_id: {type: string}
+                  name: {type: string, nullable: true}
+                  rule_type: {type: string, nullable: true}
+                  priority: {type: integer, nullable: true}
+                  execution_mode: {type: string, nullable: true}
+            outcomes:
+              type: array
+              items:
+                type: object
+                required: [rule_id, name, outcome, execution_mode]
+                additionalProperties: false
+                properties:
+                  rule_id: {type: string}
+                  name: {type: string, nullable: true}
+                  outcome: {description: DSL 求值结果（标量或结构，故不限定 type）}
+                  execution_mode: {type: string, nullable: true}
+            missing_inputs: {type: array, items: {type: string}}
+            evidence_refs: {type: array, items: {type: string}}
+            human_confirmation_required: {type: boolean}
+            explanation_trace:
+              type: array
+              items:
+                type: object
+                required: [rule, matched]
+                additionalProperties: false
+                properties:
+                  rule: {type: string}
+                  matched: {type: boolean}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    EvidenceResponse:
+      type: object
+      description: |
+        `GET /v1/evidence/{object_id}` 的 200 响应（`services.py:373+`）。
+        ⚠ `data` 为**开集**：`blocker` **仅在溯源链不完整时出现**
+        （`services.py:383-387` 的「Core 资产未找到」分支）⇒ 同样按"声明全部可能键 + 开集"处理。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          additionalProperties: true
+          required: [object_id, chain, complete]
+          properties:
+            object_id: {type: string}
+            chain:
+              type: array
+              description: 逐层溯源条目（`04_serve` → `03_core` → `02_work/01_raw`）；条目为开集
+              items: {type: object, additionalProperties: true}
+            complete: {type: boolean}
+            raw_hashes:
+              type: array
+              items: {type: string}
+              description: |
+                来源原始件的语义哈希（`_raw_hash_for_document`）；实现**去重后取前 5 个**
+                （`services.py:412`）。⚠ 该键在「Core 资产未找到」早退分支（`services.py:383-387`）
+                **不出现** ⇒ 不列入 `required`。
+            blocker: {type: string, nullable: true}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    CatalogResponse:
+      type: object
+      description: 响应 —— `GET /v1/catalog` 的 200（`catalog()` @ `src/kert/api/server.py:622-633`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [service_id, version, projections]
+          additionalProperties: false
+          properties:
+            service_id: {type: string}
+            version: {type: string}
+            projections:
+              type: array
+              items: {type: string}
+              description: 活动版本目录下 `*.parquet` 的相对路径（已排序）
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}

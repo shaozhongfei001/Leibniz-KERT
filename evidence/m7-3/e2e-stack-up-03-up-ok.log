@@ -1,0 +1,58 @@
+$ docker compose ... down --remove-orphans
+ Container kert-worker Stopping 
+ Container kert-worker Stopped 
+ Container kert-worker Removing 
+ Container kert-worker Removed 
+ Container kert-api Stopping 
+ Container kert-api Stopped 
+ Container kert-api Removing 
+ Container kert-api Removed 
+ Container kert-provision Stopping 
+ Container kert-provision Stopped 
+ Container kert-provision Removing 
+ Container kert-provision Removed 
+ Network deploy_default Removing 
+ Network deploy_default Removed 
+EXIT_CODE=0
+
+$ docker compose ... up -d
+2026-09-16T00:45:25+08:00
+ Network deploy_default Creating 
+ Network deploy_default Created 
+ Container kert-provision Creating 
+ Container kert-provision Created 
+ Container kert-api Creating 
+ Container kert-api Created 
+ Container kert-worker Creating 
+ Container kert-worker Created 
+ Container kert-provision Starting 
+ Container kert-provision Started 
+ Container kert-provision Waiting 
+ Container kert-provision Exited 
+ Container kert-api Starting 
+ Container kert-api Started 
+ Container kert-provision Waiting 
+ Container kert-api Waiting 
+ Container kert-provision Exited 
+ Container kert-api Healthy 
+ Container kert-worker Starting 
+ Container kert-worker Started 
+EXIT_CODE=0
+2026-09-16T00:45:42+08:00
+=== ps ===
+NAME          IMAGE                    COMMAND                   SERVICE   CREATED          STATUS                            PORTS
+kert-api      kert-python-core:local   "python /app/scripts…"   api       19 seconds ago   Up 18 seconds (healthy)           127.0.0.1:8107->8106/tcp
+kert-worker   kert-python-core:local   "python /app/scripts…"   worker    19 seconds ago   Up 2 seconds (health: starting)   8106/tcp
+
+=== provision 一次性任务日志（供给结果）===
+工作区已初始化，跳过 init: /data/workspace
+workspace: /data/workspace
+source: /app/examples/bank-front-knowledge-maps
+策略: RP-KERT-BANKFRONT-001@1.0.0  地图: 3
+新建 0 / 覆盖 0 / 未变 5
+  [UNCHANGED] 90_control/catalog/KM-CORP-RM-MEETING.json
+  [UNCHANGED] 90_control/catalog/KM-CORP-RM-OUTREACH.json
+  [UNCHANGED] 90_control/catalog/KM-CORP-RM-PREVISIT.json
+  [UNCHANGED] 90_control/schema/route_policy.json
+  [UNCHANGED] 90_control/schema/ontology_reference.json
+provision_container_exit_code=0

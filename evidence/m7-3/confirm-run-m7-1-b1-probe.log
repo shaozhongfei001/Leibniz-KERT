@@ -1,0 +1,233 @@
+........................................................................ [  4%]
+........................................................................ [  9%]
+........................................................................ [ 14%]
+........................................................................ [ 18%]
+........................................................................ [ 23%]
+........................................................................ [ 28%]
+........................................................................ [ 33%]
+........................................................................ [ 37%]
+........................................................................ [ 42%]
+........................................................................ [ 47%]
+.............................................FF..F...................... [ 52%]
+........................................................................ [ 56%]
+........................................................................ [ 61%]
+........................................................................ [ 66%]
+........................................................................ [ 71%]
+........................................................................ [ 75%]
+........................................................................ [ 80%]
+...............................x........................................ [ 85%]
+........................................................................ [ 90%]
+........................................................................ [ 94%]
+........................................................................ [ 99%]
+........                                                                 [100%]
+=========================== short test summary info ============================
+FAILED tests/unit/test_provision_cli.py::test_apply_then_idempotent_rerun - A...
+FAILED tests/unit/test_provision_cli.py::test_json_output_follows_standard_envelope
+FAILED tests/unit/test_provision_cli.py::test_init_flag_initializes_fresh_volume_then_provisions
+3 failed, 1516 passed, 1 xfailed in 160.31s (0:02:40)
+
+==============================================================================
+M7.1-B1 最终确认跑（R-G 合规版）
+==============================================================================
+[env] python=3.12.8  pytest=9.1.1  pytest_exit=1
+[cmd] cd /home/szf/dev/Leibniz-KERT && .venv/bin/python /tmp/m71b_confirm_probe.py
+
+[d] **R-G 主口径**：`_route_plan` 命中用例的**显式 node id 集合**（逐条，共 63）
+    tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-meeting-script]
+    tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-outreach-script]
+    tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-previsit-report]
+    tests/integration/test_control_plane_consistency.py::test_plan_drives_reads_not_source_literals
+    tests/integration/test_persistent_jobs.py::TestPersistentAsyncExecution::test_thread_mode_without_store
+    tests/integration/test_persistent_jobs.py::TestPersistentAsyncExecution::test_worker_picks_up_enqueued_job
+    tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_default_profile_is_dev
+    tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_dev_without_store_still_allowed
+    tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_explicit_profile_overrides_env
+    tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_sync_execute_unaffected_in_prod
+    tests/integration/test_redaction.py::TestBackwardCompatibility::test_skill_execution_result_keeps_plaintext
+    tests/integration/test_runtime_store_api.py::test_execute_persists_idempotency_record
+    tests/integration/test_runtime_store_api.py::test_idempotency_replay_after_restart
+    tests/integration/test_runtime_store_api.py::test_no_replay_across_restart_without_store
+    tests/integration/test_runtime_store_api.py::test_no_store_still_works_in_memory
+    tests/integration/test_runtime_store_api.py::test_repeated_execute_is_idempotent
+    tests/integration/test_runtime_store_api.py::test_service_level_replay_from_store
+    tests/integration/test_runtime_store_api.py::test_store_holds_no_knowledge_tables
+    tests/integration/test_runtime_store_api.py::test_store_stats_after_traffic
+    tests/integration/test_skill_routing_trace.py::test_each_skill_reports_its_own_task
+    tests/integration/test_skill_routing_trace.py::test_emitted_trace_entries_conform_to_canonical_schema
+    tests/integration/test_skill_routing_trace.py::test_map_mismatch_is_surfaced_not_hidden
+    tests/integration/test_skill_routing_trace.py::test_no_workspace_refuses_and_records_unresolved
+    tests/integration/test_skill_routing_trace.py::test_ontology_denial_code_is_passed_through
+    tests/integration/test_skill_routing_trace.py::test_provisioned_workspace_records_resolved_plan
+    tests/integration/test_skill_routing_trace.py::test_trace_plan_hash_equals_routing_plan_api
+    tests/integration/test_skill_routing_trace.py::test_unprovisioned_workspace_refuses_and_records_why
+    tests/integration/test_skills.py::TestApi::test_execute
+    tests/integration/test_skills.py::TestApi::test_execute_idempotent
+    tests/integration/test_skills.py::TestAssemblyTraceKi::test_outreach_meeting_evidence_from_library
+    tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_evidence_independent_of_request_fields
+    tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_ki_all_ok_from_library
+    tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_ki_all_skipped_unknown_customer
+    tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_sections_per_ki
+    tests/integration/test_skills.py::TestExecute::test_fail_closed
+    tests/integration/test_skills.py::TestExecute::test_idempotent_replay
+    tests/integration/test_skills.py::TestExecute::test_meeting_ok_no_library
+    tests/integration/test_skills.py::TestExecute::test_old_request_fields_ignored
+    tests/integration/test_skills.py::TestExecute::test_outreach_ok_no_library
+    tests/integration/test_skills.py::TestKertCollaboration::test_kert_skipped_without_customer_knowledge
+    tests/integration/test_skills.py::TestNoNewEvidencePolicy::test_other_skills_ignore_policy
+    tests/integration/test_skills.py::TestNoNewEvidencePolicy::test_r1_newer_timestamp_ok
+    tests/integration/test_skills.py::TestNoNewEvidencePolicy::test_r1_stale_timestamp_blocked
+    tests/integration/test_skills.py::TestSecondCustomer::test_r1_ki_all_ok
+    tests/integration/test_skills_capability_swap.py::test_alpha_data_and_trace_are_byte_equivalent[skill-customer-meeting-script]
+    tests/integration/test_skills_capability_swap.py::test_alpha_data_and_trace_are_byte_equivalent[skill-customer-outreach-script]
+    tests/integration/test_skills_capability_swap.py::test_alpha_data_and_trace_are_byte_equivalent[skill-customer-previsit-report]
+    tests/integration/test_skills_capability_swap.py::test_alpha_ki_text_equals_reference_provider
+    tests/integration/test_skills_capability_swap.py::test_beta_unavailable_falls_back_with_named_trace
+    tests/integration/test_skills_capability_swap.py::test_binding_fingerprint_is_not_hardcoded
+    tests/integration/test_skills_capability_swap.py::test_declaration_pattern_is_the_read_driver
+    tests/integration/test_skills_capability_swap.py::test_gamma_declaration_absent_falls_back_to_literal
+    tests/integration/test_skills_capability_swap.py::test_gamma_prime_absent_and_unavailable
+    tests/integration/test_skills_capability_swap.py::test_required_flag_does_not_escalate
+    tests/integration/test_skills_capability_swap.py::test_three_declaration_forms_have_distinct_codes_and_no_refusal
+    tests/unit/test_skills_capability_swap_guards.py::test_assembly_trace_validates_against_canonical_schema
+    tests/unit/test_skills_capability_swap_guards.py::test_declaration_absent_is_visible_but_never_refused
+    tests/unit/test_skills_capability_swap_guards.py::test_declaration_invalid_is_visible_but_never_refused
+    tests/unit/test_skills_capability_swap_guards.py::test_ki_messages_still_satisfy_existing_assertion
+    tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only[skill-customer-meeting-script]
+    tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only[skill-customer-outreach-script]
+    tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only[skill-customer-previsit-report]
+    tests/unit/test_skills_capability_swap_guards.py::test_unavailable_code_differs_from_absent
+
+[d2] **同脚本同一次跑的双计数**（R-G 第 2 条）
+    `_load_ki`                命中用例集合（逐条，共 53）:
+      tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-meeting-script]
+      tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-outreach-script]
+      tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-previsit-report]
+      tests/integration/test_control_plane_consistency.py::test_plan_drives_reads_not_source_literals
+      tests/integration/test_persistent_jobs.py::TestPersistentAsyncExecution::test_queue_stats_reflects_enqueued
+      tests/integration/test_persistent_jobs.py::TestPersistentAsyncExecution::test_worker_picks_up_enqueued_job
+      tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_default_profile_is_dev
+      tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_profile_is_case_insensitive
+      tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_profile_read_from_env
+      tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_sync_execute_unaffected_in_prod
+      tests/integration/test_redaction.py::TestBackwardCompatibility::test_skill_execution_result_keeps_plaintext
+      tests/integration/test_runtime_store_api.py::test_execute_persists_idempotency_record
+      tests/integration/test_runtime_store_api.py::test_idempotency_replay_after_restart
+      tests/integration/test_runtime_store_api.py::test_no_replay_across_restart_without_store
+      tests/integration/test_runtime_store_api.py::test_no_store_still_works_in_memory
+      tests/integration/test_runtime_store_api.py::test_repeated_execute_is_idempotent
+      tests/integration/test_runtime_store_api.py::test_service_level_replay_from_store
+      tests/integration/test_runtime_store_api.py::test_store_holds_no_knowledge_tables
+      tests/integration/test_runtime_store_api.py::test_store_stats_after_traffic
+      tests/integration/test_skill_routing_trace.py::test_each_skill_reports_its_own_task
+      tests/integration/test_skill_routing_trace.py::test_emitted_trace_entries_conform_to_canonical_schema
+      tests/integration/test_skill_routing_trace.py::test_map_mismatch_is_surfaced_not_hidden
+      tests/integration/test_skill_routing_trace.py::test_provisioned_workspace_records_resolved_plan
+      tests/integration/test_skill_routing_trace.py::test_trace_plan_hash_equals_routing_plan_api
+      tests/integration/test_skills.py::TestApi::test_execute
+      tests/integration/test_skills.py::TestApi::test_execute_idempotent
+      tests/integration/test_skills.py::TestExecute::test_fail_closed
+      tests/integration/test_skills.py::TestExecute::test_idempotent_replay
+      tests/integration/test_skills.py::TestExecute::test_meeting_ok_no_library
+      tests/integration/test_skills.py::TestExecute::test_old_request_fields_ignored
+      tests/integration/test_skills.py::TestExecute::test_outreach_ok_no_library
+      tests/integration/test_skills.py::TestKertCollaboration::test_kert_skipped_without_customer_knowledge
+      tests/integration/test_skills.py::TestSecondCustomer::test_graph_complete_from_library
+      tests/integration/test_skills.py::TestSupplyChainFromLibrary::test_graph_complete_from_library
+      tests/integration/test_skills.py::TestSupplyChainFromLibrary::test_graph_partial_unknown_customer
+      tests/integration/test_skills_capability_swap.py::test_alpha_data_and_trace_are_byte_equivalent[skill-customer-meeting-script]
+      tests/integration/test_skills_capability_swap.py::test_alpha_data_and_trace_are_byte_equivalent[skill-customer-outreach-script]
+      tests/integration/test_skills_capability_swap.py::test_alpha_data_and_trace_are_byte_equivalent[skill-customer-previsit-report]
+      tests/integration/test_skills_capability_swap.py::test_beta_unavailable_falls_back_with_named_trace
+      tests/integration/test_skills_capability_swap.py::test_binding_fingerprint_is_not_hardcoded
+      tests/integration/test_skills_capability_swap.py::test_gamma_declaration_absent_falls_back_to_literal
+      tests/integration/test_skills_capability_swap.py::test_gamma_prime_absent_and_unavailable
+      tests/integration/test_skills_capability_swap.py::test_required_flag_does_not_escalate
+      tests/integration/test_skills_capability_swap.py::test_three_declaration_forms_have_distinct_codes_and_no_refusal
+      tests/unit/test_skills_capability_swap_guards.py::test_assembly_trace_validates_against_canonical_schema
+      tests/unit/test_skills_capability_swap_guards.py::test_declaration_absent_is_visible_but_never_refused
+      tests/unit/test_skills_capability_swap_guards.py::test_declaration_invalid_is_visible_but_never_refused
+      tests/unit/test_skills_capability_swap_guards.py::test_ki_messages_still_satisfy_existing_assertion
+      tests/unit/test_skills_capability_swap_guards.py::test_legacy_reader_contract_is_unchanged
+      tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only[skill-customer-meeting-script]
+      tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only[skill-customer-outreach-script]
+      tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only[skill-customer-previsit-report]
+      tests/unit/test_skills_capability_swap_guards.py::test_unavailable_code_differs_from_absent
+    `_load_ki_from_declaration` 命中用例集合（逐条，共 60）:
+      tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-meeting-script]
+      tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-outreach-script]
+      tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-previsit-report]
+      tests/integration/test_control_plane_consistency.py::test_plan_drives_reads_not_source_literals
+      tests/integration/test_persistent_jobs.py::TestPersistentAsyncExecution::test_queue_stats_reflects_enqueued
+      tests/integration/test_persistent_jobs.py::TestPersistentAsyncExecution::test_worker_picks_up_enqueued_job
+      tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_default_profile_is_dev
+      tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_profile_is_case_insensitive
+      tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_profile_read_from_env
+      tests/integration/test_prod_async_guard.py::TestProductionRequiresRuntimeStore::test_sync_execute_unaffected_in_prod
+      tests/integration/test_redaction.py::TestBackwardCompatibility::test_skill_execution_result_keeps_plaintext
+      tests/integration/test_runtime_store_api.py::test_execute_persists_idempotency_record
+      tests/integration/test_runtime_store_api.py::test_idempotency_replay_after_restart
+      tests/integration/test_runtime_store_api.py::test_no_replay_across_restart_without_store
+      tests/integration/test_runtime_store_api.py::test_no_store_still_works_in_memory
+      tests/integration/test_runtime_store_api.py::test_repeated_execute_is_idempotent
+      tests/integration/test_runtime_store_api.py::test_service_level_replay_from_store
+      tests/integration/test_runtime_store_api.py::test_store_holds_no_knowledge_tables
+      tests/integration/test_runtime_store_api.py::test_store_stats_after_traffic
+      tests/integration/test_skill_routing_trace.py::test_each_skill_reports_its_own_task
+      tests/integration/test_skill_routing_trace.py::test_emitted_trace_entries_conform_to_canonical_schema
+      tests/integration/test_skill_routing_trace.py::test_map_mismatch_is_surfaced_not_hidden
+      tests/integration/test_skill_routing_trace.py::test_provisioned_workspace_records_resolved_plan
+      tests/integration/test_skill_routing_trace.py::test_trace_plan_hash_equals_routing_plan_api
+      tests/integration/test_skills.py::TestApi::test_execute
+      tests/integration/test_skills.py::TestApi::test_execute_idempotent
+      tests/integration/test_skills.py::TestAssemblyTraceKi::test_outreach_meeting_evidence_from_library
+      tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_evidence_independent_of_request_fields
+      tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_ki_all_ok_from_library
+      tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_ki_all_skipped_unknown_customer
+      tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_sections_per_ki
+      tests/integration/test_skills.py::TestExecute::test_fail_closed
+      tests/integration/test_skills.py::TestExecute::test_idempotent_replay
+      tests/integration/test_skills.py::TestExecute::test_meeting_ok_no_library
+      tests/integration/test_skills.py::TestExecute::test_old_request_fields_ignored
+      tests/integration/test_skills.py::TestExecute::test_outreach_ok_no_library
+      tests/integration/test_skills.py::TestKertCollaboration::test_kert_skipped_without_customer_knowledge
+      tests/integration/test_skills.py::TestNoNewEvidencePolicy::test_other_skills_ignore_policy
+      tests/integration/test_skills.py::TestNoNewEvidencePolicy::test_r1_newer_timestamp_ok
+      tests/integration/test_skills.py::TestNoNewEvidencePolicy::test_r1_stale_timestamp_blocked
+      tests/integration/test_skills.py::TestSecondCustomer::test_r1_ki_all_ok
+      tests/integration/test_skills_capability_swap.py::test_alpha_data_and_trace_are_byte_equivalent[skill-customer-meeting-script]
+      tests/integration/test_skills_capability_swap.py::test_alpha_data_and_trace_are_byte_equivalent[skill-customer-outreach-script]
+      tests/integration/test_skills_capability_swap.py::test_alpha_data_and_trace_are_byte_equivalent[skill-customer-previsit-report]
+      tests/integration/test_skills_capability_swap.py::test_alpha_ki_text_equals_reference_provider
+      tests/integration/test_skills_capability_swap.py::test_beta_unavailable_falls_back_with_named_trace
+      tests/integration/test_skills_capability_swap.py::test_binding_fingerprint_is_not_hardcoded
+      tests/integration/test_skills_capability_swap.py::test_declaration_pattern_is_the_read_driver
+      tests/integration/test_skills_capability_swap.py::test_gamma_declaration_absent_falls_back_to_literal
+      tests/integration/test_skills_capability_swap.py::test_gamma_prime_absent_and_unavailable
+      tests/integration/test_skills_capability_swap.py::test_required_flag_does_not_escalate
+      tests/integration/test_skills_capability_swap.py::test_three_declaration_forms_have_distinct_codes_and_no_refusal
+      tests/unit/test_skills_capability_swap_guards.py::test_assembly_trace_validates_against_canonical_schema
+      tests/unit/test_skills_capability_swap_guards.py::test_declaration_absent_is_visible_but_never_refused
+      tests/unit/test_skills_capability_swap_guards.py::test_declaration_invalid_is_visible_but_never_refused
+      tests/unit/test_skills_capability_swap_guards.py::test_ki_messages_still_satisfy_existing_assertion
+      tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only[skill-customer-meeting-script]
+      tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only[skill-customer-outreach-script]
+      tests/unit/test_skills_capability_swap_guards.py::test_trace_field_discipline_and_append_only[skill-customer-previsit-report]
+      tests/unit/test_skills_capability_swap_guards.py::test_unavailable_code_differs_from_absent
+    [差集] 仅 `_load_ki` 命中（新读取点未命中）: ['tests/integration/test_skills.py::TestSecondCustomer::test_graph_complete_from_library', 'tests/integration/test_skills.py::TestSupplyChainFromLibrary::test_graph_complete_from_library', 'tests/integration/test_skills.py::TestSupplyChainFromLibrary::test_graph_partial_unknown_customer', 'tests/unit/test_skills_capability_swap_guards.py::test_legacy_reader_contract_is_unchanged']
+    [差集] 仅 `_load_ki_from_declaration` 命中: ['tests/integration/test_skills.py::TestAssemblyTraceKi::test_outreach_meeting_evidence_from_library', 'tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_evidence_independent_of_request_fields', 'tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_ki_all_ok_from_library', 'tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_ki_all_skipped_unknown_customer', 'tests/integration/test_skills.py::TestAssemblyTraceKi::test_previsit_sections_per_ki', 'tests/integration/test_skills.py::TestNoNewEvidencePolicy::test_other_skills_ignore_policy', 'tests/integration/test_skills.py::TestNoNewEvidencePolicy::test_r1_newer_timestamp_ok', 'tests/integration/test_skills.py::TestNoNewEvidencePolicy::test_r1_stale_timestamp_blocked', 'tests/integration/test_skills.py::TestSecondCustomer::test_r1_ki_all_ok', 'tests/integration/test_skills_capability_swap.py::test_alpha_ki_text_equals_reference_provider', 'tests/integration/test_skills_capability_swap.py::test_declaration_pattern_is_the_read_driver']
+    [差集判据] 两集差是否为空: False（非空且**归因不了 ⇒ 停下报 TL**，R-G 第 3 条）
+
+[d3] 聚合数（**仅交叉参考；R-G 明令不得单独作为证据**）
+    route_plan=63  load_ki=53  load_ki_from_declaration=60  supply_chain_unwired=3
+
+[e] **红集**（同一次跑内采集，逐条，共 3）
+    tests/unit/test_provision_cli.py::test_apply_then_idempotent_rerun
+    tests/unit/test_provision_cli.py::test_init_flag_initializes_fresh_volume_then_provisions
+    tests/unit/test_provision_cli.py::test_json_output_follows_standard_envelope
+
+[b] `_run_supply_chain`（未接线，O-6 范围）命中用例数: 3
+    tests/integration/test_skills.py::TestSecondCustomer::test_graph_complete_from_library
+    tests/integration/test_skills.py::TestSupplyChainFromLibrary::test_graph_complete_from_library
+    tests/integration/test_skills.py::TestSupplyChainFromLibrary::test_graph_partial_unknown_customer
+
+机器可读集合（供与基准逐条 diff）: /tmp/m71b_confirm_sets.json

@@ -1,0 +1,17 @@
+{
+  "schema": "knowledge_map/v1",
+  "mapId": "KM-CORP-RM-OUTREACH",
+  "version": "1.0.0",
+  "title": "企业客户经理 · 外联准备知识地图",
+  "domain": "customer",
+  "tasks": ["OUTREACH_PREPARATION"],
+  "priority": 10,
+  "assetRefs": [
+    {"assetId": "KI-009", "required": true, "sequence": 1},
+    {"assetId": "KI-FRONT-004", "required": true, "sequence": 2},
+    {"assetId": "KI-FRONT-006", "required": false, "sequence": 3}
+  ],
+  "skillRefs": ["skill-customer-outreach-script"],
+  "routePolicyRef": "RP-KERT-BANKFRONT-001",
+  "notes": "assetRefs 与 skills.py 中 _run_outreach 实际读取的 KI 条目一致（KI-009 / KI-FRONT-004 / KI-FRONT-006）——该一致性**不由本字段自述背书**，由 tests/integration/test_control_plane_consistency.py 机械核对；routePolicyRef 已回填至本仓自有策略（RP-KERT-BANKFRONT-001）；activationContractRef 仍留空（本仓暂未引入激活合同，不虚构绑定）。"
+}

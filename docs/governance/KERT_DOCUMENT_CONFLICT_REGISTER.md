@@ -25,7 +25,11 @@
 
 - 状态/能力/证据以 `KERT_STATUS_BASELINE_CANDIDATE.yaml` 为准。
 - 文档替代关系见 `KERT_SUPERSESSION_MAP.md`。
-- 契约 v1/v2 替代关系以 OpenAPI/JSON Schema 候选为唯一权威源，v1 保留兼容层。
+- 契约权威：**运行中权威**是 `specs/kert-openapi-v1.yaml`（1.5.0，服务实际实现、向 GITS 提供）；
+  `docs/contracts/**` 的 v2 候选**未批准**，仅为设计输入。两者归并见 **C-20**
+  （Contract Owner 2026-09-15 批准列入 W8/Phase 0 收口，**尚未执行**）。
+  （本条 2026-09-16 修正：原文为"以 OpenAPI/JSON Schema 候选为唯一权威源、v1 保留兼容层"，
+  与同文件 C-20 判定直接冲突 —— 2026-09-15 只改了 `docs/contracts/README.md` 未同步此行。）
 
 ## C′ 混合架构整改新增冲突（2026-08-26）
 
@@ -36,3 +40,9 @@
 | C-17 | GITS A+B 被推迟到 Java Runtime 之后 | 以独立评审为准：A+B 不等 Java Runtime | GITS V1.1 | RESOLVED_CANDIDATE |
 | C-18 | 独立服务边界仍把 Skill 执行全放 Python kert-server | C′ 将 Java Runtime 作为内部执行器 | 新 C′ 架构 | RESOLVED_CANDIDATE |
 | C-19 | OpenAPI `x-contract-bundle-hash: PENDING_COMPUTE` 与 manifest hash 关系不清 | 以 manifest 为实际 hash，OpenAPI 中改为引用 manifest | 后续修正 | PENDING |
+
+## C″ M7.3 契约权威新增冲突（2026-09-15）
+
+| ID | 冲突 | 证据位置 | 当前判定（候选） | 处理方式 | 状态 |
+|---|---|---|---|---|---|
+| C-20 | **契约权威双源**：`docs/contracts/README.md` 自述本目录 v2 候选为"契约唯一权威源"、v1.3/v1.4"不作为生产合同唯一权威源"；但服务实际实现的、且向 GITS 提供的是 `specs/kert-openapi-v1.yaml`（1.5.0） | `docs/contracts/README.md`、`specs/kert-openapi-v1.yaml`、`docs/contracts/openapi/kert-openapi-v2.yaml`（自述 `2.0.0-candidate`）、`KERT_STATUS_BASELINE_CANDIDATE.yaml`（`openapi_v2_candidate: DESIGNED_AS_CANDIDATE`，v13/v14=CONFLICTING） | **v1.5 为运行中权威**；v2 仍为**未批准候选** | Contract Owner 2026-09-15 批准：**列入 W8/Phase 0 收口**（归并方案另立、本轮不归并）；本轮仅修正 README 权威声明与 v1 的 `assemblyTrace` 类型失实 | OPEN |

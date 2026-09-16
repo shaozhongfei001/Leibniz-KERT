@@ -1,0 +1,9 @@
+{
+  "schema": "ontology_reference/v1",
+  "contractId": "CTR-SEM-002",
+  "authorityRepo": "gits-cbanking",
+  "authoritySource": "specs/semantic/gits-core.owl.ttl",
+  "contentSha256": "705578d6324abd0c1bd2bd670e6f3c0ffd8e04c358d0134246c89a3acfc38d00",
+  "pinnedAt": "2026-09-15",
+  "notes": "声明的钉值（declared pin）：只读消费 gits 本体契约 CTR-SEM-002 的内容哈希版本。KERT 运行期不读 gits 仓文件、不调其接口、不硬编码跨仓路径；钉值与权威源的一致性只能由带外核验（ontology_reference.verify_external，路径由调用方传入）复核。"
+}

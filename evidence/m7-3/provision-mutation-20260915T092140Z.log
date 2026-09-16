@@ -1,0 +1,33 @@
+BEFORE provision.py=42b905d4cea0732c
+
+=== M1：只校验第一份地图就开写 ⇒ 期望参数化用例 FAIL ===
+M1 INJECTED
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/unit/test_provision.py::test_creates_all_control_plane_files - A...
+FAILED tests/unit/test_provision.py::test_invalid_map_writes_nothing[KM-CORP-RM-OUTREACH.json]
+FAILED tests/unit/test_provision.py::test_invalid_map_writes_nothing[KM-CORP-RM-PREVISIT.json]
+M1_EXIT=1 (期望非 0)
+
+=== M2：去掉哈希比较（总是覆盖）⇒ 期望幂等用例 FAIL ===
+M2 INJECTED
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/unit/test_provision.py::test_idempotent_second_run_rewrites_nothing
+FAILED tests/unit/test_provision.py::test_source_change_yields_updated_only_for_that_file
+M2_EXIT=1 (期望非 0)
+
+=== M3：跳过目标必须是工作区检查 ⇒ 期望用法用例 FAIL ===
+M3 INJECTED
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/unit/test_provision.py::test_target_must_be_initialized_workspace
+M3_EXIT=1 (期望非 0)
+
+=== 恢复后 ===
+AFTER  provision.py=42b905d4cea0732c
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+RESTORED_EXIT=0

@@ -1,0 +1,34 @@
+BEFORE skills.py=223a09592313ebbb
+
+=== M1：资产来源退回硬编码（不走计划）⇒ 期望 (A) 证明 FAIL ===
+M1 INJECTED
+FAILED tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-meeting-script]
+FAILED tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-previsit-report]
+FAILED tests/integration/test_control_plane_consistency.py::test_plan_drives_reads_not_source_literals
+3 failed, 15 passed in 0.71s
+M1_EXIT=1 (期望非 0)
+
+=== M2：拒绝时不写 trace（只 raise）⇒ 期望拒绝可见用例 FAIL ===
+M2 INJECTED
+FAILED tests/integration/test_skill_routing_trace.py::test_unprovisioned_workspace_refuses_and_records_why
+FAILED tests/integration/test_skill_routing_trace.py::test_ontology_denial_code_is_passed_through
+FAILED tests/integration/test_skill_routing_trace.py::test_emitted_trace_entries_conform_to_canonical_schema
+3 failed, 15 passed in 0.72s
+M2_EXIT=1 (期望非 0)
+
+=== M3：拒绝码写错（丢合同码）⇒ 期望错误码断言 FAIL ===
+M3 INJECTED
+=========================== short test summary info ============================
+FAILED tests/integration/test_skill_routing_trace.py::test_unprovisioned_workspace_refuses_and_records_why
+FAILED tests/integration/test_skill_routing_trace.py::test_ontology_denial_code_is_passed_through
+2 failed, 16 passed in 0.69s
+M3_EXIT=1 (期望非 0)
+
+=== 恢复后 ===
+AFTER skills.py=223a09592313ebbb
+..................                                                       [100%]
+18 passed in 0.48s
+RESTORED_EXIT=0
+=== 冒烟进度 ===
+#16 541.9 Get:3 http://deb.debian.org/debian trixie/main amd64 libcom-err2 amd64 1.47.2-3+b12 [25.0 kB]
+#16 544.5 Get:4 http://deb.debian.org/debian trixie/main amd64 libk5crypto3 amd64 1.21.3-5+deb13u1 [81.2 kB]

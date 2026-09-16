@@ -67,7 +67,7 @@
 
 - 权威文件：`specs/kert-openapi-v1.yaml`，`info.version = "1.4.0"`（HEAD 第 11 行）。
 - 权威契约文档：`docs/skill-execute-api-contract-v1.4.md`（spec 内 `info.description` 引用，HEAD 第 10 行）。
-- 已登记端点（`paths`，HEAD）：`GET /v1/health`、`GET /api/skill/health`、`GET /v1/skills`、`POST /api/skill/execute`、`GET /api/skill/report/{requestId}`、`GET /api/skill/gates/{customerId}`、`POST /api/skill/gates/audit`、`GET /v1/jobs/{jobId}`、`GET /livez`、`GET /readyz`、`GET /metrics`。
+- 已登记端点（`paths`，**本快照时点的 HEAD**）：`GET /v1/health`、`GET /api/skill/health`、~~`GET /v1/skills`~~（⚠ **A-9，Owner 裁定 2026-09-16：已从合同删除**）、`POST /api/skill/execute`、`GET /api/skill/report/{requestId}`、`GET /api/skill/gates/{customerId}`、`POST /api/skill/gates/audit`、`GET /v1/jobs/{jobId}`、`GET /livez`、`GET /readyz`、`GET /metrics`。
 - `components.securitySchemes.ApiKeyAuth`（HEAD 第 445-447 行）：`type: apiKey`、`in: header`、`name: X-API-Key`、描述「API Key 认证（演示环境可省略）」。
 
 > **未提交 delta 声明（如实）**：`git diff specs/kert-openapi-v1.yaml` 显示，工作区相对 HEAD 新增两处、均为**并行任务未提交产物**，**HEAD 中不存在**：

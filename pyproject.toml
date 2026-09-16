@@ -16,6 +16,12 @@ dependencies = [
     "pypdf>=5.0",
     "python-docx>=1.1",
     "kuzu>=0.11",
+    # D-31（Owner 2026-09-16，**推翻** D3-A「KERT 不内置本体」）：本体**真解析**的最小集合 ——
+    # rdflib 解析 OWL/TTL，pyshacl 解析并施加 SHACL 约束（`kert.domain.ontology_parse`）。
+    # 刻意**不**引入 owlready2 / 推理机：当前需求是"可解析、可统计、可物化"，不是"可推理"；
+    # 将来若确需推理，再按最小化原则单独追加并留痕。
+    "rdflib>=7.6",
+    "pyshacl>=0.40",
 ]
 
 [project.optional-dependencies]
@@ -27,7 +33,12 @@ api = ["fastapi>=0.110", "uvicorn>=0.29"]
 # 而 `pip install -c requirements-lock.txt ".[api,dev]"` 中的 -c 是**约束**
 # 而非安装指令，只钉版本、不会安装未被依赖声明引入的包，
 # 因此 CI 缺 httpx，导致 e2e / integration 用例收集失败。
-dev = ["pytest>=8.0", "httpx>=0.27"]
+# jsonschema 同样是测试依赖：tests/unit/test_skills_capability_swap_guards.py 与
+# tests/integration/test_skill_routing_trace.py 直接 `import jsonschema`。
+# 与上一处**同形**的隐患：它此前只出现在 requirements-lock.txt（`-c` 只钉版本、
+# 不安装未被声明引入的包）⇒ CI 在**收集期** ModuleNotFoundError
+# （实测于 PR #6 首跑：2 个测试模块 collection error，整轮 exit 2）。
+dev = ["pytest>=8.0", "httpx>=0.27", "jsonschema>=4.18"]
 
 [project.scripts]
 kert = "kert.cli.main:app"
@@ -37,7 +48,15 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+# 裁决 D-10（Owner 已批 2026-09-16）：`perf` 标记的用例断言**墙钟阈值**，在多智能体
+# 并发跑测下**结构性不可靠**（失败集合逐轮漂移，隔离复跑仍 FAIL）⇒ 移出**默认套件**。
+# 显式运行：`python -m pytest -m perf ...`。
+# 专职 perf job（.github/workflows/ci.yml）以 `-m "perf or not perf"` 覆盖本默认值，
+# 否则该 job 会静默变成"零用例通过"。
+addopts = ["-q", "-m", "not perf"]
+markers = [
+    "perf: 墙钟阈值性能基准；结构性不可靠，默认套件排除（见 D-10）",
+]
 
 [tool.ruff]
 target-version = "py311"

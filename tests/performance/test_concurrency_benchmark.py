@@ -1,5 +1,18 @@
 """并发锁竞争性能基准（NFR-006/007）。
 
+⚠ **不作为验收/冻结态证据**（裁决 **D-10**，Owner 已批 2026-09-16）：
+本模块全部断言的是**墙钟阈值**（例：`assert avg_create < 20.0`）。多智能体/多进程
+并发跑测时，机器负载由**我们自己的并发**引入 ⇒ 墙钟阈值**结构性不可靠**：实测失败
+集合**逐轮漂移**（1 条 / 2 条 / 3 条），且**与任何被测代码改动无关**（隔离复跑仍 FAIL）。
+
+⇒ 本模块整体标记 `perf`，并在**默认套件中排除**
+（`pyproject.toml` 的 `addopts = ["-q", "-m", "not perf"]`）。须**显式**运行：
+
+    python -m pytest -m perf tests/performance/test_concurrency_benchmark.py
+
+**不得**只"放宽阈值"了事 —— 那只是把 flake 洗成"通过"，不是修好。若日后要让它重新
+承担验收角色，须先把判据从**墙钟**换成**非墙钟**（操作计数 / 不变量 / 相对比值）。
+
 测试场景：
 - WorkspaceLock 单线程 acquire/release 延迟
 - WorkspaceLock 多线程并发不同 scope（无竞争）
@@ -20,9 +33,13 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+import pytest
 
 from kert.infrastructure.locks import WorkspaceLock
 from kert.infrastructure.runtime_store import RuntimeStore
+
+#: D-10：本模块断言墙钟阈值 ⇒ 默认套件排除（理由见模块 docstring）。
+pytestmark = pytest.mark.perf
 
 
 # ---------- WorkspaceLock 基准 ----------

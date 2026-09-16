@@ -28,6 +28,34 @@ GATES = ["G0", "G1", "G2", "G3", "G4", "G5"]
 GATE_NAMES = {"G0": "证据准备", "G1": "客户核验", "G2": "专家设计",
               "G3": "内部审批", "G4": "对客确认", "G5": "实施复盘"}
 
+# --------------------------------------------------------------------------- #
+# 闸门状态语汇的**单一命名源**（D-28a：gate 语义域单源化）
+# --------------------------------------------------------------------------- #
+#: 键 = 闸门 checklist 的 ``state`` 值；值 = **展示侧** CSS 类后缀。
+#:
+#: 生产者（本模块 :meth:`ServiceProposalExecutor._gate_recommendations`）与展示侧
+#: （:func:`kert.application.report.render_proposal_report`）**都从这里派生**；
+#: **禁止**在任何地方再维护第二份字面量地图（由
+#: ``tests/unit/test_gate_state_single_source.py`` 机械把关）。
+#:
+#: 契约侧另有一份同名 enum（``specs/kert-openapi-v1.yaml``）—— 那里由契约所有者维护；
+#: 同一用例会**机械核对三方一致**（新增状态必须**源 / 生产者 / 展示 + 契约**同步，否则用例变红）。
+GATE_STATE_CSS: dict[str, str] = {
+    "PASSED": "g-pass",
+    "READY_FOR_REVIEW": "g-ready",
+    "BLOCKED": "g-block",
+    "PENDING": "g-pend",
+}
+
+#: 状态**值域**（顺序 = 生命周期；派生自上面的单一源）。
+GATE_STATES: tuple[str, ...] = tuple(GATE_STATE_CSS)
+
+#: 具名常量：生产者**不得**再散落状态字面量（改名 / 新增只动单一源）。
+ST_PASSED, ST_READY_FOR_REVIEW, ST_BLOCKED, ST_PENDING = GATE_STATES
+
+#: ``overallReadiness`` 的值域（同一域的另一字段，同样单源）。
+OVERALL_READY, OVERALL_BLOCKED = ("READY", "BLOCKED")
+
 
 def _load_md(path: Path) -> dict:
     text = path.read_text(encoding="utf-8")
@@ -355,21 +383,21 @@ class ServiceProposalExecutor:
         for g in GATES:
             asset = self.gates.get(f"GATE-BIZ-{g}", {})
             if g in passed:
-                checklist.append({"gate": g, "state": "PASSED",
+                checklist.append({"gate": g, "state": ST_PASSED,
                                   "name": GATE_NAMES.get(g, g)})
             elif g == current:
                 # 就绪度：G1 需对客版证据就绪（customer_version 存在）；其余看 unknown 收敛
                 blocked = (g == "G1" and customer_version is None)
-                state = "BLOCKED" if (blocked or not ready) else "READY_FOR_REVIEW"
+                state = ST_BLOCKED if (blocked or not ready) else ST_READY_FOR_REVIEW
                 checklist.append({"gate": g, "state": state,
                                   "name": GATE_NAMES.get(g, g),
                                   "checklist": {"must": asset.get("must", []),
                                                 "forbidden": asset.get("forbidden", [])}})
             else:
-                checklist.append({"gate": g, "state": "PENDING",
+                checklist.append({"gate": g, "state": ST_PENDING,
                                   "name": GATE_NAMES.get(g, g)})
         return {"currentGate": current, "passedGates": passed,
-                "overallReadiness": "READY" if ready else "BLOCKED",
+                "overallReadiness": OVERALL_READY if ready else OVERALL_BLOCKED,
                 "checklist": checklist,
                 "nextGatePrerequisites": self.gates.get(f"GATE-BIZ-{current}", {}).get("must", [])}
 

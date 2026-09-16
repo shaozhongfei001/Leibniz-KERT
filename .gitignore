@@ -50,6 +50,12 @@ bank_front_ws/
 .test_demo_ws/
 *.egg-info/
 
+# 部署环境变量实例（含**真实** API Key）——绝不入库。
+# 模板 deploy/.env.example 必须入库；实例 deploy/.env 必须忽略。
+# 注：此前 .gitignore **漏了**这一条，而 .env.example/README 却声称"已在 .gitignore 中"，
+# 属"文档声明与实际相反"的安全缺陷，2026-09-16 修正。
+deploy/.env
+
 # 运行时数据文件（含 Kuzu 图数据库二进制），非源码，不入库
 data/
 *.kuzu

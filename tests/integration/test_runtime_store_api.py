@@ -21,6 +21,16 @@ SKILL_REQUEST = {"customerId": "CUST-CORP-0001"}
 DB_REL = ("90_control", "runtime", "runtime.db")
 
 
+@pytest.fixture
+def ws(ws_provisioned):
+    """本文件**遮蔽**全局 ``ws``：技能执行需要已供给控制面的工作区（M7.3 ⑤b-full）。
+
+    ⑤b-full 起 customer-engagement 技能按**计划**读取资产、计划被拒即拒绝执行，
+    故凡执行这些技能的用例都必须用已供给工作区。
+    """
+    return ws_provisioned
+
+
 def _store_config(enabled: bool = True, path=None) -> RuntimeConfig:
     """构造启用/关闭 Runtime Store 的运行时配置。"""
     return RuntimeConfig(runtime_store=RuntimeStoreConfig(enabled=enabled, path=path))

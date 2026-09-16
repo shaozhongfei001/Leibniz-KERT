@@ -7,17 +7,19 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import re
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 
 from ..domain import timeutil
 from ..domain.errors import AssetNotFoundError, ServiceNotReadyError, UsageError
+from ..domain.ontology_reference import check_lineage_ontology, lineage_ontology_fields
 from ..domain.rules import dsl
 from ..infrastructure import markdown
 from ..infrastructure.parquet import build_filter
@@ -25,6 +27,24 @@ from ..infrastructure.parquet import build_filter
 DEFAULT_SERVICE = "product_knowledge"
 
 _FULLTEXT_STOP = {"的", "了", "是", "在", "和", "与", "及", "或", "一个", "为", "产品"}
+
+#: 允许发布到外部检索服务的**工作区产物根**（数据出口白名单；ADR-017「数据出口」）。
+#: 只有 `03_core/**`（知识资产）与 `04_serve/**`（发布投影/本体物化产物）可出区；
+#: `01_raw`/`02_work`/`90_control`（可能含凭据/草案）**不在**其列。
+EGRESS_ROOTS = ("03_core", "04_serve")
+
+
+def _egress_rel(rel_path: str) -> str:
+    """校验发布对象是**工作区内的 03_core/04_serve 相对路径**；越界 ⇒ 具名拒绝。"""
+    from ..infrastructure.lightrag_client import LightRagArtifactRefused
+
+    rel = PurePosixPath(str(rel_path).strip())
+    if rel.is_absolute() or not rel.parts or any(p in ("", ".", "..") for p in rel.parts):
+        raise LightRagArtifactRefused(f"必须是非空**相对**路径：{rel_path!r}")
+    if rel.parts[0] not in EGRESS_ROOTS:
+        raise LightRagArtifactRefused(
+            f"只允许发布工作区产物（{'/'.join(EGRESS_ROOTS)}）：{rel_path!r}")
+    return rel.as_posix()
 
 
 @dataclass
@@ -367,6 +387,181 @@ class KnowledgeService:
             },
             meta=self._meta(),
         )
+
+    # ---------------- 计划驱动的物化（T1：把「计划/技能」与「投影」接通） ----------------
+
+    def materialize_from_plan(self, task_type: str, *, domain: str,
+                              subject_id: str | None = None,
+                              service_id: str | None = None,
+                              include_vectors: bool = True) -> dict:
+        """**由激活计划驱动**的服务投影物化（产物与既有投影**同形**）。
+
+        约束（Owner 2026-09-16 直接指令）：
+
+        - **不另起一套投影实现**：复用既有
+          :class:`~kert.application.projection.ProjectionBuilder`（含其 G4 门禁与 Kùzu 图谱分支），
+          本方法只做「计划门禁 → 调用既有 builder → 写血缘」；
+        - **计划身份 + 本体引用写入产物元数据（血缘）**：血缘 = ``plan.to_dict()`` **原样照抄**
+          （``planId`` / ``planHash`` / ``versions.ontology`` …，含计划身份与 planHash），
+          **追加**一个**顶层** ``ontology`` 子块**= 既有 helper
+          :func:`~kert.domain.ontology_reference.lineage_ontology_fields` 的输出**
+          （5 键，键名全部取自既有声明与计划，**不新造字段**、**不自行反解** ``versions.ontology``
+          字符串）；计划未放行时该 helper 返回 ``None`` ⇒ **不写占位串**；
+        - **fail-closed**：计划未放行（路由未放行 / 本体引用缺失或非法）⇒ 直接抛出；
+          **血缘本体面与计划不一致** ⇒ 同样抛出，**两种情况都不产出任何投影产物**
+          （校验**先于**调用 projection builder，与计划构建器「没有第三态」的口径一致）。
+
+        :param task_type: 计划任务类型（如 ``OUTREACH_PREPARATION``）。
+        :param domain: ``03_core`` 下的域（投影输入）。
+        :param subject_id: 计划主体（如 customerId）；仅记录、不入 plan hash。
+        :param service_id: 目标 service_id；缺省用本实例的 ``service_id``。
+        :param include_vectors: 是否产出 ``vectors.parquet``（透传既有 builder）。
+        :returns: ``service_id`` / ``projection_version`` / ``job_id`` / ``files`` /
+                  ``lineage_path`` / ``plan``（计划原文）。
+        """
+        from ..domain.activation_plan import ActivationPlanBuilder
+        from .projection import ProjectionBuilder
+
+        # **同一实例**同时供门禁与血缘取值 ⇒ 本体输入面与计划门禁同源，不留时间窗口
+        builder = ActivationPlanBuilder.load(self.ws)
+        plan = builder.build(task_type, subject_id=subject_id)
+        if not plan.allowed:
+            raise UsageError(f"计划未放行 ⇒ 不物化（{plan.code}）：{plan.reason}")
+        resolution = builder.ontology_resolution()
+        ontology_block = lineage_ontology_fields(resolution)
+        if ontology_block is None:
+            raise UsageError(
+                f"计划本体引用未放行 ⇒ 不物化（{resolution.code}）：{resolution.reason}")
+
+        lineage = plan.to_dict()
+        lineage["ontology"] = dict(ontology_block)
+        # 校验先于产出：不一致 ⇒ 不产出投影（血缘是下游唯一可追溯凭证）
+        check = check_lineage_ontology(resolution, lineage)
+        if not check.allowed:
+            raise UsageError(
+                f"血缘本体引用与计划不一致 ⇒ 不物化（{check.code}）：{check.reason}")
+
+        target_service = service_id or self.service_id
+        result = ProjectionBuilder(self.ws, owner="plan_materializer").build(
+            domain, service_id=target_service, include_vectors=include_vectors,
+            idempotency_key=f"plan:{plan.plan_hash}")
+
+        lineage_rel = (f"04_serve/{target_service}/version={result.projection_version}"
+                       f"/PLAN_LINEAGE.json")
+        (self.ws / lineage_rel).write_text(
+            json.dumps(lineage, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return {"service_id": result.service_id,
+                "projection_version": result.projection_version,
+                "job_id": result.job_id,
+                "files": list(result.files),
+                "lineage_path": lineage_rel,
+                "plan": lineage}
+
+    # ---------------- LightRAG 检索（M7 · D-31：接入外部 server） ----------------
+
+    def retrieve_via_lightrag(self, query: str, *, mode: str = "hybrid",
+                              client=None) -> dict:
+        """经 **LightRAG**（外部 server）做一次检索，返回**实体 + 关系 + 出处**。
+
+        接入层见 :mod:`kert.infrastructure.lightrag_client`（连接参数只走 env：
+        ``KERT_LIGHTRAG_URL`` / ``KERT_LIGHTRAG_API_KEY`` / ``KERT_LIGHTRAG_TIMEOUT``）。
+
+        **fail-closed**：server 不可达 / 鉴权失败 / 响应形状不符 ⇒ 由接入层抛**具名**异常向上传递，
+        本方法**不**吞错、**不**返回空结果 ⇒ 调用方必须能区分「检索不到」与「检索不可达」。
+
+        ⚠ 本方法**不**读写工作区：LightRAG 的索引在 KERT 工作区**之外**（见
+        `docs/adr/ADR-017-lightrag-retrieval-store.md`），故不影响 §18.5/§6.3 的
+        "工作区内无隐藏持久化数据库"口径。
+
+        :param query: 检索语句。
+        :param mode: lightRAG 既有模式（``local``/``global``/``hybrid``/``naive``/``mix``）。
+        :param client: 注入的 :class:`~kert.infrastructure.lightrag_client.LightRagClient`
+            （缺省按 env 构造；测试用）。
+        """
+        from ..infrastructure.lightrag_client import LightRagClient
+
+        client = client or LightRagClient.from_env()
+        result = client.query_data(query, mode=mode)
+        return {"query": result.query, "mode": result.mode, "endpoint": result.endpoint,
+                "entities": list(result.entities), "relations": list(result.relations),
+                "citations": [{"referenceId": c.reference_id, "filePath": c.file_path,
+                               "content": c.content} for c in result.citations]}
+
+    # ---------------- LightRAG 发布 / 撤回（M7 · P-1：数据出口，ADR-017） ----------------
+
+    def publish_artifact(self, rel_path: str, *, client=None) -> dict:
+        """把工作区内的一件**产物**作为文档发布到外部 LightRAG（**数据出口**）。
+
+        发布面 = :data:`EGRESS_ROOTS`（``03_core/**`` 知识资产、``04_serve/**`` 投影/本体物化产物）；
+        其余（`01_raw`/`02_work`/`90_control`——可能含草案与凭据）**拒绝**。
+
+        纪律（ADR-017「数据出口」一节）：
+
+        - **只读工作区**：本方法只读文件，不修改任何 KERT 文件（测试机械断言）；
+        - **出处**：`file_source` = :func:`~kert.infrastructure.lightrag_client.artifact_file_source`
+          （可回译的 ``04_serve__<svc>__version=<v>__<name>``）⇒ 检索命中的 `filePath` **回指产物路径 + 版本**；
+          正文再前置**出处头**（相对路径 + sha256）⇒ 只看引用片段也能回溯；
+        - **幂等**：同 `file_source` 已存在 ⇒ `already_published`（先查后写，不重复写入）；
+        - 失败一律**具名**抛出（越界 / 文件缺失 / 不可达 / 超时），**不静默**。
+
+        :returns: ``{artifact, file_source, sha256, bytes, status, track_id, endpoint}``
+        """
+        from ..infrastructure.lightrag_client import (
+            LightRagClient,
+            artifact_file_source,
+        )
+
+        rel = _egress_rel(rel_path)
+        path = self.ws / rel
+        if not path.is_file():
+            raise AssetNotFoundError(f"产物不存在: {rel}")
+        raw = path.read_bytes()
+        digest = hashlib.sha256(raw).hexdigest()
+        source = artifact_file_source(rel)
+        header = ("# KERT 产物出处（数据出口；登记见 ADR-017）\n"
+                  f"- 产物路径: {rel}\n"
+                  f"- sha256: {digest}\n"
+                  f"- 发布标识: {source}\n\n")
+        client = client or LightRagClient.from_env()
+        outcome = client.publish_text(header + raw.decode("utf-8", errors="replace"),
+                                      file_source=source)
+        return {"workspace": str(self.ws), "artifact": rel, "file_source": source,
+                "sha256": digest, "bytes": len(raw), "status": outcome.status,
+                "track_id": outcome.track_id, "endpoint": "/documents/text"}
+
+    def retract_artifact(self, rel_path: str, *, timeout: float = 180.0,
+                         visibility_timeout: float = 20.0, client=None) -> dict:
+        """**撤回**该产物在外部实例上的发布（ADR-017「如何撤回」的机械实现）。
+
+        按 `file_source` 找出**全部**条目（含 `dup-*` 重复残留）⇒ `DELETE /documents/delete_document`
+        ⇒ 等到全部消失（删除是**异步**的）。无已发布记录 ⇒ 返回 ``removed=[]``（**不报错**，
+        因为"本就没发布"与"撤回失败"必须可区分）。
+
+        :param visibility_timeout: 判定"未发布过"前的**可见性窗口** —— 入库是异步的，
+            刚发布完就撤回时条目可能尚未出现（实测竞态）⇒ 先等一会儿再下结论。
+        """
+        from ..infrastructure.lightrag_client import (
+            LightRagClient,
+            LightRagPipelineTimeout,
+            artifact_file_source,
+        )
+
+        rel = _egress_rel(rel_path)
+        source = artifact_file_source(rel)
+        client = client or LightRagClient.from_env()
+        try:
+            found = client.wait_until_present(source, timeout=visibility_timeout)
+        except LightRagPipelineTimeout:
+            found = ()
+        if not found:
+            return {"artifact": rel, "file_source": source, "removed": [],
+                    "status": "nothing_to_retract"}
+        ids = [d.doc_id for d in found]
+        payload = client.delete_documents(ids)
+        client.wait_until_absent(ids, timeout=timeout)
+        return {"artifact": rel, "file_source": source, "removed": ids,
+                "status": str(payload.get("status") or ""),
+                "message": str(payload.get("message") or "")}
 
     # ---------------- 证据溯源（FR-SRV-007、§15.5） ----------------
 

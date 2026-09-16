@@ -26,6 +26,13 @@
 | ``E2E_REQUIRE_GITS_FRONTEND`` | 未设 | 服务维度 require：GITS 前端不可达 → fail |
 | ``E2E_REQUIRE_SERVICES`` | 未设 | 全局 require（向后兼容）：等价于三者全开 |
 | ``E2E_LEDGER_PATH`` | 未设 | 覆盖账本 JSON 落盘路径（供 CI 独立断言步骤核验） |
+| ``KERT_API_KEY`` | 未设 | KERT API Key 的**密钥本身（secret）**，非空时注入 ``X-API-Key`` 请求头 |
+
+关于 ``KERT_API_KEY``：由本仓编排（``deploy/docker-compose.yml``，``KERT_PROFILE=prod``）
+拉起的 KERT **强制鉴权**，不注入该头则除公开探针（``/livez``、``/readyz``、
+``/api/skill/health``）外一律 401；CI 因 ``KERT_PROFILE=dev`` 而无需它。
+值取 ``deploy/.env`` 中 ``KERT_API_KEYS`` 首个 key 的 **secret 段**，
+**不是** ``key_id:secret``（见 ``deploy/README.md`` §4）。未设置时行为与既有完全一致。
 
 require 语义取**并集**：任一开关要求即要求。全局开关 ``E2E_REQUIRE_SERVICES=1``
 的既有语义不变（三端全要求）。被 require 的服务的不可达判定发生在**夹具解析之前**
@@ -57,6 +64,11 @@ if TYPE_CHECKING:  # pragma: no cover - 仅类型标注用
 KERT_BASE_URL = os.getenv("KERT_BASE_URL", "http://127.0.0.1:8106")
 GITS_BASE_URL = os.getenv("GITS_BASE_URL", "http://127.0.0.1:8082")
 GITS_FRONTEND_URL = os.getenv("GITS_FRONTEND_URL", "http://127.0.0.1:5173")
+
+# KERT API Key 的**密钥本身（secret）**（非 `key_id:secret`，见 deploy/README.md §4）。
+# 空 ⇒ 不注入请求头（与 dev profile / 既有行为一致）；prod profile 下必须设置，
+# 否则 KERT 侧除公开探针外一律 401。
+KERT_API_KEY = os.getenv("KERT_API_KEY", "").strip()
 
 # ---------------------------------------------------------------------------
 # 探活参数
@@ -255,8 +267,13 @@ def all_services_ready(kert_ready: str, gits_ready: str, gits_frontend_ready: st
 
 @pytest.fixture(scope="session")
 def kert_client(kert_ready: str) -> httpx.Client:
-    """KERT HTTP 客户端（session 级复用）。"""
-    with httpx.Client(base_url=kert_ready, timeout=120) as client:
+    """KERT HTTP 客户端（session 级复用）。
+
+    ``KERT_API_KEY`` 非空时注入 ``X-API-Key``——由本仓编排拉起的服务是 ``prod``
+    profile，强制鉴权；为让「用本仓编排真跑 e2e」成为可能，必须能带上凭据。
+    """
+    headers = {"X-API-Key": KERT_API_KEY} if KERT_API_KEY else {}
+    with httpx.Client(base_url=kert_ready, timeout=120, headers=headers) as client:
         yield client
 
 

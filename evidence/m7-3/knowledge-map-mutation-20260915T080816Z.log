@@ -1,0 +1,20 @@
+=== M1：移走受控工作区的地图目录 ⇒ 期望真实工作区用例 FAIL ===
+
+tests/unit/test_knowledge_map.py:111: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/test_knowledge_map.py::test_real_workspace_registers_three_maps_with_nonzero_refs
+FAILED tests/unit/test_knowledge_map.py::test_real_maps_reference_only_kis_that_skills_actually_read
+M1_EXIT=1 (期望非 0)
+............................                                             [100%]
+M1_RESTORED_EXIT=0
+=== M2：移除同优先级歧义拒绝分支 ⇒ 期望歧义用例 FAIL ===
+BEFORE sha256=c6d322f90222a4a4
+M2 INJECTED
+
+tests/unit/test_knowledge_map.py:153: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/test_knowledge_map.py::test_same_priority_ambiguity_is_denied
+M2_EXIT=1 (期望非 0)
+AFTER  sha256=c6d322f90222a4a4
+............................                                             [100%]
+M2_RESTORED_EXIT=0

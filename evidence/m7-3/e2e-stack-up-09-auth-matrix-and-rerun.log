@@ -1,0 +1,27 @@
+$ bash scripts/run_e2e_local.sh --keep-up --ledger /tmp/e2e-m73/e2e-coverage-ledger-final.json   # 第二次跑（验证幂等）
+2026-09-16T00:51:55+08:00
+SKIPPED [1] tests/e2e/test_scenario_2_previsit_report.py:21: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_2_previsit_report.py:69: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_3_service_proposal.py:21: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_3_service_proposal.py:55: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_3_service_proposal.py:102: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_4_knowledge_graph.py:19: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_4_knowledge_graph.py:47: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_4_knowledge_graph.py:65: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_5_customer_insight.py:21: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_5_customer_insight.py:39: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_5_customer_insight.py:57: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+SKIPPED [1] tests/e2e/test_scenario_5_customer_insight.py:94: GITS Backend 不可达 (http://127.0.0.1:8082/actuator/health)
+26 passed, 21 skipped in 9.84s
+
+  PYTEST_EXIT_CODE=0
+  覆盖账本：/tmp/e2e-m73/e2e-coverage-ledger-final.json
+
+[5/5] --keep-up：保留栈，未撤（base=http://127.0.0.1:8107）
+SCRIPT_EXIT_CODE=0
+
+=== 鉴权口径实测（三次对照）===
+  无 X-API-Key            -> HTTP=401
+  X-API-Key: key_id:secret -> HTTP=401
+  X-API-Key: secret        -> HTTP=200
+  X-API-Key: 错误 secret   -> HTTP=401

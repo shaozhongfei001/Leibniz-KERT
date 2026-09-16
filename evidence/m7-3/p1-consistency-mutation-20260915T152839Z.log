@@ -1,0 +1,31 @@
+BEFORE map=637bb28d2eb0727c  skills.py=cb9ccd804314545d
+
+=== M1：把原缺陷原样退回（PREVISIT 只留 3 条资产）⇒ 期望核对用例 FAIL ===
+M1 INJECTED（复现原缺陷：3 条）
+
+tests/integration/test_control_plane_consistency.py:75: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-previsit-report]
+M1_EXIT=1 (期望非 0)
+
+=== M2：技能多读一条（outreach 加读 KI-FRONT-005）⇒ 期望 FAIL ===
+M2 INJECTED
+
+tests/integration/test_control_plane_consistency.py:75: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-outreach-script]
+M2_EXIT=1 (期望非 0)
+
+=== M3：trace 不再产出 kiId（机制失效）⇒ 期望 FAIL（证明不空过）===
+M3 INJECTED
+tests/integration/test_control_plane_consistency.py:73: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-meeting-script]
+FAILED tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-outreach-script]
+FAILED tests/integration/test_control_plane_consistency.py::test_map_assets_equal_skill_reads[skill-customer-previsit-report]
+M3_EXIT=1 (期望非 0)
+
+=== 恢复后 ===
+AFTER  map=637bb28d2eb0727c  skills.py=cb9ccd804314545d
+...........................                                              [100%]
+RESTORED_EXIT=0

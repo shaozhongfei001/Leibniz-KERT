@@ -14,6 +14,9 @@ import json
 from functools import lru_cache
 from pathlib import Path
 
+# D-28a：闸门状态语汇的**单一源**（生产者与本模块共用；本模块不再自留字面量地图）。
+from .service_proposal import GATE_STATE_CSS
+
 _VENDOR_JS = (Path(__file__).resolve().parents[3]
               / "examples" / "output" / "vendor" / "vis-network.min.js")
 
@@ -21,6 +24,16 @@ LAYER_COLOR = {"supplier": "#4d9fff", "enterprise": "#ef476f", "customer": "#2dd
 LAYER_CN = {"supplier": "上游供应商", "enterprise": "本企业", "customer": "下游客户"}
 REL_CN = {"purchase": "采购", "sale": "销售"}
 TREND_CN = {"up": "↑ 上升", "down": "↓ 下降", "flat": "→ 持平", "unknown": "— 未知"}
+
+#: 闸门状态 → CSS 类：**单一源派生**（D-28a；源在 ``service_proposal.GATE_STATE_CSS``）。
+#: 本模块**不得**再维护第二份状态字面量地图（由 ``tests/unit/test_gate_state_single_source.py`` 机械把关）。
+UNKNOWN_STATE_CSS = "g-unknown"
+"""未知状态的**显式** CSS 类 —— **取代**原先的静默默认 ``g-pend``：未知**不得**被渲染成 pending。"""
+
+
+def gate_state_css(state: str) -> str:
+    """把闸门状态映射为 CSS 类（**单源派生**）；未知状态 ⇒ :data:`UNKNOWN_STATE_CSS`（显式、具名）。"""
+    return GATE_STATE_CSS.get(state, UNKNOWN_STATE_CSS)
 
 
 @lru_cache(maxsize=1)
@@ -387,9 +400,11 @@ def render_proposal_report(result, payload: dict) -> str:
 
     def chip(gate: dict) -> str:
         st = gate.get("state", "")
-        cls = {"PASSED": "g-pass", "READY_FOR_REVIEW": "g-ready", "BLOCKED": "g-block",
-               "PENDING": "g-pend"}.get(st, "g-pend")
-        return f'<span class="gate {cls}">{_esc(gate.get("gate", ""))}:{_esc(st)}</span>'
+        cls = gate_state_css(st)          # **单源派生**；未知 ⇒ g-unknown（不再静默当 pending）
+        label = f'{_esc(gate.get("gate", ""))}:{_esc(st)}'
+        if cls == UNKNOWN_STATE_CSS:
+            label = f"{label}（未知状态）"
+        return f'<span class="gate {cls}">{label}</span>'
 
     gate_bar = "".join(chip(g) for g in (ctx.get("checklist") or []))
     vio_html = ""
@@ -435,6 +450,7 @@ def render_proposal_report(result, payload: dict) -> str:
   .g-ready {{ background:rgba(251,191,36,.15); color:#fbbf24; }}
   .g-block {{ background:rgba(239,71,111,.15); color:#ef476f; }}
   .g-pend {{ background:#16233f; color:#64748b; }}
+  .g-unknown {{ background:rgba(148,163,184,.12); color:#cbd5e1; border-color:#94a3b8; }}
   .vio {{ background:rgba(239,71,111,.1); border:1px solid #ef476f; border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:13px; color:#ffb3c1; }}
   .vio ul {{ margin:6px 0 0; padding-left:20px; }}
   .tabs {{ display:flex; gap:8px; margin-bottom:10px; }}

@@ -2,6 +2,7 @@
 #
 # 依 ADR-015 单机单实例：不引入 Kubernetes、不引入 Redis/MQ。
 # 服务清单：
+#   - provision  一次性控制面供给（P2）：api/worker 启动**之前**执行，见下方注释
 #   - api     Python Core，唯一公共入口
 #   - worker  持久化异步 Worker（无 HTTP 端口）
 #
@@ -16,13 +17,64 @@
 # 同一份 SQLite Runtime Store（ADR-015 单机单实例前提）。
 
 services:
+  # 控制面供给（P2，M7.3）：把受控控制面元数据（知识地图 / 路由策略 / 本体引用）
+  # 装进 workspace 的一次性任务，**幂等**（内容未变则不改写）且**先全量校验后写入**
+  # （源内任一份定义非法则一份都不写）。
+  #
+  # 为什么放在编排里而不是靠运维记得跑：严格 fail-closed 下，未供给的工作区会让
+  # 三个 customer-engagement 技能**全部拒绝**；把供给并入启动链，才能让"忘了跑"
+  # 在部署阶段就暴露，而不是在业务调用时暴露。缺 KERT_CONTROL_PLANE_SOURCE 时
+  # compose 直接失败（与 KERT_API_KEYS 同一口径：宁可起不来，不要半配置起来）。
+  provision:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      # 可选镜像源（空 ⇒ 用默认源，行为不变）；见 deploy/Dockerfile 的说明
+      args:
+        PIP_INDEX_URL: "${PIP_INDEX_URL:-}"
+        APT_MIRROR: "${APT_MIRROR:-}"
+    image: kert-python-core:local
+    container_name: kert-provision
+    restart: "no"
+    entrypoint: ["kert", "provision"]
+    command:
+      - "-w"
+      - "/data/workspace"
+      - "-s"
+      - "${KERT_CONTROL_PLANE_SOURCE:?需在 .env 声明控制面元数据源（容器内路径，如 /app/examples/bank-front-knowledge-maps）}"
+      # 首次部署的空卷尚未初始化；--init 在未初始化时先 init（已初始化则 no-op，
+      # 非空且未初始化仍按纪律报错，不静默改写）
+      - "--init"
+    volumes:
+      - workspace:/data/workspace
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
   api:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+      # 可选镜像源（空 ⇒ 用默认源，行为不变）；见 deploy/Dockerfile 的说明
+      args:
+        PIP_INDEX_URL: "${PIP_INDEX_URL:-}"
+        APT_MIRROR: "${APT_MIRROR:-}"
     image: kert-python-core:local
     container_name: kert-api
     restart: unless-stopped
+    # 供给成功后 api 才启动：未供给的服务起来也是"三技能全拒绝"的空壳
+    depends_on:
+      provision:
+        condition: service_completed_successfully
     # 仅绑回环：对外暴露由反向代理负责，避免绕过 TLS 与网关策略
     ports:
       - "127.0.0.1:8106:8106"
@@ -68,6 +120,10 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+      # 可选镜像源（空 ⇒ 用默认源，行为不变）；见 deploy/Dockerfile 的说明
+      args:
+        PIP_INDEX_URL: "${PIP_INDEX_URL:-}"
+        APT_MIRROR: "${APT_MIRROR:-}"
     image: kert-python-core:local
     container_name: kert-worker
     restart: unless-stopped
@@ -86,6 +142,11 @@ services:
       - workspace:/data/workspace
       - backups:/data/backups
     depends_on:
+      # 两个条件**都**要满足：worker 与 api 读写同一 workspace
+      # 1) 控制面已供给（P2）：否则中途启动会读到空控制面
+      # 2) api 健康：沿用既有编排约束
+      provision:
+        condition: service_completed_successfully
       api:
         condition: service_healthy
     read_only: true
@@ -108,6 +169,10 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+      # 可选镜像源（空 ⇒ 用默认源，行为不变）；见 deploy/Dockerfile 的说明
+      args:
+        PIP_INDEX_URL: "${PIP_INDEX_URL:-}"
+        APT_MIRROR: "${APT_MIRROR:-}"
     image: kert-python-core:local
     container_name: kert-backup
     # 覆盖镜像默认入口，执行备份命令

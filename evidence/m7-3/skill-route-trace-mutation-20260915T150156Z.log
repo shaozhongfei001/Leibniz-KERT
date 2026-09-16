@@ -1,0 +1,37 @@
+BEFORE skills.py=fd1914cc6d8fb3bf
+
+=== M1：被拒时回落硬编码地图 ⇒ 期望 FAIL ===
+M1 INJECTED
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_skill_routing_trace.py::test_unprovisioned_workspace_records_blocked_but_skill_still_runs
+FAILED tests/integration/test_skill_routing_trace.py::test_ontology_denial_code_is_passed_through
+M1_EXIT=1 (期望非 0)
+
+=== M2：失配静默（不打标记）⇒ 期望 FAIL ===
+M2 INJECTED
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_skill_routing_trace.py::test_map_mismatch_is_surfaced_not_hidden
+M2_EXIT=1 (期望非 0)
+
+=== M3：任务类型硬编码（三个技能都用 OUTREACH）⇒ 期望 FAIL ===
+M3 INJECTED
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/integration/test_skill_routing_trace.py::test_each_skill_reports_its_own_task
+M3_EXIT=1 (期望非 0)
+
+=== M4：trace 不带 planHash ⇒ 期望 FAIL ===
+M4 INJECTED
+=========================== short test summary info ============================
+FAILED tests/integration/test_skill_routing_trace.py::test_provisioned_workspace_records_resolved_plan
+FAILED tests/integration/test_skill_routing_trace.py::test_trace_plan_hash_equals_routing_plan_api
+FAILED tests/integration/test_skill_routing_trace.py::test_each_skill_reports_its_own_task
+M4_EXIT=1 (期望非 0)
+
+=== 恢复后 ===
+AFTER  skills.py=fd1914cc6d8fb3bf
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+RESTORED_EXIT=0

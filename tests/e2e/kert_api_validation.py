@@ -3,7 +3,7 @@
 
 验证 KERT (http://127.0.0.1:8106) 的所有 skill API 端点，
 确保它们能正确响应并返回预期格式。
-
+注意（D-23）：本文件为脚本形态（函数一律 `check_*`，非 pytest 用例）；pytest 不收集本文件，用例入口见 `tests/e2e/test_api_validation_adoption.py`。
 用法:
     python tests/e2e/kert_api_validation.py
     python tests/e2e/kert_api_validation.py --base-url http://127.0.0.1:8106
@@ -105,7 +105,7 @@ def _request(
 
 # ── 测试用例 ──────────────────────────────────────────────────────────────
 
-def test_health(base_url: str, vr: ValidationResult) -> None:
+def check_health(base_url: str, vr: ValidationResult) -> None:
     """GET /api/skill/health — 健康检查 + skill 列表."""
     r = EndpointResult(endpoint="/api/skill/health", method="GET")
     r.status_code, r.response_body, r.elapsed_ms = _request(base_url, "GET", "/api/skill/health")
@@ -116,7 +116,7 @@ def test_health(base_url: str, vr: ValidationResult) -> None:
     vr.add(r)
 
 
-def test_gates(base_url: str, vr: ValidationResult) -> None:
+def check_gates(base_url: str, vr: ValidationResult) -> None:
     """GET /api/skill/gates/{customerId} — 获取客户 gates."""
     path = f"/api/skill/gates/{TEST_CUSTOMER_ID}"
     r = EndpointResult(endpoint=path, method="GET")
@@ -136,7 +136,7 @@ def test_gates(base_url: str, vr: ValidationResult) -> None:
     vr.add(r)
 
 
-def test_gate_audit(base_url: str, vr: ValidationResult) -> None:
+def check_gate_audit(base_url: str, vr: ValidationResult) -> None:
     """POST /api/skill/gates/audit — 闸门审计."""
     body = {
         "customerId": TEST_CUSTOMER_ID,
@@ -155,7 +155,7 @@ def test_gate_audit(base_url: str, vr: ValidationResult) -> None:
     vr.add(r)
 
 
-def test_job_status(base_url: str, vr: ValidationResult) -> None:
+def check_job_status(base_url: str, vr: ValidationResult) -> None:
     """GET /v1/jobs/{jobId} — 异步任务状态查询（先触发异步任务再查询）."""
     # 1) 触发异步 SP-20
     async_body = {
@@ -213,7 +213,7 @@ def test_job_status(base_url: str, vr: ValidationResult) -> None:
     vr.add(r_404)
 
 
-def test_report(base_url: str, vr: ValidationResult) -> None:
+def check_report(base_url: str, vr: ValidationResult) -> None:
     """GET /api/skill/report/{requestId} — 报告端点."""
     # 先执行一个 skill 获取 requestId
     body = {
@@ -361,7 +361,7 @@ SKILL_TEST_CASES: list[dict[str, Any]] = [
 ]
 
 
-def test_skill_execute(base_url: str, vr: ValidationResult) -> None:
+def check_skill_execute(base_url: str, vr: ValidationResult) -> None:
     """逐一执行所有 skill，记录结果."""
     for tc in SKILL_TEST_CASES:
         skill_id = tc["skillId"]
@@ -414,7 +414,7 @@ def test_skill_execute(base_url: str, vr: ValidationResult) -> None:
         vr.add(r)
 
 
-def test_unknown_skill(base_url: str, vr: ValidationResult) -> None:
+def check_unknown_skill(base_url: str, vr: ValidationResult) -> None:
     """执行不存在的 skill，期望 404."""
     body = {"skillId": "NONEXISTENT-SKILL", "request": {"customerId": TEST_CUSTOMER_ID}}
     r = EndpointResult(endpoint="/api/skill/execute (UNKNOWN)", method="POST")
@@ -442,29 +442,29 @@ def run_validation(base_url: str) -> ValidationResult:
 
     # 1. 基础端点
     print("── 1. 基础端点 ──")
-    test_health(base_url, vr)
-    test_gates(base_url, vr)
-    test_gate_audit(base_url, vr)
+    check_health(base_url, vr)
+    check_gates(base_url, vr)
+    check_gate_audit(base_url, vr)
     print()
 
     # 2. Skill 执行
     print("── 2. Skill 执行 ──")
-    test_skill_execute(base_url, vr)
+    check_skill_execute(base_url, vr)
     print()
 
     # 3. 异步模式
     print("── 3. 异步模式 ──")
-    test_job_status(base_url, vr)
+    check_job_status(base_url, vr)
     print()
 
     # 4. 报告端点
     print("── 4. 报告端点 ──")
-    test_report(base_url, vr)
+    check_report(base_url, vr)
     print()
 
     # 5. 异常场景
     print("── 5. 异常场景 ──")
-    test_unknown_skill(base_url, vr)
+    check_unknown_skill(base_url, vr)
     print()
 
     # 汇总

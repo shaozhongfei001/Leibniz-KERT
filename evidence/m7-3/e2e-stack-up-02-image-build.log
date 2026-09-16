@@ -1,0 +1,106 @@
+ Image kert-python-core:local Building 
+ Image kert-python-core:local Building 
+ Image kert-python-core:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.84kB done
+#1 DONE 0.0s
+
+#2 [provision internal] load build definition from Dockerfile
+#2 transferring dockerfile: 32B done
+#2 DONE 0.0s
+
+#3 [api internal] load build definition from Dockerfile
+#3 transferring dockerfile: 3.58kB done
+#3 DONE 0.1s
+
+#4 [worker internal] load build definition from Dockerfile
+#4 transferring dockerfile: 32B done
+#4 DONE 0.1s
+
+#5 [provision internal] load .dockerignore
+#5 transferring context: 35B done
+#5 DONE 0.1s
+
+#6 [worker internal] load .dockerignore
+#6 transferring context: 35B done
+#6 DONE 0.1s
+
+#7 [api internal] load .dockerignore
+#7 transferring context: 35B done
+#7 DONE 0.1s
+
+#8 [provision internal] load metadata for docker.io/library/python:3.12-slim
+#8 DONE 0.0s
+
+#9 [provision internal] load build context
+#9 DONE 0.0s
+
+#10 [provision builder 1/5] FROM docker.io/library/python:3.12-slim
+#10 DONE 0.0s
+
+#10 [api builder 1/5] FROM docker.io/library/python:3.12-slim
+#10 DONE 0.0s
+
+#11 [worker internal] load build context
+#11 transferring context: 57.15kB 0.0s done
+#11 DONE 0.1s
+
+#9 [provision internal] load build context
+#9 transferring context: 269.74kB 0.0s done
+#9 DONE 0.1s
+
+#12 [api internal] load build context
+#12 transferring context: 269.74kB 0.0s done
+#12 DONE 0.1s
+
+#13 [provision runtime 3/9] COPY --from=builder /opt/venv /opt/venv
+#13 CACHED
+
+#14 [provision builder 2/5] WORKDIR /build
+#14 CACHED
+
+#15 [provision builder 3/5] COPY pyproject.toml README.md ./
+#15 CACHED
+
+#16 [provision builder 4/5] COPY src ./src
+#16 CACHED
+
+#17 [provision runtime 6/9] COPY --chown=kert:kert skills /app/skills
+#17 CACHED
+
+#18 [provision runtime 7/9] COPY --chown=kert:kert examples /app/examples
+#18 CACHED
+
+#19 [provision runtime 5/9] COPY --chown=kert:kert scripts /app/scripts
+#19 CACHED
+
+#20 [provision runtime 2/9] RUN if [ -n "https://mirrors.tuna.tsinghua.edu.cn" ]; then         sed -i "s|http://deb.debian.org/|https://mirrors.tuna.tsinghua.edu.cn/|g" /etc/apt/sources.list.d/debian.sources;     fi     && apt-get update     && apt-get install -y --no-install-recommends curl     && rm -rf /var/lib/apt/lists/*     && groupadd --gid 10001 kert     && useradd --uid 10001 --gid kert --create-home --shell /usr/sbin/nologin kert
+#20 CACHED
+
+#21 [provision builder 5/5] RUN python -m venv /opt/venv     && /opt/venv/bin/pip install --index-url="https://pypi.tuna.tsinghua.edu.cn/simple" --upgrade pip setuptools wheel     && /opt/venv/bin/pip install --index-url="https://pypi.tuna.tsinghua.edu.cn/simple" ".[api]"
+#21 CACHED
+
+#22 [provision runtime 4/9] COPY --chown=kert:kert src /app/src
+#22 CACHED
+
+#23 [provision runtime 8/9] RUN mkdir -p /data/workspace /data/backups     && chown -R kert:kert /data
+#23 CACHED
+
+#24 [provision runtime 9/9] WORKDIR /app
+#24 CACHED
+
+#25 [provision] exporting to image
+#25 exporting layers done
+#25 writing image sha256:937bea8cc4d6b83032848783f7b698bf177a0dc1abcc14c4bf0624e5049d1dc6 0.0s done
+#25 naming to docker.io/library/kert-python-core:local done
+#25 writing image sha256:785001cf37c9423d2561b3aeb491ee10a92550e68f0373e2f31d1a26875925b8
+#25 exporting layers done
+#25 writing image sha256:785001cf37c9423d2561b3aeb491ee10a92550e68f0373e2f31d1a26875925b8 0.0s done
+#25 writing image sha256:6ad0b85e092e8e8356f9fcc11d5f7968ea30500dff0c8b6ba070671e6798d9f3 done
+#25 naming to docker.io/library/kert-python-core:local done
+#25 DONE 0.2s
+
+#8 [api internal] load metadata for docker.io/library/python:3.12-slim
+ Image kert-python-core:local Built 
+ Image kert-python-core:local Built 
+ Image kert-python-core:local Built 

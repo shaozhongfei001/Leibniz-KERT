@@ -63,8 +63,8 @@ jobs:
   #
   # 作用域显式列出，排除 e2e / security / performance（各有专职 job）。
   # 此前本 job 跑无参数 pytest（testpaths=["tests"]）导致与三个专职 job
-  # 重叠，且与 performance job 的 continue-on-error 语义矛盾——同一批
-  # 基准用例在此阻断、在那放行（见 FAIL-JR1-05 F-2）。
+  # 重叠——同一批基准用例既在此跑、又在专职 job 跑（见 FAIL-JR1-05 F-2）。
+  # 2026-09-16：performance 的 job 级 continue-on-error 已移除 ⇒ 本注不再引用它。
   #
   # contract 与 recovery 必须列入：二者无专职 job，此前仅靠无参数
   # pytest 被间接执行。若省略，JR-1 内部契约测试将脱离 CI 验证。
@@ -131,6 +131,12 @@ jobs:
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
+    env:
+      # 非 editable 安装（`pip install ".[api,dev]"`）下，`__file__` 落在 site-packages，
+      # 仓内 `examples/` 资源（SP-15 产品资产/规则）按上溯找不到，旧兜底会落到
+      # `<site-packages>/../examples` ⇒ e2e 报 KERT_PRODUCT_KNOWLEDGE_STALE（实测于 PR #6 复跑）。
+      # 与 KERT_SKILL_PACKAGES 同一先例：**显式**给仓库根，不靠猜。
+      KERT_REPO_ROOT: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v4
 
@@ -148,6 +154,105 @@ jobs:
           else
             pip install ".[api,dev]"
           fi
+
+      # ──────────────────────────────────────────────
+      # D-6 Step 1：显式供给控制面 + 供给就绪断言（Owner 已批方向）
+      #
+      # 根因（实测，见 evidence/m7-3/PLAN_D-6-E2E-ASSERTION-STRENGTHENING.md）：
+      # 本 job 此前用**空** `$RUNNER_TEMP/kert-ws` 起服务，而 deploy 编排是
+      # `provision --init` 先行（deploy/docker-compose.yml:28-52）⇒ **CI 与部署口径不一致** ⇒
+      # 三技能计划门禁拒绝，却因 `/api/skill/execute` 对业务错误仍返回 200 而**假绿**。
+      #
+      # ⚠ 本批**只做 Step 1**（供给 + 就绪断言）；**Step 2**（把 e2e 断言强化到能区分
+      #   `ok`/`skill_error`）**未做**，仍待放行 —— 否则 CI 会永久红。
+      # ──────────────────────────────────────────────
+      - name: Provision control plane into e2e workspace (D-6 Step 1)
+        env:
+          KERT_PROFILE: dev
+        run: |
+          set -euo pipefail
+          # 与 deploy 编排同口径：`kert provision`（console script 由 `pip install ".[api,dev]"` 安装）
+          mkdir -p "$RUNNER_TEMP/kert-ws"
+          kert provision \
+            -w "$RUNNER_TEMP/kert-ws" \
+            -s "${{ github.workspace }}/examples/bank-front-knowledge-maps" \
+            --init
+          echo "✓ 控制面已供给：$RUNNER_TEMP/kert-ws"
+
+      - name: Assert control-plane provisioning present (D-6 Step 1)
+        env:
+          KERT_E2E_SRC: ${{ github.workspace }}/examples/bank-front-knowledge-maps
+          KERT_E2E_WS: ${{ runner.temp }}/kert-ws
+        run: |
+          # 就绪判据**不得**是 HTTP 200（那正是假绿的成因）⇒ 改为「**逐份声明文件存在 +
+          # 内容 sha256 一致 + 防空转下限**」；缺一份即数秒内显式失败。
+          python - <<'PY'
+          import hashlib
+          import os
+          import pathlib
+          import sys
+
+          SRC = pathlib.Path(os.environ["KERT_E2E_SRC"])
+          WS = pathlib.Path(os.environ["KERT_E2E_WS"])
+          #: 说明件不属"声明"（不被供给、不参与判据）
+          NON_DECL = {"README.md", "PROVENANCE.md"}
+          #: **不由 `kert provision` 供给**的子树 ⇒ 不属"供给面声明"，不参与判据。
+          #  依据 `kert.domain.ontology_assets` 模块 docstring：内置本体走**显式引入**
+          #  （`ensure_assets()`：受控源 → 工作区，含 PROVENANCE），供给面本轮**未**扩展
+          #  （`provision.py` 属他人在途）。若把该子树计入判据，本 job 会在
+          #  「设计与实现一致」时**假红**（实测于 PR #6 首跑：报缺 5 份 ontology 资产）。
+          #  ⚠ 未收线项：供给面何时接管 ontology 子树 —— 见下方 warning 提示。
+          NOT_PROVISIONED = ("90_control/ontology",)
+
+          def _is_not_provisioned(rel: str) -> bool:
+              return any(rel == d or rel.startswith(d + "/") for d in NOT_PROVISIONED)
+
+          def decl(root: pathlib.Path) -> dict:
+              out = {}
+              for p in (root / "90_control").rglob("*"):
+                  rel = p.relative_to(root).as_posix()
+                  if not p.is_file() or p.name in NON_DECL:
+                      continue
+                  if _is_not_provisioned(rel):
+                      continue
+                  out[rel] = hashlib.sha256(p.read_bytes()).hexdigest()
+              return out
+
+          def undeclared_ontology(root: pathlib.Path) -> list:
+              """受控源有、而工作区无的 ontology 资产（**不判失败**，只提示）。"""
+              out = []
+              for p in (root / "90_control").rglob("*"):
+                  rel = p.relative_to(root).as_posix()
+                  if p.is_file() and _is_not_provisioned(rel):
+                      out.append(rel)
+              return sorted(out)
+
+          want = decl(SRC)
+          got = decl(WS)
+          missing = sorted(set(want) - set(got))
+          diff = sorted(k for k in set(want) & set(got) if want[k] != got[k])
+          print("控制面声明：应供给 %d 份 / 已落盘 %d 份" % (len(want), len(got)))
+          # 防空转下限 = **稳定核心 6 份**（3 地图 + route_policy + ontology_reference +
+          # knowledge_sources —— 均为**已入库**文件）。
+          # ⚠ 为何不写 8：`schema/activations/AC-*.json`（2 份）当前是**第三方在途**新增、
+          # **尚未入库**；若把下限写成 8，这些文件未入库时本 job 会**假红**。
+          # 故口径为：源侧声明什么就要求供给什么（含 sha256 一致），但**下限只取入库核心 6 份**。
+          if len(want) < 6:
+              print("::error::防空转失败：源控制面声明数 %d < 6（入库核心）—— 检查 %s" % (len(want), SRC))
+              sys.exit(1)
+          if missing or diff:
+              print("::error::控制面供给不完整：缺少 %s；内容不一致 %s" % (missing, diff))
+              sys.exit(1)
+          print("✓ 控制面供给就绪：%d 份声明逐份存在且内容 sha256 一致" % len(want))
+          # 未收线项：内置本体（90_control/ontology）由 `ensure_assets()` 显式引入，
+          # 不在 `kert provision` 的供给面内 ⇒ 这里**只提示、不判失败**（否则与现有设计假红）。
+          # 待供给面接管该子树（provision.py 他人在途结束后），应把上面 NOT_PROVISIONED 清空，
+          # 使其回到"缺一份即失败"的判据内。
+          ont = undeclared_ontology(SRC)
+          if ont:
+              print("::warning::90_control/ontology 的 %d 份资产不在供给面内（由 ensure_assets 显式引入）"
+                    "—— 未收线项：%s" % (len(ont), ont))
+          PY
 
       - name: Start KERT (dev profile, deterministic adapters)
         env:
@@ -168,7 +273,7 @@ jobs:
           fi
           # 空 HOME：复现 CI 的「无密钥」环境，强制确定性适配器
           mkdir -p "$RUNNER_TEMP/kert-home" "$RUNNER_TEMP/kert-ws"
-          # 空目录即可作 workspace，无需 `kert init`（scripts/run_nfr_baseline.sh 为既有范式）
+          # 本目录由上方 "Provision control plane into e2e workspace (D-6 Step 1)" 步供给；此处 mkdir 仅兜底（已存在则 no-op）。D-19：原文「空目录即可作 workspace，无需 `kert init`」在 Step 1 落地后已过时。
           nohup env HOME="$RUNNER_TEMP/kert-home" \
             python scripts/serve_skill_service.py \
               --port 8106 --host 127.0.0.1 --workspace "$RUNNER_TEMP/kert-ws" \
@@ -320,12 +425,17 @@ jobs:
           KERT_PROFILE: dev
 
   # ──────────────────────────────────────────────
-  # Performance：性能基准（允许失败）
+  # Performance：性能基准（**必须通过** —— 与 e2e 同为 required check）
+  #
+  # 2026-09-16：移除 job 级 continue-on-error。原写法使本 job 失败不令运行变红，
+  # 若仍把它列为 required check，则"阻塞"名不副实（既可能只是装饰，也可能只在
+  # 某些路径上偶然生效）。移除后本 job 的失败与 e2e 同等对待。
+  # 代价（明示）：墙钟抖动会直接卡住 PR ⇒ 抖动必须按「修基准 / 放宽阈值」处理，
+  # 不得以 skip / continue-on-error / 空集（零用例）洗绿 —— 同 e2e 三道防线口径。
   # ──────────────────────────────────────────────
   performance:
     name: Performance Benchmarks
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -345,6 +455,9 @@ jobs:
           fi
 
       - name: Run performance benchmarks
-        run: python -m pytest tests/performance/ -q
+        # D-10：默认套件（pyproject addopts）排除 `perf` 标记。本 job 是专职基准 job，
+        # 故显式覆盖为"全部包含"（`-m` 以最后一次出现的表达式为准）；否则本 job 会
+        # 静默变成"零用例通过"，把墙钟 flake 洗成绿。
+        run: python -m pytest tests/performance/ -q -m "perf or not perf"
         env:
           KERT_PROFILE: dev

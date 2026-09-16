@@ -20,6 +20,17 @@ SKILL_ID = "skill-customer-outreach-script"
 SKILL_REQUEST = {"customerId": "CUST-CORP-0001"}
 
 
+@pytest.fixture
+def ws(ws_provisioned):
+    """本文件**遮蔽**全局 ``ws``：技能执行需要已供给控制面的工作区（M7.3 ⑤b-full）。
+
+    ⑤b-full 起 customer-engagement 技能按**计划**读取资产、计划被拒即拒绝执行，
+    故凡执行这些技能的用例都必须用已供给工作区（本文件多处内联
+    ``SkillExecutionService(ws)`` 即依赖此夹具）。
+    """
+    return ws_provisioned
+
+
 @pytest.fixture()
 def store(ws) -> RuntimeStore:
     """工作区内的 Runtime Store（落在 90_control/runtime 下）。"""

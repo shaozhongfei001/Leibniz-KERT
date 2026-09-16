@@ -1,0 +1,27 @@
+{
+  "schema": "route_policy/v1",
+  "policyId": "RP-KERT-BANKFRONT-001",
+  "version": "1.0.0",
+  "title": "企业客户经理 · 知识路由策略（外联 / 会面 / 访前）",
+  "defaultDecision": "DENY",
+  "rules": [
+    {
+      "priority": 10,
+      "taskType": "OUTREACH_PREPARATION",
+      "knowledgeMapId": "KM-CORP-RM-OUTREACH",
+      "reason": "外联准备：先锁定客户事实与沟通话术，再生成外联脚本"
+    },
+    {
+      "priority": 10,
+      "taskType": "MEETING_PREPARATION",
+      "knowledgeMapId": "KM-CORP-RM-MEETING",
+      "reason": "会面准备：先锁定客户事实、KYC 缺口与话术，再生成会面脚本"
+    },
+    {
+      "priority": 20,
+      "taskType": "PRE_VISIT_PREPARATION",
+      "knowledgeMapId": "KM-CORP-RM-PREVISIT",
+      "reason": "访前准备：先锁定客户实体与关系，再定向加载供应链与经营解读知识"
+    }
+  ]
+}
