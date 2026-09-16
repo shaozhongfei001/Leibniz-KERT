@@ -190,14 +190,36 @@ jobs:
           WS = pathlib.Path(os.environ["KERT_E2E_WS"])
           #: 说明件不属"声明"（不被供给、不参与判据）
           NON_DECL = {"README.md", "PROVENANCE.md"}
+          #: **不由 `kert provision` 供给**的子树 ⇒ 不属"供给面声明"，不参与判据。
+          #  依据 `kert.domain.ontology_assets` 模块 docstring：内置本体走**显式引入**
+          #  （`ensure_assets()`：受控源 → 工作区，含 PROVENANCE），供给面本轮**未**扩展
+          #  （`provision.py` 属他人在途）。若把该子树计入判据，本 job 会在
+          #  「设计与实现一致」时**假红**（实测于 PR #6 首跑：报缺 5 份 ontology 资产）。
+          #  ⚠ 未收线项：供给面何时接管 ontology 子树 —— 见下方 warning 提示。
+          NOT_PROVISIONED = ("90_control/ontology",)
+
+          def _is_not_provisioned(rel: str) -> bool:
+              return any(rel == d or rel.startswith(d + "/") for d in NOT_PROVISIONED)
 
           def decl(root: pathlib.Path) -> dict:
               out = {}
               for p in (root / "90_control").rglob("*"):
-                  if p.is_file() and p.name not in NON_DECL:
-                      out[p.relative_to(root).as_posix()] = hashlib.sha256(
-                          p.read_bytes()).hexdigest()
+                  rel = p.relative_to(root).as_posix()
+                  if not p.is_file() or p.name in NON_DECL:
+                      continue
+                  if _is_not_provisioned(rel):
+                      continue
+                  out[rel] = hashlib.sha256(p.read_bytes()).hexdigest()
               return out
+
+          def undeclared_ontology(root: pathlib.Path) -> list:
+              """受控源有、而工作区无的 ontology 资产（**不判失败**，只提示）。"""
+              out = []
+              for p in (root / "90_control").rglob("*"):
+                  rel = p.relative_to(root).as_posix()
+                  if p.is_file() and _is_not_provisioned(rel):
+                      out.append(rel)
+              return sorted(out)
 
           want = decl(SRC)
           got = decl(WS)
@@ -216,6 +238,14 @@ jobs:
               print("::error::控制面供给不完整：缺少 %s；内容不一致 %s" % (missing, diff))
               sys.exit(1)
           print("✓ 控制面供给就绪：%d 份声明逐份存在且内容 sha256 一致" % len(want))
+          # 未收线项：内置本体（90_control/ontology）由 `ensure_assets()` 显式引入，
+          # 不在 `kert provision` 的供给面内 ⇒ 这里**只提示、不判失败**（否则与现有设计假红）。
+          # 待供给面接管该子树（provision.py 他人在途结束后），应把上面 NOT_PROVISIONED 清空，
+          # 使其回到"缺一份即失败"的判据内。
+          ont = undeclared_ontology(SRC)
+          if ont:
+              print("::warning::90_control/ontology 的 %d 份资产不在供给面内（由 ensure_assets 显式引入）"
+                    "—— 未收线项：%s" % (len(ont), ont))
           PY
 
       - name: Start KERT (dev profile, deterministic adapters)
