@@ -29,6 +29,7 @@ STATUS=CANDIDATE / FROZEN=NO / IMPLEMENTED=NO
 from __future__ import annotations
 
 import json
+import os
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -129,8 +130,23 @@ def _canonical_json(obj) -> str:
                       separators=(",", ":"), default=str)
 
 
+#: 仓库根的环境变量覆盖名。理由同 ``KERT_SKILL_PACKAGES``（D-E2E-01 记录的
+#: 同一族静默降级）：CI 用**非 editable** 安装（``pip install ".[api,dev]"``），
+#: 此时 ``__file__`` 落在 site-packages，上溯找不到含 ``skills/`` 与 ``examples/``
+#: 的祖先，旧兜底 ``parents[4]`` 会落到 ``<site-packages>/../examples``
+#: （实测命中 ``/opt/hostedtoolcache/.../lib/python3.11/examples/product-recommendation-assets``）
+#: ⇒ SP-15 报 ``KERT_PRODUCT_KNOWLEDGE_STALE``。显式给根目录即可，无需猜。
+_ENV_REPO_ROOT = "KERT_REPO_ROOT"
+
+
 def _repo_root() -> Path:
-    """定位仓库根目录（含 skills/ 与 examples/ 的最近祖先）。"""
+    """定位仓库根目录（含 skills/ 与 examples/ 的最近祖先）。
+
+    优先级：``KERT_REPO_ROOT``（显式）→ ``__file__`` 上溯 → 兜底 4 级。
+    """
+    override = os.environ.get(_ENV_REPO_ROOT)
+    if override:
+        return Path(override).expanduser().resolve()
     p = Path(__file__).resolve()
     for candidate in [p, *p.parents]:
         if (candidate / "skills").is_dir() and (candidate / "examples").is_dir():
