@@ -37,7 +37,15 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+# 裁决 D-10（Owner 已批 2026-09-16）：`perf` 标记的用例断言**墙钟阈值**，在多智能体
+# 并发跑测下**结构性不可靠**（失败集合逐轮漂移，隔离复跑仍 FAIL）⇒ 移出**默认套件**。
+# 显式运行：`python -m pytest -m perf ...`。
+# 专职 perf job（.github/workflows/ci.yml）以 `-m "perf or not perf"` 覆盖本默认值，
+# 否则该 job 会静默变成"零用例通过"。
+addopts = ["-q", "-m", "not perf"]
+markers = [
+    "perf: 墙钟阈值性能基准；结构性不可靠，默认套件排除（见 D-10）",
+]
 
 [tool.ruff]
 target-version = "py311"

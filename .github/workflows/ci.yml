@@ -345,6 +345,9 @@ jobs:
           fi
 
       - name: Run performance benchmarks
-        run: python -m pytest tests/performance/ -q
+        # D-10：默认套件（pyproject addopts）排除 `perf` 标记。本 job 是专职基准 job，
+        # 故显式覆盖为"全部包含"（`-m` 以最后一次出现的表达式为准）；否则本 job 会
+        # 静默变成"零用例通过"，把墙钟 flake 洗成绿。
+        run: python -m pytest tests/performance/ -q -m "perf or not perf"
         env:
           KERT_PROFILE: dev
