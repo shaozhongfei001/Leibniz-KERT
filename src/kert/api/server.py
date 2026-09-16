@@ -37,6 +37,7 @@ from ..application.skills import SkillExecutionService
 from ..domain import timeutil
 from ..domain.activation_plan import ActivationPlanBuilder, PlanDenial
 from ..domain.errors import KERTException, ServiceNotReadyError
+from ..domain.health import HEALTH_OK
 from ..domain.knowledge_map import KnowledgeMapRegistry
 from ..domain.route_policy import load_route_policy
 from ..infrastructure.observability import (
@@ -636,9 +637,14 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
 
     @app.get("/api/skill/health")
     def skill_health():
-        """D1：列出已注册 skill 及版本。"""
+        """D1：列出已注册 skill 及版本。
+
+        ``status`` 取**单一命名源** :data:`kert.domain.health.HEALTH_OK`（D-28 层 2 立源：
+        合同 ``SkillHealthResponse.status.enum`` == ``SKILL_HEALTH_STATES`` 由用例机械核对）——
+        本函数体内**不得**再出现状态字面量。
+        """
         return {
-            "status": "ok",
+            "status": HEALTH_OK,
             "service": "customer-engagement",
             "skills": [{"skillId": s.skill_id, "name": s.name, "version": s.version}
                        for s in skill_svc.registry()],
