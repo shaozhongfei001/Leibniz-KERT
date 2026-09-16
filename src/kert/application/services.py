@@ -518,9 +518,11 @@ class KnowledgeService:
         raw = path.read_bytes()
         digest = hashlib.sha256(raw).hexdigest()
         source = artifact_file_source(rel)
+        # ⚠ 行序是**语义**的：撤回前的归属校验靠实例返回的 `content_summary`（正文**头部窗口**）
+        # 读到本行 ⇒ `sha256` 必须尽量靠前，否则长路径会把摘要窗口挤出 digest 而令校验恒失效（D-34）。
         header = ("# KERT 产物出处（数据出口；登记见 ADR-017）\n"
-                  f"- 产物路径: {rel}\n"
                   f"- sha256: {digest}\n"
+                  f"- 产物路径: {rel}\n"
                   f"- 发布标识: {source}\n\n")
         client = client or LightRagClient.from_env()
         outcome = client.publish_text(header + raw.decode("utf-8", errors="replace"),
@@ -530,24 +532,44 @@ class KnowledgeService:
                 "track_id": outcome.track_id, "endpoint": "/documents/text"}
 
     def retract_artifact(self, rel_path: str, *, timeout: float = 180.0,
-                         visibility_timeout: float = 20.0, client=None) -> dict:
+                         visibility_timeout: float = 20.0, force: bool = False,
+                         client=None) -> dict:
         """**撤回**该产物在外部实例上的发布（ADR-017「如何撤回」的机械实现）。
 
         按 `file_source` 找出**全部**条目（含 `dup-*` 重复残留）⇒ `DELETE /documents/delete_document`
         ⇒ 等到全部消失（删除是**异步**的）。无已发布记录 ⇒ 返回 ``removed=[]``（**不报错**，
         因为"本就没发布"与"撤回失败"必须可区分）。
 
+        **归属校验（D-34，2026-09-16 起默认开启）**：`file_source` 由**确定性规则**派生、
+        与"谁发布的"无关 ⇒ 撞名时按出处撤回会**删掉他人的合法文档**（本轮实测事故：
+        实例文档 5→4、图 78/86→61/62）。⇒ 删除前逐条证明"实例上这份正文 == 本工作区该产物的**当前正文**"：
+        比对实例返回的 `content_summary`（正文**头部窗口**）里我们自写的 `- sha256: <当前摘要>`
+        （出处头的行序即为此而设，见 :meth:`publish_artifact`）；
+        **任一条不匹配 ⇒ 具名拒绝且一份都不删**（fail-closed）。
+
+        :param force: **显式**跳过归属校验（用于"明知是旧版本 / 来源已变、仍要清理"的场景）；
+            跳过时返回值里 ``verified=False`` 留痕，**绝不静默**。
+        :raises LightRagRetractRefused: 归属校验失败，或（非 force 时）本地产物不存在而无从校验。
         :param visibility_timeout: 判定"未发布过"前的**可见性窗口** —— 入库是异步的，
             刚发布完就撤回时条目可能尚未出现（实测竞态）⇒ 先等一会儿再下结论。
         """
         from ..infrastructure.lightrag_client import (
             LightRagClient,
             LightRagPipelineTimeout,
+            LightRagRetractRefused,
             artifact_file_source,
         )
 
         rel = _egress_rel(rel_path)
+        path = self.ws / rel
         source = artifact_file_source(rel)
+        digest = ""
+        if not force:
+            if not path.is_file():
+                raise LightRagRetractRefused(
+                    f"撤回需归属校验，但本地产物不存在（无从比对内容摘要）：{rel}"
+                    f"（确认要清理请显式 force=True）")
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
         client = client or LightRagClient.from_env()
         try:
             found = client.wait_until_present(source, timeout=visibility_timeout)
@@ -555,11 +577,21 @@ class KnowledgeService:
             found = ()
         if not found:
             return {"artifact": rel, "file_source": source, "removed": [],
+                    "verified": not force, "sha256": digest,
                     "status": "nothing_to_retract"}
+        if not force:
+            marker = f"- sha256: {digest}"
+            foreign = [d.doc_id for d in found if marker not in (d.content_summary or "")]
+            if foreign:
+                raise LightRagRetractRefused(
+                    f"撤回拒绝（归属校验失败）：{source!r} 下 {len(foreign)}/{len(found)} 条文档的正文"
+                    f"出处头不含本工作区该产物的当前摘要 {digest[:16]}… ⇒ 疑似他人的合法文档；"
+                    f"**一份都未删除**。doc_ids={foreign}（确认要清理请显式 force=True）")
         ids = [d.doc_id for d in found]
         payload = client.delete_documents(ids)
         client.wait_until_absent(ids, timeout=timeout)
         return {"artifact": rel, "file_source": source, "removed": ids,
+                "verified": not force, "sha256": digest,
                 "status": str(payload.get("status") or ""),
                 "message": str(payload.get("message") or "")}
 

@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import time
 import uuid
 
@@ -22,7 +23,9 @@ from kert.infrastructure.lightrag_client import (
     ALREADY_PUBLISHED,
     LightRagArtifactRefused,
     LightRagClient,
+    LightRagDocument,
     LightRagHTTPError,
+    LightRagRetractRefused,
     LightRagUnavailable,
     artifact_file_source,
     parse_artifact_file_source,
@@ -234,3 +237,127 @@ class TestPublishedIsRetrievableAndRetractable:
             assert isinstance(res["removed"], list) and res["removed"], res
             _assert_absent_stable(client, out["file_source"])
             assert _snapshot(ws) == before, "撤回**不得**改动工作区"
+
+
+# --------------------------------------------------------------------------- #
+# D-34：撤回前的**归属校验**（默认开启；`force=True` 才可跳过）
+#
+# 事故背景（2026-09-16 实测）：`file_source` 由**确定性规则**派生，与"谁发布的"无关
+# ⇒ 撞名时按出处撤回会删掉**他人的合法文档**（实例 docs 5→4、图 78/86→61/62）。
+# 下列前三格**不触网**（短接客户端三处调用）⇒ 在任何环境都确定性可跑；末格为真实例分支。
+# --------------------------------------------------------------------------- #
+
+def _own_summary(rel: str, digest: str) -> str:
+    """模拟我们发布时写入的**出处头**（`sha256` 在首行之后，故落在摘要窗口内）。"""
+    return ("# KERT 产物出处（数据出口；登记见 ADR-017）\n"
+            f"- sha256: {digest}\n"
+            f"- 产物路径: {rel}\n"
+            f"- 发布标识: {artifact_file_source(rel)}\n\n正文…")
+
+
+def _foreign_summary(rel: str) -> str:
+    return _own_summary(rel, "0" * 64)
+
+
+def _stub_client(monkeypatch, rows, deleted: list) -> None:
+    """短接客户端网络调用；`deleted` 记录被删的 doc id ⇒ 用于断言 fail-closed。"""
+    monkeypatch.setattr(LightRagClient, "find_documents", lambda self, s: tuple(rows))
+    monkeypatch.setattr(LightRagClient, "delete_documents",
+                        lambda self, ids: (deleted.extend(ids), {"status": "ok"})[1])
+    monkeypatch.setattr(LightRagClient, "wait_until_absent",
+                        lambda self, ids, timeout=0.0: None)
+
+
+class TestRetractOwnershipGuard:
+    def test_refuses_when_instance_content_is_not_ours(self, monkeypatch, ws):
+        """实例上那份的出处头摘要 ≠ 本工作区当前摘要 ⇒ **拒绝**，且**一个 doc 都不删**。"""
+        rel = _write_artifact(ws, _probe_rel())
+        deleted: list = []
+        _stub_client(monkeypatch, [LightRagDocument(
+            doc_id="doc-foreign", file_path=artifact_file_source(rel), status="processed",
+            content_summary=_foreign_summary(rel))], deleted)
+
+        with pytest.raises(LightRagRetractRefused) as ei:
+            KnowledgeService(ws).retract_artifact(
+                rel, client=LightRagClient(base_url=DEAD_URL, api_key="x", timeout=1.0))
+        assert ei.value.code == "LIGHTRAG_RETRACT_REFUSED"
+        assert "doc-foreign" in str(ei.value), ei.value
+        assert deleted == [], "归属校验失败时**不得**调用删除（fail-closed）"
+
+    def test_refuses_when_local_artifact_missing(self, monkeypatch, ws):
+        """本地产物不存在 ⇒ 无从比对 ⇒ **拒绝**（要清理必须显式 `force=True`）。"""
+        rel = _probe_rel()                       # 刻意不落盘
+        deleted: list = []
+        _stub_client(monkeypatch, [], deleted)
+        with pytest.raises(LightRagRetractRefused) as ei:
+            KnowledgeService(ws).retract_artifact(
+                rel, client=LightRagClient(base_url=DEAD_URL, api_key="x", timeout=1.0))
+        assert "本地产物不存在" in str(ei.value)
+        assert deleted == []
+
+    def test_allows_and_stamps_verified_when_content_matches(self, monkeypatch, ws):
+        """摘要与本地当前内容一致 ⇒ 放行，且返回值标注 `verified=True` + 摘要。"""
+        rel = _write_artifact(ws, _probe_rel())
+        digest = hashlib.sha256((ws / rel).read_bytes()).hexdigest()
+        deleted: list = []
+        _stub_client(monkeypatch, [LightRagDocument(
+            doc_id="doc-ok", file_path=artifact_file_source(rel), status="processed",
+            content_summary=_own_summary(rel, digest))], deleted)
+
+        res = KnowledgeService(ws).retract_artifact(
+            rel, client=LightRagClient(base_url=DEAD_URL, api_key="x", timeout=1.0))
+        assert res["verified"] is True and res["sha256"] == digest
+        assert res["removed"] == ["doc-ok"] and deleted == ["doc-ok"]
+
+    def test_force_skips_verification_and_leaves_trace(self, monkeypatch, ws):
+        """`force=True` ⇒ 跳过校验但**留痕**（`verified=False`），绝不静默。"""
+        rel = _write_artifact(ws, _probe_rel())
+        deleted: list = []
+        _stub_client(monkeypatch, [LightRagDocument(
+            doc_id="doc-foreign", file_path=artifact_file_source(rel), status="processed",
+            content_summary=_foreign_summary(rel))], deleted)
+
+        res = KnowledgeService(ws).retract_artifact(
+            rel, client=LightRagClient(base_url=DEAD_URL, api_key="x", timeout=1.0), force=True)
+        assert res["verified"] is False and res["removed"] == ["doc-foreign"]
+        assert res["sha256"] == "" and deleted == ["doc-foreign"]
+
+
+class TestRetractGuardOnLiveInstance:
+    def test_changed_local_content_refuses_then_force_retracts(self, ws):
+        """真实例：发布后**改动本地产物** ⇒ 撤回被拒且**一份不删**；`force=True` 才放行并清干净。
+
+        环境三态各自断言（**不 skip**）：不可达 / 可达未授权 / 可达已授权（同本文件顶部纪律）。
+        """
+        marker = f"GUARD{uuid.uuid4().hex[:8].upper()}"
+        rel = _write_artifact(ws, _probe_rel(), body=f"# 归属校验探针 {marker}\n")
+        svc = KnowledgeService(ws)
+        client = LightRagClient.from_env()
+        source = artifact_file_source(rel)
+
+        if not client.available():
+            with pytest.raises(LightRagUnavailable):
+                svc.retract_artifact(rel, client=client)
+            return
+        try:
+            _pre_clean(client, source)
+            svc.publish_artifact(rel, client=client)
+        except LightRagHTTPError as exc:
+            assert exc.code == "LIGHTRAG_HTTP_ERROR"
+            assert any(s in str(exc) for s in ("401", "403")), (
+                f"LightRAG 可达却非鉴权失败 ⇒ 接入口径可能变了: {exc}")
+            return
+
+        try:
+            _wait_processed(client, source)
+            # 关键动作：**发布之后**改动本地产物 ⇒ 实例上那份的摘要不再等于当前摘要
+            (ws / rel).write_text(f"# 归属校验探针 {marker}\n\n**本地已改动**\n", encoding="utf-8")
+            with pytest.raises(LightRagRetractRefused) as ei:
+                svc.retract_artifact(rel, client=client, visibility_timeout=5.0)
+            assert ei.value.code == "LIGHTRAG_RETRACT_REFUSED"
+            assert client.find_documents(source), "拒绝时**不得**删除任何文档（fail-closed）"
+            forced = svc.retract_artifact(rel, client=client, force=True)
+            assert forced["verified"] is False and forced["removed"], forced
+            _assert_absent_stable(client, source)
+        finally:
+            _pre_clean(client, source)   # 本测试**自有**探针的收尾（唯一后缀 ⇒ 不触及他人文档）

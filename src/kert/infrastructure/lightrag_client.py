@@ -89,6 +89,18 @@ class LightRagArtifactRefused(LightRagError):
     code = "LIGHTRAG_ARTIFACT_REFUSED"
 
 
+class LightRagRetractRefused(LightRagError):
+    """撤回被**归属校验**拒绝：实例上该出处下的文档，其正文不是本工作区该产物的**当前内容**（D-34）。
+
+    背景（**实测事故**，2026-09-16）：`file_source` 由**确定性规则**派生（`artifact_file_source`），
+    与「谁发布的」无关 ⇒ 撞名时按出处撤回会删掉**他人的合法文档**（本轮真实发生：实例 docs 5→4、图 78/86→61/62）。
+    ⇒ 撤回前必须证明"这份正文 == 本工作区该产物的当前内容"（依据我们自写的**出处头**里的 `sha256`，
+    它在实例返回的 `content_summary` 头部窗口内可读）；**证明不了 ⇒ 拒绝，且一份都不删**（fail-closed）。
+    """
+
+    code = "LIGHTRAG_RETRACT_REFUSED"
+
+
 @dataclass(frozen=True)
 class LightRagCitation:
     """一处**出处**（lightRAG 的 reference）。"""
@@ -113,12 +125,17 @@ class LightRagResult:
 
 @dataclass(frozen=True)
 class LightRagDocument:
-    """已发布文档的一行状态（`POST /documents/paginated` 的条目）。"""
+    """已发布文档的一行状态（`POST /documents/paginated` 的条目）。
+
+    ``content_summary``：实例返回的**正文头部窗口**（实测：足以覆盖我们自写的出处头，含 `sha256`）
+    ⇒ 撤回前的**归属校验**依据（见 :class:`LightRagRetractRefused`）。
+    """
 
     doc_id: str
     file_path: str
     status: str
     chunks_count: int | None = None
+    content_summary: str = ""
 
 
 @dataclass(frozen=True)
@@ -328,7 +345,8 @@ class LightRagClient:
                         doc_id=str(row.get("id") or ""),
                         file_path=str(row.get("file_path") or ""),
                         status=str(row.get("status") or ""),
-                        chunks_count=row.get("chunks_count")))
+                        chunks_count=row.get("chunks_count"),
+                        content_summary=str(row.get("content_summary") or "")))
             if not rows:
                 return tuple(out)
             info = payload.get("pagination")
