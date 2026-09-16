@@ -10,8 +10,10 @@
 
 纪律
 ----
-- **校验先于产出**：资产漂移、与声明钉值不符、或与同版本目录既有 ``PLAN_LINEAGE.json``
-  的本体块不一致 ⇒ **抛具名错误且不写任何产物**；
+- **校验先于产出**：资产漂移、与声明钉值不符、与同版本目录既有 ``PLAN_LINEAGE.json``
+  的本体块不一致、或 **SHACL 实例校验未通过** ⇒ **抛具名错误且不写任何产物**；
+  SHACL 结论必须是**可判定且为真**（``conforms is True``）——"声明了 SHACL 却无实例图"
+  不算通过（``ONTOLOGY_INSTANCES_NOT_CONFORMING``，见 :func:`_assert_shacl_conforms`）；
 - 产物落卷走**同一工作区**（``ws``），不写仓库；重复执行是**幂等覆盖**（图先删后建）。
 """
 from __future__ import annotations
@@ -27,6 +29,7 @@ from ..domain import hashing, timeutil
 from ..domain.errors import ServiceNotReadyError
 from ..domain.ontology_assets import (
     CODE_ASSET_DECLARATION_MISMATCH,
+    CODE_INSTANCES_NOT_CONFORMING,
     ROLE_INSTANCES,
     ROLE_SHACL,
     OntologyAssetError,
@@ -64,7 +67,8 @@ def materialize_ontology(workspace: Path | str,
     :param version: 目标版本目录；``None`` ⇒ 取 ``CURRENT.md`` 的活动版本（无活动投影则拒绝）。
     :param assets_source: 受控源目录（如 ``examples/.../90_control/ontology``）；
         给出时先用 :func:`~kert.domain.ontology_assets.ensure_assets` 引入工作区。
-    :raises OntologyAssetError: 资产缺失/漂移/与声明不一致/与既有计划血缘不一致（**具名**）。
+    :raises OntologyAssetError: 资产缺失/漂移/与声明不一致/与既有计划血缘不一致/
+        **SHACL 实例校验未通过（或不可判）**（**具名**）。
     :raises ServiceNotReadyError: 无活动版本且未显式给 ``version``。
     :returns: ``{service_id, version, counts, files, graph, lineage_path}``。
     """
@@ -97,6 +101,7 @@ def materialize_ontology(workspace: Path | str,
         shacl_path=(assets.get(ROLE_SHACL).path if assets.get(ROLE_SHACL) else None),
         instances_path=(assets.get(ROLE_INSTANCES).path if assets.get(ROLE_INSTANCES) else None),
     )
+    _assert_shacl_conforms(summary, assets)     # 校验先于产出：违规 ⇒ 具名拒绝，不写任何产物
 
     vdir.mkdir(parents=True, exist_ok=True)
     rows_classes = [{"id": c.iri, "label": c.label, "parents": "|".join(c.parents)}
@@ -111,6 +116,7 @@ def materialize_ontology(workspace: Path | str,
     _write_parquet(vdir / "ontology_shapes.parquet", rows_shapes, _SHAPES_COLUMNS)
 
     graph = _build_graph(vdir, rows_classes, rows_props, rows_shapes)
+    instances_asset = assets.get(ROLE_INSTANCES)
     lineage = {
         "schema": SCHEMA_LINEAGE,
         "builtAt": timeutil.ts_utc(),
@@ -122,6 +128,13 @@ def materialize_ontology(workspace: Path | str,
         "assets": [{"file": a.file, "authoritySource": a.authority_source, "role": a.role,
                     "bytes": a.bytes, "contentSha256": a.content_sha256} for a in assets.assets],
         "graph": graph,
+        # SHACL 判据的**结论留痕**：产出这件事本身就带上了"哪份 shapes 对哪份实例图判过、判成什么"
+        "shaclValidation": {
+            "conforms": summary.instances_conforms,
+            "violations": summary.instance_violations,
+            "shapes": summary.shape_count,
+            "instancesFile": instances_asset.file if instances_asset is not None else None,
+        },
         "ontology": _ontology_block(res, assets),
     }
     (vdir / "ONTOLOGY.md").write_text(
@@ -136,6 +149,32 @@ def materialize_ontology(workspace: Path | str,
 # --------------------------------------------------------------------------- #
 # 内部
 # --------------------------------------------------------------------------- #
+
+def _assert_shacl_conforms(summary, assets) -> None:  # noqa: ANN001
+    """SHACL 判据必须**可判定且为真**；否则**具名拒绝**（``ONTOLOGY_INSTANCES_NOT_CONFORMING``）。
+
+    两档（同一具名码，拒绝语义一致）：
+
+    1. ``conforms is False`` ⇒ 实例图**违反** shapes：给出违规条数（来自真实 pyshacl 结果）；
+    2. ``conforms is None``（声明了 SHACL 却没有实例图可判）⇒ **不**当作"无事发生"——
+       否则"删掉实例图"就等于把校验绕过去了（fail-open）。
+
+    未声明 SHACL（``shacl_path is None``）时保持既有语义：无约束可判 ⇒ 放行。
+    """
+    if assets.get(ROLE_SHACL) is None:
+        return
+    if summary.instances_conforms is None:
+        raise OntologyAssetError(
+            CODE_INSTANCES_NOT_CONFORMING,
+            f"声明了 SHACL（{assets.get(ROLE_SHACL).file}）但没有实例图可判（缺 "
+            f"{ROLE_INSTANCES} 资产）⇒ 拒绝物化：**未校验**不得充当通过（fail-closed）")
+    if not summary.instances_conforms:
+        raise OntologyAssetError(
+            CODE_INSTANCES_NOT_CONFORMING,
+            f"SHACL 实例校验未通过 ⇒ 拒绝物化：conforms=false，违规 "
+            f"{summary.instance_violations} 条（shapes={summary.shape_count}，"
+            f"实例图={assets.get(ROLE_INSTANCES).file}）")
+
 
 def _declared_resolution(ws: Path):  # noqa: ANN202
     """读工作区的本体引用声明解析结果（未供给 ⇒ ``None``，不视为错误）。"""
