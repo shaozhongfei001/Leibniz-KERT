@@ -1,0 +1,13 @@
+{
+  "schema": "knowledge_map/v1",
+  "mapId": "KM-CORP-RM-MEMORY",
+  "version": "1.0.0",
+  "title": "企业客户经理 · 交互记忆抽取知识地图",
+  "domain": "customer",
+  "tasks": ["INTERACTION_MEMORY_EXTRACTION"],
+  "priority": 50,
+  "assetRefs": [],
+  "skillRefs": ["SP-21"],
+  "routePolicyRef": "RP-KERT-BANKFRONT-001",
+  "notes": "assetRefs 为空是**如实**结果：SP-21（_run_interaction_memory → InteractionMemoryExecutor）不从工作区读任何受治理知识资产——它只用请求 context（interactionId / interactionContent / existingMemories）并调 LLM 抽取候选记忆，trace 里**没有** kiId。故本地图只承担「路由与门禁」职责，不虚构资产绑定；一旦该技能改为按计划读资产，tests/integration/test_control_plane_consistency.py 会因「trace 出现 kiId 而地图未声明」变红，必须同步本文件。taskType=INTERACTION_MEMORY_EXTRACTION 为本批新登记：AC-ONGOING-ENGAGEMENT-001 的正文描述「每次交互后经 SP-21 抽取候选记忆」但 front matter **未**声明 taskType，故按既有命名口径新登记，不改动该合同。activationContractRef 仍留空（不虚构绑定）。"
+}

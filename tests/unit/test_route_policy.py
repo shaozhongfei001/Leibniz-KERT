@@ -36,6 +36,11 @@ REAL_ROUTES = {
     "OUTREACH_PREPARATION": "KM-CORP-RM-OUTREACH",
     "MEETING_PREPARATION": "KM-CORP-RM-MEETING",
     "PRE_VISIT_PREPARATION": "KM-CORP-RM-PREVISIT",
+    # M7 ②：新增纳入计划门禁的 4 个技能（此前由 defaultDecision=DENY 绕过门禁）
+    "SUPPLY_CHAIN_GRAPH_ANALYSIS": "KM-CORP-RM-SUPPLYCHAIN",
+    "PRODUCT_RECOMMENDATION_DECISION": "KM-CORP-RM-PRODUCT",
+    "SERVICE_PROPOSAL_PREPARATION": "KM-CORP-RM-PROPOSAL",
+    "INTERACTION_MEMORY_EXTRACTION": "KM-CORP-RM-MEMORY",
 }
 
 
@@ -87,15 +92,17 @@ def _write_map(ws: Path, map_id: str, *, tasks: list[str], route_policy_ref: str
 # 真实工作区
 # --------------------------------------------------------------------------- #
 
-def test_real_workspace_policy_routes_three_tasks():
+def test_real_workspace_policy_routes_all_declared_tasks():
     resolver = RouteResolver.load(REAL_WS)
     policy = resolver.policy
 
     assert policy is not None, f"{policy_path(REAL_WS)} 必须存在"
     assert policy.policy_id == "RP-KERT-BANKFRONT-001"
-    assert policy.version == "1.0.0"
+    # M7 ②：策略受治理内容变更（3 → 7 条规则）⇒ 版本必须升（否则同一版本号承载两份不同内容，
+    # 版本合同失效、planHash 失去可追溯性）
+    assert policy.version == "1.1.0"
     assert policy.default_decision == "DENY"
-    assert len(policy.rules) == 3, [r.task_type for r in policy.rules]
+    assert len(policy.rules) == len(REAL_ROUTES) == 7, [r.task_type for r in policy.rules]
     assert policy.ambiguous_task_types == ()
 
     for task, expected_map in REAL_ROUTES.items():
@@ -103,7 +110,7 @@ def test_real_workspace_policy_routes_three_tasks():
         assert res.allowed, f"{task} 应被放行，实际 {res.code}: {res.reason}"
         assert res.map is not None and res.map.map_id == expected_map
         assert res.rule is not None and res.rule.reason, "路由必须可解释（reason 非空）"
-        assert res.policy_key == "RP-KERT-BANKFRONT-001@1.0.0"
+        assert res.policy_key == "RP-KERT-BANKFRONT-001@1.1.0"
         # 地图与策略双侧一致：地图也声明了该策略引用
         assert res.map.route_policy_ref == policy.policy_id
 

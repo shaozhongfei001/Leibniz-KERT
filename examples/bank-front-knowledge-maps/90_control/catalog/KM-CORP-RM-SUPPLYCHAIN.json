@@ -1,0 +1,17 @@
+{
+  "schema": "knowledge_map/v1",
+  "mapId": "KM-CORP-RM-SUPPLYCHAIN",
+  "version": "1.0.0",
+  "title": "企业客户经理 · 供应链图谱分析知识地图",
+  "domain": "customer",
+  "tasks": ["SUPPLY_CHAIN_GRAPH_ANALYSIS"],
+  "priority": 20,
+  "assetRefs": [
+    {"assetId": "KI-FRONT-001", "required": true, "sequence": 1},
+    {"assetId": "KI-FRONT-002", "required": true, "sequence": 2},
+    {"assetId": "KI-FRONT-003", "required": true, "sequence": 3}
+  ],
+  "skillRefs": ["bank-front-supply-chain-graph"],
+  "routePolicyRef": "RP-KERT-BANKFRONT-001",
+  "notes": "assetRefs = _run_supply_chain（src/kert/application/skills.py）实际读取并逐条记入 trace 的三条知识条目（KI-FRONT-001 公司供应链图谱 / KI-FRONT-002 产业链八维研判 / KI-FRONT-003 行内变动行为）——该一致性**不由本字段自述背书**，由 tests/integration/test_control_plane_consistency.py 机械核对（比对技能自己产出的 trace kiId 序列）。taskType=SUPPLY_CHAIN_GRAPH_ANALYSIS 为本批新登记：本仓既有受控件（激活合同 / 路由策略 / OpenAPI 示例）中**无**该任务类型的既有出处，技能包 SKILL.md 的「对应任务 TASK-FRONT-002」是 GITS 侧任务节点、不是 KERT taskType，故不挪用。activationContractRef 仍留空（不虚构绑定）。"
+}

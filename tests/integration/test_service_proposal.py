@@ -34,8 +34,13 @@ CTX = {
 
 
 @pytest.fixture
-def svc():
-    return SkillExecutionService()
+def svc(ws_provisioned):
+    """SP-20 自 M7 ② 起纳入**计划门禁**：执行前须有已供给控制面的工作区。
+
+    未供给 ⇒ 具名拒绝（``KERT_PERMISSION_DENIED`` + ``detail.routeCode``），
+    该拒绝路径本身由 ``tests/integration/test_skill_route_gate.py`` 覆盖。
+    """
+    return SkillExecutionService(ws_provisioned)
 
 
 class TestSp20Sync:
@@ -79,8 +84,8 @@ class TestSp20Sync:
 
 
 class TestSp20Async:
-    def test_async_job_flow(self, ws):
-        app = create_app(ws)
+    def test_async_job_flow(self, ws_provisioned):
+        app = create_app(ws_provisioned)
         with TestClient(app) as client:
             resp = client.post("/api/skill/execute", json={
                 "skillId": "SP-20", "requestId": "sp20-a-1",
@@ -102,8 +107,8 @@ class TestSp20Async:
             assert "skill_result" in result
             assert result["skill_result"]["status"] == "ok"
 
-    def test_async_report_url(self, ws):
-        app = create_app(ws)
+    def test_async_report_url(self, ws_provisioned):
+        app = create_app(ws_provisioned)
         with TestClient(app) as client:
             r = client.post("/api/skill/execute", json={
                 "skillId": "SP-20", "requestId": "sp20-a-2",

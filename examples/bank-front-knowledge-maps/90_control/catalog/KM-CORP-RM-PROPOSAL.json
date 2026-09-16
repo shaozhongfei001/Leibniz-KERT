@@ -1,0 +1,13 @@
+{
+  "schema": "knowledge_map/v1",
+  "mapId": "KM-CORP-RM-PROPOSAL",
+  "version": "1.0.0",
+  "title": "企业客户经理 · 对公客户服务建议书知识地图",
+  "domain": "customer",
+  "tasks": ["SERVICE_PROPOSAL_PREPARATION"],
+  "priority": 40,
+  "assetRefs": [],
+  "skillRefs": ["SP-20"],
+  "routePolicyRef": "RP-KERT-BANKFRONT-001",
+  "notes": "assetRefs 为空是**如实**结果：SP-20（_run_service_proposal → ServiceProposalExecutor）当前不经控制面读取受治理知识资产——它读的是技能包目录 skills/service-proposal/（章节模板、行业框架、财务框架、GATE-BIZ-* 闸门清单），trace 里**没有** kiId。故本地图只承担「路由与门禁」职责，不虚构资产绑定；一旦该技能改为按计划读资产，tests/integration/test_control_plane_consistency.py 会因「trace 出现 kiId 而地图未声明」变红，必须同步本文件。taskType=SERVICE_PROPOSAL_PREPARATION 为本批新登记：本仓既有受控件（AC-SERVICE-PROPOSAL-001/002、AC-ONGOING-ENGAGEMENT-001 的 front matter）**未**声明 taskType，故此处只按既有 `<域>_<动作>` 命名口径新登记，不改动任何既有合同。activationContractRef 仍留空（不虚构绑定）。"
+}

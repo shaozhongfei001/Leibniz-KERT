@@ -1,0 +1,13 @@
+{
+  "schema": "knowledge_map/v1",
+  "mapId": "KM-CORP-RM-PRODUCT",
+  "version": "1.0.0",
+  "title": "企业客户经理 · 产品适配与综合方案知识地图",
+  "domain": "customer",
+  "tasks": ["PRODUCT_RECOMMENDATION_DECISION"],
+  "priority": 30,
+  "assetRefs": [],
+  "skillRefs": ["SP-15"],
+  "routePolicyRef": "RP-KERT-BANKFRONT-001",
+  "notes": "assetRefs 为空是**如实**结果：SP-15（_run_sp15 → Sp15SkillExecutor）当前不经控制面读取受治理知识资产——它读的是技能包/示例目录里的产品卡与规则包（examples/product-recommendation-assets、skills/product-recommendation/rules），trace 里**没有** kiId。故本地图只承担「路由与门禁」职责，不虚构资产绑定；一旦该技能改为按计划读资产，tests/integration/test_control_plane_consistency.py 会因「trace 出现 kiId 而地图未声明」变红，必须同步本文件。taskType=PRODUCT_RECOMMENDATION_DECISION 取自**既有权威件** skills/product-recommendation/activation-contracts/AC-PRODUCT-RECOMMEND-001.md（其 skills 列表亦含 SP-15），不新造。activationContractRef 仍留空（不虚构绑定）。"
+}

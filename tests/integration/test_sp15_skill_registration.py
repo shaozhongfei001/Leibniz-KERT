@@ -58,9 +58,14 @@ KEY_RESULT_ARRAYS = (
 
 
 @pytest.fixture
-def client(ws):
-    """进程内 TestClient（create_app 注入工作区 → SP-15 注册）。"""
-    app = create_app(ws)
+def client(ws_provisioned):
+    """进程内 TestClient（create_app 注入**已供给**工作区 → SP-15 注册 + 计划门禁可放行）。
+
+    M7 ② 起 SP-15 纳入计划门禁：未供给控制面的工作区会在执行前被具名拒绝
+    （``KERT_PERMISSION_DENIED`` + ``ROUTE_POLICY_ABSENT``），故执行类用例必须用
+    :func:`tests.conftest.ws_provisioned`；拒绝路径见 ``test_skill_route_gate.py``。
+    """
+    app = create_app(ws_provisioned)
     return TestClient(app)
 
 

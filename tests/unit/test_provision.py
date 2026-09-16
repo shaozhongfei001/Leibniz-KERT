@@ -32,13 +32,22 @@ CATALOG = "90_control/catalog"
 SCHEMA_DIR = "90_control/schema"
 ONTOLOGY_DIR = "90_control/ontology"
 
-#: 内置本体资产（M7-⑤ 起由 `kert provision` 供给）：4 件资产 + provenance（信任锚）
-ONTOLOGY_FILES = ("gits-core.owl.ttl", "gits-core.shacl.ttl", "products.ttl",
-                  "customer-source-mapping.r2rml.ttl", "PROVENANCE.json")
+#: 受控源的地图清单（**从源推导**：M7 ② 起 7 张；新增地图只改源，不改本文件 ——
+#: PR #6 的教训：硬编码总数会让"供给面按设计扩了"表现为假红）
+MAP_FILES = tuple(sorted(p.name for p in (SOURCE / CATALOG).glob("KM-*.json")))
+MAP_COUNT = len(MAP_FILES)
 
-#: 供给清单文件数（3 张地图 + route_policy + ontology_reference + knowledge_sources
-#: + 内置本体 ONTOLOGY_FILES）
-PROVISION_ITEM_COUNT = 6 + len(ONTOLOGY_FILES)
+#: 内置本体资产（M7-⑤ 起由 `kert provision` 供给）：从源目录推导（4 件资产 + provenance）
+ONTOLOGY_FILES = tuple(sorted(p.name for p in (SOURCE / ONTOLOGY_DIR).iterdir()
+                              if p.is_file()))
+
+#: 非地图类 schema 声明：route_policy + ontology_reference + knowledge_sources
+SCHEMA_DECLARATIONS = 3
+
+#: **核心**供给面（必有）：地图 + 3 类 schema 声明。仅作**防空转下限**用。
+#: 总数**不写死**（PR #6 的教训）：可选供给面（内置本体资产等）由各自批次接入，
+#: 相关断言一律写成"与源逐份一致"或"与本次 ``r.items`` 自洽"的**关系式/不变式**。
+CORE_ITEM_COUNT = MAP_COUNT + SCHEMA_DECLARATIONS
 
 
 @pytest.fixture
@@ -63,16 +72,23 @@ def source_copy(tmp_path: Path) -> Path:
 def test_creates_all_control_plane_files(target):
     r = provision_control_plane(target, SOURCE)
 
-    assert r.map_count == 3
+    # 防空转：源侧声明数异常收缩（删地图/删本体资产）会让下面"逐份存在"的比对失去意义
+    assert MAP_COUNT >= 7, f"受控源地图数 {MAP_COUNT} < 7（M7 ② 起应为 7 张）"
+    assert len(ONTOLOGY_FILES) >= 5, f"受控源本体资产 {len(ONTOLOGY_FILES)} < 5"
+
+    assert r.map_count == MAP_COUNT
     assert r.policy_id == "RP-KERT-BANKFRONT-001"
-    assert r.policy_version == "1.0.0"
-    assert r.counts() == {ACTION_CREATED: PROVISION_ITEM_COUNT, ACTION_UPDATED: 0,
+    # M7 ②：策略受治理内容变更（3 → 7 条规则）⇒ 版本必须升（否则同一版本号承载两份不同内容，
+    # 版本合同失效、planHash 失去可追溯性）
+    assert r.policy_version == "1.1.0"
+    # 不变式：首次供给 ⇒ **全部**新建（总数用 len(r.items)，不写死）
+    assert r.counts() == {ACTION_CREATED: len(r.items), ACTION_UPDATED: 0,
                           ACTION_UNCHANGED: 0}
+    assert len(r.items) >= CORE_ITEM_COUNT, f"供给份数 {len(r.items)} 低于核心下限"
     assert r.changed() is True
     assert r.manifest_rel == f"{CATALOG}/provision_manifest.json"
 
-    assert sorted(p.name for p in (target / CATALOG).glob("KM-*.json")) == [
-        "KM-CORP-RM-MEETING.json", "KM-CORP-RM-OUTREACH.json", "KM-CORP-RM-PREVISIT.json"]
+    assert sorted(p.name for p in (target / CATALOG).glob("KM-*.json")) == list(MAP_FILES)
     assert (target / SCHEMA_DIR / "route_policy.json").is_file()
     assert (target / SCHEMA_DIR / "ontology_reference.json").is_file()
     # M7.1-A 第 4 类：知识源能力声明（若从 _plan_items 移除本项，本断言必红）
@@ -80,18 +96,25 @@ def test_creates_all_control_plane_files(target):
 
     manifest = json.loads((target / r.manifest_rel).read_text(encoding="utf-8"))
     assert manifest["schema"] == "control_plane_provision/v1"
-    assert len(manifest["items"]) == PROVISION_ITEM_COUNT
+    # 不变式：留痕份数 == 本次实际供给份数（不写死总数）
+    assert len(manifest["items"]) == len(r.items)
     assert all(len(i["sha256"]) == 64 for i in manifest["items"])
-    assert sorted(i["relPath"] for i in manifest["items"]) == sorted([
-        f"{CATALOG}/KM-CORP-RM-MEETING.json",
-        f"{CATALOG}/KM-CORP-RM-OUTREACH.json",
-        f"{CATALOG}/KM-CORP-RM-PREVISIT.json",
-        f"{SCHEMA_DIR}/route_policy.json",
-        f"{SCHEMA_DIR}/ontology_reference.json",
-        f"{SCHEMA_DIR}/{KNOWLEDGE_SOURCES_FILENAME}",
-        # M7-⑤：内置本体资产（含 provenance）—— 若从供给面移除任一份，本断言必红
-        *[f"{ONTOLOGY_DIR}/{n}" for n in ONTOLOGY_FILES],
-    ])
+
+    # 供给面**两向**钉住（不写死总数）：
+    #   ① 下限 = 核心声明（地图 + 3 类 schema 声明）必须逐份供给；
+    #   ② 上限 = 只允许本清单内的项（新出现未登记项 ⇒ 变红，须在此显式登记）。
+    core = ({f"{CATALOG}/{n}" for n in MAP_FILES}
+            | {f"{SCHEMA_DIR}/route_policy.json",
+               f"{SCHEMA_DIR}/ontology_reference.json",
+               f"{SCHEMA_DIR}/{KNOWLEDGE_SOURCES_FILENAME}"})
+    allowed = core | {f"{ONTOLOGY_DIR}/{n}" for n in ONTOLOGY_FILES}
+    rel_paths = {i["relPath"] for i in manifest["items"]}
+    assert core <= rel_paths, f"核心供给面缺份: {sorted(core - rel_paths)}"
+    assert rel_paths <= allowed, f"供给面出现未登记项: {sorted(rel_paths - allowed)}"
+    # 可选供给面若已接入，份数必须与源**逐份**一致（不可少、不可多）
+    got_onto = {k for k in rel_paths if k.startswith(f"{ONTOLOGY_DIR}/")}
+    if got_onto:
+        assert got_onto == {f"{ONTOLOGY_DIR}/{n}" for n in ONTOLOGY_FILES}, "本体供给份与源不一致"
 
 
 def test_idempotent_second_run_rewrites_nothing(target):
@@ -102,7 +125,7 @@ def test_idempotent_second_run_rewrites_nothing(target):
 
     second = provision_control_plane(target, SOURCE)
     assert second.counts() == {ACTION_CREATED: 0, ACTION_UPDATED: 0,
-                               ACTION_UNCHANGED: PROVISION_ITEM_COUNT}
+                               ACTION_UNCHANGED: len(second.items)}
     assert second.changed() is False
     assert {p.name: p.stat().st_mtime_ns for p in (target / CATALOG).glob("KM-*.json")} == mtimes
 
@@ -117,7 +140,7 @@ def test_source_change_yields_updated_only_for_that_file(target, source_copy):
 
     r = provision_control_plane(target, source_copy)
     assert r.counts() == {ACTION_CREATED: 0, ACTION_UPDATED: 1,
-                          ACTION_UNCHANGED: PROVISION_ITEM_COUNT - 1}
+                          ACTION_UNCHANGED: len(r.items) - 1}
     updated = [i for i in r.items if i.action == ACTION_UPDATED]
     assert updated[0].rel_path == f"{CATALOG}/KM-CORP-RM-MEETING.json"
     assert "（改）" in (target / CATALOG / "KM-CORP-RM-MEETING.json").read_text(encoding="utf-8")
@@ -136,11 +159,7 @@ def test_dry_run_writes_nothing(target):
 # fail-closed：源非法 ⇒ 一份都不写
 # --------------------------------------------------------------------------- #
 
-@pytest.mark.parametrize("bad_name", [
-    "KM-CORP-RM-MEETING.json",
-    "KM-CORP-RM-OUTREACH.json",
-    "KM-CORP-RM-PREVISIT.json",
-])
+@pytest.mark.parametrize("bad_name", MAP_FILES)
 def test_invalid_map_writes_nothing(target, source_copy, bad_name):
     """**逐份**破坏源内每一张地图：任一份非法 ⇒ 一份都不写。
 
@@ -215,7 +234,7 @@ def test_source_without_knowledge_sources_is_tolerated(target, source_copy):
     (source_copy / SCHEMA_DIR / KNOWLEDGE_SOURCES_FILENAME).unlink()
 
     r = provision_control_plane(target, source_copy)
-    assert r.counts() == {ACTION_CREATED: PROVISION_ITEM_COUNT - 1, ACTION_UPDATED: 0,
+    assert r.counts() == {ACTION_CREATED: len(r.items), ACTION_UPDATED: 0,
                           ACTION_UNCHANGED: 0}
     assert not (target / SCHEMA_DIR / KNOWLEDGE_SOURCES_FILENAME).exists()
     assert resolve_declaration(target).code == CODE_DECLARATION_ABSENT
@@ -287,7 +306,8 @@ def test_provisioned_workspace_serves_routing(target):
 
     c = TestClient(create_app(target))
     listed = c.get("/v1/knowledge-maps").json()["data"]
-    assert listed["count"] == 3
+    # 推导式：与受控源的地图张数一致（M7 ② 起为 7；不写死）
+    assert listed["count"] == MAP_COUNT
     assert listed["policy"]["policyId"] == "RP-KERT-BANKFRONT-001"
 
     plan = c.post("/v1/routing/plan",
@@ -323,4 +343,4 @@ def test_provisioned_workspace_can_load_knowledge_sources(target):
     assert ws_plan.to_dict()["planHash"] == src_plan.to_dict()["planHash"]
     assert "knowledgeSources" not in ws_plan.to_dict()["versions"]
     # 反空转：工作区确实被供给过（否则上面的相等可能是"两边都拒绝"的假相等）
-    assert len(KnowledgeMapRegistry.load(target).maps) == 3
+    assert len(KnowledgeMapRegistry.load(target).maps) == MAP_COUNT
