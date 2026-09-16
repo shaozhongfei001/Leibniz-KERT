@@ -5,6 +5,8 @@
 """
 from __future__ import annotations
 
+from ..domain.fact_label import CUSTOMER_SAFE_LABELS, FACT_LABELS, PENDING_LABEL
+
 RULES = [
     {"ruleId": "CITATION_REQUIRED", "description": "所有断言必须有引用，标注来源和日期", "enforcement": "BLOCKING"},
     {"ruleId": "NO_UNDISCLOSED_DEGRADATION", "description": "不得隐瞒风险降级，内部版风险红旗必须保留", "enforcement": "BLOCKING"},
@@ -14,7 +16,8 @@ RULES = [
     {"ruleId": "NO_COMMITMENT_WITHOUT_APPROVAL", "description": "未经G3审批的内容不得以承诺性表述呈现", "enforcement": "BLOCKING"},
 ]
 
-VALID_LABELS = {"F", "C", "B", "H", "P", "A"}
+# 标签值域的唯一出处：``kert.domain.fact_label.FACT_LABELS``（D-28 层 2 立源；
+# 生产者/消费者**不得**再写字面量集合，否则改名会静默改变放行/过滤行为）。
 
 
 def evaluate(chapters: list[dict], customer_version: dict | None, gate_state: dict) -> dict:
@@ -39,7 +42,7 @@ def evaluate(chapters: list[dict], customer_version: dict | None, gate_state: di
 
     # FACT_LABEL_MANDATORY：标签必填且合法
     for c in claims:
-        if c.get("factLabel") not in VALID_LABELS:
+        if c.get("factLabel") not in FACT_LABELS:
             violations.append({
                 "ruleId": "FACT_LABEL_MANDATORY", "severity": "BLOCKING",
                 "message": f"断言缺少合法事实标签（{c.get('chapterRef')}）：{c.get('claim', '')[:60]}",
@@ -47,7 +50,7 @@ def evaluate(chapters: list[dict], customer_version: dict | None, gate_state: di
 
     # DUAL_VERSION_PRINCIPLE：对客版仅 F/A（过滤引擎保证；此处复核）
     if customer_version:
-        leaked = [c for c in claims if c.get("factLabel") not in ("F", "A")]
+        leaked = [c for c in claims if c.get("factLabel") not in CUSTOMER_SAFE_LABELS]
         for c in leaked:
             if c.get("claim") and c["claim"] in (customer_version.get("content") or ""):
                 violations.append({
@@ -58,7 +61,7 @@ def evaluate(chapters: list[dict], customer_version: dict | None, gate_state: di
     # NO_COMMITMENT_WITHOUT_APPROVAL：P 标签断言在 G3 前不得以承诺呈现（对客版不得含 P）
     g3_passed = "G3" in (gate_state.get("passed") or [])
     for c in claims:
-        if c.get("factLabel") == "P" and not g3_passed and customer_version and \
+        if c.get("factLabel") == PENDING_LABEL and not g3_passed and customer_version and \
                 c.get("claim") in (customer_version.get("content") or ""):
             violations.append({
                 "ruleId": "NO_COMMITMENT_WITHOUT_APPROVAL", "severity": "BLOCKING",
