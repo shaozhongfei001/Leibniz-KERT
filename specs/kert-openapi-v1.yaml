@@ -52,13 +52,20 @@ info:
       同轮同步 3 处孤儿引用：`examples/gits_adapter/python/kert_client.py`、
       `examples/gits_adapter/curl/list_skills.sh`（已失去意义 ⇒ **删除**）、
       `docs/development/M3_PLAN_GITS_INTEGRATION.md`。
+    - **v1.6.1 补丁（2026-09-16，更正性，非语义增量）**：**值域更正** —— `JobStatusData.status.enum`
+      原声明 **4 值**（`[PENDING, RUNNING, COMPLETED, FAILED]`）**窄于实现**：实现可达域为 `JOB_STATES`
+      （`src/kert/domain/states.py:11-14`，**9 值**），且仓内合同源 `src/kert/domain/contracts/specs.py:585`
+      （`FieldSpec("status", …, enum=list(JOB_STATES))`）**早已是 9 值** ⇒ 本合同与该源**不一致**，
+      属"合同窄于实现"的**更正**（**不改**任何请求/响应形状、不改状态机、不改状态码）。
+      同轮落**值域机械核对用例**（`tests/unit/test_contract_enum_single_source.py`）：
+      合同 `enum == list(JOB_STATES)`；**若日后合同要写子集 ⇒ 必须显式登记 + 写明理由**，否则该用例红。
 
     权威契约：`docs/skill-execute-api-contract-v1.4.md`
     v1.5 变更说明：`evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md`
     **追认：Contract Owner 于 2026-09-15 批准**（含上述 assemblyTrace 类型修正）；
     登记：`docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md` §0.1
     本文档为**运行中权威**（服务实际实现）；v2 候选未批准，归并列 W8/Phase 0 收口（冲突 C-20）
-  version: "1.6.0"
+  version: "1.6.1"
   contact:
     name: KERT Team
   license:
@@ -1545,8 +1552,8 @@ components:
           example: SKILL
         status:
           type: string
-          enum: [PENDING, RUNNING, COMPLETED, FAILED]
-          description: Job 业务状态（与信封 `status` 不同义）
+          enum: [PENDING, RUNNING, VALIDATING, COMPLETED, FAILED, CANCEL_REQUESTED, CANCELLED, RETRYING, BLOCKED]
+          description: Job 业务状态（与信封 `status` 不同义）；v1.6.1 起与 `JOB_STATES` 九值对齐
         requested_by:
           type: string
         idempotency_key:
