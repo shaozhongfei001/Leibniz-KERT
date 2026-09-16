@@ -36,7 +36,9 @@ def client() -> TestClient:
 
 def test_spec_declares_the_three_paths_and_schemas():
     spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
-    assert spec["info"]["version"] == "1.5.1"
+    # 版本钉：随 Contract Owner 批准的 bump 同步（1.5.1 → **1.6.0**，A-6 九条登记 + A-9 删除）。
+    # 本用例的**主旨**是"路由三路径与 schema 确已在合同中声明"，版本钉只是防意外改版本号。
+    assert spec["info"]["version"] == "1.6.0"
     for path in ("/v1/knowledge-maps", "/v1/knowledge-maps/{mapId}", "/v1/routing/plan"):
         assert path in spec["paths"], path
     schemas = spec["components"]["schemas"]

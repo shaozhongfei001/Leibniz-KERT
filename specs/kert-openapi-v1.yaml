@@ -39,13 +39,26 @@ info:
       另：`/v1/*` 下 **9 条已实现但未登记**的路径属 **additive 扩展**（非形状更正），
       不并入本补丁，另出提案待 Contract Owner 追认：
       `evidence/m7-3/PROPOSAL_REGISTER_UNDECLARED_V1_PATHS.md`。
+    - **v1.6.0（2026-09-16，Contract Owner 已批：A-6 选 A / A-9 删除）**：
+      ① **A-6（additive）**：登记 9 条**已实现但合同未声明**的 `/v1/*` 路径 ——
+      `/v1/extractions`、`/v1/extractions/{job_id}/result`、`/v1/entities/{entity_id}`、
+      `/v1/data/query`、`/v1/search`、`/v1/graph/query`、`/v1/rules/evaluate`、
+      `/v1/evidence/{object_id}`、`/v1/catalog`。**不改**任何既有路径 / 字段 / 状态码；
+      每条配**机械核对用例**（`tests/integration/test_contract_shape_conformance.py`）
+      与**集合级防复发断言**（合同 `/v1/*` 路径集合 == 实现 `app.routes` 集合 ± 显式豁免清单）。
+      提案：`evidence/m7-3/PROPOSAL_REGISTER_UNDECLARED_V1_PATHS.md`。
+      ② **A-9（删除项，单列，不计入上述"9 条新增"计数）**：`GET /v1/skills` **已从本合同移除**
+      （Owner 裁定 2026-09-16）—— 该端点**声明了但实现不存在**（"声明了但不存在"比"未声明"更坏）；
+      同轮同步 3 处孤儿引用：`examples/gits_adapter/python/kert_client.py`、
+      `examples/gits_adapter/curl/list_skills.sh`（已失去意义 ⇒ **删除**）、
+      `docs/development/M3_PLAN_GITS_INTEGRATION.md`。
 
     权威契约：`docs/skill-execute-api-contract-v1.4.md`
     v1.5 变更说明：`evidence/m7-3/CONTRACT_CHANGE_PROPOSAL_ROUTING_API.md`
     **追认：Contract Owner 于 2026-09-15 批准**（含上述 assemblyTrace 类型修正）；
     登记：`docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md` §0.1
     本文档为**运行中权威**（服务实际实现）；v2 候选未批准，归并列 W8/Phase 0 收口（冲突 C-20）
-  version: "1.5.1"
+  version: "1.6.0"
   contact:
     name: KERT Team
   license:
@@ -127,40 +140,271 @@ paths:
                     name: 交互记忆抽取
                     version: "1.0.0"
 
-  /v1/skills:
-    get:
-      tags: [Skill]
-      summary: 列出可用 Skill
-      description: 返回所有已注册 Skill 的详细信息，包括参数定义和闸门要求
-      operationId: listSkills
+  # ── v1.6.0 / A-6：9 条「已实现但合同未声明」的 /v1/* 路径 ──
+  # 依据：evidence/m7-3/PROPOSAL_REGISTER_UNDECLARED_V1_PATHS.md（Owner 已批：A-6 选 A）
+  # 机械核对用例：tests/integration/test_contract_shape_conformance.py
+  # 说明：新增条目一律写法与实现逐字段对齐；**查询参数 `as_of` 等此前无从得知者**
+  # 在 description 中显式标注「实现有、此前未声明」。
+  /v1/extractions:
+    post:
+      tags: [Query]
+      summary: 提交领域抽取作业（异步，202）
+      description: |
+        **v1.6.0 新增（A-6）**：此前已实现但合同未声明。
+        实现 `extract()` @ `src/kert/api/server.py:499-528`；请求模型 `ExtractionRequest`（`:151-158`）。
+        ⚠ 本响应**不走** `_response()` 生成器：实现**手写信封**（`:516-526`），
+        `status` 取值为 **`ACCEPTED`**（与其余 `/v1/*` 端点的 `OK` **不同义**）。
+      operationId: createExtraction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExtractionRequest"
       responses:
-        "200":
-          description: Skill 列表
+        "202":
+          description: 已受理（写 Work）
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SkillListResponse"
-              example:
-                skills:
-                  - skillId: R1
-                    name: 对公客户画像
-                    description: 基于知识图谱生成对公客户 360 度画像
-                    version: "1.0.0"
-                    parameters:
-                      - name: customerId
-                        type: string
-                        required: true
-                        description: 客户 ID
-                  - skillId: SP-20
-                    name: 对公客户服务建议书生成
-                    description: 生成对公客户服务建议书（含事实标签、双版本、闸门检查）
-                    version: "1.0.0"
-                    async: true
-                    parameters:
-                      - name: context
-                        type: object
-                        required: true
-                        description: ContextPackage（含 customerId、schemaVersion 等）
+                $ref: "#/components/schemas/ExtractionsAcceptedResponse"
+        "422":
+          description: 领域 / 用法错误（`KERTException` → `_handle()`）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+        "500":
+          description: 未捕获异常（app 级处理器 → `ErrorResponse` 信封）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/extractions/{job_id}/result:
+    get:
+      tags: [Query]
+      summary: 查询抽取作业结果摘要
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `extraction_result()` @ `src/kert/api/server.py:538-548`；
+        响应为**标准信封**（`_response()`），结果摘要位于 `data` 内。
+      operationId: getExtractionResult
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: 抽取结果摘要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtractionResultResponse"
+        "404":
+          description: 作业不存在（`KERTException` → `_handle()`）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/entities/{entity_id}:
+    get:
+      tags: [Query]
+      summary: 查询实体及其陈述
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `entity()` @ `src/kert/api/server.py:550-556`；
+        数据由 `KnowledgeService.get_entity` 给出（`src/kert/application/services.py:96-109`）。
+        ⚠ 查询参数 **`as_of`**：**实现有、此前无从得知** —— 非空时按时间点过滤陈述。
+      operationId: getEntity
+      parameters:
+        - name: entity_id
+          in: path
+          required: true
+          schema: {type: string}
+        - name: as_of
+          in: query
+          required: false
+          schema: {type: string, format: date-time}
+          description: 时间点；仅返回该时点有效的陈述（实现 `_active_on` 过滤）
+      responses:
+        "200":
+          description: 实体与其陈述
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EntityResponse"
+        "422":
+          description: 实体不存在（`AssetNotFoundError` → `_handle()`）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/data/query:
+    post:
+      tags: [Query]
+      summary: 数据集查询
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `data_query()` @ `src/kert/api/server.py:558-565`；
+        数据由 `KnowledgeService.data_query` 给出（`services.py:80-92`；`limit` **上限 1000**，超出抛 `UsageError`）。
+      operationId: queryDataset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DataQueryRequest"
+      responses:
+        "200":
+          description: 数据集记录
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataQueryResponse"
+        "422":
+          description: 用法错误（如 `limit > 1000`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/search:
+    post:
+      tags: [Query]
+      summary: 片段检索（FULLTEXT / VECTOR / HYBRID）
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `search()` @ `src/kert/api/server.py:567-574`；
+        数据由 `KnowledgeService.search` 给出（`services.py:242-298`）。
+      operationId: searchSegments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequest"
+      responses:
+        "200":
+          description: 检索命中
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+        "422":
+          description: 用法错误（非法 `mode`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/graph/query:
+    post:
+      tags: [Query]
+      summary: 图谱查询（neighbor / closure / paths）
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `graph()` @ `src/kert/api/server.py:576-587`；
+        数据由 `KnowledgeService.graph` 给出（`services.py:113-238`，Kùzu 后端回退内存 BFS）。
+        ⚠ 与 v2 候选（`docs/contracts/openapi/kert-openapi-v2.yaml`）的差异**以实现为准**：
+        实现 `required` 为 `request_id` + `start_entity_ids`（v2 为 `start_entity_ids` + `mode`），
+        且实现**多**一个 `as_of`、`max_depth` 默认 `1`、`max_nodes` 默认 `100`。
+      operationId: queryGraph
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GraphQueryRequest"
+      responses:
+        "200":
+          description: 图谱结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GraphQueryResponse"
+        "422":
+          description: 用法错误（`max_depth > 10` / `max_nodes > 1000` / 非法 `direction`/`mode`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/rules/evaluate:
+    post:
+      tags: [Query]
+      summary: 规则评估
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `rules()` @ `src/kert/api/server.py:589-595`；
+        数据由 `KnowledgeService.evaluate_rule` 给出（`services.py:318-369`）。
+      operationId: evaluateRules
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RuleEvaluateRequest"
+      responses:
+        "200":
+          description: 规则评估结果
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleEvaluateResponse"
+        "422":
+          description: 领域 / 用法错误 → `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/evidence/{object_id}:
+    get:
+      tags: [Query]
+      summary: 证据溯源链
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `evidence()` @ `src/kert/api/server.py:597-620`；
+        数据由 `KnowledgeService.trace` 给出（`services.py:373-...`）。
+        附注：实现会在查询同时向 Runtime Store 写**审计镜像**（副作用，失败不阻断主流程，见 `:601-617`）。
+      operationId: getEvidence
+      parameters:
+        - name: object_id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: 溯源链
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvidenceResponse"
+        "422":
+          description: 领域错误（如无活动投影 `ServiceNotReadyError`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
+
+  /v1/catalog:
+    get:
+      tags: [Query]
+      summary: 服务目录（服务 ID / 活动版本 / 投影文件清单）
+      description: |
+        **v1.6.0 新增（A-6）**。实现 `catalog()` @ `src/kert/api/server.py:622-633`；
+        投影清单由 `version_dir.rglob("*.parquet")` 机械列举（排序后）。
+      operationId: getCatalog
+      responses:
+        "200":
+          description: 服务目录
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CatalogResponse"
+        "422":
+          description: 无活动投影（`ServiceNotReadyError`）→ `_handle()`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InfrastructureErrorResponse"
 
   /api/skill/execute:
     post:
@@ -852,14 +1096,9 @@ components:
         default:
           description: 参数默认值
 
-    SkillListResponse:
-      type: object
-      required: [skills]
-      properties:
-        skills:
-          type: array
-          items:
-            $ref: "#/components/schemas/SkillInfo"
+    # v1.6.0 / A-9（Owner 裁定 2026-09-16）：`SkillListResponse` 随 `GET /v1/skills` 一并移除
+    # ——该端点"声明了但实现不存在"。⚠ 注意：`SkillInfo` / `SkillParameter` **保留**，
+    # 它们仍被 `HealthResponse.skills` 引用（勿连带删除）。
 
     SkillExecuteRequest:
       type: object
@@ -1819,3 +2058,368 @@ components:
           type: string
         data:
           $ref: "#/components/schemas/KnowledgeMapSummary"
+
+    # ── v1.6.0 / A-6 新增：9 条路径的请求与响应 schema ──
+    # 约定（与实现逐字段对齐，不凭记忆）：
+    #   · 请求模型**不声明** `additionalProperties: false` —— 实现用 pydantic `BaseModel`，
+    #     默认**不拒绝**未知字段（唯一例外是 `RoutingPlanRequest`，其自带 `extra="forbid"`）；
+    #     在此声明"闭集"会与实现不符。
+    #   · 响应侧：凡经 `_response()`（`src/kert/api/server.py:208-217`）者，
+    #     恒含 `request_id`/`status`/`data`/`errors`/`meta` **五个键** ⇒ 一律全部声明。
+    #   · 仅当"键集合确为闭集"（无条件分支）时才写 `additionalProperties: false`；
+    #     含条件键者（`graph.paths` / `evidence.blocker`）改为**开集 + 显式声明全部可能键**，
+    #     理由写在各自 description（不得把条件键塞进 `required` 造假闭集）。
+    #   · 叶级 schema 采用 flow 风格（`{type: string}`）以控制文件体积；结构化层级仍用块风格。
+
+    ExtractionRequest:
+      type: object
+      description: |
+        `POST /v1/extractions` 请求体（实现 `ExtractionRequest` @ `src/kert/api/server.py:151-158`）。
+      required: [request_id, idempotency_key, domain, input]
+      properties:
+        request_id: {type: string}
+        idempotency_key: {type: string}
+        domain: {type: string}
+        input:
+          type: object
+          additionalProperties: true
+          description: 抽取输入。实现取 `input.path` 并从其中的 `batch=<ID>` 解析批次号（`server.py:507-513`）
+        extraction_types:
+          type: array
+          items: {type: string}
+          default: [ENTITY, RELATION, STATEMENT, RULE]
+        schema_versions:
+          type: array
+          items: {type: string}
+          nullable: true
+        options: {type: object, additionalProperties: true}
+
+    ExtractionsAcceptedResponse:
+      type: object
+      description: |
+        `POST /v1/extractions` 的 **202** 响应。
+        ⚠ 实现**手写信封**（`extract()` @ `src/kert/api/server.py:516-526`），
+        `status` 恒为 **`ACCEPTED`**（与其余 `/v1/*` 端点的 `OK` **不同义**）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string, enum: [ACCEPTED]}
+        data:
+          type: object
+          required: [job_id, result_status, publish_status]
+          additionalProperties: false
+          properties:
+            job_id: {type: string}
+            result_status: {type: string, example: CANDIDATE}
+            publish_status: {type: string, example: NOT_PUBLISHED}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta:
+          type: object
+          additionalProperties: true
+          description: 实现给定 `service_version` / `data_version` / `generated_at`（`server.py:523-525`）
+
+    ExtractionResultResponse:
+      type: object
+      description: |
+        `GET /v1/extractions/{job_id}/result` 的 200 响应（`_response()`，
+        `extraction_result()` @ `src/kert/api/server.py:538-548`）。
+        `data.status` 取自 Job 状态记录，与信封 `status` **不同义**。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string, description: 信封状态（实现恒为 `OK`）}
+        data:
+          type: object
+          required: [job_id, status, publish_status, output_refs]
+          additionalProperties: false
+          properties:
+            job_id: {type: string}
+            status: {type: string, nullable: true}
+            publish_status: {type: string, nullable: true}
+            output_refs: {type: array, items: {type: object, additionalProperties: true}}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    EntityResponse:
+      type: object
+      description: |
+        `GET /v1/entities/{entity_id}` 的 200 响应（`_response()`）。
+        数据由 `KnowledgeService.get_entity` 给出（`src/kert/application/services.py:96-109`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [entity, statements, statement_count]
+          additionalProperties: false
+          properties:
+            entity: {type: object, additionalProperties: true, description: 实体行（投影 `entities.parquet` 原始行）}
+            statements: {type: array, items: {type: object, additionalProperties: true}}
+            statement_count: {type: integer, minimum: 0}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true, description: 含 `entity_id`（`services.py:108`）}
+
+    DataQueryRequest:
+      type: object
+      description: 请求体 —— `POST /v1/data/query`（实现 `DataQueryRequest` @ `src/kert/api/server.py:161-167`）。
+      required: [request_id, dataset]
+      properties:
+        request_id: {type: string}
+        dataset: {type: string}
+        select: {type: array, items: {type: string}, nullable: true}
+        where: {type: object, additionalProperties: true, nullable: true}
+        limit: {type: integer, default: 100, maximum: 1000, description: 实现上限 1000，超出抛 `UsageError`}
+
+    DataQueryResponse:
+      type: object
+      description: 响应 —— `POST /v1/data/query` 的 200（`src/kert/application/services.py:80-92`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [dataset, records, count]
+          additionalProperties: false
+          properties:
+            dataset: {type: string}
+            records: {type: array, items: {type: object, additionalProperties: true}}
+            count: {type: integer, minimum: 0}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    SearchRequest:
+      type: object
+      description: 请求体 —— `POST /v1/search`（实现 `SearchRequest` @ `src/kert/api/server.py:169-175`）。
+      required: [request_id, query]
+      properties:
+        request_id: {type: string}
+        query: {type: string}
+        mode: {type: string, enum: [FULLTEXT, VECTOR, HYBRID], default: FULLTEXT}
+        top_k: {type: integer, default: 10}
+        filters: {type: object, additionalProperties: true, nullable: true}
+
+    SearchResponse:
+      type: object
+      description: 响应 —— `POST /v1/search` 的 200（`src/kert/application/services.py:242-298`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [query, mode, hits, hit_count, degraded]
+          additionalProperties: false
+          properties:
+            query: {type: string}
+            mode: {type: string}
+            hit_count: {type: integer, minimum: 0}
+            degraded: {type: boolean, description: 当 `mode=VECTOR` 且无向量数据时为 true（`services.py:296`）}
+            hits:
+              type: array
+              items:
+                type: object
+                required: [segment_id, document_id, content_excerpt, score, score_type, page_from, page_to, source_version, evidence_uri]
+                additionalProperties: false
+                properties:
+                  segment_id: {type: string}
+                  document_id: {type: string, nullable: true}
+                  content_excerpt: {type: string}
+                  score: {type: number}
+                  score_type: {type: string}
+                  page_from: {type: integer, nullable: true}
+                  page_to: {type: integer, nullable: true}
+                  source_version: {type: string, nullable: true}
+                  evidence_uri: {type: string, nullable: true}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true, description: 含 `ranking_policy_version`（`services.py:297`）}
+
+    GraphQueryRequest:
+      type: object
+      description: |
+        `POST /v1/graph/query` 请求体（实现 `GraphRequest` @ `src/kert/api/server.py:177-187`）。
+        ⚠ **以实现为准**：`required` 为 `request_id` + `start_entity_ids`（v2 候选为
+        `start_entity_ids` + `mode`），且实现**多**一个 `as_of`（v2 候选无此字段）。
+      required: [request_id, start_entity_ids]
+      properties:
+        request_id: {type: string}
+        start_entity_ids: {type: array, items: {type: string}}
+        relation_types: {type: array, items: {type: string}, nullable: true}
+        direction: {type: string, enum: [OUT, IN, BOTH], default: OUT}
+        max_depth: {type: integer, default: 1, maximum: 10, description: 实现上限 10（`services.py:122-123`）}
+        max_nodes: {type: integer, default: 100, maximum: 1000, description: 实现上限 1000（`services.py:124-125`）}
+        mode: {type: string, enum: [neighbor, closure, paths], default: neighbor}
+        service: {type: string, default: product_knowledge}
+        as_of: {type: string, nullable: true, description: 实现有、v2 候选无}
+
+    GraphQueryResponse:
+      type: object
+      description: |
+        `POST /v1/graph/query` 的 200 响应（`services.py:113-238`）。
+        ⚠ `data` 为**开集**：`paths` **仅在 `mode=paths` 时出现**（`services.py:236-237`），
+        故此处如实**声明全部可能键 + `additionalProperties: true`**，而非把条件键塞进 `required` 造假闭集。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          additionalProperties: true
+          required: [nodes, edges, node_count, edge_count, mode]
+          properties:
+            nodes:
+              type: array
+              items:
+                type: object
+                required: [entity_id, name, entity_type, depth]
+                additionalProperties: false
+                properties:
+                  entity_id: {type: string}
+                  name: {type: string, nullable: true}
+                  entity_type: {type: string, nullable: true}
+                  depth: {type: integer}
+            edges:
+              type: array
+              items:
+                type: object
+                required: [source, target, relation_type, relation_id, statement_id]
+                additionalProperties: false
+                properties:
+                  source: {type: string}
+                  target: {type: string}
+                  relation_type: {type: string}
+                  relation_id: {type: string}
+                  statement_id: {type: string, nullable: true}
+            node_count: {type: integer, minimum: 0}
+            edge_count: {type: integer, minimum: 0}
+            mode: {type: string}
+            paths:
+              type: array
+              description: 仅 `mode=paths` 时出现
+              items: {type: array, items: {type: object, additionalProperties: true}}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    RuleEvaluateRequest:
+      type: object
+      description: 请求体 —— `POST /v1/rules/evaluate`（实现 `RuleRequest` @ `src/kert/api/server.py:189-192`）。
+      required: [request_id, facts]
+      properties:
+        request_id: {type: string}
+        rule_set: {type: string, nullable: true, description: 传入时仅评估该 `rule_id`}
+        facts: {type: object, additionalProperties: true}
+
+    RuleEvaluateResponse:
+      type: object
+      description: 响应 —— `POST /v1/rules/evaluate` 的 200（`src/kert/application/services.py:356-369`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [evaluation_id, rule_set_version, matched_rules, outcomes, missing_inputs, evidence_refs, human_confirmation_required, explanation_trace]
+          additionalProperties: false
+          properties:
+            evaluation_id: {type: string}
+            rule_set_version: {type: string}
+            matched_rules:
+              type: array
+              items:
+                type: object
+                required: [rule_id, name, rule_type, priority, execution_mode]
+                additionalProperties: false
+                properties:
+                  rule_id: {type: string}
+                  name: {type: string, nullable: true}
+                  rule_type: {type: string, nullable: true}
+                  priority: {type: integer, nullable: true}
+                  execution_mode: {type: string, nullable: true}
+            outcomes:
+              type: array
+              items:
+                type: object
+                required: [rule_id, name, outcome, execution_mode]
+                additionalProperties: false
+                properties:
+                  rule_id: {type: string}
+                  name: {type: string, nullable: true}
+                  outcome: {description: DSL 求值结果（标量或结构，故不限定 type）}
+                  execution_mode: {type: string, nullable: true}
+            missing_inputs: {type: array, items: {type: string}}
+            evidence_refs: {type: array, items: {type: string}}
+            human_confirmation_required: {type: boolean}
+            explanation_trace:
+              type: array
+              items:
+                type: object
+                required: [rule, matched]
+                additionalProperties: false
+                properties:
+                  rule: {type: string}
+                  matched: {type: boolean}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    EvidenceResponse:
+      type: object
+      description: |
+        `GET /v1/evidence/{object_id}` 的 200 响应（`services.py:373+`）。
+        ⚠ `data` 为**开集**：`blocker` **仅在溯源链不完整时出现**
+        （`services.py:383-387` 的「Core 资产未找到」分支）⇒ 同样按"声明全部可能键 + 开集"处理。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          additionalProperties: true
+          required: [object_id, chain, complete]
+          properties:
+            object_id: {type: string}
+            chain:
+              type: array
+              description: 逐层溯源条目（`04_serve` → `03_core` → `02_work/01_raw`）；条目为开集
+              items: {type: object, additionalProperties: true}
+            complete: {type: boolean}
+            raw_hashes:
+              type: array
+              items: {type: string}
+              description: |
+                来源原始件的语义哈希（`_raw_hash_for_document`）；实现**去重后取前 5 个**
+                （`services.py:412`）。⚠ 该键在「Core 资产未找到」早退分支（`services.py:383-387`）
+                **不出现** ⇒ 不列入 `required`。
+            blocker: {type: string, nullable: true}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+
+    CatalogResponse:
+      type: object
+      description: 响应 —— `GET /v1/catalog` 的 200（`catalog()` @ `src/kert/api/server.py:622-633`）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        data:
+          type: object
+          required: [service_id, version, projections]
+          additionalProperties: false
+          properties:
+            service_id: {type: string}
+            version: {type: string}
+            projections:
+              type: array
+              items: {type: string}
+              description: 活动版本目录下 `*.parquet` 的相对路径（已排序）
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}

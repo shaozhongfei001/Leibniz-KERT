@@ -11,7 +11,6 @@ examples/gits_adapter/
 ├── python/
 │   └── kert_client.py                 # Python 客户端（标准库，无第三方依赖）
 └── curl/
-    ├── list_skills.sh                  # 列出可用 Skill
     ├── execute_skill_sync.sh           # 同步执行 Skill
     ├── execute_skill_async.sh          # 异步提交 Skill
     ├── poll_job.sh                     # 轮询 Job 状态
@@ -26,8 +25,9 @@ examples/gits_adapter/
 # 健康检查
 ./curl/health_check.sh
 
-# 列出 Skill
-./curl/list_skills.sh
+# 列出 Skill —— ⚠ 端点已从合同移除（Owner 裁定 A-9，2026-09-16）
+# 原 ./curl/list_skills.sh 已随 `GET /v1/skills` 一并删除（合同声明了但实现不存在）；
+# 技能清单请改用 `GET /api/skill/health`（见 curl/health_check.sh）。
 
 # 同步执行 R1（对公客户画像）
 ./curl/execute_skill_sync.sh R1 CUST-001
@@ -159,7 +159,7 @@ if status != "ok":
 |---|---|---|
 | `/v1/health` | GET | 服务健康检查 |
 | `/api/skill/health` | GET | Skill 子系统健康 |
-| `/v1/skills` | GET | 列出可用 Skill |
+| ~~`/v1/skills`~~ | — | ⚠ **已从合同移除（Owner 裁定 A-9，2026-09-16）**——合同声明了但实现不存在；技能清单改用 `/api/skill/health` |
 | `/api/skill/execute` | POST | 执行 Skill（同步/异步） |
 | `/api/skill/report/{requestId}` | GET | 获取执行报告 |
 | `/api/skill/gates/{customerId}` | GET | 获取闸门清单 |

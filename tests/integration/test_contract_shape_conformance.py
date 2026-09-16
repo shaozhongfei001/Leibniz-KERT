@@ -430,3 +430,254 @@ def test_unhandled_exception_returns_error_envelope(spec, ws, monkeypatch):
     # (b) 安全口径：只给通用文案，不得回显异常类名或异常内容
     assert LEAK_CANARY not in r.text, "500 响应体泄漏了异常内容"
     assert "RuntimeError" not in r.text, "500 响应体泄漏了异常类名"
+
+
+# --------------------------------------------------------------------------- #
+# ⑨ v1.6.0 / A-6：9 条新登记路径的机械核对（三段式 + 防空转下限）
+#    合同：`specs/kert-openapi-v1.yaml`（1.6.0）；实现：`src/kert/api/server.py`
+#    夹具策略：数据面端点需要**已发布投影**，故复用 `test_api.py` 的全链路形态
+#      （ingest → parse → extract → review → publish → projection，**不 mock 实现**）。
+#    这些用例的价值：把 A-6 的 9 条"手写登记"变成**可机械证伪**的声明 ——
+#    合同里少一个键（实现有、合同无）或多一个键（合同要求、实现没有）都会立刻变红。
+# --------------------------------------------------------------------------- #
+
+
+def _norm_path(path: str) -> str:
+    """归一化路径参数**名**（合同 `{jobId}` 与实现 `{job_id}` 属命名风格差异，非集合差异）。"""
+    import re as _re
+
+    return _re.sub(r"\{[^}]+\}", "{}", path)
+
+
+def _contract_v1_paths(spec: dict) -> set[str]:
+    return {p for p in spec["paths"] if p.startswith("/v1/")}
+
+
+#: 合同声明、实现缺失 ⇒ **必须逐条写理由**（v1.6.0 起为**空**：A-9 已把 `/v1/skills` 移除）。
+CONTRACT_ONLY_EXEMPT: dict[str, str] = {}
+
+#: 实现有、合同不声明 ⇒ **必须逐条写理由**（v1.6.0 起为**空**）。
+IMPLEMENTATION_ONLY_EXEMPT: dict[str, str] = {}
+
+
+@pytest.fixture(scope="module")
+def chain(tmp_path_factory):
+    """全链路夹具 ⇒ `(client, ws)`。9 条数据面端点的机械核对都在此工作区上进行。"""
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    from kert.application.extract import KnowledgeExtractor
+    from kert.application.ingest import Ingestor
+    from kert.application.parse_doc import DocumentParserService
+    from kert.application.projection import ProjectionBuilder
+    from kert.application.publish import Publisher
+    from kert.application.review import ReviewService
+    from kert.domain import workspace as ws_mod
+
+    ws = tmp_path_factory.mktemp("v16-chain")
+    ws_mod.init_workspace(ws)
+    md = ws / "p.md"
+    md.write_text("# 政策\n\n产品A利率为3.5%。\n\n产品A需要材料M1。\n\n规则：利率不超过10。\n",
+                  encoding="utf-8")
+    r = Ingestor(ws).ingest("product", [md], "batch-v16-1")
+    pr = DocumentParserService(ws).parse("product", r.batch_id)
+    ex = KnowledgeExtractor(ws).extract("product", r.batch_id, run_id=pr.run_id)
+    ReviewService(ws).review("product", run_id=pr.run_id,
+                             object_refs=[c["path"] for c in ex.candidates],
+                             decision="APPROVE", reason="ok", decided_by="r")
+    Publisher(ws).publish("product", run_id=pr.run_id)
+    ProjectionBuilder(ws).build("product")
+    # `/v1/data/query` 读 `datasets/<name>.parquet`，而投影默认不建 `datasets/`
+    # ⇒ 夹具补一张最小数据集（属**夹具构造**：不改实现、不改合同）。
+    vdir = _version_dir(ws)
+    (vdir / "datasets").mkdir(exist_ok=True)
+    pq.write_table(pa.table({"entity_id": ["E-V16-1", "E-V16-2"], "name": ["甲", "乙"]}),
+                   vdir / "datasets" / "entities.parquet")
+    return TestClient(create_app(ws)), ws
+
+
+def _version_dir(ws):
+    return next((ws / "04_serve" / "product_knowledge").glob("version=*"))
+
+
+def _first_cell(ws, filename: str, column: str):
+    """取活动投影某列首个值（供构造真实路径参数，避免硬编码 UUID）。"""
+    import pyarrow.parquet as pq
+
+    table = pq.read_table(_version_dir(ws) / filename)
+    return table.column(column).to_pylist()[0]
+
+
+# ── ① `POST /v1/extractions`（202，**手写信封**，status=ACCEPTED）──
+
+def test_extractions_202_shape_matches_contract(spec, chain):
+    """⚠ 该端点 `status` 为 `ACCEPTED`，与其余 `/v1/*` 的 `OK` **不同义**（F8-①）。"""
+    client, ws = chain
+    assert _ref_of(spec, "/v1/extractions", "post", "202") == "ExtractionsAcceptedResponse"
+    batch_dir = next((ws / "01_raw" / "product").glob("batch=*"))
+    doc = next(batch_dir.glob("*.md"))
+    r = client.post("/v1/extractions", json={
+        "request_id": "REQ-V16-1", "idempotency_key": "k-v16-1", "domain": "product",
+        "input": {"type": "workspace_file",
+                  "path": f"01_raw/product/{batch_dir.name}/{doc.name}"},
+        "extraction_types": ["ENTITY", "STATEMENT"]})
+    assert r.status_code == 202, r.text
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)["ExtractionsAcceptedResponse"], body,
+                          "ExtractionsAcceptedResponse")
+    assert checked >= 8, checked  # 反空转下限：信封 5 键 + data 3 键
+    assert body["status"] == "ACCEPTED"
+    assert body["data"]["result_status"] == "CANDIDATE"
+    assert body["data"]["publish_status"] == "NOT_PUBLISHED"
+
+
+# ── ② `GET /v1/extractions/{job_id}/result` ──
+
+def test_extraction_result_shape_matches_contract(spec):
+    assert _ref_of(spec, "/v1/extractions/{job_id}/result", "get", "200") == "ExtractionResultResponse"
+    client = TestClient(create_app(COMPLETED_JOB_WS))
+    r = client.get(f"/v1/extractions/{COMPLETED_JOB_ID}/result")
+    assert r.status_code == 200, r.text
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)["ExtractionResultResponse"], body,
+                          "ExtractionResultResponse")
+    assert checked >= 9, checked
+    assert body["data"]["job_id"] == COMPLETED_JOB_ID
+
+
+# ── ③ `GET /v1/entities/{entity_id}`（含查询参数 `as_of`）──
+
+def test_entity_shape_matches_contract(spec, chain):
+    client, ws = chain
+    assert _ref_of(spec, "/v1/entities/{entity_id}", "get", "200") == "EntityResponse"
+    assert "as_of" in {p["name"] for p in spec["paths"]["/v1/entities/{entity_id}"]["get"]["parameters"]}
+    eid = _first_cell(ws, "entities.parquet", "entity_id")
+    r = client.get(f"/v1/entities/{eid}")
+    assert r.status_code == 200, r.text
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)["EntityResponse"], body, "EntityResponse")
+    assert checked >= 8, checked  # 反空转下限：信封 5 键 + data 3 键
+    assert body["data"]["entity"]["entity_id"] == eid
+    assert body["data"]["statement_count"] == len(body["data"]["statements"])
+
+
+# ── ④ `POST /v1/data/query` ──
+
+def test_data_query_shape_matches_contract(spec, chain):
+    client, _ws = chain
+    assert _ref_of(spec, "/v1/data/query", "post", "200") == "DataQueryResponse"
+    r = client.post("/v1/data/query", json={"request_id": "REQ-V16-DQ", "dataset": "entities"})
+    assert r.status_code == 200, r.text
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)["DataQueryResponse"], body, "DataQueryResponse")
+    assert checked >= 8, checked  # 反空转下限：信封 5 键 + data 3 键
+    assert body["data"]["dataset"] == "entities"
+    assert body["data"]["count"] == len(body["data"]["records"]) >= 2
+
+
+# ── ⑤ `POST /v1/search` ──
+
+def test_search_shape_matches_contract(spec, chain):
+    client, _ws = chain
+    assert _ref_of(spec, "/v1/search", "post", "200") == "SearchResponse"
+    r = client.post("/v1/search", json={"request_id": "REQ-V16-S", "query": "利率",
+                                        "mode": "FULLTEXT", "top_k": 5})
+    assert r.status_code == 200, r.text
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)["SearchResponse"], body, "SearchResponse")
+    # 信封 5 键 + data 5 键 + 至少 1 个 hit 的 9 键
+    assert checked >= 19, checked
+    assert body["data"]["hit_count"] == len(body["data"]["hits"]) >= 1
+
+
+# ── ⑥ `POST /v1/graph/query`（`paths` 为**条件键**）──
+
+def test_graph_query_shape_matches_contract(spec, chain):
+    client, ws = chain
+    assert _ref_of(spec, "/v1/graph/query", "post", "200") == "GraphQueryResponse"
+    eid = _first_cell(ws, "entities.parquet", "entity_id")
+    r = client.post("/v1/graph/query", json={"request_id": "REQ-V16-G",
+                                             "start_entity_ids": [eid], "max_depth": 1})
+    assert r.status_code == 200, r.text
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)["GraphQueryResponse"], body, "GraphQueryResponse")
+    assert checked >= 14, checked
+    data_schema = _schemas(spec)["GraphQueryResponse"]["properties"]["data"]
+    # `paths` 只在 `mode=paths` 出现 ⇒ **不得**进 `required`（否则默认 neighbor 会误判缺键）
+    assert "paths" not in (data_schema.get("required") or [])
+    assert "paths" in data_schema["properties"]
+    assert "paths" not in body["data"]
+    assert body["data"]["node_count"] == len(body["data"]["nodes"])
+
+
+# ── ⑦ `POST /v1/rules/evaluate` ──
+
+def test_rules_evaluate_shape_matches_contract(spec, chain):
+    client, _ws = chain
+    assert _ref_of(spec, "/v1/rules/evaluate", "post", "200") == "RuleEvaluateResponse"
+    r = client.post("/v1/rules/evaluate", json={"request_id": "REQ-V16-R", "facts": {"rate": 5}})
+    assert r.status_code == 200, r.text
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)["RuleEvaluateResponse"], body, "RuleEvaluateResponse")
+    assert checked >= 13, checked
+    assert body["data"]["matched_rules"], body["data"]
+
+
+# ── ⑧ `GET /v1/evidence/{object_id}`（`blocker` 为**条件键**）──
+
+def test_evidence_shape_matches_contract(spec, chain):
+    client, ws = chain
+    assert _ref_of(spec, "/v1/evidence/{object_id}", "get", "200") == "EvidenceResponse"
+    sid = _first_cell(ws, "statements.parquet", "statement_id")
+    r = client.get(f"/v1/evidence/{sid}")
+    assert r.status_code == 200, r.text
+    body = r.json()
+    checked = check_shape(spec, _schemas(spec)["EvidenceResponse"], body, "EvidenceResponse")
+    assert checked >= 8, checked
+    data_schema = _schemas(spec)["EvidenceResponse"]["properties"]["data"]
+    assert "blocker" not in (data_schema.get("required") or [])
+    assert "blocker" in data_schema["properties"]
+    assert body["data"]["object_id"] == sid
+    assert body["data"]["chain"]
+
+
+# ── ⑨ `GET /v1/catalog` ──
+
+def test_catalog_shape_matches_contract(spec, chain):
+    client, _ws = chain
+    assert _ref_of(spec, "/v1/catalog", "get", "200") == "CatalogResponse"
+    body = client.get("/v1/catalog").json()
+    checked = check_shape(spec, _schemas(spec)["CatalogResponse"], body, "CatalogResponse")
+    assert checked >= 7, checked
+    assert body["data"]["projections"], body["data"]
+
+
+# --------------------------------------------------------------------------- #
+# ⑩ §6 集合级防复发断言（A-6 的交付条件 ③）
+# --------------------------------------------------------------------------- #
+
+def test_contract_v1_paths_equal_implemented_routes(spec, ws):
+    """**集合级**断言：合同 `/v1/*` 路径集合 == 实现 `app.routes` 的 `/v1/*` 集合（± 显式豁免）。
+
+    为什么必须有这一条：**逐用例形状核对永远发现不了"实现有、合同无"** ——
+    没有用例就没有核对对象（这正是 F8 的成因）。只有集合级断言能在
+    "新增路由却忘记登记" 或 "删了实现却留着声明" 时**立刻变红**。
+
+    豁免纪律：两边豁免清单**都**必须是 `路径 -> 非空理由`；空串豁免视为违规
+    （不得以"豁免"为名绕过断言）。
+    """
+    app = create_app(ws)
+    impl = {_norm_path(getattr(route, "path", "") or "") for route in app.routes}
+    impl = {p for p in impl if p.startswith("/v1/")}
+    contract = {_norm_path(p) for p in _contract_v1_paths(spec)}
+
+    for name, reason in {**CONTRACT_ONLY_EXEMPT, **IMPLEMENTATION_ONLY_EXEMPT}.items():
+        assert reason.strip(), f"豁免 {name} 必须逐条写明理由（不得空串豁免）"
+
+    only_contract = sorted(contract - impl - set(CONTRACT_ONLY_EXEMPT))
+    only_impl = sorted(impl - contract - set(IMPLEMENTATION_ONLY_EXEMPT))
+    assert not only_contract, f"合同声明但实现缺失（反向缺口族，见 A-9）：{only_contract}"
+    assert not only_impl, f"实现有但合同未声明（F8 正向缺口族，见 A-6）：{only_impl}"
+    # 防空转：本断言不得在"两边都空"的退化情形下通过
+    assert len(contract) >= 14, f"防空转：合同 /v1/* 路径集合异常（{sorted(contract)}）"
+    assert len(impl) >= 14, f"防空转：实现 /v1/* 路由集合异常（{sorted(impl)}）"

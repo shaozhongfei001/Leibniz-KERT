@@ -197,18 +197,17 @@ class KertClient:
         return self._request("GET", "/api/skill/health")
 
     def list_skills(self) -> list[SkillInfo]:
-        """GET /v1/skills — 列出可用 Skill"""
-        data = self._request("GET", "/v1/skills")
-        return [
-            SkillInfo(
-                skill_id=s.get("skillId", ""),
-                name=s.get("name", ""),
-                version=s.get("version", ""),
-                description=s.get("description", ""),
-                async_capable=s.get("async", False),
-            )
-            for s in data.get("skills", [])
-        ]
+        """**已废弃** —— 端点已从合同移除（Owner 裁定 **A-9**，2026-09-16）。
+
+        `GET /v1/skills` 在 `specs/kert-openapi-v1.yaml`（1.6.0）中**已删除**：
+        该端点属"合同声明了、实现不存在"（KERT 侧从未实现）。
+        请改用 `GET /api/skill/health`（见 `skill_health()`），其 `skills[]` 提供
+        `skillId` / `name` / `version`。
+
+        本方法保留仅为**显式标注**：调用即抛 `NotImplementedError`，不得再指向已移除的端点。
+        """
+        raise NotImplementedError(
+            "端点已从合同移除（Owner 裁定 A-9，2026-09-16）；请改用 skill_health()")
 
     def execute_skill_sync(
         self,

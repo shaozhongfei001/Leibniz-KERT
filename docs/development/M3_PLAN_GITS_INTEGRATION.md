@@ -41,7 +41,7 @@ M3 是 KERT 从"独立可运行"走向"业务闭环"的关键里程碑。核心�
 
 | 属性 | 说明 |
 |------|------|
-| 目标 | 在 GITS 中实现 HTTP Adapter，调用 KERT 公共 API（/v1/skills、/v1/jobs） |
+| 目标 | 在 GITS 中实现 HTTP Adapter，调用 KERT 公共 API（/v1/jobs、/api/skill/*）<br>⚠ **端点已从合同移除（Owner 裁定 A-9，2026-09-16）**：原列的 `/v1/skills` 已从 `specs/kert-openapi-v1.yaml` 删除（该端点合同声明了但实现不存在）；技能清单请改用 `GET /api/skill/health` |
 | 依赖 | M3.1、M3.2 |
 | 交付物 | GITS HTTP Adapter 代码 + 配置 + 集成测试 |
 | 验收标准 | 1) GITS 可列出 KERT Skill 2) GITS 可同步执行 Skill 3) GITS 可异步提交 Job 4) GITS 可查询 Job 状态 |
@@ -129,7 +129,9 @@ M3 是 KERT 从"独立可运行"走向"业务闭环"的关键里程碑。核心�
 
 ### 3.1 公共 API 契约确认
 
-- 确认 `/v1/skills`、`/v1/jobs`、`/v1/health` 接口稳定
+- 确认 `/v1/jobs`、`/v1/health`、`/api/skill/health` 接口稳定
+  （⚠ **端点已从合同移除（Owner 裁定 A-9，2026-09-16）**：原列的 `/v1/skills` 已删除，
+  技能清单改用 `GET /api/skill/health`）
 - 生成 OpenAPI spec 供 GITS Adapter 参考
 - 添加 API 版本头（`X-API-Version`）
 
