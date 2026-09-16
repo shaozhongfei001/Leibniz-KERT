@@ -146,7 +146,16 @@ subClassOf 新增 = 101，拆解（**四个量；其中两个数值相同，但*
 ⇒ **c20 报数与我复算逐项相同**（files 5 / 99 / 100 / **同一 fingerprint** / 1939 B）
 ```
 
-- **确定性旁证**：同一 fingerprint 现由**三方独立**得到 —— 我 18:0x 自产件、c20 的 P-1 调用、我本次复算
+> **`files = 5` 的指代必须写明（与 §7「两个 32」同族）**：指**产物目录内被声明的 5 个文件** ——
+> 即 `FILES` 元组 = `ontology_classes/properties/shapes.parquet` + `ONTOLOGY.md` + `ONTOLOGY_LINEAGE.json`，
+> **不含图**（图另计：`ontology_graph`（Kùzu 单文件）、`ontology_graph.PROJECTION.json`）。
+> ⇒ 该 `version=` 目录**实际 7 项**（5 + 图两项），图规模见返回值的 `graph` 字段（99/100）。
+> ⚠ **另一处同值不同集合**：**内置资产目录** `<ws>/90_control/ontology/` 恰也是 **5 件**
+> （4 个 ttl + `PROVENANCE.json`）—— 与上面的 `files = 5` **数值相同、集合不同**，引用时须写明是哪一个。
+
+- **确定性旁证**：同一 fingerprint 现由**四方独立**得到 —— ① 我 18:0x 自产件、② c20 的 P-1 调用、
+  ③ 我本次复算、④ **TL 的独立复算**（TL 报其 `counts` 与 `ONTOLOGY.md = 1939 B` 与本节点逐项相同；
+  **该次由 TL 自测，我未复核其运行**，此处仅据其报告登记）
   ⇒ 支持"物化可复现"（c20 已将其登记为后续抓手，**不属本件**）。
 - **外部可调用性**：目标工作区**可任意指定**（c20 落在 `/tmp`）；复算后仓库侧**无新增写入**
   （实测 `git status` 仅见既有第三方未跟踪项）。
