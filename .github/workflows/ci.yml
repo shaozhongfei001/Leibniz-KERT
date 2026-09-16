@@ -725,3 +725,103 @@ jobs:
         run: |
           pkill -f "lightrag-server --host 127.0.0.1 --port 9621" || true
           pkill -f "scripts/ci/lightrag_mock_llm.py" || true
+
+  # ──────────────────────────────────────────────
+  # UI Smoke：**真人浏览器**冒烟 DSH 页面（六环工作台 + 仪表盘）
+  #
+  # 起因（**本轮实测缺陷**，2026-09-17）：`mount_dsh` 曾把静态挂载放在 SPA 兜底**之后** ⇒
+  # `/dsh/static/*` 全部 **404** —— 页面 200 能开，但**无样式、无脚本、界面等于不可用**。
+  # 纯 HTTP 断言（"GET /dsh/ = 200"）**发现不了**这类故障 ⇒ 需要浏览器验"资源真的加载、JS 真的跑"。
+  #
+  # ⚠ 本 job **只验可达性**，**明写 ≠ 链路验证**（防误读）：
+  #   - **验**：① `/dsh/` 与 `/dsh/rings` 能开；② 同源 css/js **无 4xx/5xx**（正是上面那类缺陷）；
+  #     ③ 页面 JS 无未捕获异常，且工作台「一键走一遍」能跑完（⇒ 前端能调通本地 API）。
+  #   - **不验**：六环链路本身的正确性（那由 `tests/integration/**` 与 `retrieval-loop-e2e` 负责）
+  #     —— **本 job 绿 ≠ 链路已验证**。
+  # ──────────────────────────────────────────────
+  ui-smoke:
+    name: UI Smoke (DSH pages reachable — NOT chain verification)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      KERT_PROFILE: dev
+      # 非 editable 安装下 examples/ 需显式给仓库根（同 e2e job 的先例）
+      KERT_REPO_ROOT: ${{ github.workspace }}
+      KERT_SKILL_PACKAGES: ${{ github.workspace }}/examples/bank-front-skills
+      UI_PORT: "8123"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies (+ Playwright, CI-only)
+        run: |
+          set -euo pipefail
+          pip install --upgrade pip
+          # ⚠ 本 job **刻意用非 editable 安装**（与 lint job 的 `-e` 相反）：
+          #   要验的是**发布物**（wheel 里的东西），不是本仓源树 —— 界面静态件曾因
+          #   `pyproject.toml` 未声明 `package-data` 而**不进 wheel**（非 editable 安装下
+          #   `site-packages/kert/dsh/` 没有 `static/` ⇒ `/dsh/*` 恒 503，缺陷 2，2026-09-17 已修）。
+          #   本 job + `scripts/ci/ui_smoke.py` 的「发布物」判据一起把该缺陷**钉住**：
+          #   若把 `[tool.setuptools.package-data]` 删掉，`ui_smoke.py` 会**具名**失败。
+          if [ -f requirements-lock.txt ]; then
+            pip install -c requirements-lock.txt ".[api,dev]"
+          else
+            pip install ".[api,dev]"
+          fi
+          # 浏览器只在**本 job**装（**不进** pyproject / 运行时依赖）。
+          # 必须锁 playwright 版本：不锁会随其升级换浏览器构建号，凭空引入与本 PR 无关的红灯。
+          pip install "playwright==1.63.0"
+          playwright install --with-deps chromium
+
+      - name: Provision workspace and start KERT (isolated port, fail closed)
+        run: |
+          set -euo pipefail
+          if curl -fsS --max-time 2 "http://127.0.0.1:${UI_PORT}/api/skill/health" >/dev/null 2>&1; then
+            echo "::error::${UI_PORT} 上已有实例在监听，拒绝复用外部实例（须由本 job 启动本仓代码）"
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/ui-ws"
+          kert provision -w "$RUNNER_TEMP/ui-ws" \
+            -s "${{ github.workspace }}/examples/bank-front-knowledge-maps" --init
+          nohup python scripts/serve_skill_service.py \
+            --port "$UI_PORT" --host 127.0.0.1 --workspace "$RUNNER_TEMP/ui-ws" \
+            > "$RUNNER_TEMP/kert-ui.log" 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS --max-time 2 "http://127.0.0.1:${UI_PORT}/api/skill/health" >/dev/null; then
+              echo "✓ KERT 就绪（第 ${i} 秒）"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::KERT 未能在 60 秒内就绪——拒绝以 skip 掩盖"
+          cat "$RUNNER_TEMP/kert-ui.log"
+          exit 1
+
+      - name: Run UI smoke (browser; reachability only)
+        run: |
+          # `set -e`：本步骤最后还有一条 echo，**少了它**冒烟失败也会以 0 退出 ⇒ **假绿**
+          #（本地干跑实测抓到的缺陷，务必保留）。
+          set -euo pipefail
+          # 输出里会打印"验了什么/不验什么"的非声明；下面再加一行 job 级提示。
+          python scripts/ci/ui_smoke.py \
+            --base-url "http://127.0.0.1:${UI_PORT}" --out "$RUNNER_TEMP/ui-smoke"
+          echo "::notice::UI 冒烟只验『页面能开 + 样式/脚本加载 + 前端能调通本地 API』；**不等于**六环链路已验证（链路由 tests/integration/** 与 retrieval-loop-e2e 负责）"
+
+      - name: Upload UI smoke screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-smoke-screenshots
+          path: |
+            ${{ runner.temp }}/ui-smoke/*.png
+            ${{ runner.temp }}/kert-ui.log
+          retention-days: 30
+
+      - name: Stop KERT
+        if: always()
+        run: pkill -f "scripts/serve_skill_service.py --port 8123" || true

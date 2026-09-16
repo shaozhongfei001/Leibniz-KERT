@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>六环链路 · 人类走查原图（Playwright）</title>
+<style>
+  :root { --bg:#0f1115; --fg:#e8eaed; --mut:#9aa0a6; --card:#171a21; --line:#2a2f3a; --acc:#4da3ff; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font:15px/1.7 -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  header { padding:34px 40px 10px; border-bottom:1px solid var(--line); }
+  h1 { margin:0 0 8px; font-size:25px; }
+  header p { margin:4px 0; color:var(--mut); font-size:14px; }
+  code { background:#20242e; padding:1px 6px; border-radius:5px; font-size:13px; }
+  main { padding:24px 40px 80px; max-width:1400px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:14px;
+            padding:22px 24px; margin:22px 0; }
+  .tag { display:inline-block; font-size:12px; padding:2px 9px; border-radius:999px;
+         background:#1d2b3a; color:var(--acc); border:1px solid #24405c; margin-right:8px; }
+  h2 { font-size:19px; margin:2px 0 10px; }
+  .why { color:var(--mut); font-size:14px; margin:8px 0 14px; }
+  img { width:100%; border:1px solid var(--line); border-radius:10px; display:block; background:#fff; }
+  figcaption { color:var(--mut); font-size:13px; margin-top:8px; }
+  .k { color:#7ee0a4; }
+</style>
+</head>
+<body>
+<header>
+  <h1>六环链路 · 人类走查原图</h1>
+  <p>由 <b>Playwright</b> 驱动真实浏览器（系统 Chrome）逐步点击/输入后截取，<b>原图未裁剪未美化</b>。</p>
+  <p>KERT：<code>127.0.0.1:8123</code>（供给态、独立端口，不碰他人实例）｜知识库：<code>127.0.0.1:9621</code>（LightRAG WebUI）</p>
+  <p>脚本：<code>run_walkthrough.py</code>　复跑：<code>.venv/bin/python evidence/m7-3/human-walkthrough/run_walkthrough.py</code></p>
+</header>
+<main>
+
+<section>
+  <span class="tag">起点</span><h2>S01 · 系统的能力全景</h2>
+  <p class="why">人打开 KERT 的 API 控制台，先看见"这个系统能做什么"。</p>
+  <img src="S01_kert_swagger_overview.png" alt="KERT Swagger 能力全景">
+  <figcaption>判据：控制台列出全部端点（健康、抽取、作业、本体/图、知识地图、路由计划、技能执行…）。</figcaption>
+</section>
+
+<section>
+  <span class="tag">环 1</span><h2>S02 · 知识地图</h2>
+  <p class="why">人先问：这类任务该按哪张地图走？</p>
+  <img src="S02_ring1_knowledge_maps.png" alt="知识地图列表">
+  <figcaption>判据：返回三张地图 <code>KM-CORP-RM-OUTREACH / MEETING / PREVISIT</code>（企业客户经理 · 外联/会面/访前）。</figcaption>
+</section>
+
+<section>
+  <span class="tag">环 2 + 环 3</span><h2>S03 · 技能路由与计划放行（含本体版本）</h2>
+  <p class="why">人问"外联准备该走什么"，系统给出<b>放行的计划</b>与依据，而不是一个裸答案。</p>
+  <img src="S03_ring2_routing_plan.png" alt="路由计划">
+  <figcaption>判据：<code>allowed=true</code>；<code>planId=AP-KERT-OUTREACH_PREPARATION-…</code>；版本行同时钉住 <b>知识地图</b>、<b>路由策略</b>、<b>本体</b>（<code>CTR-SEM-002@sha256:705578d6…</code>）—— 环 1/2/3 在同一个计划里对齐。</figcaption>
+</section>
+
+<section>
+  <span class="tag">环 4</span><h2>S04 · 技能执行 → 业务报告</h2>
+  <p class="why">人让技能出结果，拿到的是<b>业务化</b>的产物（标题、摘要、证据引用），不是原始数据堆。</p>
+  <img src="S04_ring3_skill_report.png" alt="技能执行成功">
+  <figcaption>判据：<code>status=ok</code>，含 <code>reportTitle / executiveSummary / evidenceRefs / reportUrl</code>。</figcaption>
+</section>
+
+<section>
+  <span class="tag">对照</span><h2>S05 · 控件门禁：无新证据 ⇒ 受控退出</h2>
+  <p class="why">同一个技能，人这次<b>没给新证据</b>。系统不是随便出结果，而是<b>具名地不出</b>。</p>
+  <img src="S05_policy_controlled_exit.png" alt="无新证据策略拦截">
+  <figcaption>判据：<code>status=exit_policy_no_new_evidence</code>，<code>assemblyTrace</code> 显示 <code>evidence: blocked</code>。⇒ "绿"必须来自真证据，而不是沉默。</figcaption>
+</section>
+
+<section>
+  <span class="tag">作业</span><h2>S06 · 受理与业务状态机</h2>
+  <p class="why">人把任务丢成异步作业，再回来看它走到哪一步。</p>
+  <img src="S06a_job_accepted_202.png" alt="async 受理 202">
+  <img src="S06b_job_status.png" alt="作业状态" style="margin-top:12px">
+  <figcaption>判据：受理返回 <code>jobId + status=PENDING</code>；查询端点返回 <code>data.status</code>（业务状态机取值域已在合同侧扩到 9 值，见 D-27）。</figcaption>
+</section>
+
+<section>
+  <span class="tag">环 5 入口</span><h2>S07 · 换到知识库（LightRAG WebUI）</h2>
+  <p class="why">人的第二个工作面：不是 KERT 的控制台，而是<b>知识库</b>。</p>
+  <img src="S07_lightrag_login.png" alt="LightRAG 登录页">
+  <figcaption>判据：真实外部实例的 WebUI（<code>v1.5.7</code>），与 KERT 是两个进程。</figcaption>
+</section>
+
+<section>
+  <span class="tag">环 6 → 环 5</span><h2>S08 · 知识库里躺着 KERT 的物化产物</h2>
+  <p class="why">人打开文档列表：KERT 的<b>本体物化产物</b>已经被发布进知识库，正文开头就是 KERT 自己写的<b>出处头</b>（路径 + sha256）。</p>
+  <img src="S08_lightrag_documents.png" alt="文档列表含 KERT 产物">
+  <figcaption>判据：文档条目里可见 <code>04_serve/product_knowledge/version=2026.09.16.1/ONTOLOGY.md</code> 与 <code>sha256: 9d2ebc4c…</code> ⇒ "物化产物"与"知识库里的那条"是**同一件东西**。</figcaption>
+</section>
+
+<section>
+  <span class="tag">环 5</span><h2>S09 · 自然语言提问 → 带出处的答案</h2>
+  <p class="why">人直接用大白话问客户画像与产品利率。系统给出答案，并<b>把出处摊开</b>；答不上来的部分<b>明说答不上来</b>。</p>
+  <img src="S09_lightrag_answer_with_citations.png" alt="带引用的检索答案">
+  <figcaption>判据（可核）：答案里 <code>References</code> 回指 KERT 产物路径 —— <code>03_core__customer__…CUST-CORP-0001.md</code>、<code>04_serve__product_knowledge__…__ONTOLOGY.md</code>、<code>04_serve__customer_knowledge__…__PROJECTION.md</code>；并对"产品利率"明确声明<b>知识库中没有该信息</b>（不编造）。答案措辞由模型生成，<b>判据取引用出处</b>，不取措辞。</figcaption>
+</section>
+
+<section>
+  <span class="tag">总览</span><h2>S10 · 知识图谱</h2>
+  <p class="why">最后看整体：图谱里同时站着 KERT 的物化产物与本体概念。</p>
+  <img src="S10_lightrag_graph.png" alt="知识图谱">
+  <figcaption>判据：左下角 <code>节点 78 / 边 86</code>（与实例 graphml 计数一致，见 D-34 复核）；可视节点含 <code>Projection</code>、<code>PROJECTION.md</code>、<code>Product Knowledge</code>（KERT 产物侧）与 <code>Ontology</code>、<code>Owl</code>、<code>Gits-Cbanking</code>（本体侧）。</figcaption>
+</section>
+
+<section>
+  <span class="tag">非声明</span><h2>这组图能证明什么、不能证明什么</h2>
+  <p class="why">
+  <b>能</b>：人（用真浏览器）能在两个真实进程的界面上，把"地图→路由→本体→业务语义→知识库→物化产物"一路看到，且每一步都有可核字段。<br>
+  <b>不能</b>：它<b>不替代</b>自动化断言 —— 六环的机械断言在 CI 上跑（<code>tests/integration/test_six_ring_chain_end_to_end.py</code>）；本组图是**可见面复核**，用于给人看"这东西真的转起来了"。<br>
+  LightRAG 的答案文字依赖该实例的语料与 LLM 配置（本机 Ollama/DeepSeek），<b>不具确定性</b>；因此判据一律取"引用出处/字段值"，不取自然语言措辞。
+  </p>
+</section>
+
+</main>
+</body>
+</html>
