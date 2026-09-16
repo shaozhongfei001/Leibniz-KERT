@@ -210,7 +210,13 @@ class LightRagClient:
                 f"LightRAG 响应非 JSON（{url}）：{raw[:200]}") from exc
 
     def available(self) -> bool:
-        """探活（只回答是否可达；**不吞**异常语义，仅返回布尔，供调用方分流）。"""
+        """探活：**只回答 `GET /health` 是否成功**，不承诺已授权、也不承诺能读全库。
+
+        ⚠ 语义边界（免混用）：它返回 ``False`` 只说明"探活这一步失败"（含不可达与 `/health` 被拒）；
+        **可达但未授权**（如 `GET /health` 开放、而 `/documents/*` 需凭据）时它会返回 ``True``，
+        此时真正的鉴权失败由 :class:`LightRagHTTPError`（**401/403**）表达 ⇒ 调用方**必须**照样处理该异常，
+        不得因 ``available() is True`` 就假定"有权限"。
+        """
         try:
             status, _ = self._request("GET", "/health",
                                       timeout=min(self.timeout, 5.0))

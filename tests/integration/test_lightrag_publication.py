@@ -1,7 +1,12 @@
 """P-1 数据出口：把 KERT 产物发布到外部 LightRAG，并断言**可检索 / 出处回指 / 幂等 / 可撤回**。
 
-纪律（TL P-1 硬要求）：**禁 skip**。server 不在或未授权时，走**具名错误**分支并断言
-（`LightRagUnavailable` / `LightRagHTTPError`），不会静默变绿。
+纪律（TL P-1 硬要求）：**禁 skip**；环境的**三种分支都要被断言**（缺一格就会漏掉一类真实故障）：
+
+1. **不可达**（server 未启动）⇒ 具名 `LightRagUnavailable`（确定性由 `DEAD_URL`＝端口 9 覆盖）；
+2. **可达但未授权**（server 在听、无/错 `KERT_LIGHTRAG_API_KEY`）⇒ 具名 `LightRagHTTPError`
+   （**断言 401/403**）。⚠ **这一格曾漏**：预清调用被放在受保护 `try` **之外** ⇒ 无凭据环境下
+   它以**未捕获 401** 把用例红掉（m71 实测报障，2026-09-16；抛点 `lightrag_client.py:201`）；
+3. **可达且已授权** ⇒ 真发布 → 等索引 → 检索命中（**出处回指产物路径**）→ 幂等 → 撤回 → **连续两次读为空**。
 """
 
 from __future__ import annotations
@@ -197,8 +202,12 @@ class TestPublishedIsRetrievableAndRetractable:
             with pytest.raises(LightRagUnavailable):
                 svc.publish_artifact(rel, client=client)
             return
-        _pre_clean(client, artifact_file_source(rel))   # 清掉上次异常退出可能残留的同标识条目
         try:
+            # 预清 + 发布**都**可能因「可达但**未授权**」(401/403) 抛具名 `LightRagHTTPError`
+            # ⇒ 二者必须在**同一处**被断言。曾把 `_pre_clean` 放在 try **之外** ⇒
+            # 无凭据环境下它以**未捕获异常**把用例红掉（m71 实测报障，2026-09-16；抛点
+            # `lightrag_client.py:201` 的 `/documents/paginated`）⇒ 这才是"未授权"分支的漏网。
+            _pre_clean(client, artifact_file_source(rel))   # 清掉上次异常退出可能残留的同标识条目
             out = svc.publish_artifact(rel, client=client)
         except LightRagHTTPError as exc:
             assert exc.code == "LIGHTRAG_HTTP_ERROR"
