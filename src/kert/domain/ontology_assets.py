@@ -12,8 +12,10 @@
 - **漂移即**具名拒绝（:data:`CODE_ASSET_DRIFT`）—— 副本被改、或与记录值不符，**不得**静默继续；
 - 本模块**不联网**、运行期**不读** gits 仓；对源仓比对只能由调用方**显式**传入 ``source_root``
   （见 :func:`drift_against_source`，供人类 / 独立 QA 使用）；
-- 供给面（``provision.py``）本轮**未**扩展 ``90_control/ontology/``（该文件属他人在途）⇒
-  由 :func:`ensure_assets` 做**显式引入**（拷自受控源并校验），并在返回值中如实标注来源。
+- **供给面**（M7-⑤）：``kert provision`` 已接管 ``90_control/ontology/`` 的供给
+  （清单 = :func:`kert.domain.ontology_provision.provision_pairs`）；:func:`ensure_assets`
+  仍是"不经供给面、显式引入"的入口（拷自受控源并校验），并在返回值中如实标注来源。
+  两条路径**同一套 provenance 校验**，不存在"供给来的副本不校验"。
 """
 from __future__ import annotations
 
@@ -180,7 +182,7 @@ def ensure_assets(workspace: Path | str, *, source: Path | str, verify: bool = T
     :param source: 受控源目录（如 ``examples/bank-front-knowledge-maps/90_control/ontology``）。
     :returns: 载入结果；工作区副本与源**不一致**时**不覆盖**，而是如实报漂移。
 
-    说明：供给面本轮未扩展（``provision.py`` 属他人在途）⇒ 此处是**显式引入**入口；
+    说明：M7-⑤ 起供给面（``provision_pairs``）也接管本子树；此处仍是**显式引入**入口；
     引入后仍以工作区副本 + 其 provenance 为准（provenance 随副本一起拷贝）。
     """
     src = Path(source)

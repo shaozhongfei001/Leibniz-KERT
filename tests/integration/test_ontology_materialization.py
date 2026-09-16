@@ -159,9 +159,12 @@ def test_fingerprint_is_target_invariant_and_content_sensitive(ws_ready, tmp_pat
     doc = json.loads(decl.read_text(encoding="utf-8"))
     doc["contentSha256"] = prov["assets"][0]["contentSha256"]   # 合法换版：声明改钉到新版
     decl.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+    _adopt_variant(alt, changed_ws)      # 先清工作区内置副本，否则 assets_source 会被静默忽略
 
     changed = materialize_ontology(changed_ws, service_id=SERVICE_ID, version="det-2",
                                    assets_source=alt)
+    assert (assets_dir(changed_ws) / "gits-core.owl.ttl").read_bytes() == \
+        (alt / "gits-core.owl.ttl").read_bytes(), "换版未真正生效（夹具空转）"
     assert changed["counts"]["classes"] == base["counts"]["classes"] + 1
     assert changed["graph"]["fingerprint"] != base["graph"]["fingerprint"], "内容变 ⇒ 指纹必变"
 
@@ -221,6 +224,18 @@ def _assets_variant(tmp_path: Path, name: str, *, instances_extra: str = "",
     return root
 
 
+def _adopt_variant(src_variant: Path, ws: Path) -> None:
+    """把工作区已有的本体副本清掉，让 ``materialize_ontology(assets_source=…)`` **真的**采用变体。
+
+    ``ensure_assets`` 只在"工作区尚无 ``PROVENANCE.json``"时才引入 ⇒ 若工作区已有一份
+    （例如 M7-⑤ 之后 ``kert provision`` 已供给内置本体），``assets_source`` 会被**静默忽略**，
+    本文件的三个变体夹具就会变成空转。故先清后引入，并（正例里）断言引入的确实是变体。
+    """
+    import shutil
+
+    shutil.rmtree(assets_dir(ws), ignore_errors=True)
+
+
 def _targeted_types(assets_root: Path) -> set[str]:
     """实例图里**被某条 shape 的 targetClass 命中**的类型集合。
 
@@ -246,8 +261,11 @@ def test_positive_shacl_validation_is_non_vacuous_and_recorded(ws_ready, tmp_pat
     ws = ws_ready
     alt = _assets_variant(tmp_path, "alt-shacl-ok", instances_extra=_SATISFYING)
     assert _targeted_types(alt), "夹具失效：实例未被任何 shape 命中 ⇒ 本用例会空转"
+    _adopt_variant(alt, ws)
 
     out = materialize_ontology(ws, service_id=SERVICE_ID, version="shacl-ok", assets_source=alt)
+    # 防空转：物化**真的**用了这个变体（否则下面的断言可能是在测内置资产）
+    assert (assets_dir(ws) / "products.ttl").read_bytes() == (alt / "products.ttl").read_bytes()
     vdir = ws / "04_serve" / SERVICE_ID / "version=shacl-ok"
     fm = json.loads((vdir / "ONTOLOGY_LINEAGE.json").read_text(encoding="utf-8"))
     assert fm["shaclValidation"] == {"conforms": True, "violations": 0,
@@ -261,6 +279,7 @@ def test_negative_shacl_violation_is_refused_and_nothing_written(ws_ready, tmp_p
     ws = ws_ready
     alt = _assets_variant(tmp_path, "alt-shacl-bad", instances_extra=_VIOLATING)
     assert _targeted_types(alt), "夹具失效：违规实例未被 shape 命中 ⇒ 拒绝路径不会被触发"
+    _adopt_variant(alt, ws)
 
     vdir = ws / "04_serve" / SERVICE_ID / "version=shacl-bad"
     with pytest.raises(OntologyAssetError) as ei:
@@ -276,6 +295,7 @@ def test_negative_shacl_declared_without_instances_is_refused(ws_ready, tmp_path
     """反例 4：声明了 SHACL 却**无实例图可判**（"未校验"）⇒ 同具名拒绝，不得充当通过。"""
     ws = ws_ready
     alt = _assets_variant(tmp_path, "alt-shacl-noinst", drop_instances=True)
+    _adopt_variant(alt, ws)
     vdir = ws / "04_serve" / SERVICE_ID / "version=shacl-none"
 
     with pytest.raises(OntologyAssetError) as ei:

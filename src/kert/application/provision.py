@@ -7,6 +7,7 @@
 ``90_control/schema/route_policy.json``          路由策略（``load_route_policy`` 读）
 ``90_control/schema/ontology_reference.json``    本体引用声明（``load_ontology_reference`` 读）
 ``90_control/schema/knowledge_sources.json``     知识源能力声明（``load_declaration`` 读；M7.1-A）
+``90_control/ontology/**``                        内置本体资产（OWL/SHACL/INSTANCES/R2RML + PROVENANCE；M7-⑤）
 ``90_control/catalog/provision_manifest.json``   供给留痕（哈希/时刻/来源）
 ============================  ==================================================
 
@@ -32,6 +33,10 @@
    （M7.1-A 只读、未接线）——缺它不应让整个部署起不来；而"非法"必须中止，
    否则会破坏纪律 1。若将来该声明成为读取链的必需件，应在彼时把它改为
    "缺失即拒绝"（属语义升级，须单独授权与评估）。
+8. **内置本体资产同样是"可选但必须校验"**（M7-⑤）：``90_control/ontology/**`` 目录内无
+   ``PROVENANCE.json`` ⇒ 不供给（不报错）；``PROVENANCE.json`` 在场即必须合法
+   （provenance 非法 / 声明的资产文件缺失 / 副本漂移 ⇒ **全量中止**，理由同纪律 1）。
+   清单与目标路径由 :mod:`kert.domain.ontology_provision` 产出（写侧与读侧同源，见纪律 3）。
 """
 
 from __future__ import annotations
@@ -52,6 +57,10 @@ from ..domain.knowledge_source import (
     FILENAME as KNOWLEDGE_SOURCES_FILENAME,
     declaration_path as knowledge_sources_path,
     load_declaration,
+)
+from ..domain.ontology_provision import (
+    provision_pairs as ontology_provision_pairs,
+    require_source_assets,
 )
 from ..domain.ontology_reference import (
     FILENAME as ONTOLOGY_REFERENCE_FILENAME,
@@ -153,6 +162,9 @@ def _plan_items(ws: Path, src: Path) -> list[tuple[str, Path, Path]]:
     if ks_src.is_file():
         pairs.append((f"90_control/schema/{KNOWLEDGE_SOURCES_FILENAME}",
                       ks_src, knowledge_sources_path(ws)))
+    # 内置本体资产（M7-⑤）：与本体引用/知识源声明同口径（模块 docstring 纪律 8）。
+    # 清单与目标路径由领域模块产出（写侧/读侧同源，纪律 3）；源侧非法 ⇒ 此处就中止。
+    pairs.extend(ontology_provision_pairs(ws, src))
     return pairs
 
 
@@ -166,7 +178,10 @@ def validate_source(source: Path) -> tuple[KnowledgeMapRegistry, object, object,
     3. 路由策略（``load_route_policy``）——**必需**（缺它则路由默认拒绝，供给无意义）；
     4. 本体引用（``load_ontology_reference``）——可选；存在即校验，非法即中止；
     5. 知识源能力声明（``load_declaration``）——可选；存在即校验，非法即中止
-       （M7.1-A；与第 4 项同口径，见模块 docstring 纪律 7）。
+       （M7.1-A；与第 4 项同口径，见模块 docstring 纪律 7）；
+    6. 内置本体资产（:func:`~kert.domain.ontology_provision.require_source_assets`）——可选；
+       ``PROVENANCE.json`` 在场即校验，非法/缺文件/漂移即中止
+       （M7-⑤；与第 4/5 项同口径，见模块 docstring 纪律 8）。
 
     抛 :class:`~kert.domain.errors.SchemaValidationError`（源内某份定义非法）
     或 :class:`~kert.domain.errors.UsageError`（源不是工作区 / 缺少必需件）。
@@ -184,6 +199,7 @@ def validate_source(source: Path) -> tuple[KnowledgeMapRegistry, object, object,
     policy = load_route_policy(src)
     ref = load_ontology_reference(src)
     decl = load_declaration(src)
+    require_source_assets(src)      # M7-⑤：内置本体资产（可选；在场即必须合法）
     if not registry.maps:
         raise UsageError(f"供给源未注册任何知识地图（{catalog_dir(src)}）: {src}")
     if policy is None:
