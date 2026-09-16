@@ -128,6 +128,12 @@ subClassOf 新增 = 101，拆解（**四个量；其中两个数值相同，但*
   integration `490 passed, 1 xfailed / rc=0`、contract `53 passed / rc=0`、recovery `18 passed / rc=0`；
   `ruff check src tests` → All checks passed。
 
+- **凭据状态（TL 2026-09-16 新纪律：报跑数必须注明"带凭据 / 不带凭据"）**：本节**全部跑数均为
+  不带凭据** —— 实测 `env | grep KERT_LIGHTRAG` 命中数 = **0**（`KERT_LIGHTRAG_*` 未设置）；
+  且该时点套件内**尚无** lightRAG 用例（`tests/integration/test_lightrag_publication.py` 由第三方后加）。
+  ⇒ 引用本段数字时须**连同"不带凭据"一并引用**：同一用例在**带凭据 / 不带凭据**下结论相反
+  （401 无凭据 ⇒ 红；带凭据 ⇒ 绿），不注明会把"环境差异"读成"回归"。
+
 ---
 
 ## 8. 外部调用者独立复现（**最强形态证据**）：P-1 调用 + 我的独立复算，逐项相同
