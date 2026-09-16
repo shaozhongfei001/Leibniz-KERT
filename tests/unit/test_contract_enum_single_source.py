@@ -9,8 +9,10 @@
 
 from __future__ import annotations
 
+import copy
 from pathlib import Path
 
+import pytest
 import yaml
 
 from kert.application.interaction_memory import DECAY_RULES, MEMORY_CATEGORIES
@@ -46,9 +48,13 @@ def _enum(spec: dict, schema: str, field: str) -> list:
     return enum
 
 
-def test_contract_enum_matches_single_source():
-    """三处合同 `enum` 必须等于其命名源（子集须显式登记理由，否则红）。"""
-    spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
+def _assert_matches(spec: dict) -> int:
+    """核对 ``spec`` 里的每一条映射；返回**实际核对项数**（供防空转下限判定）。
+
+    不等值且非"已登记的真子集" ⇒ :class:`AssertionError`（把判定逻辑抽出来是为了让
+    :func:`test_contract_enum_mutation_is_detected` 能在**内存副本**上做变异自证，
+    而不必改 ``specs/**``）。
+    """
     checked = 0
     for schema, field, source in MAPPINGS:
         key = f"{schema}.{field}"
@@ -68,6 +74,40 @@ def test_contract_enum_matches_single_source():
         raise AssertionError(
             f"{key} 合同 enum 与命名源不一致：合同={enum}，源={source}"
             f"（合同多出={sorted(set(enum) - set(source))}，合同缺少={sorted(set(source) - set(enum))}）")
+    return checked
+
+
+def test_contract_enum_matches_single_source():
+    """三处合同 `enum` 必须等于其命名源（子集须显式登记理由，否则红）。"""
+    spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
+    checked = _assert_matches(spec)
     # 防空转：本用例不得在"核对项为空/骤减"时静默通过（下限随登记项数同步抬高）
     assert checked >= 4, f"防空转：实际核对项数 {checked} 少于下限 4"
     assert len(MAPPINGS) >= 4, "防空转：映射表异常收缩"
+
+
+@pytest.mark.parametrize("mode", ["changed_value", "narrowed"])
+def test_contract_enum_mutation_is_detected(mode):
+    """**变异自证（自动化）**：合同 enum 被换值 / 被写窄 ⇒ 判据**必须**红。
+
+    在**内存副本**上变异（不写 ``specs/**``）：若有人把判据改成"读常量自比"或短路，
+    本用例会失去可红性 ⇒ 自动暴露（把一次性的手工自证固化成机械保护）。
+    """
+    spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
+    assert _assert_matches(spec) >= 4, "基线合同必须先通过（否则变异证明无意义）"
+
+    checked = 0
+    for schema, field, _source in MAPPINGS:
+        key = f"{schema}.{field}"
+        if key in SUBSET_DECLARATIONS:      # 子集档的"写窄"是已登记语义，另论
+            continue
+        mutated = copy.deepcopy(spec)
+        enum = mutated["components"]["schemas"][schema]["properties"][field]["enum"]
+        if mode == "changed_value":
+            enum[0] = f"MUTANT_{enum[0]}"
+        else:
+            enum.pop()                      # 未登记的真子集 ⇒ 必须红
+        with pytest.raises(AssertionError):
+            _assert_matches(mutated)
+        checked += 1
+    assert checked >= 3, f"防空转：实际变异项数 {checked} 少于下限 3"

@@ -3,11 +3,15 @@
 正例：内置资产（provenance 校验）→ 真解析 → 物化到 `04_serve/<svc>/version=<v>/` → Kùzu 图查询命中
       → 血缘 `ontology` 子块与**计划声明**一致（喂给既有 `check_lineage_ontology` 仍放行）；
 反例 1：副本被篡改 ⇒ 具名 `ONTOLOGY_ASSET_DRIFT` 且**不产出任何产物**；
-反例 2：内置 OWL 与控制面**声明钉值**不符 ⇒ 具名 `ONTOLOGY_ASSET_DECLARATION_MISMATCH`。
+反例 2：内置 OWL 与控制面**声明钉值**不符 ⇒ 具名 `ONTOLOGY_ASSET_DECLARATION_MISMATCH`；
+反例 3（④）：实例图**违反** SHACL ⇒ 具名 `ONTOLOGY_INSTANCES_NOT_CONFORMING` 且**不产出**；
+反例 4（④）：声明了 SHACL 却**没有实例图可判**（"未校验"）⇒ 同具名拒绝，不得充当通过。
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -29,6 +33,7 @@ from kert.domain.activation_plan import ActivationPlanBuilder  # noqa: E402
 from kert.domain.ontology_assets import (  # noqa: E402
     CODE_ASSET_DECLARATION_MISMATCH,
     CODE_ASSET_DRIFT,
+    CODE_INSTANCES_NOT_CONFORMING,
     OntologyAssetError,
     assets_dir,
 )
@@ -173,3 +178,108 @@ def test_negative_asset_vs_declaration_mismatch_is_refused(ws_ready):
         materialize_ontology(ws, service_id=SERVICE_ID, version="bad-2", assets_source=ASSETS_SRC)
     assert ei.value.code == CODE_ASSET_DECLARATION_MISMATCH
     assert not (ws / "04_serve" / SERVICE_ID / "version=bad-2").exists()
+
+
+# --------------------------------------------------------------------------- #
+# ④ SHACL 违规 ⇒ **拒绝物化**（不是统计）
+# --------------------------------------------------------------------------- #
+
+OWL_NS = "https://gientech.com/gits/kno/"
+"""shapes / OWL 的命名空间（见 ``gits-core.shacl.ttl`` 的 ``@prefix gits:``）。"""
+
+_SATISFYING = (f"\n@prefix k: <{OWL_NS}> .\n"
+               'k:good_product a k:Product ; k:product_id "P1" .\n')
+_VIOLATING = (f"\n@prefix k: <{OWL_NS}> .\n"
+              'k:bad_action a k:Action ; k:action_id "x" .\n')
+
+
+def _assets_variant(tmp_path: Path, name: str, *, instances_extra: str = "",
+                    drop_instances: bool = False) -> Path:
+    """内置资产的受控源变体（provenance 与内容**同步改**，故源侧自身合法）。"""
+    import shutil
+
+    root = tmp_path / name
+    shutil.copytree(ASSETS_SRC, root)
+    doc = json.loads((root / "PROVENANCE.json").read_text(encoding="utf-8"))
+    if drop_instances:
+        inst = next(a for a in doc["assets"] if a["role"] == "INSTANCES")
+        (root / inst["file"]).unlink()
+        doc["assets"] = [a for a in doc["assets"] if a["role"] != "INSTANCES"]
+        (root / "PROVENANCE.json").write_text(
+            json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return root
+    if instances_extra:
+        inst_path = next(root / a["file"] for a in doc["assets"] if a["role"] == "INSTANCES")
+        inst_path.write_text(inst_path.read_text(encoding="utf-8") + instances_extra,
+                             encoding="utf-8")
+        for entry in doc["assets"]:
+            p = root / entry["file"]
+            entry["bytes"] = p.stat().st_size
+            entry["contentSha256"] = hashlib.sha256(p.read_bytes()).hexdigest()
+        (root / "PROVENANCE.json").write_text(
+            json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return root
+
+
+def _targeted_types(assets_root: Path) -> set[str]:
+    """实例图里**被某条 shape 的 targetClass 命中**的类型集合。
+
+    空集 ⇒ 该校验**必然空转**（没有任何实例受约束，``conforms`` 恒真）——
+    夹具与被测路径都必须先排除这一点，否则"拒绝"分支永远不会被走到。
+    """
+    from rdflib import Graph
+    from rdflib.namespace import RDF, SH
+
+    doc = json.loads((assets_root / "PROVENANCE.json").read_text(encoding="utf-8"))
+    files = {a["role"]: a["file"] for a in doc["assets"]}
+    g = Graph()
+    g.parse(str(assets_root / files["INSTANCES"]), format="turtle")
+    sg = Graph()
+    sg.parse(str(assets_root / files["SHACL"]), format="turtle")
+    targets = {str(t) for _, _, t in sg.triples((None, SH.targetClass, None))}
+    typed = {str(o) for _, _, o in g.triples((None, RDF.type, None))}
+    return targets & typed
+
+
+def test_positive_shacl_validation_is_non_vacuous_and_recorded(ws_ready, tmp_path):
+    """正例：实例**真被 shapes 命中**（非空转）且相容 ⇒ 正常产出，结论写进血缘。"""
+    ws = ws_ready
+    alt = _assets_variant(tmp_path, "alt-shacl-ok", instances_extra=_SATISFYING)
+    assert _targeted_types(alt), "夹具失效：实例未被任何 shape 命中 ⇒ 本用例会空转"
+
+    out = materialize_ontology(ws, service_id=SERVICE_ID, version="shacl-ok", assets_source=alt)
+    vdir = ws / "04_serve" / SERVICE_ID / "version=shacl-ok"
+    fm = json.loads((vdir / "ONTOLOGY_LINEAGE.json").read_text(encoding="utf-8"))
+    assert fm["shaclValidation"] == {"conforms": True, "violations": 0,
+                                     "shapes": out["counts"]["shapes"],
+                                     "instancesFile": "products.ttl"}
+    assert fm["counts"]["instanceViolations"] == 0
+
+
+def test_negative_shacl_violation_is_refused_and_nothing_written(ws_ready, tmp_path):
+    """反例 3：实例**违反** shapes ⇒ 具名 `ONTOLOGY_INSTANCES_NOT_CONFORMING`，**不产出**。"""
+    ws = ws_ready
+    alt = _assets_variant(tmp_path, "alt-shacl-bad", instances_extra=_VIOLATING)
+    assert _targeted_types(alt), "夹具失效：违规实例未被 shape 命中 ⇒ 拒绝路径不会被触发"
+
+    vdir = ws / "04_serve" / SERVICE_ID / "version=shacl-bad"
+    with pytest.raises(OntologyAssetError) as ei:
+        materialize_ontology(ws, service_id=SERVICE_ID, version="shacl-bad", assets_source=alt)
+    assert ei.value.code == CODE_INSTANCES_NOT_CONFORMING
+    assert "conforms=false" in ei.value.message and "products.ttl" in ei.value.message
+    n = re.search(r"违规 (\d+) 条", ei.value.message)
+    assert n and int(n.group(1)) >= 1, f"违规数未如实写出: {ei.value.message}"
+    assert not vdir.exists(), "拒绝时不得留下产物（fail-closed）"
+
+
+def test_negative_shacl_declared_without_instances_is_refused(ws_ready, tmp_path):
+    """反例 4：声明了 SHACL 却**无实例图可判**（"未校验"）⇒ 同具名拒绝，不得充当通过。"""
+    ws = ws_ready
+    alt = _assets_variant(tmp_path, "alt-shacl-noinst", drop_instances=True)
+    vdir = ws / "04_serve" / SERVICE_ID / "version=shacl-none"
+
+    with pytest.raises(OntologyAssetError) as ei:
+        materialize_ontology(ws, service_id=SERVICE_ID, version="shacl-none", assets_source=alt)
+    assert ei.value.code == CODE_INSTANCES_NOT_CONFORMING
+    assert "未校验" in ei.value.message
+    assert not vdir.exists(), "拒绝时不得留下产物（fail-closed）"
