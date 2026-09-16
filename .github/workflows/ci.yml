@@ -63,8 +63,8 @@ jobs:
   #
   # 作用域显式列出，排除 e2e / security / performance（各有专职 job）。
   # 此前本 job 跑无参数 pytest（testpaths=["tests"]）导致与三个专职 job
-  # 重叠，且与 performance job 的 continue-on-error 语义矛盾——同一批
-  # 基准用例在此阻断、在那放行（见 FAIL-JR1-05 F-2）。
+  # 重叠——同一批基准用例既在此跑、又在专职 job 跑（见 FAIL-JR1-05 F-2）。
+  # 2026-09-16：performance 的 job 级 continue-on-error 已移除 ⇒ 本注不再引用它。
   #
   # contract 与 recovery 必须列入：二者无专职 job，此前仅靠无参数
   # pytest 被间接执行。若省略，JR-1 内部契约测试将脱离 CI 验证。
@@ -389,12 +389,17 @@ jobs:
           KERT_PROFILE: dev
 
   # ──────────────────────────────────────────────
-  # Performance：性能基准（允许失败）
+  # Performance：性能基准（**必须通过** —— 与 e2e 同为 required check）
+  #
+  # 2026-09-16：移除 job 级 continue-on-error。原写法使本 job 失败不令运行变红，
+  # 若仍把它列为 required check，则"阻塞"名不副实（既可能只是装饰，也可能只在
+  # 某些路径上偶然生效）。移除后本 job 的失败与 e2e 同等对待。
+  # 代价（明示）：墙钟抖动会直接卡住 PR ⇒ 抖动必须按「修基准 / 放宽阈值」处理，
+  # 不得以 skip / continue-on-error / 空集（零用例）洗绿 —— 同 e2e 三道防线口径。
   # ──────────────────────────────────────────────
   performance:
     name: Performance Benchmarks
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
