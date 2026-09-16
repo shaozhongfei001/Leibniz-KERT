@@ -128,6 +128,12 @@ subClassOf 新增 = 101，拆解（**四个量；其中两个数值相同，但*
   integration `490 passed, 1 xfailed / rc=0`、contract `53 passed / rc=0`、recovery `18 passed / rc=0`；
   `ruff check src tests` → All checks passed。
 
+- **计数来源口径（与 c20 对齐，2026-09-16）**：本节四目录计数取自 **pytest 汇总行**（`-q` 模式）；
+  其中 integration 的 **`1 xfailed`** = `tests/integration/test_product_recommendation_sp15_chain.py::test_product_loader_from_assets`
+  （Owner 豁免 `WAIVER-2026-09-14-F-L00-07`，**`strict=True`** ⇒ 一旦 XPASS 即判失败、强制移除豁免），
+  **在 junit 中计为 `skipped=1`** ⇒ 与"真实 skip"不同、但与 junit 的 skipped 是**同一条**
+  （我实测 `-rxX` ⇒ `16 passed, 1 xfailed`，XFAIL 行即点名该用例）。**真实 skip = 0**。
+
 - **凭据状态（TL 2026-09-16 新纪律：报跑数必须注明"带凭据 / 不带凭据"）**：本节**全部跑数均为
   不带凭据** —— 实测 `env | grep KERT_LIGHTRAG` 命中数 = **0**（`KERT_LIGHTRAG_*` 未设置）；
   且该时点套件内**尚无** lightRAG 用例（`tests/integration/test_lightrag_publication.py` 由第三方后加）。
