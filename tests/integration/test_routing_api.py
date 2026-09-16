@@ -34,11 +34,15 @@ def client() -> TestClient:
 # 合同 ↔ 实现一致性（机械核对，防空转）
 # --------------------------------------------------------------------------- #
 
+#: 合同版本钉（**模块常量**：一处维护、多处复用）。
+#: 随 Contract Owner 批准的 bump 同步：`1.5.0 → 1.5.1`（形状更正补丁）→ **`1.6.0`**（A-6 九条登记 + A-9 删除）。
+#: 注意：本用例的**主旨**是"路由三路径与 schema 确已在合同中声明"，版本钉只用于**防意外改版本号**。
+EXPECTED_SPEC_VERSION = "1.6.0"
+
+
 def test_spec_declares_the_three_paths_and_schemas():
     spec = yaml.safe_load(SPEC.read_text(encoding="utf-8"))
-    # 版本钉：随 Contract Owner 批准的 bump 同步（1.5.1 → **1.6.0**，A-6 九条登记 + A-9 删除）。
-    # 本用例的**主旨**是"路由三路径与 schema 确已在合同中声明"，版本钉只是防意外改版本号。
-    assert spec["info"]["version"] == "1.6.0"
+    assert spec["info"]["version"] == EXPECTED_SPEC_VERSION
     for path in ("/v1/knowledge-maps", "/v1/knowledge-maps/{mapId}", "/v1/routing/plan"):
         assert path in spec["paths"], path
     schemas = spec["components"]["schemas"]
