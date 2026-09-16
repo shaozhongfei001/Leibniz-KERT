@@ -149,6 +149,75 @@ jobs:
             pip install ".[api,dev]"
           fi
 
+      # ──────────────────────────────────────────────
+      # D-6 Step 1：显式供给控制面 + 供给就绪断言（Owner 已批方向）
+      #
+      # 根因（实测，见 evidence/m7-3/PLAN_D-6-E2E-ASSERTION-STRENGTHENING.md）：
+      # 本 job 此前用**空** `$RUNNER_TEMP/kert-ws` 起服务，而 deploy 编排是
+      # `provision --init` 先行（deploy/docker-compose.yml:28-52）⇒ **CI 与部署口径不一致** ⇒
+      # 三技能计划门禁拒绝，却因 `/api/skill/execute` 对业务错误仍返回 200 而**假绿**。
+      #
+      # ⚠ 本批**只做 Step 1**（供给 + 就绪断言）；**Step 2**（把 e2e 断言强化到能区分
+      #   `ok`/`skill_error`）**未做**，仍待放行 —— 否则 CI 会永久红。
+      # ──────────────────────────────────────────────
+      - name: Provision control plane into e2e workspace (D-6 Step 1)
+        env:
+          KERT_PROFILE: dev
+        run: |
+          set -euo pipefail
+          # 与 deploy 编排同口径：`kert provision`（console script 由 `pip install ".[api,dev]"` 安装）
+          mkdir -p "$RUNNER_TEMP/kert-ws"
+          kert provision \
+            -w "$RUNNER_TEMP/kert-ws" \
+            -s "${{ github.workspace }}/examples/bank-front-knowledge-maps" \
+            --init
+          echo "✓ 控制面已供给：$RUNNER_TEMP/kert-ws"
+
+      - name: Assert control-plane provisioning present (D-6 Step 1)
+        env:
+          KERT_E2E_SRC: ${{ github.workspace }}/examples/bank-front-knowledge-maps
+          KERT_E2E_WS: ${{ runner.temp }}/kert-ws
+        run: |
+          # 就绪判据**不得**是 HTTP 200（那正是假绿的成因）⇒ 改为「**逐份声明文件存在 +
+          # 内容 sha256 一致 + 防空转下限**」；缺一份即数秒内显式失败。
+          python - <<'PY'
+          import hashlib
+          import os
+          import pathlib
+          import sys
+
+          SRC = pathlib.Path(os.environ["KERT_E2E_SRC"])
+          WS = pathlib.Path(os.environ["KERT_E2E_WS"])
+          #: 说明件不属"声明"（不被供给、不参与判据）
+          NON_DECL = {"README.md", "PROVENANCE.md"}
+
+          def decl(root: pathlib.Path) -> dict:
+              out = {}
+              for p in (root / "90_control").rglob("*"):
+                  if p.is_file() and p.name not in NON_DECL:
+                      out[p.relative_to(root).as_posix()] = hashlib.sha256(
+                          p.read_bytes()).hexdigest()
+              return out
+
+          want = decl(SRC)
+          got = decl(WS)
+          missing = sorted(set(want) - set(got))
+          diff = sorted(k for k in set(want) & set(got) if want[k] != got[k])
+          print("控制面声明：应供给 %d 份 / 已落盘 %d 份" % (len(want), len(got)))
+          # 防空转下限 = **稳定核心 6 份**（3 地图 + route_policy + ontology_reference +
+          # knowledge_sources —— 均为**已入库**文件）。
+          # ⚠ 为何不写 8：`schema/activations/AC-*.json`（2 份）当前是**第三方在途**新增、
+          # **尚未入库**；若把下限写成 8，这些文件未入库时本 job 会**假红**。
+          # 故口径为：源侧声明什么就要求供给什么（含 sha256 一致），但**下限只取入库核心 6 份**。
+          if len(want) < 6:
+              print("::error::防空转失败：源控制面声明数 %d < 6（入库核心）—— 检查 %s" % (len(want), SRC))
+              sys.exit(1)
+          if missing or diff:
+              print("::error::控制面供给不完整：缺少 %s；内容不一致 %s" % (missing, diff))
+              sys.exit(1)
+          print("✓ 控制面供给就绪：%d 份声明逐份存在且内容 sha256 一致" % len(want))
+          PY
+
       - name: Start KERT (dev profile, deterministic adapters)
         env:
           # dev profile 无需 API Key；无 LLM 密钥时自动走确定性适配器
