@@ -19,14 +19,20 @@ from kert.domain.states import JOB_STATES
 SPEC = Path(__file__).resolve().parents[2] / "specs" / "kert-openapi-v1.yaml"
 
 #: 合同 `enum` 允许为**严格子集**的显式登记：键＝`Schema.field`，值＝**非空理由**（空串视为违规）。
-#: 目前**零登记**（三处均为等值）；若日后确需写窄，必须在此逐条写明理由。
-SUBSET_DECLARATIONS: dict[str, str] = {}
+#: 目前 **1 条**（其余均为"等值"档）；若日后确需再写窄，必须在此逐条写明理由，否则红。
+SUBSET_DECLARATIONS: dict[str, str] = {
+    "AsyncAcceptedResponse.status": (
+        "202 受理体的 `status` **恒为** `PENDING`（实现为 `server.py` 的**手写信封**，不走 `_response()`）"
+        "⇒ 声明为 `JOB_STATES` 的**单值子集**：这是**语义**，不是漏登记；"
+        "若要改宽或改值，必须**显式改本登记**（不得无声改动）。"),
+}
 
 #: （schema, field, 单一源）—— 源与合同 `enum` **必须等值**（除非在上表显式登记）
 MAPPINGS: tuple[tuple[str, str, list], ...] = (
     ("JobStatusData", "status", list(JOB_STATES)),                 # D-27（1.6.1 值域更正）
     ("CandidateMemory", "category", list(MEMORY_CATEGORIES)),      # A1 层 1
     ("CandidateMemory", "suggestedDecayRule", list(DECAY_RULES)),  # A1 层 1
+    ("AsyncAcceptedResponse", "status", list(JOB_STATES)),         # 202 受理体：子集，见上表
 )
 
 
@@ -62,6 +68,6 @@ def test_contract_enum_matches_single_source():
         raise AssertionError(
             f"{key} 合同 enum 与命名源不一致：合同={enum}，源={source}"
             f"（合同多出={sorted(set(enum) - set(source))}，合同缺少={sorted(set(source) - set(enum))}）")
-    # 防空转：本用例不得在"核对项为空/骤减"时静默通过
-    assert checked >= 3, f"防空转：实际核对项数 {checked} 少于下限 3"
-    assert len(MAPPINGS) >= 3, "防空转：映射表异常收缩"
+    # 防空转：本用例不得在"核对项为空/骤减"时静默通过（下限随登记项数同步抬高）
+    assert checked >= 4, f"防空转：实际核对项数 {checked} 少于下限 4"
+    assert len(MAPPINGS) >= 4, "防空转：映射表异常收缩"
