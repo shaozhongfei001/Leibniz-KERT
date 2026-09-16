@@ -127,3 +127,28 @@ subClassOf 新增 = 101，拆解（**四个量；其中两个数值相同，但*
   四目录：unit `3 failed, 996 passed / rc=1`（红集仍=既有 3 条 `test_provision_cli`，非本片）、
   integration `490 passed, 1 xfailed / rc=0`、contract `53 passed / rc=0`、recovery `18 passed / rc=0`；
   `ruff check src tests` → All checks passed。
+
+---
+
+## 8. 外部调用者独立复现（**最强形态证据**）：P-1 调用 + 我的独立复算，逐项相同
+
+**口径（按 c20 给的声明式口径）**：下列数字是 **API 实测值**，**目标工作区为 `/tmp`**（**未写** `examples/**/90_control/**`），
+**调用者为 c20**（其 P-1「数据出口」轮），**不是**我的复跑窗口；本节由我**独立复算**后记录，按 D-8 带 sha。另：**c20 未编辑我的任何文件**。
+
+```text
+调用（c20） : materialize_ontology(tmp, version="2026.09.16.1",
+             assets_source=<repo>/examples/bank-front-knowledge-maps/90_control/ontology)
+我的独立复算: 同签名、另一 /tmp 工作区:
+  files = 5（ontology_classes/properties/shapes.parquet + ONTOLOGY.md + ONTOLOGY_LINEAGE.json）
+  graph = {dir: ontology_graph, node_count: 99, edge_count: 100,
+           fingerprint: 190593d7bdd516ffe3b275081a35a34192e1e4fa06de28029e5ad68a2fbd3cc4}
+  ONTOLOGY.md = 1939 B ; sha256 9d2ebc4c22ef715f505ce9fbb0312c24…（复算时的值）
+⇒ **c20 报数与我复算逐项相同**（files 5 / 99 / 100 / **同一 fingerprint** / 1939 B）
+```
+
+- **确定性旁证**：同一 fingerprint 现由**三方独立**得到 —— 我 18:0x 自产件、c20 的 P-1 调用、我本次复算
+  ⇒ 支持"物化可复现"（c20 已将其登记为后续抓手，**不属本件**）。
+- **外部可调用性**：目标工作区**可任意指定**（c20 落在 `/tmp`）；复算后仓库侧**无新增写入**
+  （实测 `git status` 仅见既有第三方未跟踪项）。
+- **用途（c20 侧，非本件结论）**：该产物被用作外部检索的**出处载体**
+  （`file_source = 04_serve__product_knowledge__version=2026.09.16.1__ONTOLOGY.md`），检索命中的 `file_path` 实测回指该路径 + 版本。
