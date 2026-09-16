@@ -34,12 +34,12 @@ DATE        : 2026-09-16
 | 1 | `POST /v1/extractions`（**202**） | `:499-528` | `ExtractionRequest` `:151-158` | **手写信封，`status="ACCEPTED"`**（`:516-526`），非 `_response()` | 202 + `data.{job_id,result_status,publish_status}`；注意 `status` 取值与其它端点不同（`ACCEPTED`） |
 | 2 | `GET /v1/extractions/{job_id}/result` | `:538-548` | — | `_response`（`:542`） | `data.{job_id,status,publish_status,output_refs}` |
 | 3 | `GET /v1/entities/{entity_id}`（+`as_of` 查询参数） | `:550-556` | — | `_response`（`:554`） | 路径参数 + **查询参数 `as_of`**（合同需显式声明，否则客户端无从得知） |
-| 4 | `POST /v1/data/query` | `:558-565` | `DataQueryRequest` `:161-167` | `_response`（`:563`） | `dataset/select/where/limit`（`limit` 默认 100） |
-| 5 | `POST /v1/search` | `:567-574` | `SearchRequest` `:169-175` | `_response`（`:572`） | `query/mode/top_k/filters` |
-| 6 | `POST /v1/graph/query` | `:576-587` | `GraphRequest` `:177-187` | `_response`（`:585`） | `start_entity_ids/relation_types/direction/max_depth/max_nodes/mode/service/as_of`；**与 v2 既有声明不一致，见 §5.2** |
-| 7 | `POST /v1/rules/evaluate` | `:589-595` | `RuleRequest` `:189-190` | `_response`（`:593`） | `rule_set/facts` |
+| 4 | `POST /v1/data/query` | `:558-565` | `DataQueryRequest` `:161-166` | `_response`（`:563`） | `dataset/select/where/limit`（`limit` 默认 100） |
+| 5 | `POST /v1/search` | `:567-574` | `SearchRequest` `:169-174` | `_response`（`:572`） | `query/mode/top_k/filters` |
+| 6 | `POST /v1/graph/query` | `:576-587` | `GraphRequest` `:177-186` | `_response`（`:585`） | `start_entity_ids/relation_types/direction/max_depth/max_nodes/mode/service/as_of`；**与 v2 既有声明不一致，见 §5.2** |
+| 7 | `POST /v1/rules/evaluate` | `:589-595` | `RuleRequest` `:189-192` | `_response`（`:593`） | `rule_set/facts` |
 | 8 | `GET /v1/evidence/{object_id}` | `:597-620` | — | `_response`（`:618`） | `data` 为证据引用集合（含审计镜像副作用，`:601-613`） |
-| 9 | `GET /v1/catalog` | `:622-632` | — | `_response`（`:629`） | `data.{service_id, version, projections}`（测试 `tests/integration/test_api.py:76-79` 已断言 `projections`） |
+| 9 | `GET /v1/catalog` | `:622-633` | — | `_response`（`:629`） | `data.{service_id, version, projections}`（测试 `tests/integration/test_api.py:76-79` 已断言 `projections`） |
 
 ## 3. 为什么是 additive，为什么仍必须追认
 
@@ -81,7 +81,7 @@ DATE        : 2026-09-16
 
 - v2 已声明该路径（`docs/contracts/openapi/kert-openapi-v2.yaml:177-194`，`GraphQueryRequest`/`GraphQueryResponse`，v2:521-567）：
   `required [start_entity_ids, mode]`、`max_depth` **maximum 10**、`max_nodes` **maximum 1000**、含 `service`。
-- 实现 `GraphRequest`（`server.py:177-187`）：`required [request_id, start_entity_ids]`、`mode` 默认 `neighbor`、
+- 实现 `GraphRequest`（`server.py:177-186`）：`required [request_id, start_entity_ids]`、`mode` 默认 `neighbor`、
   额外有 **`as_of`**（v2 无）、`max_depth` 默认 **1**、`max_nodes` 默认 **100**（**无 maximum 上界声明**）。
 - ⇒ 若选 A/B 登记，须明确**以实现为准**并逐项说明与 v2 的差异（否则登记动作本身会与 v2 制造新的双口径，
   重演 C-20）。
