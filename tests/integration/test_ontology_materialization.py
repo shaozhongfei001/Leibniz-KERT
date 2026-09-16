@@ -113,6 +113,54 @@ def test_negative_tampered_asset_is_refused_and_nothing_written(ws_ready):
     assert not (ws / "04_serve" / SERVICE_ID / "version=bad-1").exists(), "拒绝时不得留下产物"
 
 
+def test_fingerprint_is_target_invariant_and_content_sensitive(ws_ready, tmp_path):
+    """确定性判据的**双向**钉住（防被读成"任何条件下恒定"）：
+
+    ① 自变量 = 目标工作区/目录，**本体资产不变** ⇒ 因变量 `fingerprint` **不变**；
+    ② 自变量 = **本体内容变（且声明同步改钉，即合法换版）** ⇒ 因变量 `fingerprint` **必变**。
+    """
+    import hashlib
+    import shutil
+
+    ws = ws_ready
+    base = materialize_ontology(ws, service_id=SERVICE_ID, version="det-1", assets_source=ASSETS_SRC)
+
+    # ① 换工作区（新目录），资产不变 ⇒ fingerprint 不变
+    other = tmp_path / "ws-other"
+    ws_mod.init_workspace(other)
+    provision_control_plane(other, SRC)
+    same = materialize_ontology(other, service_id=SERVICE_ID, version="det-1",
+                                assets_source=ASSETS_SRC)
+    assert same["graph"]["fingerprint"] == base["graph"]["fingerprint"], "目标目录不应影响指纹"
+
+    # ② 资产**内容**变（加一个类）+ 同步 provenance + 同步控制面声明钉值（合法换版）⇒ fingerprint 必变
+    alt = tmp_path / "alt-onto"
+    shutil.copytree(ASSETS_SRC, alt)
+    owl = alt / "gits-core.owl.ttl"
+    owl.write_text(owl.read_text(encoding="utf-8") + "\ngits:ExtraClass a owl:Class .\n",
+                   encoding="utf-8")
+    prov = json.loads((alt / "PROVENANCE.json").read_text(encoding="utf-8"))
+    for entry in prov["assets"]:
+        if entry["file"] == "gits-core.owl.ttl":
+            entry["contentSha256"] = hashlib.sha256(owl.read_bytes()).hexdigest()
+            entry["bytes"] = owl.stat().st_size
+    (alt / "PROVENANCE.json").write_text(json.dumps(prov, ensure_ascii=False, indent=2) + "\n",
+                                         encoding="utf-8")
+
+    changed_ws = tmp_path / "ws-changed"
+    ws_mod.init_workspace(changed_ws)
+    provision_control_plane(changed_ws, SRC)
+    decl = changed_ws / "90_control" / "schema" / "ontology_reference.json"
+    doc = json.loads(decl.read_text(encoding="utf-8"))
+    doc["contentSha256"] = prov["assets"][0]["contentSha256"]   # 合法换版：声明改钉到新版
+    decl.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+
+    changed = materialize_ontology(changed_ws, service_id=SERVICE_ID, version="det-2",
+                                   assets_source=alt)
+    assert changed["counts"]["classes"] == base["counts"]["classes"] + 1
+    assert changed["graph"]["fingerprint"] != base["graph"]["fingerprint"], "内容变 ⇒ 指纹必变"
+
+
 def test_negative_asset_vs_declaration_mismatch_is_refused(ws_ready):
     """反例 2：内置 OWL 与控制面**声明钉值**不符 ⇒ 具名 `ONTOLOGY_ASSET_DECLARATION_MISMATCH`。"""
     ws = ws_ready
