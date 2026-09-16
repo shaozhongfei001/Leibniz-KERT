@@ -55,6 +55,11 @@ from ..domain.knowledge_source import (
     SourceHealth,
     resolve_declaration,
 )
+from ..domain.skill_status import (
+    EXIT_POLICY_NO_NEW_EVIDENCE,
+    SKILL_ERROR,
+    SKILL_OK,
+)
 from ..infrastructure.adapters import llm as llm_mod
 from ..infrastructure.classification import detect_value_patterns, redact_for_llm
 
@@ -310,7 +315,7 @@ class SkillExecutionService:
         if info is None:
             trace.append({"phase": "resolve", "status": "failed", "message": "未知 skillId"})
             return self._finish(SkillExecuteResult(
-                request_id=request_id, status="skill_error",
+                request_id=request_id, status=SKILL_ERROR,
                 errors=[{"code": "UNKNOWN_SKILL", "message": f"未知 skillId: {skill_id}"}],
                 assembly_trace=trace, skill_id=skill_id))
 
@@ -322,14 +327,14 @@ class SkillExecutionService:
                 trace.append({"phase": "evidence", "status": "blocked",
                               "message": "未提供 evidenceTimestamp，无新证据策略拦截（exit_policy_no_new_evidence）"})
                 return self._finish(SkillExecuteResult(
-                    request_id=request_id, status="exit_policy_no_new_evidence",
+                    request_id=request_id, status=EXIT_POLICY_NO_NEW_EVIDENCE,
                     assembly_trace=trace, skill_id=skill_id))
             latest = self._evidence_ts.get(customer)
             if latest is not None and str(ts) <= str(latest):
                 trace.append({"phase": "evidence", "status": "blocked",
                               "message": "evidenceTimestamp 未更新，无新证据策略拦截（exit_policy_no_new_evidence）"})
                 return self._finish(SkillExecuteResult(
-                    request_id=request_id, status="exit_policy_no_new_evidence",
+                    request_id=request_id, status=EXIT_POLICY_NO_NEW_EVIDENCE,
                     assembly_trace=trace, skill_id=skill_id))
             self._evidence_ts[customer] = str(ts)
 
@@ -341,21 +346,21 @@ class SkillExecutionService:
             data, model_call = run(request, trace)
             trace.append({"phase": "compose", "status": "ok", "message": "结果组装完成"})
             result = SkillExecuteResult(
-                request_id=request_id, status="ok", data=data,
+                request_id=request_id, status=SKILL_OK, data=data,
                 assembly_trace=trace, model_calls=[model_call], skill_id=skill_id)
         except SkillError as exc:
             # SP-15 等契约码透传：errors[].code 使用执行器声明的 KERT_* 码（fail-closed）
             trace.append({"phase": "compose", "status": "failed",
                           "message": exc.message})
             result = SkillExecuteResult(
-                request_id=request_id, status="skill_error",
+                request_id=request_id, status=SKILL_ERROR,
                 errors=[{"code": exc.code, "message": exc.message}],
                 assembly_trace=trace, skill_id=skill_id)
         except Exception as exc:
             trace.append({"phase": "compose", "status": "failed",
                           "message": str(exc)})
             result = SkillExecuteResult(
-                request_id=request_id, status="skill_error",
+                request_id=request_id, status=SKILL_ERROR,
                 errors=[{"code": "SKILL_EXECUTION_FAILED", "message": str(exc)}],
                 assembly_trace=trace, skill_id=skill_id)
         return self._finish(result)
@@ -386,7 +391,7 @@ class SkillExecutionService:
         """把持久化的响应载荷还原为 :class:`SkillExecuteResult`。"""
         return SkillExecuteResult(
             request_id=request_id,
-            status=str(payload.get("status", "ok")),
+            status=str(payload.get("status", SKILL_OK)),
             data=payload.get("data") or {},
             errors=payload.get("errors") or [],
             assembly_trace=payload.get("assemblyTrace") or [],

@@ -40,6 +40,7 @@ from ..domain.errors import KERTException, ServiceNotReadyError
 from ..domain.health import HEALTH_OK
 from ..domain.knowledge_map import KnowledgeMapRegistry
 from ..domain.route_policy import load_route_policy
+from ..domain.skill_status import SKILL_ERROR
 from ..infrastructure.observability import (
     configure_structured_logging,
     get_metrics_registry,
@@ -340,7 +341,7 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
                    exc_info=(type(exc), exc, exc.__traceback__))
         return JSONResponse(status_code=500, content={
             "requestId": request_id,
-            "status": "skill_error",
+            "status": SKILL_ERROR,
             "errors": [{"code": "INTERNAL_ERROR", "message": "内部错误"}],
         })
 
@@ -670,7 +671,7 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         if isinstance(payload.get("data"), dict):
             payload["data"].setdefault(
                 "reportUrl", f"/api/skill/report/{payload.get('requestId', '')}")
-        unknown = result.status == "skill_error" and any(
+        unknown = result.status == SKILL_ERROR and any(
             e.get("code") == "UNKNOWN_SKILL" for e in result.errors)
         return Response(content=_json.dumps(payload, ensure_ascii=False),
                         status_code=404 if unknown else 200,
