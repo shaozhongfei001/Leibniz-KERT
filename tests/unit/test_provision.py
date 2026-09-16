@@ -30,9 +30,15 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SOURCE = REPO_ROOT / "examples" / "bank-front-knowledge-maps"
 CATALOG = "90_control/catalog"
 SCHEMA_DIR = "90_control/schema"
+ONTOLOGY_DIR = "90_control/ontology"
 
-#: 供给清单文件数（3 张地图 + route_policy + ontology_reference + knowledge_sources）
-PROVISION_ITEM_COUNT = 6
+#: 内置本体资产（M7-⑤ 起由 `kert provision` 供给）：4 件资产 + provenance（信任锚）
+ONTOLOGY_FILES = ("gits-core.owl.ttl", "gits-core.shacl.ttl", "products.ttl",
+                  "customer-source-mapping.r2rml.ttl", "PROVENANCE.json")
+
+#: 供给清单文件数（3 张地图 + route_policy + ontology_reference + knowledge_sources
+#: + 内置本体 ONTOLOGY_FILES）
+PROVISION_ITEM_COUNT = 6 + len(ONTOLOGY_FILES)
 
 
 @pytest.fixture
@@ -83,6 +89,8 @@ def test_creates_all_control_plane_files(target):
         f"{SCHEMA_DIR}/route_policy.json",
         f"{SCHEMA_DIR}/ontology_reference.json",
         f"{SCHEMA_DIR}/{KNOWLEDGE_SOURCES_FILENAME}",
+        # M7-⑤：内置本体资产（含 provenance）—— 若从供给面移除任一份，本断言必红
+        *[f"{ONTOLOGY_DIR}/{n}" for n in ONTOLOGY_FILES],
     ])
 
 

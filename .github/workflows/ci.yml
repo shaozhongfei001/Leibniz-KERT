@@ -197,12 +197,11 @@ jobs:
           #: 说明件不属"声明"（不被供给、不参与判据）
           NON_DECL = {"README.md", "PROVENANCE.md"}
           #: **不由 `kert provision` 供给**的子树 ⇒ 不属"供给面声明"，不参与判据。
-          #  依据 `kert.domain.ontology_assets` 模块 docstring：内置本体走**显式引入**
-          #  （`ensure_assets()`：受控源 → 工作区，含 PROVENANCE），供给面本轮**未**扩展
-          #  （`provision.py` 属他人在途）。若把该子树计入判据，本 job 会在
-          #  「设计与实现一致」时**假红**（实测于 PR #6 首跑：报缺 5 份 ontology 资产）。
-          #  ⚠ 未收线项：供给面何时接管 ontology 子树 —— 见下方 warning 提示。
-          NOT_PROVISIONED = ("90_control/ontology",)
+          #  M7-⑤ 起本列表**为空**：`90_control/ontology/**` 已由 `kert provision` 供给
+          #  （`kert.domain.ontology_provision`：受控源 → 工作区 + 逐份 sha256 留痕）
+          #  ⇒ 该子树回到"缺一份即失败"的判据内（见下方 ontology 专项下限 + 通用 missing/diff）。
+          #  保留该变量，是为将来显式登记**新的**未接管子树（登记即等于承认"此处不判"）。
+          NOT_PROVISIONED: tuple = ()
 
           def _is_not_provisioned(rel: str) -> bool:
               return any(rel == d or rel.startswith(d + "/") for d in NOT_PROVISIONED)
@@ -218,40 +217,38 @@ jobs:
                   out[rel] = hashlib.sha256(p.read_bytes()).hexdigest()
               return out
 
-          def undeclared_ontology(root: pathlib.Path) -> list:
-              """受控源有、而工作区无的 ontology 资产（**不判失败**，只提示）。"""
-              out = []
-              for p in (root / "90_control").rglob("*"):
-                  rel = p.relative_to(root).as_posix()
-                  if p.is_file() and _is_not_provisioned(rel):
-                      out.append(rel)
-              return sorted(out)
-
           want = decl(SRC)
           got = decl(WS)
           missing = sorted(set(want) - set(got))
           diff = sorted(k for k in set(want) & set(got) if want[k] != got[k])
           print("控制面声明：应供给 %d 份 / 已落盘 %d 份" % (len(want), len(got)))
-          # 防空转下限 = **稳定核心 6 份**（3 地图 + route_policy + ontology_reference +
-          # knowledge_sources —— 均为**已入库**文件）。
-          # ⚠ 为何不写 8：`schema/activations/AC-*.json`（2 份）当前是**第三方在途**新增、
-          # **尚未入库**；若把下限写成 8，这些文件未入库时本 job 会**假红**。
-          # 故口径为：源侧声明什么就要求供给什么（含 sha256 一致），但**下限只取入库核心 6 份**。
-          if len(want) < 6:
-              print("::error::防空转失败：源控制面声明数 %d < 6（入库核心）—— 检查 %s" % (len(want), SRC))
+          # 防空转下限 = **稳定核心 11 份**（3 地图 + route_policy + ontology_reference +
+          # knowledge_sources + 内置本体 5 份：OWL/SHACL/INSTANCES/R2RML + PROVENANCE.json
+          # —— 均为**已入库**文件）。
+          # ⚠ 为何不写 13：`schema/activations/AC-*.json`（2 份）当前是**第三方在途**新增、
+          # **尚未入库**；若把下限写成 13，这些文件未入库时本 job 会**假红**。
+          # 故口径为：源侧声明什么就要求供给什么（含 sha256 一致），但**下限只取入库核心 11 份**。
+          CORE_DECLARED = 11
+          ONTOLOGY_PREFIX = "90_control/ontology/"
+          ONTOLOGY_MIN = 5
+          if len(want) < CORE_DECLARED:
+              print("::error::防空转失败：源控制面声明数 %d < %d（入库核心）—— 检查 %s"
+                    % (len(want), CORE_DECLARED, SRC))
               sys.exit(1)
           if missing or diff:
               print("::error::控制面供给不完整：缺少 %s；内容不一致 %s" % (missing, diff))
               sys.exit(1)
+          # M7-⑤：schema/ontology 的**专项下限**。少一份 ⇒ 上面的 missing 已判红；
+          # 这里再钉一条"源侧本体声明数不得缩水"，防止有人把资产**从源里删掉**，
+          # 从而让通用判据"无话可说"（= 不判 = 假绿）。
+          ont = sorted(k for k in want if k.startswith(ONTOLOGY_PREFIX))
+          if len(ont) < ONTOLOGY_MIN:
+              print("::error::防空转失败：源侧内置本体声明只有 %d 份（应 ≥%d：OWL/SHACL/INSTANCES/"
+                    "R2RML + PROVENANCE.json）—— 检查 %s%s"
+                    % (len(ont), ONTOLOGY_MIN, SRC, ONTOLOGY_PREFIX))
+              sys.exit(1)
           print("✓ 控制面供给就绪：%d 份声明逐份存在且内容 sha256 一致" % len(want))
-          # 未收线项：内置本体（90_control/ontology）由 `ensure_assets()` 显式引入，
-          # 不在 `kert provision` 的供给面内 ⇒ 这里**只提示、不判失败**（否则与现有设计假红）。
-          # 待供给面接管该子树（provision.py 他人在途结束后），应把上面 NOT_PROVISIONED 清空，
-          # 使其回到"缺一份即失败"的判据内。
-          ont = undeclared_ontology(SRC)
-          if ont:
-              print("::warning::90_control/ontology 的 %d 份资产不在供给面内（由 ensure_assets 显式引入）"
-                    "—— 未收线项：%s" % (len(ont), ont))
+          print("✓ 内置本体已纳入判据（M7-⑤）：%d 份 %s" % (len(ont), ont))
           PY
 
       - name: Start KERT (dev profile, deterministic adapters)
