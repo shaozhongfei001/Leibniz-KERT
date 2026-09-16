@@ -52,6 +52,26 @@ def _pre_clean(client: LightRagClient, file_source: str) -> None:
         client.wait_until_absent(ids, timeout=120.0)
 
 
+def _assert_absent_stable(client: LightRagClient, file_source: str, *,
+                          timeout: float = 60.0, interval: float = 2.0,
+                          consecutive: int = 2) -> None:
+    """断言该出处标识**持续**消失（不赌"某一次读恰好为空"）。
+
+    删除是**异步且分阶段**的（先状态、后 chunks/向量/图），且不同读时机会看到不同状态
+    ⇒ TL 2026-09-16 实测：在测试**运行/收尾附近**读库会看到 `P1-PROBE-*.md`（当时 6 条）。
+    故本断言要求**连续 `consecutive` 次**读都为空才放行；超时 ⇒ **红**（不让"短暂残留"混过）。
+    """
+    deadline = time.monotonic() + timeout
+    streak = 0
+    while True:
+        streak = streak + 1 if not client.find_documents(file_source) else 0
+        if streak >= consecutive:
+            return
+        assert time.monotonic() < deadline, (
+            f"{timeout:.0f}s 内该条目未稳定消失（{file_source}）")
+        time.sleep(interval)
+
+
 def _write_artifact(ws, rel: str, body: str = "") -> str:
     path = ws / rel
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -203,5 +223,5 @@ class TestPublishedIsRetrievableAndRetractable:
         finally:
             res = svc.retract_artifact(rel, client=client)
             assert isinstance(res["removed"], list) and res["removed"], res
-            assert client.find_documents(out["file_source"]) == (), "撤回后仍有残留条目"
+            _assert_absent_stable(client, out["file_source"])
             assert _snapshot(ws) == before, "撤回**不得**改动工作区"
