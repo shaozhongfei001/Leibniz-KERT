@@ -601,7 +601,7 @@ if __name__ == "__main__":
 (5) provisioning 相关命中**单独列出**（把"B-1 造成的变化"与"供给面漂移造成的变化"分开归因）
 ```
 
-背景（TL 提示）：`provision.py` / `cli/main.py` / `test_provision.py` 正被第三方改动（把**第 5 类** `activations/AC-*.json` 纳入供给）⇒ **供给面口径可能再变**（现行 6 类）⇒ 44 条枚举的基线可能随之偏移；`examples/bank-front-knowledge-maps/90_control/schema/activations/` 是受控工作区**新增子目录**（正是夹具源），须一并纳入快照。
+背景（TL 提示）：`provision.py` / `cli/main.py` / `test_provision.py` 正被第三方改动（把**第 5 类** `activations/AC-*.json` 纳入供给）⇒ **供给面口径可能再变**（该处"现行 6 类"**应读作设计期值**；批次/时点声明见 **§11.6**，TL 登记 **D-18**）⇒ 44 条枚举的基线可能随之偏移；`examples/bank-front-knowledge-maps/90_control/schema/activations/` 是受控工作区**新增子目录**（正是夹具源），须一并纳入快照。
 
 ---
 
@@ -700,6 +700,8 @@ tests/recovery      → 18 passed in 8.68s                  退出码 0
 | `:109 test_init_flag_initializes_fresh_volume_then_provisions` | `'新建 0 / 覆盖 0 / 未变 6' in output` | 输出为 `8` → FAIL |
 
 根因：第三方在途批次把供给面扩为 **8 个条目**（3 地图 + `route_policy.json` + `ontology_reference.json` + `knowledge_sources.json` + `activations/AC-*.json` ×2），**已同步 `test_provision.py`（+88 行）但未同步 `test_provision_cli.py` 的计数断言** ⇒ 典型"改实现未同步断言"。本包**不触碰**该文件（白名单外）。
+> **批次/时点**：上列"8 个条目"为**第三方在途批次（未落定）**实测值，观测窗口 HEAD `43b02fa9`→`bff8b61`；
+> 声明基准见 **§11.6**（TL 登记 **D-18**）。
 
 > ⇒ 这**恰好印证** TL 的改判理由：第三方半成品会污染"全量计数"，故**不能**作为冻结证据。
 
@@ -730,6 +732,9 @@ _route_plan 调用数 = 49 ；去重用例 = 44 ；load_ki 观测用例 = 44 ；
 
 实测供给**条目**数 = **8**（见 §9.3 的 `assert 8 == 6`）。若按"**类**"计（`activations/` 目录算 **1 类**）则为 **7 类**。
 ⇒ D-5 若记为"7 类"，建议同时注明"**CLI 条目数 = 8**"，以免与 `新建 N / 覆盖 N / 未变 N` 的**条目**口径冲突。
+
+> **批次/时点声明**：本节所有"**8 条目 / 7 类**"均为**第三方在途批次（未落定）**实测值；
+> "**6**"为**设计期值**。**两者都不是"当前值"** —— 落定后以 TL 的 D-5 修订候选为准。基准见 **§11.6**（D-18）。
 
 ### 9.7 预跑结论
 
@@ -997,7 +1002,7 @@ tests/unit → 3 failed, 976 passed, exit 1
   tests/unit/test_provision_cli.py::test_apply_then_idempotent_rerun
   tests/unit/test_provision_cli.py::test_json_output_follows_standard_envelope
   tests/unit/test_provision_cli.py::test_init_flag_initializes_fresh_volume_then_provisions
-  （归因：第三方在途批次把供给面 6 → 8 条目、`test_provision_cli.py` 计数断言未同步 ⇒ **baseline/第三方，非本片变化**）
+  （归因：第三方在途批次把供给面 6 → 8 条目、`test_provision_cli.py` 计数断言未同步 ⇒ **baseline/第三方，非本片变化**；批次/时点基准见 §11.6，TL 登记 **D-18**）
 ```
 
 - **① 载体保持绿且**未改**：`test_trace_field_discipline_and_append_only[×3]`、
@@ -1019,4 +1024,69 @@ tests/unit → 3 failed, 976 passed, exit 1
    `evidence/m7-3/**` 下**他人文件一律不动**（c20 的 `PLAN_D-6-…`／`INVENTORY_V1_LINE_REFERENCES.md`／
    `PROPOSAL_REGISTER_…`／`CANDIDATE-CONTRACT-MERGE-V1-V2.md`，TL 的 `DECISION_SHEET_M7_CLOSURE.md`）——
    仅**只读引用**。
+
+### 11.5 行号基准声明（TL 2026-09-16 新纪律）与设计期行号迁移表
+
+> **规则**：本文件任何行号引用**必须声明基准**（基准 = 该文件在某一 sha 下的版本）。
+> **符号名为权威锚点，行号仅为定位辅助** —— 行号随版本必然漂移。
+
+**组 A｜现行基准（§11.2 / §11.4 使用）**
+
+```text
+src/kert/application/skills.py           基准 = bcb1ecc4194c27944958125d013733875334bbf7f154515f3a8cea0465e11e9b
+                                                （1227 行；入库 470adfb ＝ 当前 HEAD bff8b61）
+src/kert/domain/knowledge_source.py      基准 = 01ee53d825585e2d…（992 行；当前 HEAD）
+```
+
+⇒ **D-13 窗口守卫联动**：复跑前 `skills.py` 若偏离 `bcb1ecc4…` ⇒ **§11.2 的行号失效**，
+须按新 sha **重取**（守卫本身见 §11.4 第 2 条）。
+
+**组 B｜设计期基准（§1–§5 / §7 使用）＝ B-1 开工前代码基线 `9b79da67`（§10.1 记录）**
+
+B-1 与 B-2② 均已使 `skills.py` 增长 ⇒ **§1/§2/§4 的 skills.py 行号一律已偏移**，
+下表给出**按符号名锚定**的迁移（当前 HEAD 值）：
+
+```text
+符号（权威锚点）                             §1/§2/§4 设计期行号   当前 HEAD 行号
+SkillExecutionService._load_ki               504-521              579-599
+SkillExecutionService._ki_context            523-532              805-815
+SkillExecutionService._ki_sections           534-541              816-…
+_run_outreach                                720                  997
+_run_meeting                                 753                  1031
+_run_previsit                                786                  1066
+_run_supply_chain                            820（818-823）       1103
+refs 列表（for kid in assets if kid in ki）   806-807              1092
+```
+
+> 引用旧段落时**以符号名 / node id 为准**；行号仅作定位辅助，不得据以断言"该处代码未变"。
+
+**组 C｜测试与夹具行号（§9 / §11.3 使用）＝ 预跑 HEAD `43b02fa9`（§9.1 记录）**
+
+`test_provision_cli.py:53/66/109`、`test_activation_plan.py:326/367/379`、`test_provision.py:222`、
+`test_skills.py:130/188-189/204-205/247-248`、`tests/conftest.py:28-40`、`test_skill_routing_trace.py:46-65`。
+其中 `test_provision*.py` 正被第三方在途批次与 **1.6.0 批**触碰 ⇒ **该类行号最易漂移**，
+一律**以 node id 为准**。
+
+**声明**：本文件**不含** `specs:NNN` / `v1:NNN` 形式的行号引用（实测 `grep -c` = **0**）
+⇒ TL 的 specs 行号基准条款（现行 `9ac98af` / 勘误后 1821 行）**对本文件不适用**；
+若后续需引用 specs 行号，将按 TL 给出的统一口径（活件刷新 / 快照加注）办理。
+
+### 11.6 供给面条目数口径（**批次 / 时点声明**；TL 已登记 **D-18**）
+
+> **规则（TL 2026-09-16）**：该批**落定前**，**任何"供给面 N 条"表述必须声明批次与时点**。
+> 本文件中涉及该口径之处**一律以本节为基准**（§6 背景 / §9.3 / §9.6 / §11.3 均已加指针；
+> §0 **版本历史**中的 `D-5（供给面 5→6）` 属**历史记录**，按"不改写历史"原则**保持原文**，
+> 其数值同样以本节为准）。
+
+| 口径版本 | 条目数 | 类别数 | 批次 / 时点 | 出处 |
+|---|---|---|---|---|
+| 记 **5** | 5 | — | 设计期更早（D-5 原记录） | 版本历史行（§0） |
+| 记 **6**（**设计期值**） | 6 | 6 | B-1 设计期（开工前基线 `9b79da67` 附近） | §6 背景（该处"现行 6 类"应读作**设计期值**） |
+| 实测 **8 条目 / 7 类** | **8** | **7**（`activations/` 计 **1 类**） | **第三方在途批次（未落定）**；预跑观测于 HEAD `43b02fa9`→`bff8b61` 窗口（`assert 8 == 6`） | §9.3 / §9.6 / §11.3 |
+
+- **D-18（TL 登记）**：本次 **6 → 8** 与 D-5 的 **5 → 6** **同族**，属**第三次口径变更**；
+  TL 将在该批**落定后**出修订候选（**D-5 追加 6→8，不改写历史**）。
+- ⇒ 本文件中 **"6" 一律读作设计期值**、**"8" 一律读作在途批次实测值**；
+  **两者都不是"当前值"** —— 落定后以 TL 的修订候选为准。
+- 本条款与 §11.5 同属**引用基准声明**：**数（N 条）与行号（`:NNN`）都必须带基准**。
 
