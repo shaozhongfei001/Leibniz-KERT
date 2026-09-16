@@ -7,11 +7,12 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import re
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -26,6 +27,24 @@ from ..infrastructure.parquet import build_filter
 DEFAULT_SERVICE = "product_knowledge"
 
 _FULLTEXT_STOP = {"的", "了", "是", "在", "和", "与", "及", "或", "一个", "为", "产品"}
+
+#: 允许发布到外部检索服务的**工作区产物根**（数据出口白名单；ADR-017「数据出口」）。
+#: 只有 `03_core/**`（知识资产）与 `04_serve/**`（发布投影/本体物化产物）可出区；
+#: `01_raw`/`02_work`/`90_control`（可能含凭据/草案）**不在**其列。
+EGRESS_ROOTS = ("03_core", "04_serve")
+
+
+def _egress_rel(rel_path: str) -> str:
+    """校验发布对象是**工作区内的 03_core/04_serve 相对路径**；越界 ⇒ 具名拒绝。"""
+    from ..infrastructure.lightrag_client import LightRagArtifactRefused
+
+    rel = PurePosixPath(str(rel_path).strip())
+    if rel.is_absolute() or not rel.parts or any(p in ("", ".", "..") for p in rel.parts):
+        raise LightRagArtifactRefused(f"必须是非空**相对**路径：{rel_path!r}")
+    if rel.parts[0] not in EGRESS_ROOTS:
+        raise LightRagArtifactRefused(
+            f"只允许发布工作区产物（{'/'.join(EGRESS_ROOTS)}）：{rel_path!r}")
+    return rel.as_posix()
 
 
 @dataclass
@@ -467,6 +486,82 @@ class KnowledgeService:
                 "entities": list(result.entities), "relations": list(result.relations),
                 "citations": [{"referenceId": c.reference_id, "filePath": c.file_path,
                                "content": c.content} for c in result.citations]}
+
+    # ---------------- LightRAG 发布 / 撤回（M7 · P-1：数据出口，ADR-017） ----------------
+
+    def publish_artifact(self, rel_path: str, *, client=None) -> dict:
+        """把工作区内的一件**产物**作为文档发布到外部 LightRAG（**数据出口**）。
+
+        发布面 = :data:`EGRESS_ROOTS`（``03_core/**`` 知识资产、``04_serve/**`` 投影/本体物化产物）；
+        其余（`01_raw`/`02_work`/`90_control`——可能含草案与凭据）**拒绝**。
+
+        纪律（ADR-017「数据出口」一节）：
+
+        - **只读工作区**：本方法只读文件，不修改任何 KERT 文件（测试机械断言）；
+        - **出处**：`file_source` = :func:`~kert.infrastructure.lightrag_client.artifact_file_source`
+          （可回译的 ``04_serve__<svc>__version=<v>__<name>``）⇒ 检索命中的 `filePath` **回指产物路径 + 版本**；
+          正文再前置**出处头**（相对路径 + sha256）⇒ 只看引用片段也能回溯；
+        - **幂等**：同 `file_source` 已存在 ⇒ `already_published`（先查后写，不重复写入）；
+        - 失败一律**具名**抛出（越界 / 文件缺失 / 不可达 / 超时），**不静默**。
+
+        :returns: ``{artifact, file_source, sha256, bytes, status, track_id, endpoint}``
+        """
+        from ..infrastructure.lightrag_client import (
+            LightRagClient,
+            artifact_file_source,
+        )
+
+        rel = _egress_rel(rel_path)
+        path = self.ws / rel
+        if not path.is_file():
+            raise AssetNotFoundError(f"产物不存在: {rel}")
+        raw = path.read_bytes()
+        digest = hashlib.sha256(raw).hexdigest()
+        source = artifact_file_source(rel)
+        header = ("# KERT 产物出处（数据出口；登记见 ADR-017）\n"
+                  f"- 产物路径: {rel}\n"
+                  f"- sha256: {digest}\n"
+                  f"- 发布标识: {source}\n\n")
+        client = client or LightRagClient.from_env()
+        outcome = client.publish_text(header + raw.decode("utf-8", errors="replace"),
+                                      file_source=source)
+        return {"workspace": str(self.ws), "artifact": rel, "file_source": source,
+                "sha256": digest, "bytes": len(raw), "status": outcome.status,
+                "track_id": outcome.track_id, "endpoint": "/documents/text"}
+
+    def retract_artifact(self, rel_path: str, *, timeout: float = 180.0,
+                         visibility_timeout: float = 20.0, client=None) -> dict:
+        """**撤回**该产物在外部实例上的发布（ADR-017「如何撤回」的机械实现）。
+
+        按 `file_source` 找出**全部**条目（含 `dup-*` 重复残留）⇒ `DELETE /documents/delete_document`
+        ⇒ 等到全部消失（删除是**异步**的）。无已发布记录 ⇒ 返回 ``removed=[]``（**不报错**，
+        因为"本就没发布"与"撤回失败"必须可区分）。
+
+        :param visibility_timeout: 判定"未发布过"前的**可见性窗口** —— 入库是异步的，
+            刚发布完就撤回时条目可能尚未出现（实测竞态）⇒ 先等一会儿再下结论。
+        """
+        from ..infrastructure.lightrag_client import (
+            LightRagClient,
+            LightRagPipelineTimeout,
+            artifact_file_source,
+        )
+
+        rel = _egress_rel(rel_path)
+        source = artifact_file_source(rel)
+        client = client or LightRagClient.from_env()
+        try:
+            found = client.wait_until_present(source, timeout=visibility_timeout)
+        except LightRagPipelineTimeout:
+            found = ()
+        if not found:
+            return {"artifact": rel, "file_source": source, "removed": [],
+                    "status": "nothing_to_retract"}
+        ids = [d.doc_id for d in found]
+        payload = client.delete_documents(ids)
+        client.wait_until_absent(ids, timeout=timeout)
+        return {"artifact": rel, "file_source": source, "removed": ids,
+                "status": str(payload.get("status") or ""),
+                "message": str(payload.get("message") or "")}
 
     # ---------------- 证据溯源（FR-SRV-007、§15.5） ----------------
 

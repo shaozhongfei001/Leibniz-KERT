@@ -4,13 +4,16 @@
 > 日期：2026-09-16
 > 依据：Owner 2026-09-16 明示"要 lightRAG"（**D-31**，推翻 D2-A/D3-A）；原 **D2-C** 明载"引入 LightRAG 并落盘｜**需规格修订 + 新 ADR + Owner 决策**"
 > 替代/变更：对 KERT-SPEC-001「**不得把其数据库文件作为持久化事实源**」（§6.3）与「**无数据库依赖或隐藏持久化数据库文件**」（§18.5）的**受控变更记录** —— 本 ADR 论证该二条**未被触发（满足原意）**，**不是**请求豁免（见「论证」）
-> 实现：`src/kert/infrastructure/lightrag_client.py` + `KnowledgeService.retrieve_via_lightrag`
+> 实现：`src/kert/infrastructure/lightrag_client.py` + `KnowledgeService.retrieve_via_lightrag`（检索）／`KnowledgeService.publish_artifact`·`retract_artifact`（**数据出口**，见「数据出口」一节）
 
 ## 背景
 
 既有检索面（Kùzu + Parquet + 确定性打分）不承担 GraphRAG 类检索；Owner 要求引入 LightRAG 或同类框架。
 本机已有可用实例（`/home/szf/dev/lightrag`，端口 9621，程序化调用经 `X-API-Key`，embedding 走 Ollama `11434`），
-其库 ≈8.7MB（≈7851 实体），**语料为其自身的银行制度/产品文档**（`meta/`、`inputs/`）。
+**语料为其自身的银行制度/产品文档**（`meta/`、`inputs/`）。
+**库规模（实测 2026-09-16；判据＝ `rag_storage/graph_chunk_entity_relation.graphml` 的 `<node>`/`<edge>` 计数）：
+662 节点 / 784 边（712 KB）**。⚠ 早先写的「≈8.7MB（≈7851 实体）」取自 `rag_storage.bak-20260909/`
+（**旧备份**：7851 节点 / 9013 边 / 8.45 MB）与 `start.sh` 旧注释 ⇒ **不沿用脚本注释**，一律以实测计数为准。
 
 ## 决策
 
@@ -51,6 +54,43 @@ KERT 以「**只读接入外部 LightRAG server**」的方式使用 LightRAG：�
 1. **不写回工作区**（"不是事实源"的机械证据）：调用 `retrieve_via_lightrag` 前后**工作区文件集合与内容零变化** —— 已落测试；
 2. **不静默失败**：不可达 / 鉴权失败 / 形状不符 ⇒ **具名**错误（三类码）—— 已落测试（含"可达但 404/405 必须红"）；
 3. **KERT 自有产物可重建**：`03_core` → `04_serve` 由既有 pipeline 重建（既有能力与既有判据）。⚠ **不覆盖**外部索引（见上披露）。
+
+## 数据出口（P-1：把 KERT 产物**发布**到外部实例）
+
+发布是**写**动作，与只读检索性质不同，故单列一节（发布什么 / 发布到哪 / 如何撤回）。
+
+**① 发布什么（白名单）**：仅 `03_core/**`（知识资产）与 `04_serve/**`（发布投影、本体物化产物）
+—— 即 `KnowledgeService.EGRESS_ROOTS`；`01_raw/**`、`02_work/**`、`90_control/**`（可能含草案与凭据）
+**一律拒绝**（具名 `LIGHTRAG_ARTIFACT_REFUSED`）。
+
+**② 发布到哪**：`KERT_LIGHTRAG_URL` 指向的实例（缺省 `http://127.0.0.1:9621`）的 `rag_storage/`
+—— 仍在 KERT 工作区**之外**；接口 `POST /documents/text`，凭据走 `KERT_LIGHTRAG_API_KEY`。
+
+**③ 出处（可回译，机械可核）**：`file_source = artifact_file_source(rel)`
+（`04_serve/<svc>/version=<v>/ONTOLOGY.md` ⇒ `04_serve__<svc>__version=<v>__ONTOLOGY.md`），
+正文再前置**出处头**（相对路径 + sha256）。⚠ **实测**：lightRAG 对 `file_source` 做 **basename**
+规范化（目录被吃掉）⇒ 直接送相对路径时检索命中的 `file_path` 只剩 `ONTOLOGY.md`、**出处丢失**；
+`/`⇒`__` 后实测命中形如 `03_core__customer__version=2026.09.07.1__entities__CUST-CORP-0001.md` ⇒
+**回指 KERT 产物路径 + 版本**（`parse_artifact_file_source` 可逆，测试断言往返）。
+
+**④ 幂等**：**先查后写**（同 `file_source` 已存在 ⇒ `already_published`，不发写请求）。
+⚠ **实测**：服务端的 409 去重发生在 doc_status **落库之后**，而索引是**异步**的 ⇒ 紧跟其后的重复插入
+**可能不被拒**（会生成 `dup-*` 失败条目）；且 `POST` 返回 200 后条目要过一会儿才可见
+⇒ 发布后须**等可见**（`wait_until_present`）再返回，撤回亦须留可见性窗口。
+
+**⑤ 如何撤回**：`KnowledgeService.retract_artifact(rel)` ⇒ 按出处标识找出**全部**条目（含 `dup-*`）
+⇒ `DELETE /documents/delete_document` ⇒ 等全部消失（异步）。**实测**：灌入 3 件（本体物化产物
+`ONTOLOGY.md` + 2 件工作区资产）⇒ 图规模 **662 节点/784 边 → 734/861（+72/+77）**；
+撤回 3 件 ⇒ **回到 662/784**（**完全可逆**）。
+
+**⑥ 只读工作区**：发布与撤回**都不写工作区**（测试机械断言：前后文件集合与内容逐字节一致）。
+
+**⑦ 跑该测试的前置与收尾（口径，防后人留残留）**：`tests/integration/test_lightrag_publication.py`
+对**外部实例有写操作**（灌入 + 撤回）⇒ 前置＝实例**可写**（`KERT_LIGHTRAG_API_KEY` 具写权限）、
+**结束必须回基线**：测试在 `finally` 中 `retract_artifact` 并断言该 `file_source` **无残留条目**；
+核对手法＝`rag_storage/graph_chunk_entity_relation.graphml` 的 `<node>`/`<edge>` 计数**回到灌入前**、
+且文档列表里**无 `__` 标识条目**（实测：灌入前 = 撤回后 = **662 节点 / 784 边**）；
+若中途异常退出，按 ⑤ 手动 `retract_artifact` 回滚。
 
 ## 规格修订提案（**最小必要字句**；由 **Owner 落到外部规格正文**，本仓**不落**）
 
