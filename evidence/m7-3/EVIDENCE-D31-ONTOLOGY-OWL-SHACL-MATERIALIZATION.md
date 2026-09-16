@@ -131,6 +131,8 @@ subClassOf 新增 = 101，拆解（**四个量；其中两个数值相同，但*
 - **报数三要素（范围 + 凭据态 + 计数来源；与 c20 对齐，2026-09-16）**：本节的每个数字都按此三注读：
   · **范围**：各数字的**选择集不同、不可横比** —— 「四目录」行 = `tests/<dir>` **全目录**（如 integration `499 passed + 1 xfailed`）；
     **定向选择**行 = 显式列出少数文件（如 §7 的 `11 passed`、下文的 `16 passed`）或单文件，**不得**与全目录数并排比较；
+    **仅「同一 HEAD（或同一时点）」下的同范围数字可横比** —— 本件 integration 全目录数历次变化
+    （`480 → 486/490 → 499/500`）由**测试文件随提交增长**所致，**非**稳定性变化；
   · **凭据态**：见下条（本节**全部为不带凭据**）；
   · **计数来源**：**pytest 汇总行**（`-q` 模式）。其中 integration 的 **`1 xfailed`** =
     `tests/integration/test_product_recommendation_sp15_chain.py::test_product_loader_from_assets`
