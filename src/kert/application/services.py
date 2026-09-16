@@ -368,6 +368,57 @@ class KnowledgeService:
             meta=self._meta(),
         )
 
+    # ---------------- 计划驱动的物化（T1：把「计划/技能」与「投影」接通） ----------------
+
+    def materialize_from_plan(self, task_type: str, *, domain: str,
+                              subject_id: str | None = None,
+                              service_id: str | None = None,
+                              include_vectors: bool = True) -> dict:
+        """**由激活计划驱动**的服务投影物化（产物与既有投影**同形**）。
+
+        约束（Owner 2026-09-16 直接指令）：
+
+        - **不另起一套投影实现**：复用既有
+          :class:`~kert.application.projection.ProjectionBuilder`（含其 G4 门禁与 Kùzu 图谱分支），
+          本方法只做「计划门禁 → 调用既有 builder → 写血缘」；
+        - **计划身份 + 本体引用写入产物元数据（血缘）**：血缘**逐键取自计划本身**
+          （``planId`` / ``planHash`` / ``versions.ontology`` …，见
+          :meth:`~kert.domain.activation_plan.ActivationPlan.to_dict`），**不新造字段**；
+        - **fail-closed**：计划未放行（路由未放行 / 本体引用缺失或非法）⇒ 直接抛出，
+          **不产出任何投影产物**（与计划构建器「没有第三态」的口径一致）。
+
+        :param task_type: 计划任务类型（如 ``OUTREACH_PREPARATION``）。
+        :param domain: ``03_core`` 下的域（投影输入）。
+        :param subject_id: 计划主体（如 customerId）；仅记录、不入 plan hash。
+        :param service_id: 目标 service_id；缺省用本实例的 ``service_id``。
+        :param include_vectors: 是否产出 ``vectors.parquet``（透传既有 builder）。
+        :returns: ``service_id`` / ``projection_version`` / ``job_id`` / ``files`` /
+                  ``lineage_path`` / ``plan``（计划原文）。
+        """
+        from ..domain.activation_plan import ActivationPlanBuilder
+        from .projection import ProjectionBuilder
+
+        plan = ActivationPlanBuilder.load(self.ws).build(task_type, subject_id=subject_id)
+        if not plan.allowed:
+            raise UsageError(f"计划未放行 ⇒ 不物化（{plan.code}）：{plan.reason}")
+
+        target_service = service_id or self.service_id
+        result = ProjectionBuilder(self.ws, owner="plan_materializer").build(
+            domain, service_id=target_service, include_vectors=include_vectors,
+            idempotency_key=f"plan:{plan.plan_hash}")
+
+        lineage = plan.to_dict()
+        lineage_rel = (f"04_serve/{target_service}/version={result.projection_version}"
+                       f"/PLAN_LINEAGE.json")
+        (self.ws / lineage_rel).write_text(
+            json.dumps(lineage, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return {"service_id": result.service_id,
+                "projection_version": result.projection_version,
+                "job_id": result.job_id,
+                "files": list(result.files),
+                "lineage_path": lineage_rel,
+                "plan": lineage}
+
     # ---------------- 证据溯源（FR-SRV-007、§15.5） ----------------
 
     def trace(self, object_id: str) -> ServiceResult:
