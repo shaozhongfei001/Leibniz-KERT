@@ -22,6 +22,10 @@ DATE        : 2026-09-16
 
 ## 2. 9 条待登记路径（实现位置 = 当前行号，`src/kert/api/server.py`）
 
+> **行号基准快照（2026-09-16，c20 逐条只读复核）**：基准文件 `src/kert/api/server.py` = **783 行 / sha16 `7e516e610c43d482`**，
+> 基准 HEAD = **`e7b1b56`**；该文件自 `e3bcefe`（本提案同批提交）起**未再改动** ⇒ 下表 9 条的**起始行逐条与实测一致（9/9「是」）**。
+> 引用格式：本表用**裸** `:NNN` / `:NNN-NNN`（文件由本节标题声明），全文另有 **2 处**前缀式 `server.py:NNN`（`:26`、`:80`）。
+
 > 共同点：全部走 `/v1/*` **标准信封** `{request_id, status, data, errors, meta}`
 > （`_response()`，`server.py:208-217`）；**GITS 当前均未调用**（`docs/integration/KERT_GITS_CONTRACT_DIFF.md:12-23`）。
 
