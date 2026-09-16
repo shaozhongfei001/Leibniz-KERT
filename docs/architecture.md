@@ -114,7 +114,7 @@ LLM 生成（可选，图谱为确定性库构建）→ `data.sections` 按 KI �
 
 ## 4. 关键架构约束（KERT-SPEC-001 / ADR）
 
-- **文件目录为权威源**：本体 FS（03_core）+ 投影（04_serve）可重建；无隐藏数据库（§18.5）。
+- **文件目录为权威源**：本体 FS（03_core）+ 投影（04_serve）可重建；无隐藏数据库（§18.5）。**（D-31 后加注：工作区**外**的第三方只读检索索引不计入本约束；受控变更见 `docs/adr/ADR-017-lightrag-retrieval-store.md`。）**
 - **受控变更例外**：Kùzu 作为**可重建投影层**（IMP-ADR-011，6 条边界），非权威源。
 - **数据所有权（v1.3）**：知识全在 KERT；GITS 只传 `customerId`（+ 可选时间戳/拜访意图）。
 - **fail-open / fail-closed**：知识检索失败 fail-open；模型输出不合格 fail-closed（无残缺半成品）。
