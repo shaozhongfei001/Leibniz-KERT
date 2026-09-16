@@ -265,3 +265,87 @@ comm -12 /tmp/m71b2_probe_A.nodes   /tmp/m71b2_probe_B.nodes | wc -l    # A∩B 
    闭环需 c20 的精确命令与树 sha（或 TL 授权的干净 worktree 复算）。
 4. **待办（本文件可直接进 §11 体系）**：等 TL 对第 2/3 点的裁定；如需我再跑，
    仍按 E-9（跑前/跑后 `skills.py` sha 守卫）。
+
+---
+
+## 9. 干净树复算（worktree，TL 授权）与三口径**算术闭合**
+
+> **性质**：本节是 TL 批准的 **append（证据落盘）** —— 增加的是**本轮实测事实**，
+> 不是"为追 sha 而改文本"（防回环约定的判据）。
+
+### 9.1 E-11 环境身份（缺一即标"未验证"）
+
+```text
+解释器   : /home/szf/dev/Leibniz-KERT/.venv/bin/python   →  Python 3.12.8
+pytest   : 9.1.1
+typer    : 0.27.1（`import typer` 成功 ⇒ 模块级 `importorskip` **不触发**）
+addopts  : ["-q", "-m", "not perf"]（pyproject:45）
+命令形态 : PYTHONPATH=$WT/src .venv/bin/python -m pytest tests/<dir> > /tmp/m71b2_wt_<dir>.txt 2>&1 ; rc=$?
+```
+
+> ⚠ **复现注意（TL 本轮亲踩）**：`addopts` **已含 `-q`**；**再显式加 `-q` 会叠成 `-qq`，
+> 把汇总行一起吞掉** ⇒ 报采集数时会得到空值。命令**照原样跑**即可。
+
+### 9.2 worktree 创建 / 移除（只读主树；不触碰任何 uncommitted 内容）
+
+```bash
+git worktree add --detach /tmp/m71b2_clean_wt 4d85b4b3cd9743dc08126ec9da49df5e0a606918
+cd /tmp/m71b2_clean_wt && git rev-parse HEAD && git status --porcelain    # 4d85b4b3… ；status **clean**
+git worktree remove /tmp/m71b2_clean_wt && git worktree list              # 移除后仅剩主树
+```
+
+**硬前置 (i) 解释器口径**：`.venv/bin/python -V` = 3.12.8 且 `import typer` 成功
+（**若失败 ⇒ `test_provision_cli.py` 会静默整模块 skip，产生"假干净数" ⇒ 应报「环境不可用」，不出数**）。
+
+**硬前置 (ii) 导入源断言**（防 editable 安装 / PYTHONPATH 指向主树）：
+
+```bash
+PYTHONPATH=/tmp/m71b2_clean_wt/src .venv/bin/python -c \
+  "import os,kert; p=os.path.abspath(kert.__file__); assert p.startswith('/tmp/m71b2_clean_wt/'); print(p)"
+# → /tmp/m71b2_clean_wt/src/kert/__init__.py    ⇒ PASS
+```
+
+> **要点**：`pyproject` **未**配置 `pythonpath` ⇒ 必须**显式** `PYTHONPATH=<wt>/src`；
+> 否则 pytest 会跑到 venv editable 安装指向的**主树**代码（跑的不是被测树）。
+
+### 9.3 worktree 四目录（提交态 `4d85b4b3`；原始计数 + rc，分行）
+
+```text
+tests/unit         → 931 passed, 1 warning in 16.14s               rc=0   （0 failed / 0 skipped）
+tests/integration  → 479 passed, 1 xfailed, 1 warning in 137.22s   rc=0
+tests/contract     → 53 passed in 0.13s                            rc=0
+tests/recovery     → 18 passed in 7.48s                            rc=0
+```
+
+⇒ 与 TL 预期一致：**那 3 条 `test_provision_cli` 红在提交态消失**（unit `rc=0`）。
+
+### 9.4 三口径**算术闭合**（全部实测，无推断）
+
+```text
+主树（脏树：含未提交第三方批 + 未跟踪文件）   collected = 979（= 3 failed + 976 passed）
+c20 口径（system python3，**无 typer**）      collected = 973（= 972 passed + 1 skipped）
+worktree（提交态，干净）                      collected = 931（全绿）
+
+(1) 主树 979 − worktree 931 = 48 = **44 + 4**
+    44 = 未跟踪 `tests/unit/test_activation_contract.py`（仅主树存在）
+     4 = **未提交**的 `tests/unit/test_provision.py` 比提交态多 4 条
+         · def 级  ：工作区 **21** vs 提交态 **17**（TL 已独立复核）
+         · 采集级  ：主树 `test_provision.py: 23` vs worktree `test_provision.py: 19`
+
+(2) c20 的 973 = **979 − 7 + 1**
+    7 = 提交态 `tests/unit/test_provision_cli.py` 的用例数
+        （该文件 `:18` 为**模块级** `pytest.importorskip("typer")`）
+        ⇒ typer 缺失时**整模块不采集**（−7），并记 **1** 条模块 skip 条目（+1）
+    972 = 976 − 4（该模块内 4 条绿测随模块一起不再采集；模块内另 3 条即上述已知红测）
+```
+
+⇒ **三口径互相自洽、逐项闭合** —— 不再需要假设"谁数错了"。
+
+### 9.5 卫生
+
+```text
+worktree ：已 `git worktree remove`；`git worktree list` 仅剩主树
+主树      ：本节写作前 `git status` 与我跑前一致（无我侧新改动）；`skills.py` = bcb1ecc4… **未变**
+```
+
+**行号基准（D-8）**：本节引用的 `test_provision_cli.py:18` 基准 = 提交 `4d85b4b3` 版（该文件未被改）。
