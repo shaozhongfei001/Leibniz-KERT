@@ -53,7 +53,8 @@ M7.3（Skill / Route / ActivationPlan 治理）已于 2026-09-15~16 实施并验
 +   note: 认证/限流/并发/大小限制/响应脱敏中间件已接线；生产 Key 与 TLS 边界待部署侧落实。
 ```
 
-证据：`src/kert/api/server.py:218-222`（五类中间件注册）；
+证据：`src/kert/api/server.py:239-244`（中间件注册：`ApiKeyAuth`/`RateLimit`/`ConcurrencyLimit`/`SizeLimit`/`ResponseRedaction`/`Observability`，共 6 处 `add_middleware`）
+（⚠ **D-14 活件刷新**：原引 `:218-222` 为旧行号，实现已位移；此值为 2026-09-16 实测）；
 `KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md` "另发现一处状态失真"段（该处指出
 `production_security: DESIGNED_NOT_IMPLEMENTED` 与 `auth_enabled: false` 均落后于代码）。
 
@@ -68,7 +69,8 @@ M7.3（Skill / Route / ActivationPlan 治理）已于 2026-09-15~16 实施并验
 +         采集链路与告警阈值属部署侧。
 ```
 
-证据：`src/kert/api/server.py:242`（`ObservabilityMiddleware`）、`:403`（`/metrics`）、
+证据：`src/kert/api/server.py:244`（`ObservabilityMiddleware`）、`:431`（`/metrics`）、
+（⚠ **D-14 活件刷新**：原引 `:242` / `:403` 均为旧行号，实现已位移；此值为 2026-09-16 实测）
 `tests/integration/test_observability_endpoints.py`。
 
 ### R-4 `ci_cd`

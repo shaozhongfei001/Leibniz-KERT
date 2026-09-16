@@ -16,6 +16,9 @@
 
 ## 1. 结论（先读这一节）
 
+> ⚠ **本节（及 §2）的数字为「A-8 时点」＝ 1.6.0 之前，已被 `§3 [D-16-A]` 取代（仅历史）**；
+> 一律以 §3 为当前真值。此处保留旧值属**基线快照记录**，不再作为关于当前版本的陈述。
+
 ### 1.1 计数对账（70 vs TL 的 67）
 
 - 全仓 **70 处**（出现次数口径）= `CANDIDATE-CONTRACT-MERGE-V1-V2.md` **67 处** + `DECISION_SHEET_M7_CLOSURE.md` **3 处**。
@@ -46,7 +49,7 @@
 - 本轮若做批量修，**只能对 48 条"漂移"应用 −5**；其余 **22 条**（18 未漂移 + 3 待人工 + 1 跨界）**必须逐条人工定位**，其中至少 4 条属"引用本身就错"。
 - 更稳的做法：与 **1.6.0 轮**一并处理 —— 1.6.0 会再插入行，届时**一次重算全部 70 条的真值**，避免"修完又漂"。
 
-## 2. 逐条清单
+## 2. 逐条清单 —— ⚠ **A-8 时点（1.6.0 之前），已被 `§3 [D-16-A]` 取代（仅历史）**
 
 | # | 文件:行 | 引用号 | 旧内容(b586345^) | 新内容(HEAD) | 判定 | N-5候选 | new[N-5]==old[N] | 引用行节选 |
 |---|---|---|---|---|---|---|---|---|
@@ -120,4 +123,93 @@
 | 68 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:94 | v1:1009 | example: SP-20 | type: string | 漂移 | 1004-1004 | True | \| **D-15** \| **`v1:NNN` 引用漂移（TL 本轮机械核对发现，全仓 67 处）**：`b586345` 的勘误在 `specs:236` 删 |
 | 69 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:94 | v1:1172 |  | type: string | 漂移 | 1167-1167 | True | \| **D-15** \| **`v1:NNN` 引用漂移（TL 本轮机械核对发现，全仓 67 处）**：`b586345` 的勘误在 `specs:236` 删 |
 | 70 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:94 | v1:17 | ⑤ `/v1/jobs/{jobId}` 的 `404`：`ErrorResponse` → 新增 `Infra | ⑤ `/v1/jobs/{jobId}` 的 `404`：`ErrorResponse` → 新增 `Infra | 未漂移 | - | - | \| **D-15** \| **`v1:NNN` 引用漂移（TL 本轮机械核对发现，全仓 67 处）**：`b586345` 的勘误在 `specs:236` 删 |
+
+## 3. [D-16-A] 1.6.0 落地后的重新清单（D-16 要求的重算；只读分析）
+
+> **本节的稳定引用锚 = `§3 [D-16-A]`**。按规则 ④（行号只在清单维护），其他文档一律**引用本节**而不再复制数字。
+
+- 基准：引用号写就时指向的版本 = 勘误前 specs（1826 行）；目标 = 工作区 1.6.0 specs（2425 行）。
+- 方法：**行级对齐**（difflib.SequenceMatcher opcodes）建立 旧行号 -> 新行号 映射；equal 块一一对应，replace 块按序配对，delete 块映射为空。
+- 自引用已排除（本文件自身表格内的 v1:NNN 不计入）。分布：./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md = 67；./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md = 7
+- 汇总：共 74 处 —— **可机械重定位 72 处** / 无法机械映射（所在行被删除或改写）**2 处**。
+- ⚠ **D-16 第②条的「漂移项按 N-5」在 1.6.0 之后已不成立**：A-9 在 paths 前部删 35 行、A-6 在中部插约 280 行、EvidenceResponse 再插 7 行 ⇒ 位移非均匀，不能用一个常数换算；须按本表的行级映射逐条重定位。
+
+- **附：两个非 `v1:NNN` 锚（D-16 的「勘误前即不准」样本）在 1.6.0 下的真值**：`info.version` → `specs:61`；`servers:` → `specs:67`（A-8 时点为 `:48` / `:54`，均已失效）。**这两处不再写入其他文档**，一律引本节。
+
+| # | 文件:行 | 引用号 | 旧起点 | 新起点 | 旧终点 | 新终点 | 可机械重定位 |
+|---|---|---|---|---|---|---|---|
+| 1 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:29 | v1:709-719 | 709 | 948 | 719 | 958 | 是 |
+| 2 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:62 | v1:1 | 1 | 1 | 1 | 1 | 是 |
+| 3 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:63 | v1:17 | 17 | 17 | 17 | 17 | 是 |
+| 4 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:64 | v1:24 | 24 | 24 | 24 | 24 | 是 |
+| 5 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:65 | v1:42 | 42 | 55 | 42 | 55 | 是 |
+| 6 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:67 | v1:529-534 | 529 | 768 | 534 | 773 | 是 |
+| 7 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:111 | v1:72-93 | 72 | 85 | 93 | 106 | 是 |
+| 8 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:112 | v1:130-227 | 130 | 143 | 227 | 471 | **否（须人工）** |
+| 9 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:113 | v1:331-398 | 331 | 570 | 398 | 637 | 是 |
+| 10 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:114 | v1:255-297 | 255 | 494 | 297 | 536 | 是 |
+| 11 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:115 | v1:299-329 | 299 | 538 | 329 | 568 | 是 |
+| 12 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:116 | v1:400-450 | 400 | 639 | 450 | 689 | 是 |
+| 13 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:122 | v1:42-70 | 42 | 55 | 70 | 83 | 是 |
+| 14 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:123 | v1:95-128 | 95 | 108 | 128 | 141 | 是 |
+| 15 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:124 | v1:229-253 | 229 | 473 | 253 | 492 | **否（须人工）** |
+| 16 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:125 | v1:452-470 | 452 | 691 | 470 | 709 | 是 |
+| 17 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:126 | v1:472-496 | 472 | 711 | 496 | 735 | 是 |
+| 18 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:127 | v1:498-526 | 498 | 737 | 526 | 765 | 是 |
+| 19 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:139 | v1:100 | 100 | 113 | 100 | 113 | 是 |
+| 20 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:143 | v1:47 | 47 | 60 | 47 | 60 | 是 |
+| 21 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:150 | v1:551-561 | 551 | 790 | 561 | 800 | 是 |
+| 22 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:151 | v1:1042-1051 | 1042 | 1276 | 1051 | 1285 | 是 |
+| 23 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:151 | v1:974-994 | 974 | 1208 | 994 | 1228 | 是 |
+| 24 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:151 | v1:277-295 | 277 | 516 | 295 | 534 | 是 |
+| 25 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:152 | v1:1074-1085 | 1074 | 1308 | 1085 | 1319 | 是 |
+| 26 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:153 | v1:1009-1040 | 1009 | 1243 | 1040 | 1274 | 是 |
+| 27 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:153 | v1:1027-1032 | 1027 | 1261 | 1032 | 1266 | 是 |
+| 28 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:154 | v1:1087-1099 | 1087 | 1321 | 1099 | 1333 | 是 |
+| 29 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:154 | v1:1095 | 1095 | 1329 | 1095 | 1329 | 是 |
+| 30 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:155 | v1:1101-1127 | 1101 | 1335 | 1127 | 1361 | 是 |
+| 31 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:155 | v1:1125-1127 | 1125 | 1359 | 1127 | 1361 | 是 |
+| 32 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:156 | v1:694-725 | 694 | 933 | 725 | 964 | 是 |
+| 33 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:157 | v1:622-644 | 622 | 861 | 644 | 883 | 是 |
+| 34 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:158 | v1:665-692 | 665 | 904 | 692 | 931 | 是 |
+| 35 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:158 | v1:679-688 | 679 | 918 | 688 | 927 | 是 |
+| 36 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:158 | v1:689-692 | 689 | 928 | 692 | 931 | 是 |
+| 37 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:159 | v1:753-823 | 753 | 992 | 823 | 1062 | 是 |
+| 38 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:159 | v1:747-751 | 747 | 986 | 751 | 990 | 是 |
+| 39 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:160 | v1:709-719 | 709 | 948 | 719 | 958 | 是 |
+| 40 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:160 | v1:715-716 | 715 | 954 | 716 | 955 | 是 |
+| 41 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:160 | v1:711-714 | 711 | 950 | 714 | 953 | 是 |
+| 42 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:161 | v1:1172 | 1172 | 1406 | 1172 | 1406 | 是 |
+| 43 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:161 | v1:662 | 662 | 901 | 662 | 901 | 是 |
+| 44 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:167 | v1:175 | 175 | 419 | 175 | 419 | 是 |
+| 45 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:168 | v1:1087-1099 | 1087 | 1321 | 1099 | 1333 | 是 |
+| 46 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:169 | v1:1106-1122 | 1106 | 1340 | 1122 | 1356 | 是 |
+| 47 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:170 | v1:405 | 405 | 644 | 405 | 644 | 是 |
+| 48 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:176 | v1:529-534 | 529 | 768 | 534 | 773 | 是 |
+| 49 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:177 | v1:530-534 | 530 | 769 | 534 | 773 | 是 |
+| 50 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:189 | v1:974-994 | 974 | 1208 | 994 | 1228 | 是 |
+| 51 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:190 | v1:1217 | 1217 | 1451 | 1217 | 1451 | 是 |
+| 52 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:190 | v1:1215-1233 | 1215 | 1449 | 1233 | 1467 | 是 |
+| 53 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:192 | v1:210-221 | 210 | 454 | 221 | 465 | 是 |
+| 54 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:193 | v1:1074-1085 | 1074 | 1308 | 1085 | 1319 | 是 |
+| 55 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:194 | v1:1101-1127 | 1101 | 1335 | 1127 | 1361 | 是 |
+| 56 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:195 | v1:551-561 | 551 | 790 | 561 | 800 | 是 |
+| 57 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:196 | v1:95-128 | 95 | 108 | 128 | 141 | 是 |
+| 58 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:209 | v1:24 | 24 | 24 | 24 | 24 | 是 |
+| 59 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:224 | v1:16 | 16 | 16 | 16 | 16 | 是 |
+| 60 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:240 | v1:709-719 | 709 | 948 | 719 | 958 | 是 |
+| 61 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:247 | v1:1 | 1 | 1 | 1 | 1 | 是 |
+| 62 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:248 | v1:1172 | 1172 | 1406 | 1172 | 1406 | 是 |
+| 63 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:314 | v1:694-725 | 694 | 933 | 725 | 964 | 是 |
+| 64 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:315 | v1:996-1007 | 996 | 1230 | 1007 | 1241 | 是 |
+| 65 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:335 | v1:24 | 24 | 24 | 24 | 24 | 是 |
+| 66 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:344 | v1:1009-1032 | 1009 | 1243 | 1032 | 1266 | 是 |
+| 67 | ./evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md:367 | v1:1172 | 1172 | 1406 | 1172 | 1406 | 是 |
+| 68 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:105 | v1:1009 | 1009 | 1243 | 1009 | 1243 | 是 |
+| 69 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:105 | v1:1172 | 1172 | 1406 | 1172 | 1406 | 是 |
+| 70 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:105 | v1:17 | 17 | 17 | 17 | 17 | 是 |
+| 71 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:106 | v1:17 | 17 | 17 | 17 | 17 | 是 |
+| 72 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:106 | v1:24 | 24 | 24 | 24 | 24 | 是 |
+| 73 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:106 | v1:17 | 17 | 17 | 17 | 17 | 是 |
+| 74 | ./evidence/m7-3/DECISION_SHEET_M7_CLOSURE.md:106 | v1:24 | 24 | 24 | 24 | 24 | 是 |
 

@@ -61,6 +61,13 @@ DATE        : 2026-09-16
 
 ### 5.1 `GET /v1/skills` 声明了但**未实现**（反向缺口）
 
+> ✅ **已结案（Owner 裁定 A-9，2026-09-16）**：采纳"**删除声明**"选项 —— 该端点**已从合同删除**
+> （`specs/kert-openapi-v1.yaml` 1.6.0；合同不得声明不存在的端点）。
+> 同轮已同步 4 处孤儿引用：`examples/gits_adapter/python/kert_client.py`（标注 + 抛错）、
+> `examples/gits_adapter/curl/list_skills.sh`（**删除**）、`examples/gits_adapter/README.md`（3 处，删除的**派生**必要同步）、
+> `docs/development/M3_PLAN_GITS_INTEGRATION.md`（2 处）。
+> 本小节以下的**分析**保留，作为结案依据。
+
 - 合同 `:130-163` 声明该路径与 `SkillListResponse`/`SkillInfo`；实现**无**该路由
   （`server.py` 全量 `/v1/*` 路由见 §2；证据：`docs/integration/KERT_GITS_CONTRACT_DIFF.md:14`「规范要求新增，server.py 尚未实现」、`:96` P2 待做）。
 - 三选一：**删除**声明 / 标记 `x-implemented: false` 并保留（推荐，信息不丢失）/ 实现它。

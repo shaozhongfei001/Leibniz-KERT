@@ -74,7 +74,7 @@ pytest_exitstatus=1
 ## 2. 根因
 
 ```python
-# src/kert/api/server.py:61-62
+# src/kert/api/server.py:80   （D-14 活件刷新：原引 :61-62 为旧行号；该默认值行现为 :80，其注释块在 :71-79）
 DEFAULT_SKILL_PACKAGES = Path(__file__).resolve().parents[3] / "examples" / "bank-front-skills"
 # :195-196
 pkgs = Path(skill_packages) if skill_packages else (

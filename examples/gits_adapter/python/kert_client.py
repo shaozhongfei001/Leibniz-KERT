@@ -22,7 +22,6 @@ import urllib.request
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
-from urllib.parse import urljoin
 
 logger = logging.getLogger("kert_client")
 
@@ -485,7 +484,7 @@ class KertClient:
                     error_code="CONNECTION_ERROR",
                 )
 
-            except TimeoutError as e:
+            except TimeoutError:
                 last_exc = KertTimeoutError(
                     f"Request timed out after {self.read_timeout}s",
                     error_code="TIMEOUT",

@@ -11,7 +11,7 @@
 |---|---|---|---|---|
 | 1 | `GET /v1/health` | 无直接调用 | **KERT 独有** | GITS 使用 `/api/skill/health` 做健康检查 |
 | 2 | `GET /api/skill/health` | `GET {dsh.base-url}/api/skill/health` | **完全匹配** | GITS `DshHttpSkillGateAdapter` 调用 |
-| 3 | `GET /v1/skills` | 无调用 | **KERT 独有** | 规范要求新增，server.py 尚未实现 |
+| 3 | `GET /v1/skills` | 无调用 | ~~**KERT 独有**~~ **已结案** | 规范要求新增，server.py 尚未实现。⚠ **已结案（Owner 裁定 A-9，2026-09-16）：该端点已从合同删除**；技能清单改用 `GET /api/skill/health` |
 | 4 | `POST /api/skill/execute` | `POST {dsh.base-url}/api/skill/execute` | **完全匹配** | GITS `DshHttpSkillExecutionAdapter` 调用 |
 | 5 | `GET /api/skill/report/{requestId}` | `GET {dsh.base-url}/api/skill/report/{requestId}` | **完全匹配** | GITS 报告查看 |
 | 6 | `GET /api/skill/gates/{customerId}` | `GET {dsh.base-url}/api/skill/gates/{customerId}` | **完全匹配** | v1.4 新增，V14KertIntegrationController 暴露 |
@@ -93,7 +93,7 @@
 
 | # | 变更 | 优先级 | 说明 |
 |---|---|---|---|
-| 1 | `GET /v1/skills` 端点 | P2 | OpenAPI 规范已定义，server.py 尚未实现。GITS 当前未调用，但未来 Skill 发现需要 |
+| 1 | ~~`GET /v1/skills` 端点~~ | **已结案** | ⚠ **A-9（Owner 裁定，2026-09-16）：已从合同删除**（合同不得声明不存在的端点）。技能发现改用 `GET /api/skill/health`。GITS 当前未调用 ⇒ 删除**不破坏任何调用方** |
 | 2 | `POST /v1/jobs` 独立端点 | P3 | 当前通过 `POST /api/skill/execute?async=true` 触发，独立端点为规范预留 |
 | 3 | API Key 认证 | P2 | 当前演示环境无认证，生产需实现 `X-API-Key` header 校验 |
 | 4 | `/metrics` Prometheus 端点 | P2 | 生产可观测性必需 |
@@ -142,7 +142,7 @@ GITS 适配器对非 200 响应统一抛 `SkillExecutionException`，fail-closed
 
 - 所有 GITS 已调用的端点与 KERT 实际实现完全匹配
 - v1.4 新增字段（`data.ruleViolations`、`data.result`）GITS 忽略未知字段即可，向后兼容
-- 唯一功能差异：`GET /v1/skills` 端点 KERT 尚未实现，但 GITS 当前未调用
+- ~~唯一功能差异：`GET /v1/skills` 端点 KERT 尚未实现~~ —— ⚠ **已结案（Owner 裁定 A-9，2026-09-16）：该端点已从合同删除**，不再构成差异；技能清单改用 `GET /api/skill/health`（GITS 当前未调用该端点）
 - 配置路径完全对齐，无需修改
 
 **风险点**：
@@ -188,7 +188,7 @@ GITS 适配器对非 200 响应统一抛 `SkillExecutionException`，fail-closed
    `DSH_BASE_URL=http://127.0.0.1:8107`（与冲突 C-04 同源）——需 Owner 统一为配置占位或对齐默认值。
 2. KERT 侧 `DshHttpSkillGateAdapter` 读取的 `schemaVersion` / `flowName` 两键**不在 KERT 响应中**
    （GITS 使用默认值）——是否补入合同由 Contract Owner 决定。
-3. 本文件 §4/§5 的历史段（2026-08-28 基线）中 `GET /v1/skills 尚未实现` 等条目**保留不改**；
+3. 本文件 §4/§5 的历史段（2026-08-28 基线）中 `GET /v1/skills 尚未实现` 等条目**保留不改**（⚠ 其中 `/v1/skills` 一项已由 **Owner 裁定 A-9（2026-09-16）**结案：端点已从合同删除）；
    其中已过时的错误码写法见 §7.1 第 3 项附注。
 
 ### 7.4 非声明

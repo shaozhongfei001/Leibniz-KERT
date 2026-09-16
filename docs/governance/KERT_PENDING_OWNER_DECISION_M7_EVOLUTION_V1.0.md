@@ -73,14 +73,14 @@ NOT_A_SIGN_OFF  = 不是基线签署、不是规格修订、不构成生产就�
 | 指令要求的能力 | 仓内权威对应 | 现状（有证据） |
 |---|---|---|
 | **知识地图** | WBS **M7.3**（Skill/Route/ActivationPlan 治理） | `KERT_STATUS_BASELINE_CANDIDATE.yaml:78-79` → `knowledge_map_registry: DESIGNED_NOT_IMPLEMENTED`；代码里唯一"实现"是 `src/kert/application/skills.py:627-631` 的 **trace 字符串**，mapId 为**硬编码字面量**（`:651`/`:683`/`:717`）。无 registry / schema / 加载器 / 遍历 API / 版本合同 |
-| **skill 路由** | WBS **M7.3** | **注册表 + 执行入口真实可运行**：`src/kert/application/skills.py:189-205`（registry）、`:215-285`（execute）、`src/kert/api/server.py:590-644`（`/api/skill/health|execute|report|gates`）。**选择/路由控制面缺失**：caller 直接传 `skillId`，SP-20 的 `routeMode` 只是内部检索选择（独立评审 §4.7 原文） |
+| **skill 路由** | WBS **M7.3** | **注册表 + 执行入口真实可运行**：`src/kert/application/skills.py:189-205`（registry）、`:215-285`（execute）、`src/kert/api/server.py:590-644`（`/api/skill/health|execute|report|gates`；⚠ **D-14 快照加注**：此为**本文档时点**行号，`server.py` 此后已位移 ⇒ **勿按此行号定位**，当前技能路由自 `@app.get("/api/skill/health")` 起）。**选择/路由控制面缺失**：caller 直接传 `skillId`，SP-20 的 `routeMode` 只是内部检索选择（独立评审 §4.7 原文） |
 | **LightRAG** | **WBS 无此项** | **全仓零命中**（`grep -i lightrag` 无结果）。图底座是 **Kùzu**：`src/kert/infrastructure/graph/kuzu_builder.py`；产物 `data/product_knowledge_graph.kuzu` |
 | **本体模型** | **WBS 无此项** | KERT **零本体资产**：`find -name "*.ttl|*.owl|*.rdf"` 无结果；`src/` 内 `owl/shacl/sparql` 零命中。本体权威在 **gits 仓** `specs/semantic/gits-core.owl.ttl`（CTR-SEM-002） |
 | **语义层到数据源连接** | WBS **M7.1** KnowledgeSource typed capability | 未开工。现状是**真实可运行**的替代形态：文件目录权威源 + Parquet 投影（`src/kert/domain/hashing.py`、`cli/main.py:203`）+ Kùzu 图（`kuzu_builder.py`）+ SQLite 运行时存储（`src/kert/infrastructure/stage_store.py`、ADR-012） |
 
 **另发现一处状态失真（非本次裁定项，建议顺手修）**：
 `KERT_STATUS_BASELINE_CANDIDATE.yaml:86-87` 记 `production_security: DESIGNED_NOT_IMPLEMENTED`、`auth_enabled: false`，
-但 **M2.1/M2.2 已在代码中接线**：`src/kert/api/server.py:218-219`（`ApiKeyAuthMiddleware` / `RateLimitMiddleware`）。
+但 **M2.1/M2.2 已在代码中接线**：`src/kert/api/server.py:218-219`（`ApiKeyAuthMiddleware` / `RateLimitMiddleware`）。（⚠ **D-14 快照加注**：旧行号；2026-09-16 实测已移至 `server.py:239-240`。）
 ⇒ **权威状态文件落后于代码**（该文件日期 2026-08-26）。按"唯一权威源"纪律，应由 TL 出修订候选，**不静默改写**。
 
 **计划位**：`START_HERE.md` 明示当前第一个可执行任务是 **M2-P1**；`KERT_PHASE0_DECISION_RECORD.md` 与 `ADR-013` 均为
