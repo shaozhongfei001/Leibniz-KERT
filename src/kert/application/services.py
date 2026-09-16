@@ -438,6 +438,36 @@ class KnowledgeService:
                 "lineage_path": lineage_rel,
                 "plan": lineage}
 
+    # ---------------- LightRAG 检索（M7 · D-31：接入外部 server） ----------------
+
+    def retrieve_via_lightrag(self, query: str, *, mode: str = "hybrid",
+                              client=None) -> dict:
+        """经 **LightRAG**（外部 server）做一次检索，返回**实体 + 关系 + 出处**。
+
+        接入层见 :mod:`kert.infrastructure.lightrag_client`（连接参数只走 env：
+        ``KERT_LIGHTRAG_URL`` / ``KERT_LIGHTRAG_API_KEY`` / ``KERT_LIGHTRAG_TIMEOUT``）。
+
+        **fail-closed**：server 不可达 / 鉴权失败 / 响应形状不符 ⇒ 由接入层抛**具名**异常向上传递，
+        本方法**不**吞错、**不**返回空结果 ⇒ 调用方必须能区分「检索不到」与「检索不可达」。
+
+        ⚠ 本方法**不**读写工作区：LightRAG 的索引在 KERT 工作区**之外**（见
+        `docs/adr/ADR-017-lightrag-retrieval-store.md`），故不影响 §18.5/§6.3 的
+        "工作区内无隐藏持久化数据库"口径。
+
+        :param query: 检索语句。
+        :param mode: lightRAG 既有模式（``local``/``global``/``hybrid``/``naive``/``mix``）。
+        :param client: 注入的 :class:`~kert.infrastructure.lightrag_client.LightRagClient`
+            （缺省按 env 构造；测试用）。
+        """
+        from ..infrastructure.lightrag_client import LightRagClient
+
+        client = client or LightRagClient.from_env()
+        result = client.query_data(query, mode=mode)
+        return {"query": result.query, "mode": result.mode, "endpoint": result.endpoint,
+                "entities": list(result.entities), "relations": list(result.relations),
+                "citations": [{"referenceId": c.reference_id, "filePath": c.file_path,
+                               "content": c.content} for c in result.citations]}
+
     # ---------------- 证据溯源（FR-SRV-007、§15.5） ----------------
 
     def trace(self, object_id: str) -> ServiceResult:
