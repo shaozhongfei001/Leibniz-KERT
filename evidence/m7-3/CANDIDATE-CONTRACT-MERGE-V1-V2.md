@@ -140,8 +140,8 @@ DATE        : 2026-09-16
   两份文件各自的 operationId 内部唯一，但**归并后必然撞名**，且语义不同（一个是"列 Skill 详情含参数"，
   一个是"健康检查 + 能力状态"）。任何"合并成一份"的机械操作都会在此处静默改写语义。
 - 另有 4 组同端点不同名：`getSkillHealth`/`listSkills`、`getGates`/`listGates`、`auditGate`/`recordGateAudit`、
-  `livez`/`liveness`、`readyz`/`readiness`、`getMetrics`/`metrics`（v1:47,77,100,139,234,262,306,338,405,423,443 （基准：勘误前 1826 行版（1826 行）；重定位见清单 §3 [D-16-A]）
-  vs v2:30,43,93,117,141,159,179,197,205,215）。
+  `livez`/`liveness`、`readyz`/`readiness`、`getMetrics`/`metrics`（v1:47,77,100,139,234,262,306,338,405,423,443）（基准：勘误前 1826 行版（1826 行）；重定位见清单 §3 [D-16-A]）
+  vs v2:30,43,93,117,141,159,179,197,205,215。
 
 ### 2.2 schema 级差异（逐项）
 

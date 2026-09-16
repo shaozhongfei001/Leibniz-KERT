@@ -81,6 +81,19 @@ DATE      : 2026-09-16
 于是红会被当成"噪声"而**再被削弱回去** —— 那正是 D-10 明令禁止的"把 flake 洗成通过"的同族错误。
 ⇒ **供给是前置条件，断言是验收强度**；顺序不可交换。
 
+**「永久红」不是单一原因，而是三类独立成因的叠加**（2026-09-16 两栈对照实测；D-22 + Step 2 落地轮）：
+
+| # | 红因 | 机理 | 若不先处置就强化的后果 | 处置与证据 |
+|---|---|---|---|---|
+| **① 供给缺口** | CI 用**空工作区**起服务（F-3），控制面无 `route_policy.json` ⇒ 计划门禁**默认拒绝**（F-6） | 未供给 ⇒ `KERT_PERMISSION_DENIED` / `ROUTE_POLICY_ABSENT` | `skill-customer-meeting-script`、`skill-customer-outreach-script` **必然 `skill_error`** ⇒ 与断言强弱无关的红 | **已闭（Step 1，`1a772c8`）**；实测：**未供给栈 2 failed / `U_EXIT=1`**，**已供给栈 15 passed / `P_EXIT=0`** |
+| **② previsit 退出策略语义** | R1 访前报告在 `evidenceTimestamp` 未传时**按设计**返回 `exit_policy_no_new_evidence`（`src/kert/application/skills.py:317-321`） | 属**正常业务结论**，非故障 | 朴素 `assert status == "ok"` 会把它判红 —— **在已供给栈上同样红** ⇒ 与供给无关的第二类「永久红」 | 落**显式白名单**（Step 2）：`BUSINESS_OUTCOME_WHITELIST`，注释引 `skills.py:317-321` + `kert_api_validation.py:290` |
+| **③ SP-20/SP-21 输入缺口** | e2e 对该两条用**遗留简化 payload**（顶层 `customerId` + `parameters`，**全无 `context`**）⇒ 执行器报 `ContextPackage 缺失字段…` / `interactionId / interactionContent 缺失` | **test-side**：同一活栈换形状即 `ok`；上游既有期望见 `kert_api_validation.py:270/282` | 供给齐备后这两条仍**恒红** ⇒ 第三类「永久红」 | Step 2 补**专属 payload 分支**（契约形状）；实测两栈均绿 |
+
+⇒ **三类红因的处置互不相同**（供给 / 白名单 / payload 形状）；**任一类未处置，Step 2 都会留下「永久红」**，
+把它们混作「一个 flake」再回退弱断言，即重犯 D-10 的同族错误。
+
+> 判据纪律（D-2）：本方案的断言只到**业务结论层**（`status` + `errors`），**不**断言模型输出内容质量。
+
 ## 4. 风险与回滚
 
 | # | 风险 | 处置 / 回滚 |

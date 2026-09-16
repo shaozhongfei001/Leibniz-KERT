@@ -237,7 +237,7 @@ jobs:
           fi
           # 空 HOME：复现 CI 的「无密钥」环境，强制确定性适配器
           mkdir -p "$RUNNER_TEMP/kert-home" "$RUNNER_TEMP/kert-ws"
-          # 空目录即可作 workspace，无需 `kert init`（scripts/run_nfr_baseline.sh 为既有范式）
+          # 本目录由上方 "Provision control plane into e2e workspace (D-6 Step 1)" 步供给；此处 mkdir 仅兜底（已存在则 no-op）。D-19：原文「空目录即可作 workspace，无需 `kert init`」在 Step 1 落地后已过时。
           nohup env HOME="$RUNNER_TEMP/kert-home" \
             python scripts/serve_skill_service.py \
               --port 8106 --host 127.0.0.1 --workspace "$RUNNER_TEMP/kert-ws" \

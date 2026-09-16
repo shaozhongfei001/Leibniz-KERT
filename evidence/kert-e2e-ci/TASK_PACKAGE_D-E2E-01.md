@@ -76,7 +76,7 @@ pytest_exitstatus=1
 ```python
 # src/kert/api/server.py:80   （D-14 活件刷新：原引 :61-62 为旧行号；该默认值行现为 :80，其注释块在 :71-79）
 DEFAULT_SKILL_PACKAGES = Path(__file__).resolve().parents[3] / "examples" / "bank-front-skills"
-# :195-196
+# src/kert/api/server.py:195-196   （D-19 限定补齐：原为**裸引用** `:195-196`，无 `server.py:` 前缀 ⇒ 不在 A-8 扫描口径内；⚠ 该行号与所述「静默降级」实现已随 D-E2E-01 修复位移 —— 现实现为 `resolve_skill_packages()`（`server.py:97`）与调用点 `:277`，勿按此行号定位）
 pkgs = Path(skill_packages) if skill_packages else (
     DEFAULT_SKILL_PACKAGES if DEFAULT_SKILL_PACKAGES.is_dir() else None)   # ← 静默降级为 None
 ```
