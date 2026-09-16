@@ -1,0 +1,115 @@
+@prefix gits: <https://gits.bank.example/ontology/core#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# W3.1 投影产物：产品个体（身份空间 PROD-*）。
+# 关系实例源自产品卡 front matter；关系类型定义在本体，本文件不复述。
+
+gits:prod_cb_001
+  a gits:Product ;
+  rdfs:label "跨境人民币结算" ;
+  rdfs:comment "source card: PROD-CB-001.md" .
+
+gits:prod_cb_002
+  a gits:Product ;
+  rdfs:label "内保外贷" ;
+  rdfs:comment "source card: PROD-CB-002.md" .
+
+gits:prod_cm_001
+  a gits:Product ;
+  rdfs:label "现金池" ;
+  rdfs:comment "source card: PROD-CM-001.md" .
+
+gits:prod_cm_002
+  a gits:Product ;
+  rdfs:label "资金归集" ;
+  rdfs:comment "source card: PROD-CM-002.md" .
+
+gits:prod_cm_003
+  a gits:Product ;
+  rdfs:label "法人账户透支" ;
+  rdfs:comment "source card: PROD-CM-003.md" .
+
+gits:prod_fin_001
+  a gits:Product ;
+  rdfs:label "流动资金贷款" ;
+  rdfs:comment "source card: PROD-FIN-001.md" .
+
+gits:prod_fin_002
+  a gits:Product ;
+  rdfs:label "应收账款质押融资" ;
+  rdfs:comment "source card: PROD-FIN-002.md" .
+
+gits:prod_fin_003
+  a gits:Product ;
+  rdfs:label "订单融资" ;
+  rdfs:comment "source card: PROD-FIN-003.md" .
+
+gits:prod_ib_001
+  a gits:Product ;
+  rdfs:label "并购贷款" ;
+  rdfs:comment "source card: PROD-IB-001.md" .
+
+gits:prod_set_001
+  a gits:Product ;
+  rdfs:label "单位结算账户" ;
+  rdfs:comment "source card: PROD-SET-001.md" .
+
+gits:prod_set_002
+  a gits:Product ;
+  rdfs:label "国内保理" ;
+  rdfs:comment "source card: PROD-SET-002.md" .
+
+gits:prod_tf_001
+  a gits:Product ;
+  rdfs:label "银行承兑汇票" ;
+  rdfs:comment "source card: PROD-TF-001.md" .
+
+gits:prod_tf_002
+  a gits:Product ;
+  rdfs:label "国内信用证" ;
+  rdfs:comment "source card: PROD-TF-002.md" .
+
+
+# 以下引用无法解析，未写入 A-Box（逐条见 UNRESOLVED.json），按裁定 fail-closed 处理。
+#   PROD-CB-001.md [complementary_products] -> FX_FORWARD
+#   PROD-CB-001.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-CB-001.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-CB-002.md [complementary_products] -> CROSS_BORDER_RMB_SETTLEMENT
+#   PROD-CB-002.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-CB-002.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-CM-001.md [complementary_products] -> CORPORATE_E_BANK
+#   PROD-CM-001.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-CM-001.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-CM-002.md [complementary_products] -> CASH_POOL
+#   PROD-CM-002.md [complementary_products] -> CORPORATE_E_BANK
+#   PROD-CM-002.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-CM-002.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-CM-003.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-CM-003.md [complementary_products] -> WORKING_CAPITAL_LOAN
+#   PROD-CM-003.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-FIN-001.md [complementary_products] -> CASH_MANAGEMENT
+#   PROD-FIN-001.md [complementary_products] -> CORPORATE_E_BANK
+#   PROD-FIN-001.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-FIN-001.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-FIN-002.md [complementary_products] -> RECEIVABLE_LEDGER_TOOL
+#   PROD-FIN-002.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-FIN-002.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-FIN-003.md [complementary_products] -> ORDER_RECEIVABLE_CLOSED_ACCOUNT
+#   PROD-FIN-003.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-FIN-003.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-IB-001.md [complementary_products] -> FINANCIAL_ADVISORY
+#   PROD-IB-001.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-IB-001.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-SET-001.md [complementary_products] -> CASH_MANAGEMENT
+#   PROD-SET-001.md [complementary_products] -> CORPORATE_E_BANK
+#   PROD-SET-002.md [complementary_products] -> CORPORATE_E_BANK
+#   PROD-SET-002.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-SET-002.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-TF-001.md [complementary_products] -> DISCOUNT_SERVICE
+#   PROD-TF-001.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-TF-001.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT
+#   PROD-TF-002.md [complementary_products] -> BANK_ACCEPTANCE_DRAFT
+#   PROD-TF-002.md [complementary_products] -> SETTLEMENT_ACCOUNT
+#   PROD-TF-002.md [prerequisite_product_ids] -> SETTLEMENT_ACCOUNT

@@ -1,0 +1,15 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix gits: <https://gientech.com/gits/kno/> .
+
+# VERSIONED_MAPPING (ADR-0010 / CTR-DATA-002 / CTR-MAP-001):
+# Authoritative physical source: EDWCRM.A_ZHCX_CUST_BASE (CUSTID).
+# gits:Customer is declared in semantic contracts (CTR-SEM-001/002).
+# Customer is NOT an operational control-plane entity. No customer row data
+# may be read or written without a further authorized loop.
+
+<#CustomerTriplesMap> a rr:TriplesMap ;
+  rr:logicalTable [ rr:tableName "A_ZHCX_CUST_BASE" ] ;
+  rr:subjectMap [
+    rr:template "https://gientech.com/gits/kno/customer/{CUSTID}" ;
+    rr:class gits:Customer
+  ] .

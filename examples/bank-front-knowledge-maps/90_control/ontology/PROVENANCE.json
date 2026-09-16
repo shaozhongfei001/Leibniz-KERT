@@ -1,0 +1,38 @@
+{
+  "schema": "ontology_assets/v1",
+  "contractId": "CTR-SEM-002",
+  "authorityRepo": "gits-cbanking",
+  "version": "CTR-SEM-002@sha256:705578d6324abd0c",
+  "pinnedAt": "2026-09-16",
+  "assets": [
+    {
+      "file": "gits-core.owl.ttl",
+      "authoritySource": "specs/semantic/gits-core.owl.ttl",
+      "role": "OWL",
+      "bytes": 17273,
+      "contentSha256": "705578d6324abd0c1bd2bd670e6f3c0ffd8e04c358d0134246c89a3acfc38d00"
+    },
+    {
+      "file": "gits-core.shacl.ttl",
+      "authoritySource": "generated/semantic/gits-core.shacl.ttl",
+      "role": "SHACL",
+      "bytes": 15930,
+      "contentSha256": "53a3fba39a00aa20e931a2dba64e85b5f2ebdf6c1242312cf35056d429c66e7c"
+    },
+    {
+      "file": "products.ttl",
+      "authoritySource": "specs/knowledge-architecture/instances/product/products.ttl",
+      "role": "INSTANCES",
+      "bytes": 4714,
+      "contentSha256": "e70bbe45bebcca2ebc3cb9e805c3cf8b87961221d19f898f4571ccc90151b739"
+    },
+    {
+      "file": "customer-source-mapping.r2rml.ttl",
+      "authoritySource": "specs/data/customer-source-mapping.r2rml.ttl",
+      "role": "R2RML",
+      "bytes": 643,
+      "contentSha256": "f873a85266b45c9ee6aa77ccf04288f26da731485a6fe6fea381fd17f11e784a"
+    }
+  ],
+  "notes": "内置本体资产（Owner 2026-09-16 推翻 D3-A ⇒ D-31）：主资产 OWL 的 contentSha256 与 90_control/schema/ontology_reference.json 的声明钉值**逐字相同**；本目录是 gits 资产的**只读副本**，漂移由 kert.domain.ontology_assets 具名拒绝。"
+}

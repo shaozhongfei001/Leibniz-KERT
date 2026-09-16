@@ -16,6 +16,12 @@ dependencies = [
     "pypdf>=5.0",
     "python-docx>=1.1",
     "kuzu>=0.11",
+    # D-31（Owner 2026-09-16，**推翻** D3-A「KERT 不内置本体」）：本体**真解析**的最小集合 ——
+    # rdflib 解析 OWL/TTL，pyshacl 解析并施加 SHACL 约束（`kert.domain.ontology_parse`）。
+    # 刻意**不**引入 owlready2 / 推理机：当前需求是"可解析、可统计、可物化"，不是"可推理"；
+    # 将来若确需推理，再按最小化原则单独追加并留痕。
+    "rdflib>=7.6",
+    "pyshacl>=0.40",
 ]
 
 [project.optional-dependencies]

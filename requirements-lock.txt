@@ -5,6 +5,11 @@
 #
 # 此文件锁定所有传递依赖的精确版本，确保 CI/CD 可重现构建。
 # 更新方式：重新运行 pip freeze 或 pip install --upgrade 后重新生成。
+#
+# 2026-09-16（D-31 本体侧）：追加本体栈（rdflib / pyshacl 及其传递依赖
+# owlrl / prettytable / pyparsing / html5rdf / wcwidth）。
+# 注：本机 venv 另装有 coverage / pytest-cov（dev 工具，未在 pyproject 声明）
+# 与陈旧 dist 名 dkws，均**未**并入本锁文件；注入方式为**定点插入**（不重排既有行）。
 
 annotated-doc==0.0.5
 annotated-types==0.8.0
@@ -13,6 +18,7 @@ attrs==26.1.0
 certifi==2026.7.22
 click==8.5.0
 fastapi==0.141.1
+html5rdf==1.2.1
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
@@ -23,17 +29,22 @@ jsonschema-specifications==2025.9.1
 kuzu==0.11.3
 lxml==6.1.2
 markdown-it-py==4.2.0
+owlrl==7.6.2
 mdurl==0.1.2
 packaging==26.3
+prettytable==3.18.0
 pluggy==1.6.0
 pyarrow==25.0.1
 pydantic==2.13.4
 pydantic_core==2.46.4
 Pygments==2.21.0
+pyshacl==0.40.1
+pyparsing==3.3.2
 pypdf==6.16.2
 pytest==9.1.1
 python-docx==1.2.0
 PyYAML==6.0.3
+rdflib==7.6.0
 referencing==0.37.0
 rich==15.0.0
 rpds-py==2026.6.3
@@ -43,4 +54,5 @@ starlette==1.6.0
 typer==0.27.1
 typing_extensions==4.16.0
 typing-inspection==0.4.4
+wcwidth==0.8.3
 uvicorn==0.52.4
