@@ -18,7 +18,14 @@
 > **不变量 + 相对比值 + 灾难上限**（判定体 `assert_lifecycle_budget`，分母取
 > `_calibration.calibrate_per_op_ms`）。改前背靠背 20 轮 **14 轮红**、
 > 改后同条件 **0 轮红**（逐轮实测与降敏声明见 `BASELINE.md` §9）。
-> 本模块**其余 4 个用例仍断言墙钟**（锁延迟 / 并发写总量 / 读延迟）⇒ `pytestmark = perf` 保留。
+>
+> **D-47 完成第二处（同日）**：`test_runtime_store_concurrent_idempotency_writes` 与
+> `..._concurrent_job_writes` 的两条 `assert elapsed_ms < 3000` 也换成同形态判据
+> （判定体 `assert_concurrent_burst_budget`）。改前同条件 **3/20 轮红**、改后 **0/20 轮红**；
+> 其与 **NFR-006 的缺口**（3000ms 本就比 NFR 的 2s 松 50%、实测中位 2306ms）
+> 转为**登记缺口**，见 `BASELINE.md` §9.7。
+>
+> 本模块**其余 4 个用例仍断言墙钟**（锁延迟 ×3 / 读延迟）⇒ `pytestmark = perf` 保留。
 
 测试场景：
 - WorkspaceLock 单线程 acquire/release 延迟
@@ -36,6 +43,7 @@
 from __future__ import annotations
 
 import hashlib
+import sqlite3
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -58,8 +66,56 @@ pytestmark = pytest.mark.perf
 
 SINGLE_LOCK_THRESHOLD_MS = 10       # 单次 acquire+release < 10ms
 CONCURRENT_SCOPE_THRESHOLD_MS = 2000  # 10 线程各 10 次 acquire+release < 2s
-CONCURRENT_WRITE_THRESHOLD_MS = 3000  # 10 线程各 10 次写入 < 3s
 READ_LATENCY_THRESHOLD_MS = 5.0     # 单次读取 < 5ms
+
+# --------------------------------------------------------------------------- #
+# D-47 族 B（并发写 100 条）判据常数
+#
+# 原判据 `CONCURRENT_WRITE_THRESHOLD_MS = 3000` 已由「不变量 + 相对比值 + 灾难上限」取代：
+# 该阈值实测中位约 2306ms、最坏 3429ms（CI 侧 4087ms）⇒ 余量仅 ~1.3×，改后仍 3/40 轮假红。
+# ⚠ 与 NFR 的关系**不是**"阈值放宽"：`QA_RELEASE_REPORT.md:49` 记 NFR-006 为 **100 条 < 2s**，
+#    本测试原来的 3000ms 本就比 NFR **松 50%**；NFR 缺口现由 `BASELINE.md` §9.6 登记（不再由 CI 体现）。
+# --------------------------------------------------------------------------- #
+CONCURRENT_BURST_OPS = 100               # 10 线程 × 10 次
+CONCURRENT_BURST_RATIO_LIMIT = 3.0       # elapsed ≤ 3 × ops × calib
+CONCURRENT_BURST_CEILING_MS = 12000.0    # 灾难上限 ≈ 历史最坏（CI 4087ms）× 3
+
+
+def _run_burst(body, n_threads: int) -> float:
+    """并发跑 ``body(thread_id)`` 并返回**总墙钟 ms**（与既有基准同形：只测这一批）。"""
+    t0 = time.perf_counter()
+    with ThreadPoolExecutor(max_workers=n_threads) as pool:
+        futures = [pool.submit(body, tid) for tid in range(n_threads)]
+        for f in as_completed(futures):
+            f.result()
+    return (time.perf_counter() - t0) * 1000
+
+
+def _count_rows(db_path: Path, table: str) -> int:
+    """只读计数（**独立于被测连接**，用于"没有多出第二条"这类不变量）。"""
+    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    try:
+        return int(conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
+    finally:
+        conn.close()
+
+
+def assert_concurrent_burst_budget(*, label: str, elapsed_ms: float, calib_ms: float,
+                                   ops: int = CONCURRENT_BURST_OPS) -> None:
+    """族 B 的 ②③ 判据（与 lifecycle 的 `assert_lifecycle_budget` 同形）。
+
+    ② **相对比值**：``elapsed ≤ RATIO_LIMIT × ops × calib`` —— 100 条并发写在 SQLite 写锁下
+       **近似串行**（实测总耗时 ≈ 单次成本 × 条数，比值带宽 0.73–1.35/16 轮），故分母取
+       ``ops × calib`` 而不是单次 ``calib``。
+    ③ **灾难上限**：``elapsed < CEILING``（兜底：环境整体拖慢到"比值也近似不变"时仍能发现崩溃级退化）。
+    """
+    budget = CONCURRENT_BURST_RATIO_LIMIT * ops * calib_ms
+    assert elapsed_ms < CONCURRENT_BURST_CEILING_MS, (
+        f"{label} 总耗时 {elapsed_ms:.0f}ms 越过灾难上限 {CONCURRENT_BURST_CEILING_MS:.0f}ms"
+        f"（参考负载 {calib_ms:.2f}ms/op × {ops} 条）—— 灾难级回归")
+    assert elapsed_ms <= budget, (
+        f"{label} 总耗时 {elapsed_ms:.0f}ms 超过比值档预算 {budget:.0f}ms"
+        f"（比值档：{RATIO_LIMIT}× {ops} 条 × 参考负载 {calib_ms:.2f}ms/op）—— ≥3× 级回归")
 
 
 def assert_lifecycle_budget(*, avg_create: float, avg_claim: float, avg_complete: float,
@@ -160,56 +216,96 @@ def test_workspace_lock_sequential_same_scope_benchmark(tmp_path: Path) -> None:
 # ---------- RuntimeStore 并发写入基准 ----------
 
 def test_runtime_store_concurrent_idempotency_writes(tmp_path: Path) -> None:
-    """RuntimeStore 并发写入 idempotency 记录基准。"""
+    """RuntimeStore 并发写 100 条 idempotency：**不变量 + 相对比值 + 灾难上限**（D-47）。
+
+    判据（与 ``test_runtime_store_job_lifecycle_benchmark`` 同形；原 ``assert elapsed_ms < 3000``
+    已移除 —— 其假红率与 NFR 缺口见 ``BASELINE.md`` §9.6）：
+
+    ① **不变量（零墙钟）**：100 条**逐条可读回**且 ``request_hash`` 与写入一致（无丢失更新）；
+       **同键重写不产生第二条**（总行数仍 100，且不存在重复 ``(scope, idem_key)`` 组）；
+    ② **相对比值**：``elapsed ≤ 3 × 100 × calib``（实测带宽 0.75–1.16 / 16 轮）；
+    ③ **灾难上限**：``elapsed < 12000ms``（≈ 历史最坏 CI 4087ms 的 3×）。
+    """
     db_path = tmp_path / "runtime" / "bench.db"
     store = RuntimeStore(db_path)
+    runtime_dir = tmp_path / "runtime"
+    calib_ms = calibrate_per_op_ms(runtime_dir / "calib_idem.db")
 
-    n_threads = 10
-    n_writes = 10
+    n_threads, n_writes = 10, 10
+    keys = {t: [f"bench-key-t{t}-{i}" for i in range(n_writes)] for t in range(n_threads)}
+    digests = {(t, i): hashlib.sha256(f"payload-t{t}-{i}".encode()).hexdigest()
+               for t in range(n_threads) for i in range(n_writes)}
 
     def writer(thread_id: int) -> None:
-        for i in range(n_writes):
-            key = f"bench-key-t{thread_id}-{i}"
-            req_hash = hashlib.sha256(f"payload-t{thread_id}-{i}".encode()).hexdigest()
-            store.remember("bench_scope", key, req_hash)
+        for i, key in enumerate(keys[thread_id]):
+            store.remember("bench_scope", key, digests[(thread_id, i)])
 
-    t0 = time.perf_counter()
-    with ThreadPoolExecutor(max_workers=n_threads) as pool:
-        futures = [pool.submit(writer, tid) for tid in range(n_threads)]
-        for f in as_completed(futures):
-            f.result()
-    elapsed_ms = (time.perf_counter() - t0) * 1000
+    elapsed_ms = _run_burst(writer, n_threads)
 
-    assert elapsed_ms < CONCURRENT_WRITE_THRESHOLD_MS, (
-        f"RuntimeStore 并发写入 {n_threads * n_writes} 条: "
-        f"{elapsed_ms:.0f}ms > {CONCURRENT_WRITE_THRESHOLD_MS}ms"
-    )
+    # ① 不变量：无丢失更新 + 内容一致
+    for t in range(n_threads):
+        for i, key in enumerate(keys[t]):
+            hit = store.lookup("bench_scope", key)
+            assert hit is not None, f"{key} 读不回（并发写丢失更新）"
+            assert hit.request_hash == digests[(t, i)], f"{key} 内容与写入不一致"
+
+    # ① 不变量：同键重写**不产生第二条**（幂等语义）
+    first = store.lookup("bench_scope", keys[0][0])
+    again = store.remember("bench_scope", keys[0][0], first.request_hash)
+    assert again.request_hash == first.request_hash
+    assert _count_rows(db_path, "idempotency_records") == n_threads * n_writes, (
+        "同键重写不得新增记录")
+    conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    try:
+        dup = conn.execute(
+            "SELECT COUNT(*) FROM (SELECT scope, idem_key FROM idempotency_records "
+            "GROUP BY scope, idem_key HAVING COUNT(*) > 1)").fetchone()[0]
+    finally:
+        conn.close()
+    assert dup == 0, f"存在 {dup} 组重复 (scope, idem_key) ⇒ 幂等键未生效"
+
+    # ②③
+    assert_concurrent_burst_budget(label=f"idempotency 并发写 {n_threads * n_writes} 条",
+                                   elapsed_ms=elapsed_ms, calib_ms=calib_ms)
 
 
 def test_runtime_store_concurrent_job_writes(tmp_path: Path) -> None:
-    """RuntimeStore 并发写入 job 记录基准。"""
+    """RuntimeStore 并发写 100 个 Job：**不变量 + 相对比值 + 灾难上限**（D-47）。
+
+    ① **不变量（零墙钟）**：100 个 ``job_id`` **逐条可读回**且为 ``PENDING``；
+       **同 id 重复创建不新增行**（总行数仍 100）；
+    ② **相对比值**：``elapsed ≤ 3 × 100 × calib``（实测带宽 0.73–1.35 / 16 轮）；
+    ③ **灾难上限**：``elapsed < 12000ms``。
+    """
     db_path = tmp_path / "runtime" / "bench_jobs.db"
     store = RuntimeStore(db_path)
+    runtime_dir = tmp_path / "runtime"
+    calib_ms = calibrate_per_op_ms(runtime_dir / "calib_jobs.db")
 
-    n_threads = 10
-    n_writes = 10
+    n_threads, n_writes = 10, 10
+    job_ids = {t: [f"JOB-BENCH-T{t}-{i}" for i in range(n_writes)] for t in range(n_threads)}
 
     def job_writer(thread_id: int) -> None:
-        for i in range(n_writes):
-            job_id = f"JOB-BENCH-T{thread_id}-{i}"
+        for job_id in job_ids[thread_id]:
             store.create_job(job_id=job_id, job_type="BENCH_TEST")
 
-    t0 = time.perf_counter()
-    with ThreadPoolExecutor(max_workers=n_threads) as pool:
-        futures = [pool.submit(job_writer, tid) for tid in range(n_threads)]
-        for f in as_completed(futures):
-            f.result()
-    elapsed_ms = (time.perf_counter() - t0) * 1000
+    elapsed_ms = _run_burst(job_writer, n_threads)
 
-    assert elapsed_ms < CONCURRENT_WRITE_THRESHOLD_MS, (
-        f"RuntimeStore 并发 job 写入 {n_threads * n_writes} 条: "
-        f"{elapsed_ms:.0f}ms > {CONCURRENT_WRITE_THRESHOLD_MS}ms"
-    )
+    # ① 不变量：无丢失 + 初始状态正确
+    for t in range(n_threads):
+        for job_id in job_ids[t]:
+            rec = store.get_job(job_id)
+            assert rec is not None, f"{job_id} 读不回（并发写丢失）"
+            assert rec.status == "PENDING", f"{job_id} 初始状态应为 PENDING，实为 {rec.status}"
+
+    # ① 不变量：同 id 重复创建不新增行（幂等）
+    again = store.create_job(job_id=job_ids[0][0], job_type="BENCH_TEST")
+    assert again.job_id == job_ids[0][0]
+    assert _count_rows(db_path, "jobs") == n_threads * n_writes, "同 id 重复创建不得新增行"
+
+    # ②③
+    assert_concurrent_burst_budget(label=f"并发 job 写入 {n_threads * n_writes} 条",
+                                   elapsed_ms=elapsed_ms, calib_ms=calib_ms)
 
 
 def test_runtime_store_read_after_write(tmp_path: Path) -> None:
@@ -394,4 +490,72 @@ def test_runtime_store_job_lifecycle_benchmark_mutant_is_red() -> None:
     toothless(**bad)                                  # 假判据不报错
     with pytest.raises(AssertionError):
         assert_lifecycle_budget(**bad)                # 真判据必须报错 ⇒ 两者不同 ⇒ 有牙
+
+
+# --------------------------------------------------------------------------- #
+# D-47 族 B 反例：证明「并发写」判据**不是空转**，且灵敏度边界可核
+# --------------------------------------------------------------------------- #
+
+def test_concurrent_burst_budget_rejects_a_ratio_regression() -> None:
+    """反例（比值档）：100 条 × 10ms ⇒ 预算 3000ms；3550ms（3.55×）必须红。"""
+    with pytest.raises(AssertionError, match="比值档"):
+        assert_concurrent_burst_budget(label="x", elapsed_ms=3550.0, calib_ms=10.0)
+
+
+def test_concurrent_burst_budget_rejects_a_catastrophe_regression() -> None:
+    """反例（上限档）：比值**远低于** 3×（1.2×）但越过 12000ms ⇒ 上限档必须红。"""
+    with pytest.raises(AssertionError, match="灾难上限"):
+        assert_concurrent_burst_budget(label="x", elapsed_ms=12000.0, calib_ms=10.0)
+
+
+def test_concurrent_burst_budget_documents_sensitivity_boundary() -> None:
+    """**把灵敏度边界钉成可执行事实**（不是注释）：2.0× 静默通过、恰好 3.0× 通过（`≤`）、3.1× 必红。"""
+    assert_concurrent_burst_budget(label="x", elapsed_ms=2000.0, calib_ms=10.0)   # 2.0× 盲区
+    assert_concurrent_burst_budget(label="x", elapsed_ms=3000.0, calib_ms=10.0)   # 边界含 3.0×
+    with pytest.raises(AssertionError, match="比值档"):
+        assert_concurrent_burst_budget(label="x", elapsed_ms=3100.0, calib_ms=10.0)
+
+
+def test_concurrent_burst_budget_rejects_a_real_injected_slowdown(tmp_path: Path,
+                                                                 monkeypatch: pytest.MonkeyPatch) -> None:
+    """反例（**真回归**，与 A2 同口径用"固定倍率"而非墙钟）：把小批量被测工作量放大 4× ⇒ 必须红。
+
+    为什么用"调用次数放大"而不用 `sleep`：并发场景下 sleep 会在各线程里**重叠**，
+    墙钟不随注入量线性增长；而"每次 op 做 N 次真实写"是**与机器状态无关**的固定倍率
+    （快态 ~N×、慢态 ~N×）⇒ 保证两种机器状态都超标。
+
+    ⚠ 放大必须用**不同键**：同键重复 `remember` 会走幂等短路（只多一次 SELECT，实测仅 ~1.2×），
+    那样注入等于没注入 —— 本用例的"注入生效"守卫专门挡这个陷阱。
+
+    为控制成本用小批量（20 个逻辑 op）；倍率取 **6**（> 判据的 3× 且留 2× 余量）。
+    """
+    real_remember = RuntimeStore.remember
+    amplification = 6
+
+    def amplified_remember(self, scope, idem_key, request_hash, *args, **kwargs):  # noqa: ANN001
+        hit = None
+        for i in range(amplification):
+            key = idem_key if i == 0 else f"{idem_key}#amp{i}"     # 不同键 ⇒ 真实写，不复用幂等短路
+            hit = real_remember(self, scope, key, request_hash, *args, **kwargs)
+        return hit
+
+    monkeypatch.setattr(RuntimeStore, "remember", amplified_remember)
+
+    ops = 20
+    runtime_dir = tmp_path / "runtime"
+    store = RuntimeStore(runtime_dir / "burst_slow.db")
+    calib_ms = calibrate_per_op_ms(runtime_dir / "calib_burst_slow.db")
+
+    def body(thread_id: int) -> None:
+        for i in range(ops // 4):
+            store.remember("bench_scope", f"k-{thread_id}-{i}", f"h-{thread_id}-{i}")
+
+    elapsed_ms = _run_burst(body, 4)
+
+    multiple = elapsed_ms / (ops * calib_ms)
+    assert multiple > CONCURRENT_BURST_RATIO_LIMIT, (
+        f"注入的 {amplification}× 工作量未生效（实测仅 {multiple:.2f}×）⇒ 本反例无法证明判据有牙")
+    with pytest.raises(AssertionError, match="比值档"):
+        assert_concurrent_burst_budget(label=f"注入 {amplification}× 工作量", elapsed_ms=elapsed_ms,
+                                       calib_ms=calib_ms, ops=ops)
 

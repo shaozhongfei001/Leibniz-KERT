@@ -106,10 +106,10 @@
 | `tests/performance/__init__.py` | 包初始化 | - |
 | `tests/performance/_calibration.py` | **D-37**：同进程参考负载（非测试文件，供比值判据当分母） | - |
 | `tests/performance/test_parquet_benchmark.py` | Parquet 读写/哈希基准 | 15 |
-| `tests/performance/test_concurrency_benchmark.py` | 并发锁/SQLite 基准（含 D-37 判据与 4 条反例） | 11 |
+| `tests/performance/test_concurrency_benchmark.py` | 并发锁/SQLite 基准（含 D-37/D-47 判据与 8 条反例） | 16 |
 | `tests/performance/test_query_benchmark.py` | 知识查询基准 | 22 |
 | `tests/performance/test_query_optimized_benchmark.py` | 谓词下推基准 | 23 |
-| **合计** | | **71** |
+| **合计** | | **76** |
 
 ## 8. 运行方式
 
@@ -195,6 +195,51 @@ PYTHONPATH=src python -m pytest tests/performance/ -q
 2. **族 B 仍会偶发假红**：`test_runtime_store_concurrent_{idempotency,job}_writes` 本批**未改**（其处置与
    NFR-006 属同一裁决）⇒ 改后 40 轮里仍有 3 轮（空闲 3/20、负载 1/20）因它们变红。
    `Performance Benchmarks` 这个 required check 因此**尚不会**稳定变绿。
+   > **已被 §9.6（D-47）处理** ⇒ 判据改为「不变量 + 相对比值 + 灾难上限」，改后同条件 20 轮 **0 红**；
+   > 原「3000ms vs NFR-006 的 2s」缺口转为**登记缺口**，见 §9.7。
 3. **标记口径不一致（政策建议，未落地）**：只有 `test_concurrency_benchmark.py` 带 `pytestmark = perf`；
    同目录另 3 个文件的 **60 条墙钟断言未被标记**，会被**裸 `pytest`（`testpaths=["tests"]`）**收集。
    建议明确口径（分级或明文豁免 + 依据），但**不得**顺手把它们移出默认套件（会掉信号）。
+
+---
+
+### 9.6 D-47：族 B（并发写 100 条）同样改造为三层判据
+
+改造对象：`test_runtime_store_concurrent_idempotency_writes` / `test_runtime_store_concurrent_job_writes`
+（原判据各为 `assert elapsed_ms < 3000`）。**形态与 §9.2 完全同形**：
+
+| 层 | 判据 |
+|---|---|
+| ① **不变量（零墙钟）** | **idempotency**：100 条**逐条 `lookup` 非空**且 `request_hash` 与写入一致（无丢失更新）；**同键重写不新增行**（总行数仍 100，且重复 `(scope, idem_key)` 组为 0）。**job**：100 个 `job_id` **逐条 `get_job` 非空**且为 `PENDING`；**同 id 重复创建不新增行** |
+| ② **相对比值** | `elapsed ≤ RATIO_LIMIT(3) × 100 × calib` —— 100 条并发写在 SQLite 写锁下**近似串行**（实测总耗时 ≈ 单次成本 × 条数），故分母取 `ops × calib` 而非单次 `calib`；**实测比值带宽 0.62–1.35**（16 轮选型实验 + 10 轮负载态） |
+| ③ **灾难上限** | `elapsed < CONCURRENT_BURST_CEILING_MS(12000ms)` ≈ 历史最坏 CI **4087ms** × 3；**实测最坏 2380ms** ⇒ 余量 **5.05×–9.17×**，快慢两态都不触顶 |
+
+**改前 / 改后（同条件 `-k runtime_store_concurrent`、背靠背 20 轮、junit 权威计数）**
+
+| 版本 | n | 结果 |
+|---|---|---|
+| 改前（HEAD 原文件 = 3000ms 绝对阈值） | 20 | **3/20 轮红**（run10/run20 job 写、run11 idempotency 写） |
+| 改后（不变量 + 比值 + 上限） | 20 | **0/20 轮红** |
+| 改后·合成负载（16 忙等） | 10 | **0/10 轮红**（elapsed 1.26–2.38s、比值 0.62–1.32、上限余量 5.05–9.17×） |
+
+**判据有牙（4 条常驻反例）**：比值档（3.55× ⇒ 红）、上限档（比值仅 1.2× 但 12s ⇒ 红）、
+**灵敏度边界钉住**（2.0× 过 / 3.0× 过 / 3.1× 红 —— 与 §9.3 同一盲区口径）、
+**真回归**（monkeypatch 把每次 op 放大 **6 次真实写** ⇒ 红）。
+⚠ 放大必须用**不同键**：同键重复 `remember` 会走幂等短路（只多一次 SELECT），实测仅放大 **1.2×** ——
+本用例自带"注入生效"守卫专门挡这个陷阱。
+**变异自证**：把 `CONCURRENT_BURST_RATIO_LIMIT` 与 `CONCURRENT_BURST_CEILING_MS` 同时改成 `10**9`
+⇒ 上述 4 条**全红**；还原后 16 条全绿且文件哈希不变。
+
+**降敏**：与 §9.3 同一灵敏度（**≥3×** 由比值档拦、≥7× 由上限档拦的相对版本；**≤2× 仍不被拦**）。
+
+### 9.7 🔴 **NFR 缺口登记（D-47）——"止血"不等于"洗绿"**
+
+> **事实（原样记录，本批不做判断）**：
+> - `QA_RELEASE_REPORT.md:49` 记 **NFR-006 = RuntimeStore 写入 100 条 < 2s**；
+> - 本测试原阈值 **3000ms** ⇒ **比 NFR 松 50%**；
+> - 实测该量：**中位 2306ms / 最坏 3429ms**（本地 20 轮），**CI 实测 4087ms**；
+> - ⇒ **现状已越过 NFR-006**（本地中位 2306ms > 2000ms）。
+>
+> 本批把断言改为**相对判据**后，**NFR 缺口不再由 CI 体现**，仅作为**登记缺口（D-47）**存在。
+> 若要恢复硬门禁，须先做**性能修复批次**，并把阈值对齐 **2000ms**（届时会立刻变红 —— 那才是真实状态）。
+> 本批**未**改 `QA_RELEASE_REPORT.md`、**未**改 NFR 文本、**未**把阈值写成"刚好能过"的数。
