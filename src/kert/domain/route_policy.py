@@ -309,7 +309,14 @@ class RouteResolver:
                                rule=rule, map=m)
 
     def resolve_via_registry_only(self, task_type: str) -> MapResolution:
-        """仅按注册表解析（无策略时的降级查询；**不由本类用于放行**）。"""
+        """仅按注册表解析（无策略时的降级查询；**不由本类用于放行**）。
+
+        **判定：预留（未接线）** —— 本方法在**生产代码中无调用点**（唯一调用者是单测）。
+        地图参与路由的正规路径是 :meth:`RouteResolver.resolve`（策略规则 → ``registry.get(map_id)``
+        + 地图/策略双侧一致性校验）⇒ **不得**用它放行：跳过策略即等于绕过 route_policy 的治理面。
+        真需"按任务遍历地图"时，须先有明确消费场景与门禁设计，并同步更新
+        ``tests/unit/test_semantics_carriers_and_reservations.py`` 中的预留断言。
+        """
         return self._registry.resolve_for_task(task_type)
 
 

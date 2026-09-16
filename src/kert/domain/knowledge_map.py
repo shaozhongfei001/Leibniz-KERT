@@ -295,6 +295,12 @@ class KnowledgeMapRegistry:
         - 无地图声明该任务 ⇒ :data:`CODE_NOT_MAPPED`（默认拒绝）；
         - 同任务被多张地图声明：优先级最小者胜；**同优先级 ⇒ 歧义拒绝**
           :data:`CODE_AMBIGUOUS`（fail-closed，不按文件名/加载顺序任取）。
+
+        **判定：预留（未接线）** —— 本方法在 src 侧的唯一调用者是
+        :meth:`~kert.domain.route_policy.RouteResolver.resolve_via_registry_only`，而后者在生产代码中
+        **无调用点**（唯一调用者是单测）。地图经 :meth:`RouteResolver.load` 参与路由的正规路径
+        **不经过**本方法 ⇒ **不得**表述为"地图→任务遍历已上线"；若日后接线，须同步更新
+        ``tests/unit/test_semantics_carriers_and_reservations.py`` 中的预留断言与证据。
         """
         if not isinstance(task, str) or not task.strip():
             raise UsageError(f"任务类型必须是非空字符串: {task!r}")

@@ -36,6 +36,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -263,6 +264,111 @@ def resolve_reference(workspace: Path, *, source: str = FILENAME) -> ReferenceRe
                     f"'本体未被消费'不得静默通过"),
         )
     return ReferenceResolution(code=CODE_OK, reason="", reference=ref)
+
+
+# --------------------------------------------------------------------------- #
+# 物化血缘的**本体输入面**（写入侧由 c20 负责；本模块只定**校验口径**）
+# --------------------------------------------------------------------------- #
+
+#: 物化血缘 Front Matter 中承载本体输入的**容器键**。
+#: 取自计划既有键名 ``ActivationPlan.versions["ontology"]`` ⇒ **不新造**字段。
+LINEAGE_ONTOLOGY_KEY = "ontology"
+
+#: 血缘本体块**必须齐全**的字段（键名逐字取自既有声明与计划，**不新造**）：
+#: ``contractId`` / ``authorityRepo`` / ``authoritySource`` / ``contentSha256`` 来自本体引用声明，
+#: ``version`` 取自计划的 ``ActivationPlan.ontology_key``（``<contractId>@sha256:<哈希前16>``）。
+LINEAGE_ONTOLOGY_FIELDS: tuple[str, ...] = (
+    "contractId", "authorityRepo", "authoritySource", "contentSha256", "version",
+)
+
+#: **强制比对**项（不一致 ⇒ 拒绝）。刻意**不含** ``authorityRepo`` / ``authoritySource``：
+#: 依据既有 D-3 裁定，本体**来源路径**是环境相关的，计划本身即把它排除在 ``plan_hash`` 之外
+#: （见 ``activation_plan`` 的 ``ontology_source`` 与其 docstring）⇒ 血缘**必须记录**该二字段
+#: （保证可追溯），但**不**以其不一致为由拒绝（否则跨环境复算会被误拒）。
+LINEAGE_ONTOLOGY_ENFORCED = ("contractId", "contentSha256", "version")
+
+#: 血缘本体一致性判定码（新增码，不复用既有码）。
+CODE_LINEAGE_OK = "OK"
+CODE_LINEAGE_ABSENT = "LINEAGE_ONTOLOGY_REF_ABSENT"
+CODE_LINEAGE_MISMATCH = "LINEAGE_ONTOLOGY_REF_MISMATCH"
+
+
+@dataclass(frozen=True)
+class LineageOntologyCheck:
+    """血缘本体引用 vs 计划本体引用的**一致性判定**（fail-closed；无第三态）。"""
+
+    code: str
+    reason: str = ""
+
+    @property
+    def allowed(self) -> bool:
+        """是否一致（``True`` **仅当** ``code == CODE_LINEAGE_OK``）。"""
+        return self.code == CODE_LINEAGE_OK
+
+
+def lineage_ontology_fields(resolution: ReferenceResolution) -> dict[str, str] | None:
+    """给出物化产物血缘里**该记**的本体字段（键名不新造）。
+
+    :return: 放行时为 5 个字段的 ``dict``；**未放行时为 ``None``**
+        —— 无本体引用可记，**不得**写占位串（与 :attr:`ReferenceResolution.version` 同纪律）。
+    """
+    if not resolution.allowed or resolution.reference is None:
+        return None
+    r = resolution.reference
+    return {
+        "contractId": r.contract_id,
+        "authorityRepo": r.authority_repo,
+        "authoritySource": r.authority_source,
+        "contentSha256": r.content_sha256,
+        "version": r.version,
+    }
+
+
+def check_lineage_ontology(resolution: ReferenceResolution,
+                           lineage: Mapping[str, object]) -> LineageOntologyCheck:
+    """校验物化产物血缘中的本体引用**与计划一致**（T1 的校验口径）。
+
+    :param resolution: 计划的 ``ActivationPlanBuilder.ontology_resolution()`` 结果。
+    :param lineage: 血缘 Front Matter（含 :data:`LINEAGE_ONTOLOGY_KEY` 子块）**或**该子块本身。
+
+    判定（**选"拒绝"**，不是告警）：
+
+    1. 计划未放行 ⇒ :data:`CODE_LINEAGE_ABSENT`（无比对基准）；
+    2. 血缘缺该块，或块内缺任一 :data:`LINEAGE_ONTOLOGY_FIELDS` / 值为空 ⇒ :data:`CODE_LINEAGE_ABSENT`；
+    3. :data:`LINEAGE_ONTOLOGY_ENFORCED` 任一字段与计划不一致 ⇒ :data:`CODE_LINEAGE_MISMATCH`。
+
+    **为什么拒绝而非告警**：血缘是下游唯一的可追溯凭证；一旦它与计划的本体引用不一致，
+    "物化产物与计划同源"即**不可证明**（会被静默读成"同一本体版本"）。本仓对"无法证明一致"
+    的既有处置一律 fail-closed（D-4 / 路由 / 计划门禁同口径），且无消费方核对时告警等于无效。
+    """
+    if not resolution.allowed or resolution.reference is None:
+        return LineageOntologyCheck(
+            code=CODE_LINEAGE_ABSENT,
+            reason=f"计划本体引用未放行 ⇒ 无比对基准: {resolution.code}")
+
+    expected = lineage_ontology_fields(resolution)
+    assert expected is not None  # allowed ⇒ 非 None（见 lineage_ontology_fields）
+
+    block = lineage[LINEAGE_ONTOLOGY_KEY] if LINEAGE_ONTOLOGY_KEY in lineage else lineage
+    if not isinstance(block, Mapping):
+        return LineageOntologyCheck(
+            code=CODE_LINEAGE_ABSENT,
+            reason=f"血缘未记录本体输入面（缺 {LINEAGE_ONTOLOGY_KEY!r} 对象块）")
+
+    for key in LINEAGE_ONTOLOGY_FIELDS:
+        value = block.get(key)
+        if not isinstance(value, str) or not value.strip():
+            return LineageOntologyCheck(
+                code=CODE_LINEAGE_ABSENT,
+                reason=f"血缘本体块缺**必记**字段或值为空: {key!r}")
+
+    for key in LINEAGE_ONTOLOGY_ENFORCED:
+        if str(block.get(key)) != expected[key]:
+            return LineageOntologyCheck(
+                code=CODE_LINEAGE_MISMATCH,
+                reason=(f"血缘本体引用与计划不一致: {key} "
+                        f"血缘={block.get(key)!r} 计划={expected[key]!r}"))
+    return LineageOntologyCheck(code=CODE_LINEAGE_OK, reason="")
 
 
 # --------------------------------------------------------------------------- #
