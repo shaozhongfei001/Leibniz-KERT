@@ -52,6 +52,15 @@ info:
       同轮同步 3 处孤儿引用：`examples/gits_adapter/python/kert_client.py`、
       `examples/gits_adapter/curl/list_skills.sh`（已失去意义 ⇒ **删除**）、
       `docs/development/M3_PLAN_GITS_INTEGRATION.md`。
+    - **v1.6.2 补丁（2026-09-17，更正性，非语义增量）**：**形状与登记更正**（不改实现、不改 `src/**`、
+      不改状态码）：① `HealthResponse`（`/v1/health`）由**扁平**对象更正为**实测信封形状**
+      （`request_id`/`status`/`data`/`errors`/`meta` + `data = {status: OK|DEGRADED, service_version,
+      data_version, runtime{8 键}}`）；② 信封 `status` 由"仅字符串 + 说明"升为 **`enum: [OK]`**
+      （原状 = 客户端会收到未声明的值）；③ `RuleViolation.severity.WARNING` 与
+      `ErrorResponse.status.exit_policy_no_new_evidence` **保留声明 + 注明"当前实现不可达"**
+      （D-45/D-46，不删能力）；④ `GateAudit*.decision.WAIVED` 注明"外部结论如实镜像"（D-43）。
+      ⑤ 机械核对现状：值域核对见 `tests/unit/test_contract_enum_single_source.py`；
+      **形状级**核对本次未新增（建议后续批次以 `/v1/health` 试点：断言"实现返回键集合 == 合同声明键集合"）。
     - **v1.6.1 补丁（2026-09-16，更正性，非语义增量）**：**值域更正** —— `JobStatusData.status.enum`
       原声明 **4 值**（`[PENDING, RUNNING, COMPLETED, FAILED]`）**窄于实现**：实现可达域为 `JOB_STATES`
       （`src/kert/domain/states.py:11-14`，**9 值**），且仓内合同源 `src/kert/domain/contracts/specs.py:585`
@@ -65,7 +74,7 @@ info:
     **追认：Contract Owner 于 2026-09-15 批准**（含上述 assemblyTrace 类型修正）；
     登记：`docs/governance/KERT_PENDING_OWNER_DECISION_M7_EVOLUTION_V1.0.md` §0.1
     本文档为**运行中权威**（服务实际实现）；v2 候选未批准，归并列 W8/Phase 0 收口（冲突 C-20）
-  version: "1.6.1"
+  version: "1.6.2"
   contact:
     name: KERT Team
   license:
@@ -104,21 +113,26 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthResponse"
               example:
-                status: ok
-                timestamp: "2026-08-28T10:00:00Z"
-                skills:
-                  - skillId: R1
-                    name: 对公客户画像
-                    version: "1.0.0"
-                  - skillId: SP-20
-                    name: 对公客户服务建议书生成
-                    version: "1.0.0"
-                  - skillId: SP-21
-                    name: 交互记忆抽取
-                    version: "1.0.0"
-                  - skillId: SP-15
-                    name: 产品适配与综合方案
-                    version: "2.0.0-candidate"
+                request_id: REQ-H-2026-09-17T00:00:00
+                status: OK
+                data:
+                  status: OK
+                  service_version: "1.0.0"
+                  data_version: "2026.09.17.1"
+                  runtime:
+                    profile: dev
+                    auth_enabled: false
+                    rate_limit_enabled: false
+                    size_limit_enabled: false
+                    concurrency_enabled: false
+                    runtime_store_enabled: true
+                    schema_version: 1
+                    warnings: []
+                errors: []
+                meta:
+                  service_version: "1.0.0"
+                  data_version: active
+                  generated_at: "2026-09-17T00:00:00Z"
 
   /api/skill/health:
     get:
@@ -1003,18 +1017,48 @@ components:
   schemas:
     HealthResponse:
       type: object
-      required: [status, timestamp, skills]
+      description: |-
+        `GET /v1/health` 的 200 响应（`_response()` 信封；实现：`health()` @ `src/kert/api/server.py:483-501`）。
+
+        **修正记录（2026-09-17，更正性，按实测；D-42）**：原声明为**扁平**对象
+        `required: [status, timestamp, skills]`、`status` 小写 `[ok, degraded]` —— 与实现**形状不同**：
+        实现返回**标准信封**（`request_id`/`status`/`data`/`errors`/`meta`），健康数据在 `data` 下，
+        且 `data.status` 为**大写** `OK|DEGRADED`，键为 `service_version`/`data_version`/`runtime`
+        （**无** `timestamp`/`skills`）。⇒ 本次按**已运行实现**更正（不改实现、不改 `src/**`、不改状态码）。
+        技能清单在 `SkillHealthResponse`（`/api/skill/health`）。**须通知 GITS**（若其按旧声明读该端点）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
       properties:
-        status:
-          type: string
-          enum: [ok, degraded]
-        timestamp:
-          type: string
-          format: date-time
-        skills:
-          type: array
-          items:
-            $ref: "#/components/schemas/SkillInfo"
+        request_id: {type: string}
+        status: {type: string, enum: [OK], description: 信封状态（实现恒为 `OK`，与 `data.status` 不同义）}
+        data:
+          type: object
+          required: [status, service_version, data_version, runtime]
+          additionalProperties: false
+          properties:
+            status:
+              type: string
+              enum: [OK, DEGRADED]
+              description: 服务整体状态；`DEGRADED` = `_active_version()` 抛 `ServiceNotReadyError`
+            service_version: {type: string}
+            data_version: {type: string, nullable: true, description: 活跃数据版本；未就绪时为 null}
+            runtime:
+              type: object
+              description: 运行时配置快照（实现为**字面量字典** ⇒ 闭集，无条件增删分支）
+              required: [profile, auth_enabled, rate_limit_enabled, size_limit_enabled,
+                         concurrency_enabled, runtime_store_enabled, schema_version, warnings]
+              additionalProperties: false
+              properties:
+                profile: {type: string}
+                auth_enabled: {type: boolean}
+                rate_limit_enabled: {type: boolean}
+                size_limit_enabled: {type: boolean}
+                concurrency_enabled: {type: boolean}
+                runtime_store_enabled: {type: boolean}
+                schema_version: {type: integer, nullable: true, description: 未启用运行态持久化时为 null}
+                warnings: {type: array, items: {type: string}}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
 
     SkillHealthResponse:
       type: object
@@ -1433,6 +1477,11 @@ components:
         severity:
           type: string
           enum: [BLOCKING, WARNING]
+          description: |-
+            规则违反严重级。⚠ **当前实现只产出 `BLOCKING`**：`WARNING` 在 `src/**` **无产生点**
+            （实测 4 处硬编码 `BLOCKING` @ `application/proposal_rules.py:36/44/54/64` + 6 条内置规则资产
+            `enforcement: BLOCKING`）⇒ 该值**今日不可信**，但**保留声明**（不删能力描述；是否补 `WARNING`
+            产生路径属独立批次，见 D-45）。
         message:
           type: string
 
@@ -1515,7 +1564,8 @@ components:
           type: string
         status:
           type: string
-          description: 信封状态（实现恒为 `OK`，与 `data.status` 不同义）
+          enum: [OK]
+          description: 信封状态（**实现恒为 `OK`**，与 `data.status` 不同义；v1.6.2 起由"仅字符串"升为闭集登记）
         data:
           $ref: "#/components/schemas/JobStatusData"
         errors:
@@ -1677,6 +1727,10 @@ components:
         decision:
           type: string
           enum: [PASSED, BLOCKED, WAIVED]
+          description: |-
+            `WAIVED` 属**外部结论如实镜像**：产生点在 GITS 侧（`examples/gits_adapter/python/kert_client.py`），
+            KERT 侧 `src/**` **零命中**、实现为 pass-through（追加 `90_control/audit/gates.jsonl`，无按名比较分支）
+            ⇒ 声明保留（见 D-43）。
         decidedBy:
           type: string
           description: 决策人
@@ -1706,6 +1760,10 @@ components:
         decision:
           type: string
           enum: [PASSED, BLOCKED, WAIVED]
+          description: |-
+            `WAIVED` 属**外部结论如实镜像**：产生点在 GITS 侧（`examples/gits_adapter/python/kert_client.py`），
+            KERT 侧 `src/**` **零命中**、实现为 pass-through（追加 `90_control/audit/gates.jsonl`，无按名比较分支）
+            ⇒ 声明保留（见 D-43）。
         decidedBy:
           type: string
         reason:
@@ -1808,6 +1866,10 @@ components:
         status:
           type: string
           enum: [skill_error, exit_policy_no_new_evidence]
+          description: |-
+            ⚠ 500 信封路径**当前只会发 `skill_error`**；`exit_policy_no_new_evidence` **只在
+            `/api/skill/execute` 的 200 体内**作为业务结论出现（信封路径无产生点）⇒ 该值在此声明中
+            **今日不可信**，但**保留声明**（见 D-46）。
         errors:
           type: array
           items:
@@ -2136,7 +2198,7 @@ components:
       additionalProperties: false
       properties:
         request_id: {type: string}
-        status: {type: string, description: 信封状态（实现恒为 `OK`）}
+        status: {type: string, enum: [OK], description: 信封状态（实现恒为 `OK`；v1.6.2 起为闭集登记）}
         data:
           type: object
           required: [job_id, status, publish_status, output_refs]

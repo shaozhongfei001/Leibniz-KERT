@@ -38,8 +38,12 @@ def client() -> TestClient:
 #: 合同版本钉（**模块常量**：一处维护、多处复用）。
 #: 随 Contract Owner 批准的 bump 同步：`1.5.0 → 1.5.1`（形状更正补丁）→ **`1.6.0`**（A-6 九条登记 + A-9 删除）
 #: → **`1.6.1`**（D-27：`JobStatusData.status.enum` 4 值 → `JOB_STATES` **九值**，值域更正补丁）。
+#: → **`1.6.2`**（2026-09-17，更正性）：`HealthResponse` 由**扁平**更正为**实测信封形状**（D-42）；
+#:   信封 `status` 补登记为 `enum: [OK]`（原状=客户端会收到未声明的值）；`severity.WARNING` 与
+#:   `ErrorResponse.status.exit_policy_no_new_evidence` **保留声明 + 注明当前不可达**（D-45/D-46）；
+#:   `GateAudit*.decision.WAIVED` 注明外部结论如实镜像（D-43）。
 #: 注意：本用例的**主旨**是"路由三路径与 schema 确已在合同中声明"，版本钉只用于**防意外改版本号**。
-EXPECTED_SPEC_VERSION = "1.6.1"
+EXPECTED_SPEC_VERSION = "1.6.2"
 
 
 def test_spec_declares_the_three_paths_and_schemas():
