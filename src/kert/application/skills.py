@@ -178,6 +178,44 @@ class _KiProjectionProbe:
         return SourceHealth(available=ok, detail=detail)
 
 
+def _top_level_keys(block: str) -> list[str]:
+    """从（可能是**伪 JSON** 的）示例块里取**顶层**键（按花括号/方括号深度扫描）。
+
+    存在理由（实测缺陷 2026-09-17，D-49）：技能包 `references/output-schema.md` 的示例块允许写成
+    **伪 JSON**（例如把评分区间写成 1-5、把布尔示例写成 true | false）⇒ `json.loads` 失败时，
+    旧实现退回"按缩进猜键"（正则匹配缩进不超过 4 空格的键），会把**嵌套**键当成**顶层**键
+    —— 实测把 `dimensions.policy` 等 8 个键混进"必含顶层键"，导致**正确的嵌套输出被 fail-closed 拒绝**，
+    且报错只说"输出结构不符"，掩盖了真正的上游缺件。本函数只认**深度 1** 处的键。
+    """
+    import re
+
+    keys: list[str] = []
+    depth = 0
+    in_str = False
+    esc = False
+    for raw in block.splitlines():
+        line = raw.strip()
+        if depth == 1 and not in_str:
+            m = re.match(r'"([A-Za-z_][\w]*)"\s*:', line)
+            if m and m.group(1) not in keys:
+                keys.append(m.group(1))
+        for ch in raw:
+            if in_str:
+                if esc:
+                    esc = False
+                elif ch == "\\":
+                    esc = True
+                elif ch == '"':
+                    in_str = False
+            elif ch == '"':
+                in_str = True
+            elif ch in "{[":
+                depth += 1
+            elif ch in "}]":
+                depth -= 1
+    return keys
+
+
 class SkillExecutionService:
     def __init__(self, workspace: Path | None = None,
                  knowledge: object | None = None,
@@ -243,6 +281,7 @@ class SkillExecutionService:
             schema_md = skill_dir / "references" / "output-schema.md"
             schema_hint = ""
             schema_keys: list = []
+            schema_warning = ""
             if schema_md.is_file():
                 m = _re.search(r"```json\n([\s\S]*?)\n```", schema_md.read_text(encoding="utf-8"))
                 if m:
@@ -255,14 +294,21 @@ class SkillExecutionService:
                         _obj = _json.loads(m.group(1))
                         if isinstance(_obj, dict):
                             schema_keys = list(_obj.keys())
-                    except Exception:
-                        _keys = _re.findall(r'^\s{0,4}"([A-Za-z_]\w*)"\s*:', snippet, _re.M)
-                        schema_keys = list(dict.fromkeys(_keys))
+                    except Exception as _exc:  # noqa: BLE001 - 示例块允许是**伪 JSON**
+                        # 不得静默、也不得"按缩进猜键"（见 _top_level_keys docstring）：
+                        # 只认**顶层**键 + 记具名警告（进 trace、可被测试观察）。
+                        schema_keys = _top_level_keys(m.group(1))
+                        schema_warning = (
+                            "output-schema 示例块非合法 JSON（%s）⇒ 仅按**顶层**键核对（%d 个）；"
+                            "请修正 references/output-schema.md 的示例块"
+                            % (_exc.__class__.__name__, len(schema_keys))
+                        )
             self._packages[name] = {
                 "name": name, "version": version, "description": description,
                 "instruction": (body or "")[:3000],
                 "schema_hint": schema_hint,
                 "schema_keys": schema_keys,
+                "schema_warning": schema_warning,
             }
 
     # ---------------- 注册表 ----------------
@@ -896,6 +942,9 @@ class SkillExecutionService:
                 # 结构契约校验（fail-closed）：
                 # 输出必须包含该技能 output-schema 声明的顶层键。
                 # 校验缺失即拒绝返回，避免"调用成功但不符合自身语义契约"的输出流出。
+                if pkg.get("schema_warning"):
+                    trace.append({"phase": "schema", "status": "degraded",
+                                  "message": str(pkg["schema_warning"])})
                 expected = pkg.get("schema_keys") or []
                 missing = [k for k in expected if k not in data]
                 if missing:

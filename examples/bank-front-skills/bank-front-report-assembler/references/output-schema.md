@@ -25,7 +25,7 @@
     "sections": {
       "customerBasic": { "<KI-009八要素字段>": "<值>", "missingFields": ["<缺失要素>"] },
       "supplyChainGraph": { "nodes": [], "edges": [], "interpretation": {}, "buildStatus": "complete|partial" },
-      "eightDimension": { "<维度>": { "score": 1-5, "basis": "<依据>", "evidenceLevel": "明确依据|部分依据|证据不足-待核实" } },
+      "eightDimension": { "<维度>": { "score": "1-5", "basis": "<依据>", "evidenceLevel": "明确依据|部分依据|证据不足-待核实" } },
       "factReconciliation": { "indicators": [], "conflicts": [], "dataGaps": [] },
       "commitmentScript": "<承诺话术文本>",
       "kycGapList": [{ "item": "<缺口要素>", "trigger": "<触发源>", "priority": "高|中|一般", "verifyScript": "<核实话术>", "action": "<核实路径>" }],

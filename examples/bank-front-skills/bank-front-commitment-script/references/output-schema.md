@@ -20,7 +20,7 @@
         "source": "<沟通时间/渠道>",
         "summary": "<对话摘要>",
         "quote": "<客户原话>",
-        "verified": true | false
+        "verified": "true | false"
       },
       "script": {
         "factCitation": "<📌引用的事实出处>",

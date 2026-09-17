@@ -10,14 +10,14 @@
   "generatedAt": "<ISO-8601>",
   "status": "complete | insufficient",
   "dimensions": {
-    "policy":       { "score": 1-5, "label": "<支持/限制方向>", "basis": "<判断要点+政策原文引用>", "evidenceLevel": "明确依据 | 部分依据 | 证据不足-待核实" },
-    "market":       { "score": 1-5, "label": "<供需格局>", "basis": "<景气信号>", "evidenceLevel": "..." },
-    "technology":   { "score": 1-5, "label": "<技术路线>", "basis": "<迭代/替代风险>", "evidenceLevel": "..." },
-    "supplyChain":  { "score": 1-5, "label": "<上下游稳定性>", "basis": "<断链风险>", "evidenceLevel": "..." },
-    "region":       { "score": 1-5, "label": "<集聚度>", "basis": "<区域政策>", "evidenceLevel": "..." },
-    "risk":         { "score": 1-5, "label": "<信用/合规风险>", "basis": "<风险信号>", "evidenceLevel": "..." },
-    "index":        { "score": 1-5, "label": "<指数走势>", "basis": "<相对大盘>", "evidenceLevel": "..." },
-    "competitiveness": { "score": 1-5, "label": "<竞争地位>", "basis": "<依据>", "evidenceLevel": "..." }
+    "policy":       { "score": "1-5", "label": "<支持/限制方向>", "basis": "<判断要点+政策原文引用>", "evidenceLevel": "明确依据 | 部分依据 | 证据不足-待核实" },
+    "market":       { "score": "1-5", "label": "<供需格局>", "basis": "<景气信号>", "evidenceLevel": "..." },
+    "technology":   { "score": "1-5", "label": "<技术路线>", "basis": "<迭代/替代风险>", "evidenceLevel": "..." },
+    "supplyChain":  { "score": "1-5", "label": "<上下游稳定性>", "basis": "<断链风险>", "evidenceLevel": "..." },
+    "region":       { "score": "1-5", "label": "<集聚度>", "basis": "<区域政策>", "evidenceLevel": "..." },
+    "risk":         { "score": "1-5", "label": "<信用/合规风险>", "basis": "<风险信号>", "evidenceLevel": "..." },
+    "index":        { "score": "1-5", "label": "<指数走势>", "basis": "<相对大盘>", "evidenceLevel": "..." },
+    "competitiveness": { "score": "1-5", "label": "<竞争地位>", "basis": "<依据>", "evidenceLevel": "..." }
   },
   "overallConclusion": "<平衡多维矛盾信号后的综合经营判断>",
   "uncertainty": "<不确定之处与影响方向>",
