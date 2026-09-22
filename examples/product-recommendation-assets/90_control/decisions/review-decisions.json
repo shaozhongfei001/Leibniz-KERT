@@ -220,6 +220,36 @@
       "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-TF-002 第四条（引文：「信用证业务的各方当事人应当遵守中华人民共和国的法律、法规以及本办法的规定，遵守诚实信用原则，认真履行义务，不得利用信用证…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
       "subjectId": "compliance.regulatoryBasis",
       "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T22:30:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-2b72ac84",
+      "rationale": "Owner 指示『接着做』；沿用 r3 口径（族专属监管源按 (sourceId,条款号) 最小）采纳 REG-CM-001 第一条（引文：「为改善现金管理，促进商品生产和流通，加强对社会经济活动的监督，制定本条例。…」）。该 3 卡在 r3 时**无族专属候选**（F-PC8-19/F-PC8-20 修复后新解锁）。范围同 r3：仅 DEMO 轨呈现，**不构成合规结论**，以条款作合规依据须合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T22:30:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-58b39b1a",
+      "rationale": "Owner 指示『接着做』；沿用 r3 口径（族专属监管源按 (sourceId,条款号) 最小）采纳 REG-CM-001 第一条（引文：「为改善现金管理，促进商品生产和流通，加强对社会经济活动的监督，制定本条例。…」）。该 3 卡在 r3 时**无族专属候选**（F-PC8-19/F-PC8-20 修复后新解锁）。范围同 r3：仅 DEMO 轨呈现，**不构成合规结论**，以条款作合规依据须合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T22:30:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-17fb032f",
+      "rationale": "Owner 指示『接着做』；沿用 r3 口径（族专属监管源按 (sourceId,条款号) 最小）采纳 REG-FIN-001 第三条（引文：「本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的，用于借款人日常…」）。该 3 卡在 r3 时**无族专属候选**（F-PC8-19/F-PC8-20 修复后新解锁）。范围同 r3：仅 DEMO 轨呈现，**不构成合规结论**，以条款作合规依据须合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
     }
   ]
 }

@@ -14,9 +14,9 @@
       "required": "REQUIRED_HARD"
     },
     {
-      "assertionCount": 1,
+      "assertionCount": 3,
       "conflictId": null,
-      "evidenceCount": 1,
+      "evidenceCount": 3,
       "fieldPath": "eligibility.customerSegment",
       "knowledgeState": "CANDIDATE",
       "needsHumanReview": false,
@@ -27,7 +27,7 @@
     {
       "assertionCount": 2,
       "conflictId": null,
-      "evidenceCount": 0,
+      "evidenceCount": 1,
       "fieldPath": "eligibility.minAccountBalance",
       "knowledgeState": "NOT_APPLICABLE",
       "needsHumanReview": false,
@@ -47,14 +47,14 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 2,
+      "assertionCount": 18,
       "conflictId": null,
-      "evidenceCount": 2,
+      "evidenceCount": 18,
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "CANDIDATE",
+      "knowledgeState": "SUPPORTED",
       "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "待裁决",
+      "reason": "Owner 已裁决",
       "required": "REQUIRED_HARD"
     },
     {
@@ -80,7 +80,7 @@
       "required": "OPTIONAL"
     }
   ],
-  "generatedAt": "2026-09-22T20:05:00+08:00",
+  "generatedAt": "2026-09-22T22:30:00+08:00",
   "interpretationReady": true,
   "policyId": "FLD-CASH_MANAGEMENT-001",
   "policyOwnerApproved": false,

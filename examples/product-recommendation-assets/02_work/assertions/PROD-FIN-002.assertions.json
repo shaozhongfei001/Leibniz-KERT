@@ -1,5 +1,5 @@
 {
-  "assertionCount": 7,
+  "assertionCount": 8,
   "assertions": [
     {
       "applicabilityScope": {
@@ -8,8 +8,8 @@
       },
       "assertionId": "ASM-PRODFIN002-303334b5",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -28,8 +28,8 @@
       },
       "assertionId": "ASM-PRODFIN002-1f28ad15",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -48,10 +48,32 @@
         "effectiveFrom": "2026-09-22",
         "effectiveTo": null
       },
+      "assertionId": "ASM-PRODFIN002-ef38c948",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-SRCFIN001-99d99ca7"
+      ],
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "内部评级与受理档位：AA 级及以上可受理全部流动资金贷款品种；BB 级至 A 级可受理标准流动资金贷款；B 级至 BB 级以下须经一级分行交易银行部与风险管理部双签方可受理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
       "assertionId": "ASM-PRODFIN002-b0d7cfd0",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -72,8 +94,8 @@
       },
       "assertionId": "ASM-PRODFIN002-deea2426",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGXFAM001-0b940e85"
       ],
@@ -94,8 +116,8 @@
       },
       "assertionId": "ASM-PRODFIN002-108d7da7",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGXFAM001-fd8cf7ce"
       ],
@@ -116,8 +138,8 @@
       },
       "assertionId": "ASM-PRODFIN002-c20f234d",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -136,8 +158,8 @@
       },
       "assertionId": "ASM-PRODFIN002-cc42a58a",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T22:30:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -150,7 +172,7 @@
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-2922ed36",
+  "extractionRunId": "RUN-20260922-2a797e16",
   "policyId": "FLD-FINANCING-001",
   "policyOwnerApproved": false,
   "productId": "PROD-FIN-002",

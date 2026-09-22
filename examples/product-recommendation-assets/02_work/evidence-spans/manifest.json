@@ -2,6 +2,7 @@
   "assertionCount": 12,
   "bySource": {
     "REG-CB-002": 27,
+    "REG-CM-001": 16,
     "REG-CM-002": 36,
     "REG-FIN-001": 20,
     "REG-IB-001": 27,
@@ -27,7 +28,7 @@
     "SRC-XFAM-002": 10,
     "SRC-XFAM-003": 7
   },
-  "evidenceCount": 342,
-  "extractionRunId": "RUN-20260922-2922ed36",
-  "generatedAt": "2026-09-22T20:05:00+08:00"
+  "evidenceCount": 358,
+  "extractionRunId": "RUN-20260922-2a797e16",
+  "generatedAt": "2026-09-22T21:40:00+08:00"
 }

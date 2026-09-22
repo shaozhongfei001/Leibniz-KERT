@@ -252,6 +252,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-CB-002 | 《内保外贷业务管理办法》（行内制度） | INTERNAL_POLICY | 国际业务部 | PENDING_SOURCE | 担保额度、境外主体资质、履约风险 | PROD-CB-002 |
 | REG-CB-001 | 跨境人民币结算相关监管规定 | REGULATORY | 合规管理部 | PENDING_SOURCE | 跨境人民币结算的展业三原则与合规要求 | PROD-CB-001 |
 | REG-CB-002 | 《跨境担保外汇管理规定》（国家外汇管理局 **汇发〔2014〕29 号**，2014-06-01 实施） | REGULATORY | 合规管理部 | **AVAILABLE** | 5 章 33 条已入库（**双源登记**，见凭据），条款号待 Owner 核定 | PROD-CB-002 |
+| REG-CM-001 | 9269 | `28e9b86dec53fd319cf514878a2e91385635c4d608b87102f23d7dab1dbb48e0` | 25 | 2026-09-22 | CLAUSE（章条号） |
 
 **REG-CB-002 入库记录（双源：条文取政府网站 HTML 承载；文号/日期取外汇局官网通知）**
 

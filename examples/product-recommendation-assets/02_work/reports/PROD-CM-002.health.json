@@ -14,9 +14,9 @@
       "required": "REQUIRED_HARD"
     },
     {
-      "assertionCount": 1,
+      "assertionCount": 4,
       "conflictId": null,
-      "evidenceCount": 1,
+      "evidenceCount": 4,
       "fieldPath": "eligibility.customerSegment",
       "knowledgeState": "CANDIDATE",
       "needsHumanReview": false,
@@ -25,9 +25,9 @@
       "required": "REQUIRED_HARD"
     },
     {
-      "assertionCount": 2,
-      "conflictId": null,
-      "evidenceCount": 0,
+      "assertionCount": 6,
+      "conflictId": "CNF-PRODCM002-4ebda891",
+      "evidenceCount": 8,
       "fieldPath": "eligibility.minAccountBalance",
       "knowledgeState": "NOT_APPLICABLE",
       "needsHumanReview": false,
@@ -36,9 +36,9 @@
       "required": "REQUIRED_HARD"
     },
     {
-      "assertionCount": 1,
+      "assertionCount": 2,
       "conflictId": null,
-      "evidenceCount": 1,
+      "evidenceCount": 2,
       "fieldPath": "eligibility.prerequisiteProducts",
       "knowledgeState": "CANDIDATE",
       "needsHumanReview": false,
@@ -47,14 +47,14 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 2,
+      "assertionCount": 40,
       "conflictId": null,
-      "evidenceCount": 2,
+      "evidenceCount": 40,
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "CANDIDATE",
+      "knowledgeState": "SUPPORTED",
       "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "待裁决",
+      "reason": "Owner 已裁决",
       "required": "REQUIRED_HARD"
     },
     {
@@ -69,9 +69,9 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 1,
+      "assertionCount": 3,
       "conflictId": null,
-      "evidenceCount": 1,
+      "evidenceCount": 3,
       "fieldPath": "process.openingChannel",
       "knowledgeState": "CANDIDATE",
       "needsHumanReview": false,
@@ -80,7 +80,7 @@
       "required": "OPTIONAL"
     }
   ],
-  "generatedAt": "2026-09-22T20:05:00+08:00",
+  "generatedAt": "2026-09-22T22:30:00+08:00",
   "interpretationReady": true,
   "policyId": "FLD-CASH_MANAGEMENT-001",
   "policyOwnerApproved": false,

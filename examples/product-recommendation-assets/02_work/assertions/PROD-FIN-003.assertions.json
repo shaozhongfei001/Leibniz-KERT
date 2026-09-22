@@ -1,5 +1,5 @@
 {
-  "assertionCount": 7,
+  "assertionCount": 18,
   "assertions": [
     {
       "applicabilityScope": {
@@ -8,8 +8,8 @@
       },
       "assertionId": "ASM-PRODFIN003-e25230f1",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -28,8 +28,8 @@
       },
       "assertionId": "ASM-PRODFIN003-2dbc0e94",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -48,10 +48,32 @@
         "effectiveFrom": "2026-09-22",
         "effectiveTo": null
       },
+      "assertionId": "ASM-PRODFIN003-c017103c",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-SRCFIN001-99d99ca7"
+      ],
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "内部评级与受理档位：AA 级及以上可受理全部流动资金贷款品种；BB 级至 A 级可受理标准流动资金贷款；B 级至 BB 级以下须经一级分行交易银行部与风险管理部双签方可受理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
       "assertionId": "ASM-PRODFIN003-6959c145",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -70,10 +92,208 @@
         "effectiveFrom": "2026-09-06",
         "effectiveTo": null
       },
+      "assertionId": "ASM-PRODFIN003-3a5775e6",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-f6c3d72a"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的，用于借款人日常经营周转的本外币贷款。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN003-673e7f78",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-abb174af"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "贷款人开展流动资金贷款业务，应当遵循依法合规、审慎经营、平等自愿、公平诚信的原则。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN003-9cf7a5a7",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-9af103c7"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "流动资金贷款利率应当遵循利率市场化原则，由借贷双方在遵守国家有关规定的前提下协商确定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN003-e1bffaef",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-e7de9826"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "贷款人为股东等关联方办理流动资金贷款的，应严格执行关联交易管理的相关监管规定，发放贷款条件不得优于一般借款人，并在风险评价报告中进行说明。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN003-76afccc4",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-21daf5a4"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "贷款人应根据法律法规规定和借款合同的约定，参与借款人大额融资、资产出售以及兼并、分立、股份制改造、破产清算等活动，维护贷款人债权。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN003-144740dd",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-1e67bfc8"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "贷款人违反本办法规定经营流动资金贷款业务的，国家金融监督管理总局及其派出机构应当责令其限期改正。贷款人有下列情形之一的，国家金融监督管理总局及其派出机构可根据《中华人民共和国银行业监督管理法》采取相关监管措施：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN003-33627e5a",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-4bea3593"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "贷款人有下列情形之一的，国家金融监督管理总局及其派出机构可根据《中华人民共和国银行业监督管理法》对其采取相关监管措施或进行处罚：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN003-ca83836f",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-6f3bd6ba"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "国家金融监督管理总局及其派出机构可以根据贷款人的经营管理情况、风险水平和流动资金贷款业务开展情况等，对贷款人流动资金贷款管理提出相关审慎监管要求。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN003-ca6b1e11",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-870db4b2"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "国家金融监督管理总局对互联网贷款、汽车贷款以及其他特殊类贷款另有规定的，从其规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
       "assertionId": "ASM-PRODFIN003-06fd7c7c",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGXFAM001-0b940e85"
       ],
@@ -94,8 +314,8 @@
       },
       "assertionId": "ASM-PRODFIN003-37d2d53b",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGXFAM001-fd8cf7ce"
       ],
@@ -116,8 +336,8 @@
       },
       "assertionId": "ASM-PRODFIN003-832f3b06",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -136,8 +356,8 @@
       },
       "assertionId": "ASM-PRODFIN003-94474fab",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T22:30:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -148,9 +368,31 @@
       "reviewDecisionId": "DEC-20260922-8c0996cd",
       "supersedes": "ASM-PRODFIN003-e25230f1",
       "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN003-f7f7e4cd",
+      "conflictId": null,
+      "createdAt": "2026-09-22T22:30:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGFIN001-f6c3d72a"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的，用于借款人日常经营周转的本外币贷款。",
+      "reviewDecisionId": "DEC-20260922-17fb032f",
+      "supersedes": "ASM-PRODFIN003-3a5775e6",
+      "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-2922ed36",
+  "extractionRunId": "RUN-20260922-2a797e16",
   "policyId": "FLD-FINANCING-001",
   "policyOwnerApproved": false,
   "productId": "PROD-FIN-003",

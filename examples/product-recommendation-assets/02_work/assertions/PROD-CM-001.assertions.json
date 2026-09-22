@@ -1,5 +1,5 @@
 {
-  "assertionCount": 43,
+  "assertionCount": 58,
   "assertions": [
     {
       "applicabilityScope": {
@@ -8,8 +8,8 @@
       },
       "assertionId": "ASM-PRODCM001-36cbaf68",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -28,8 +28,8 @@
       },
       "assertionId": "ASM-PRODCM001-237b0063",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM001-f9281e09"
       ],
@@ -50,8 +50,8 @@
       },
       "assertionId": "ASM-PRODCM001-29789042",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM003-79cdb73c"
       ],
@@ -72,8 +72,8 @@
       },
       "assertionId": "ASM-PRODCM001-daa0c996",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM003-969d8e2e"
       ],
@@ -94,8 +94,8 @@
       },
       "assertionId": "ASM-PRODCM001-6becc949",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -116,8 +116,8 @@
       },
       "assertionId": "ASM-PRODCM001-991baf6e",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM001-7d3f83e8"
       ],
@@ -138,8 +138,8 @@
       },
       "assertionId": "ASM-PRODCM001-a6c2dd45",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM001-b92956e2"
       ],
@@ -160,8 +160,8 @@
       },
       "assertionId": "ASM-PRODCM001-54d79577",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM001-b8dc5f5f"
       ],
@@ -182,8 +182,8 @@
       },
       "assertionId": "ASM-PRODCM001-629fff8a",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM003-4302d512"
       ],
@@ -204,8 +204,8 @@
       },
       "assertionId": "ASM-PRODCM001-e4bf494e",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM001-14e72136"
       ],
@@ -226,8 +226,8 @@
       },
       "assertionId": "ASM-PRODCM001-7c1921d4",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -246,10 +246,340 @@
         "effectiveFrom": "2026-09-06",
         "effectiveTo": null
       },
+      "assertionId": "ASM-PRODCM001-6b0d534d",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-22c28241"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "为改善现金管理，促进商品生产和流通，加强对社会经济活动的监督，制定本条例。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-12ee81bc",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-b761f882"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "凡在银行和其他金融机构（以下简称开户银行）开立账户的机关、团体、部队、企业、事业单位和其他单位（以下简称开户单位），必须依照本条例的规定收支和使用现金，接受开户银行的监督。国家鼓励开户单位和个人在经济活动中，采取转账方式进行结算，减少使用现金。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-2f089485",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-c73660b2"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "开户单位之间的经济往来，除按本条例规定的范围可以使用现金外，应当通过开户银行进行转账结算。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-e41881d9",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-c3c9d276"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "各级人民银行应当严格履行金融主管机关的职责，负责对开户银行的现金管理进行监督和稽核。开户银行依照本条例和中国人民银行的规定，负责现金管理的具体实施，对开户单位收支、使用现金进行监督管理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-967c56ae",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-ab4918a9"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "开户单位可以在下列范围内使用现金：（一）职工工资、津贴；（二）个人劳务报酬；（三）根据国家规定颁发给个人的科学技术、文化艺术、体育等各种奖金；（四）各种劳保，福利费用以及国家规定的对个人的其他支出；（五）向个人收购农副产品和其他物资的价款；（六）出差人员必须随身携带的差旅费；（七）结算起点以下的零星支出；（八）中国人民银行确定需要支付现金的其他支出。前款结算起点定为 1000 元。结算起点的调整，由中国人民银行确定，报国务院备案。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-dc967eb7",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-134111e0"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "除本条例第五条第（五）、（六）项外，开户单位支付给个人的款项，超过使用现金限额的部分，应当以支票或者银行本票支付；确需全额支付现金的，经开户银行审核后，予以支付现金。前款使用现金限额，按本条例第五条第二款的规定执行。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-9941f1d4",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-03bd5ea4"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "机关、团体、部队、全民所有制和集体所有制企业事业单位购置国家规定的专项控制商品，必须采取转账结算方式，不得使用现金。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-a850f2a6",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-9e73f772"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "开户单位现金收支应当依照下列规定办理：（一）开户单位现金收入应当于当日送存开户银行。当日送存确有困难的，由开户银行确定送存时间；（二）开户单位支付现金，可以从本单位库存现金限额中支付或者从开户银行提取，不得从本单位的现金收入中直接支付（即坐支）。因特殊情况需要坐支现金的，应当事先报经开户银行审查批准，由开户银行核定坐支范围和限额。坐支单位应当定期向开户银行报送坐支金额和使用情况；（三）开户单位根据本条例第五条和第六条的规定，从开户银行提取现金，应当写明用途，由本单位财会部门负责人签字盖章，经开户银行审核后，予以支付现金；（四）因采购地点不固定，交通不便，生产或者市场急需，抢险救灾以及其他特殊情况必须使用现金的，开户单位应当向开户银行提出申请，由本单位财会部门负责人签字盖章，经开户银行审核后，予以支付现金。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-ba04140f",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-5f178c7d"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "为保证开户单位的现金收入及时送存银行，开户银行必须按照规定做好现金收款工作，不得随意缩短收款时间。大中城市和商业比较集中的地区，应当建立非营业时间收款制度。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-d9fe6899",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-f7410403"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "开户银行应当加强柜台审查，定期和不定期地对开户单位现金收支情况进行检查，并按规定向当地人民银行报告现金管理情况。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-9fc4e566",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-9a0b9ffd"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "开户单位有下列情形之一的，开户银行应当依照中国人民银行的规定，责令其停止违法活动，并可根据情节轻重处以罚款：（一）超出规定范围、限额使用现金的；（二）超出核定的库存现金限额留存现金的。（2011 年 1 月 8 日删除）",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-5ac341b7",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-47687107"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "开户单位有下列情形之一的，开户银行应当依照中国人民银行的规定，予以警告或者罚款；情节严重的，可在一定期限内停止对该单位的贷款或者停止对该单位的现金支付：（一）对现金结算给予比转账结算优惠待遇的；（二）拒收支票、银行汇票和银行本票的；（三）违反本条例第八条规定，不采取转账结算方式购置国家规定的专项控制商品的；（四）用不符合财务会计制度规定的凭证顶替库存现金的；（五）用转账凭证套换现金的；（六）编造用途套取现金的；（七）互相借用现金的；（八）利用账户替其他单位和个人套取现金的；（九）将单位的现金收入按个人储蓄方式存入银行的；（十）保留账外公款的；（十一）未经批准坐支或者未按开户银行核定的坐支范围和限额坐支现金的。（2011 年1 月 8 日删除）",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-67feb8f0",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-4f6d1d15"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行工作人员违反本条例规定，徇私舞弊、贪污受贿、玩忽职守纵容违法行为的，应当根据情节轻重，给予行政处分和经济处罚；构成犯罪的，由司法机关依法追究刑事责任。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-accbf665",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-33e9c879"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本条例由中国人民银行负责解释；施行细则由中国人民银行制定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-223c72aa",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
+      "evidenceIds": [
+        "EVS-REGCM001-f8bed1ee"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本条例自 1988 年 10 月 1 日起施行。1977 年 11 月 28 日发布的《国务院关于实行现金管理的决定》同时废止。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
       "assertionId": "ASM-PRODCM001-7abecd8e",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-27feabfc"
       ],
@@ -270,8 +600,8 @@
       },
       "assertionId": "ASM-PRODCM001-b85fe3bb",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-f4432e16"
       ],
@@ -292,8 +622,8 @@
       },
       "assertionId": "ASM-PRODCM001-79c1b047",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-8c9733d6"
       ],
@@ -314,8 +644,8 @@
       },
       "assertionId": "ASM-PRODCM001-572431e3",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-8998c7c5"
       ],
@@ -336,8 +666,8 @@
       },
       "assertionId": "ASM-PRODCM001-aad1ca8f",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-8daeb469"
       ],
@@ -358,8 +688,8 @@
       },
       "assertionId": "ASM-PRODCM001-f18dc0a5",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-05d1fbea"
       ],
@@ -380,8 +710,8 @@
       },
       "assertionId": "ASM-PRODCM001-8a1d9fdb",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-93aa398a"
       ],
@@ -402,8 +732,8 @@
       },
       "assertionId": "ASM-PRODCM001-62bd489e",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-a60a5c56"
       ],
@@ -424,8 +754,8 @@
       },
       "assertionId": "ASM-PRODCM001-78019d2a",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-cbac73ca"
       ],
@@ -446,8 +776,8 @@
       },
       "assertionId": "ASM-PRODCM001-93f25793",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-ee8b3fed"
       ],
@@ -468,8 +798,8 @@
       },
       "assertionId": "ASM-PRODCM001-8cbb86e2",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-d604e610"
       ],
@@ -490,8 +820,8 @@
       },
       "assertionId": "ASM-PRODCM001-f8a0947e",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-a16b9be8"
       ],
@@ -512,8 +842,8 @@
       },
       "assertionId": "ASM-PRODCM001-b2d51127",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-f2163560"
       ],
@@ -534,8 +864,8 @@
       },
       "assertionId": "ASM-PRODCM001-da2cce4d",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-281f7c5a"
       ],
@@ -556,8 +886,8 @@
       },
       "assertionId": "ASM-PRODCM001-b2fff4f1",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-10787611"
       ],
@@ -578,8 +908,8 @@
       },
       "assertionId": "ASM-PRODCM001-4aa93855",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-ba384794"
       ],
@@ -600,8 +930,8 @@
       },
       "assertionId": "ASM-PRODCM001-3b392d48",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-0290d4b6"
       ],
@@ -622,8 +952,8 @@
       },
       "assertionId": "ASM-PRODCM001-035ede1a",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-71855351"
       ],
@@ -644,8 +974,8 @@
       },
       "assertionId": "ASM-PRODCM001-60bd4838",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-d21a984a"
       ],
@@ -666,8 +996,8 @@
       },
       "assertionId": "ASM-PRODCM001-74ec6ff7",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-a6100f3b"
       ],
@@ -688,8 +1018,8 @@
       },
       "assertionId": "ASM-PRODCM001-884badd3",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-8c161427"
       ],
@@ -710,8 +1040,8 @@
       },
       "assertionId": "ASM-PRODCM001-8dd7697e",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-20a7e54d"
       ],
@@ -732,8 +1062,8 @@
       },
       "assertionId": "ASM-PRODCM001-3cc4a033",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGXFAM001-0b940e85"
       ],
@@ -754,8 +1084,8 @@
       },
       "assertionId": "ASM-PRODCM001-0b47f941",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGXFAM001-fd8cf7ce"
       ],
@@ -776,8 +1106,8 @@
       },
       "assertionId": "ASM-PRODCM001-bacfd6cb",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -796,8 +1126,8 @@
       },
       "assertionId": "ASM-PRODCM001-f4336572",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM001-fb2963c0"
       ],
@@ -818,8 +1148,8 @@
       },
       "assertionId": "ASM-PRODCM001-878b4589",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM001-f92129c2"
       ],
@@ -840,8 +1170,8 @@
       },
       "assertionId": "ASM-PRODCM001-4e561f72",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCXFAM003-f351ef59"
       ],
@@ -862,8 +1192,8 @@
       },
       "assertionId": "ASM-PRODCM001-6a5f4901",
       "conflictId": "CNF-PRODCM001-757c6c3b",
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T22:30:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM001-7d3f83e8",
         "EVS-SRCCM001-b8dc5f5f",
@@ -887,8 +1217,8 @@
       },
       "assertionId": "ASM-PRODCM001-5c74afdc",
       "conflictId": null,
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T22:30:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -907,8 +1237,8 @@
       },
       "assertionId": "ASM-PRODCM001-05016aee",
       "conflictId": "CNF-PRODCM001-757c6c3b",
-      "createdAt": "2026-09-22T20:05:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T22:30:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-SRCCM001-7d3f83e8"
       ],
@@ -929,8 +1259,8 @@
       },
       "assertionId": "ASM-PRODCM001-096de026",
       "conflictId": null,
-      "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
+      "createdAt": "2026-09-22T22:30:00+08:00",
+      "createdByRunId": "RUN-20260922-2a797e16",
       "evidenceIds": [
         "EVS-REGCM002-27feabfc"
       ],
@@ -945,7 +1275,7 @@
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-2922ed36",
+  "extractionRunId": "RUN-20260922-2a797e16",
   "policyId": "FLD-CASH_MANAGEMENT-001",
   "policyOwnerApproved": false,
   "productId": "PROD-CM-001",

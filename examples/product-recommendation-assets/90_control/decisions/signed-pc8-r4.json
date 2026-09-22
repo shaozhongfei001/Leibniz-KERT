@@ -1,0 +1,332 @@
+{
+  "ownerAttested": true,
+  "attestedBy": "OWNER",
+  "attestation": "Owner 于 2026-09-22 指示『接着做』；TL 沿用 r3 已确立口径（族专属源、(sourceId,条款号) 最小）对**新解锁的 3 卡**（CM-002/CM-003/FIN-003，根因 F-PC8-19 REG-CM-001 PDF 转写入库、F-PC8-20 登记简写绑定修复后新解锁）落盘 r4；**未逐条再请确认具体条款**（与 r3 同类占位口径），Owner 可随时替换；不构成合规结论。本件 supersedes signed-pc8-r3.json。",
+  "attestedAt": "2026-09-22T22:30:00+08:00",
+  "_format": "PC8 扩展：每项决策带 productId",
+  "supersedes": "90_control/decisions/signed-pc8-r3.json",
+  "notAdopted": [
+    {
+      "productId": "PROD-CB-001",
+      "reason": "无族专属监管候选（现有候选仅 ['REG-XFAM-001']）",
+      "result": "保留 CANDIDATE（页面不呈现）"
+    },
+    {
+      "productId": "PROD-CM-002",
+      "reason": "无族专属监管候选（现有候选仅 ['REG-XFAM-001']）",
+      "result": "保留 CANDIDATE（页面不呈现）"
+    },
+    {
+      "productId": "PROD-CM-003",
+      "reason": "无族专属监管候选（现有候选仅 ['REG-XFAM-001']）",
+      "result": "保留 CANDIDATE（页面不呈现）"
+    },
+    {
+      "productId": "PROD-FIN-002",
+      "reason": "无族专属监管候选（现有候选仅 ['REG-XFAM-001']）",
+      "result": "保留 CANDIDATE（页面不呈现）"
+    },
+    {
+      "productId": "PROD-FIN-003",
+      "reason": "无族专属监管候选（现有候选仅 ['REG-XFAM-001']）",
+      "result": "保留 CANDIDATE（页面不呈现）"
+    },
+    {
+      "productId": "PROD-SET-001",
+      "reason": "无族专属监管候选（现有候选仅 ['REG-XFAM-001']）",
+      "result": "保留 CANDIDATE（页面不呈现）"
+    },
+    {
+      "productId": "PROD-SET-002",
+      "reason": "无族专属监管候选（现有候选仅 ['REG-XFAM-001']）",
+      "result": "保留 CANDIDATE（页面不呈现）"
+    }
+  ],
+  "decisions": [
+    {
+      "decisionId": "DEC-20260922-8d000b42",
+      "productId": "PROD-CB-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-f65dcf8d",
+      "productId": "PROD-CB-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-5e5be653",
+      "productId": "PROD-CM-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-d896a5ad",
+      "productId": "PROD-CM-001",
+      "subjectKind": "CONFLICT",
+      "subjectId": "CNF-PRODCM001-757c6c3b",
+      "decision": "ADOPT_ASSERTION",
+      "rationale": "沿用 2026-09-06 裁决：PROD-CM-001 面向单一法人客户现金池，采用 SRC-CM-001 第十条的 50 万元标准；集团客户场景（SRC-CM-003 第六条 100 万元）由集团现金池场景规则另行覆盖，不在本产品卡字段承载。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00",
+      "resolvedAssertionId": "ASM-PRODCM001-991baf6e"
+    },
+    {
+      "decisionId": "DEC-20260922-2e9172da",
+      "productId": "PROD-CM-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-a8dc8fd7",
+      "productId": "PROD-CM-002",
+      "subjectKind": "FIELD",
+      "subjectId": "eligibility.minAccountBalance",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "当前无制度证据命中该字段；Owner 2026-09-22 知悉须先补源方能取值（真实源上传义务未完成）。本裁决为 DEMO 轨链路解阻，非业务结论，补源后须重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-1e1c3280",
+      "productId": "PROD-CM-003",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-fa02aa26",
+      "productId": "PROD-CM-003",
+      "subjectKind": "FIELD",
+      "subjectId": "eligibility.minAccountBalance",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "当前无制度证据命中该字段；Owner 2026-09-22 知悉须先补源方能取值（真实源上传义务未完成）。本裁决为 DEMO 轨链路解阻，非业务结论，补源后须重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-5e870de1",
+      "productId": "PROD-FIN-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-62ec6fb1",
+      "productId": "PROD-FIN-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-8c0996cd",
+      "productId": "PROD-FIN-003",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-9e119c1a",
+      "productId": "PROD-IB-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-85bffd39",
+      "productId": "PROD-SET-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-5b35ceaf",
+      "productId": "PROD-SET-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-558146e4",
+      "productId": "PROD-TF-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-200b8307",
+      "productId": "PROD-TF-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-f6735d9b",
+      "productId": "PROD-CB-002",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODCB002-94dda188",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-CB-002 第一条（引文：「为完善跨境担保外汇管理，规范跨境担保项下收支行为，促进跨境担保业务健康有序发展，根据《中华人民共和国物权法》、《中华人民…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-22T21:40:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-60bfa64d",
+      "productId": "PROD-CM-001",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODCM001-7abecd8e",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-CM-002 第五条（引文：「存款人应在注册地或住所地开立银行结算账户。符合本办法规定可以在异地(跨省、市、县)开立银行结算账户的除外。…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-22T21:40:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-c8341fd9",
+      "productId": "PROD-FIN-001",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODFIN001-5c010c16",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-FIN-001 第三条（引文：「本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的，用于借款人日常…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-22T21:40:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-0706abc4",
+      "productId": "PROD-IB-001",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODIB001-6fb7d9db",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-IB-001 第七条（引文：「商业银行开办并购贷款业务应当遵循依法合规、审慎经营、风险可控、商业可持续的原则。…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-22T21:40:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-cec110c7",
+      "productId": "PROD-TF-001",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODTF001-309a00e0",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-TF-001 第五条（引文：「本办法所称贴现是指持票人在商业汇票到期日前，贴付一定利息将票据转让至具有贷款业务资质机构的行为。持票人持有的票据应为依法…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-22T21:40:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-cb216e1c",
+      "productId": "PROD-TF-002",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODTF002-7ecb6bb9",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-TF-002 第四条（引文：「信用证业务的各方当事人应当遵守中华人民共和国的法律、法规以及本办法的规定，遵守诚实信用原则，认真履行义务，不得利用信用证…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-22T21:40:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-2b72ac84",
+      "productId": "PROD-CM-002",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODCM002-3cca0e5f",
+      "rationale": "Owner 指示『接着做』；沿用 r3 口径（族专属监管源按 (sourceId,条款号) 最小）采纳 REG-CM-001 第一条（引文：「为改善现金管理，促进商品生产和流通，加强对社会经济活动的监督，制定本条例。…」）。该 3 卡在 r3 时**无族专属候选**（F-PC8-19/F-PC8-20 修复后新解锁）。范围同 r3：仅 DEMO 轨呈现，**不构成合规结论**，以条款作合规依据须合规 Owner 逐条复核后重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-22T22:30:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-58b39b1a",
+      "productId": "PROD-CM-003",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODCM003-870574e0",
+      "rationale": "Owner 指示『接着做』；沿用 r3 口径（族专属监管源按 (sourceId,条款号) 最小）采纳 REG-CM-001 第一条（引文：「为改善现金管理，促进商品生产和流通，加强对社会经济活动的监督，制定本条例。…」）。该 3 卡在 r3 时**无族专属候选**（F-PC8-19/F-PC8-20 修复后新解锁）。范围同 r3：仅 DEMO 轨呈现，**不构成合规结论**，以条款作合规依据须合规 Owner 逐条复核后重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-22T22:30:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-17fb032f",
+      "productId": "PROD-FIN-003",
+      "subjectKind": "FIELD",
+      "subjectId": "compliance.regulatoryBasis",
+      "decision": "ADOPT_ASSERTION",
+      "resolvedAssertionId": "ASM-PRODFIN003-3a5775e6",
+      "rationale": "Owner 指示『接着做』；沿用 r3 口径（族专属监管源按 (sourceId,条款号) 最小）采纳 REG-FIN-001 第三条（引文：「本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的，用于借款人日常…」）。该 3 卡在 r3 时**无族专属候选**（F-PC8-19/F-PC8-20 修复后新解锁）。范围同 r3：仅 DEMO 轨呈现，**不构成合规结论**，以条款作合规依据须合规 Owner 逐条复核后重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decidedAt": "2026-09-22T22:30:00+08:00"
+    }
+  ]
+}

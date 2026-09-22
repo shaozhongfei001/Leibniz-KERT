@@ -1,5 +1,23 @@
 {
-  "conflictCount": 0,
-  "conflicts": [],
+  "conflictCount": 1,
+  "conflicts": [
+    {
+      "assertionIds": [
+        "ASM-PRODCM002-56088a8a",
+        "ASM-PRODCM002-7b2e374c"
+      ],
+      "conflictId": "CNF-PRODCM002-4ebda891",
+      "conflictType": "VALUE_MISMATCH",
+      "detectedAt": "2026-09-22T22:30:00+08:00",
+      "detectedByRunId": "RUN-20260922-2a797e16",
+      "fieldPath": "eligibility.minAccountBalance",
+      "impactedObjects": [
+        "PROD-CM-002"
+      ],
+      "productId": "PROD-CM-002",
+      "resolution": null,
+      "status": "OPEN"
+    }
+  ],
   "productId": "PROD-CM-002"
 }

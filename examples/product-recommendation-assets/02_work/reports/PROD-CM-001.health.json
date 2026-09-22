@@ -47,9 +47,9 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 25,
+      "assertionCount": 40,
       "conflictId": null,
-      "evidenceCount": 25,
+      "evidenceCount": 40,
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "SUPPORTED",
       "needsHumanReview": false,
@@ -80,7 +80,7 @@
       "required": "OPTIONAL"
     }
   ],
-  "generatedAt": "2026-09-22T21:40:00+08:00",
+  "generatedAt": "2026-09-22T22:30:00+08:00",
   "interpretationReady": true,
   "policyId": "FLD-CASH_MANAGEMENT-001",
   "policyOwnerApproved": false,

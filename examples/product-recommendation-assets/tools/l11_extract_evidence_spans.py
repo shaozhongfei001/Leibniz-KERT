@@ -114,6 +114,22 @@ def discover_products() -> list:
 SOURCE_REGISTRY = BASE / "01_raw" / "source-registry.md"
 
 
+def _expand_product_ids(cell: str) -> set:
+    """展开 registry 中的产品简写（PC8 F-PC8-20）。
+
+    登记表用简写 `PROD-CM-001/002/003`；原实现只做 `re.findall(r"PROD-[A-Z]+-\\d{3}")`，
+    只会命中第一个 id ⇒ **同一族后续产品被漏绑**（实测 `REG-CM-001` 仅绑定 `PROD-CM-001`，
+    `PROD-CM-002/003` 因此长期拿不到族专属监管候选）。
+    """
+    out = set()
+    for m in re.finditer(r"PROD-([A-Z]+)-(\d{3})((?:/\d{3})*)", cell):
+        fam, first, rest = m.group(1), m.group(2), m.group(3)
+        out.add(f"PROD-{fam}-{first}")
+        for n in re.findall(r"\d{3}", rest):
+            out.add(f"PROD-{fam}-{n}")
+    return out
+
+
 def load_source_product_binding() -> dict:
     """PC8 T8：从 `01_raw/source-registry.md` 族表（§5.1–§5.7）解析 `source_id → 被引用产品卡集合`。
 
@@ -139,7 +155,7 @@ def load_source_product_binding() -> dict:
             continue
         if last.startswith("无"):
             continue
-        ids = set(all_products) if "全部 13" in last else set(re.findall(r"PROD-[A-Z]+-\d{3}", last))
+        ids = set(all_products) if "全部 13" in last else _expand_product_ids(last)
         if ids:
             bind.setdefault(sid, set()).update(ids)
     if not bind:
