@@ -1,5 +1,5 @@
 {
-  "assertionCount": 42,
+  "assertionCount": 43,
   "assertions": [
     {
       "applicabilityScope": {
@@ -921,6 +921,28 @@
       "reviewDecisionId": "DEC-20260922-d896a5ad",
       "supersedes": "ASM-PRODCM001-6a5f4901",
       "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-096de026",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCM002-27feabfc"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人应在注册地或住所地开立银行结算账户。符合本办法规定可以在异地(跨省、市、县)开立银行结算账户的除外。",
+      "reviewDecisionId": "DEC-20260922-60bfa64d",
+      "supersedes": "ASM-PRODCM001-7abecd8e",
+      "valueType": "TEXT"
     }
   ],
   "extractionRunId": "RUN-20260922-2922ed36",

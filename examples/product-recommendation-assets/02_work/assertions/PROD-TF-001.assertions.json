@@ -1,5 +1,5 @@
 {
-  "assertionCount": 44,
+  "assertionCount": 45,
   "assertions": [
     {
       "applicabilityScope": {
@@ -961,6 +961,28 @@
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-558146e4",
       "supersedes": "ASM-PRODTF001-8c455a63",
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-f51992e2",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-6b3f5730"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本办法所称贴现是指持票人在商业汇票到期日前，贴付一定利息将票据转让至具有贷款业务资质机构的行为。持票人持有的票据应为依法合规取得，具有真实交易关系和债权债务关系，因税收、继承、赠与依法无偿取得票据的除外。",
+      "reviewDecisionId": "DEC-20260922-cec110c7",
+      "supersedes": "ASM-PRODTF001-309a00e0",
       "valueType": "TEXT"
     }
   ],

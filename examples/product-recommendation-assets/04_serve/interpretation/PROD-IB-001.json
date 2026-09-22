@@ -1,6 +1,6 @@
 {
-  "bundleHash": "770a685685c38a0c3a973f35527eefa83b707ab5276cb523530cac1d0a71a4a0",
-  "generatedAt": "2026-09-22T20:05:00+08:00",
+  "bundleHash": "1525d886b97d3ef44af8bf25060843304122fcfd2527731795de14f015015c61",
+  "generatedAt": "2026-09-22T21:40:00+08:00",
   "isStale": false,
   "lifecycleState": "PUBLISHED",
   "productId": "PROD-IB-001",
@@ -9,7 +9,7 @@
     "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.114",
+  "releaseId": "RLS-2026.09.22.118",
   "sourceVersions": [
     "SV-REGCB002-20260922-e2e87a3c",
     "SV-REGCM002-20260922-70856944",
@@ -73,9 +73,18 @@
       {
         "conflictId": null,
         "displayValue": null,
-        "evidenceSummaries": [],
+        "evidenceSummaries": [
+          {
+            "authorityLevel": "REGULATORY",
+            "evidenceId": "EVS-REGIB001-699f7b49",
+            "locatorHint": "第七条",
+            "quoteExcerpt": "商业银行开办并购贷款业务应当遵循依法合规、审慎经营、风险可控、商业可持续的原则。",
+            "sourceId": "REG-IB-001",
+            "sourceVersionId": "SV-REGIB001-20260922-c9f87041"
+          }
+        ],
         "fieldPath": "compliance.regulatoryBasis",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "SUPPORTED"
       }
     ],
     "PRICING": [

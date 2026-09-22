@@ -1,5 +1,5 @@
 {
-  "assertionCount": 13,
+  "assertionCount": 14,
   "assertions": [
     {
       "applicabilityScope": {
@@ -279,6 +279,28 @@
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-200b8307",
       "supersedes": "ASM-PRODTF002-d2d7752a",
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF002-29065604",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF002-41f5f699"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": null,
+      "productId": "PROD-TF-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "信用证业务的各方当事人应当遵守中华人民共和国的法律、法规以及本办法的规定，遵守诚实信用原则，认真履行义务，不得利用信用证进行欺诈等违法犯罪活动，不得损害社会公共利益。",
+      "reviewDecisionId": "DEC-20260922-cb216e1c",
+      "supersedes": "ASM-PRODTF002-7ecb6bb9",
       "valueType": "TEXT"
     }
   ],

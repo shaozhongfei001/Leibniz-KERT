@@ -1,5 +1,5 @@
 {
-  "assertionCount": 14,
+  "assertionCount": 15,
   "assertions": [
     {
       "applicabilityScope": {
@@ -301,6 +301,28 @@
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-9e119c1a",
       "supersedes": "ASM-PRODIB001-038f163e",
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODIB001-a3dee3f6",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGIB001-699f7b49"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": null,
+      "productId": "PROD-IB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业银行开办并购贷款业务应当遵循依法合规、审慎经营、风险可控、商业可持续的原则。",
+      "reviewDecisionId": "DEC-20260922-0706abc4",
+      "supersedes": "ASM-PRODIB001-6fb7d9db",
       "valueType": "TEXT"
     }
   ],

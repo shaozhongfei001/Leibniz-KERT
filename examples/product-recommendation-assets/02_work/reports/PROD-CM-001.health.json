@@ -47,14 +47,14 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 24,
+      "assertionCount": 25,
       "conflictId": null,
-      "evidenceCount": 24,
+      "evidenceCount": 25,
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "CANDIDATE",
+      "knowledgeState": "SUPPORTED",
       "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "待裁决",
+      "reason": "Owner 已裁决",
       "required": "REQUIRED_HARD"
     },
     {
@@ -80,7 +80,7 @@
       "required": "OPTIONAL"
     }
   ],
-  "generatedAt": "2026-09-22T20:05:00+08:00",
+  "generatedAt": "2026-09-22T21:40:00+08:00",
   "interpretationReady": true,
   "policyId": "FLD-CASH_MANAGEMENT-001",
   "policyOwnerApproved": false,

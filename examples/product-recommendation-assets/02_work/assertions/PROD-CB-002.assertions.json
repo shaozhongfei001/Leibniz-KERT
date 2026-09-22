@@ -1,5 +1,5 @@
 {
-  "assertionCount": 27,
+  "assertionCount": 28,
   "assertions": [
     {
       "applicabilityScope": {
@@ -587,6 +587,28 @@
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-f65dcf8d",
       "supersedes": "ASM-PRODCB002-3dc2c348",
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-a7a72729",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-50328449"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "为完善跨境担保外汇管理，规范跨境担保项下收支行为，促进跨境担保业务健康有序发展，根据《中华人民共和国物权法》、《中华人民共和国担保法》及《中华人民共和国外汇管理条例》等法律法规，特制定本规定。",
+      "reviewDecisionId": "DEC-20260922-f6735d9b",
+      "supersedes": "ASM-PRODCB002-94dda188",
       "valueType": "TEXT"
     }
   ],

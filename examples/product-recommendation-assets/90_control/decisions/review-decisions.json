@@ -160,6 +160,66 @@
       "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
       "subjectId": "identity.productCode",
       "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T21:40:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-f6735d9b",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-CB-002 第一条（引文：「为完善跨境担保外汇管理，规范跨境担保项下收支行为，促进跨境担保业务健康有序发展，根据《中华人民共和国物权法》、《中华人民…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T21:40:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-60bfa64d",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-CM-002 第五条（引文：「存款人应在注册地或住所地开立银行结算账户。符合本办法规定可以在异地(跨省、市、县)开立银行结算账户的除外。…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T21:40:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-c8341fd9",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-FIN-001 第三条（引文：「本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的，用于借款人日常…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T21:40:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-0706abc4",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-IB-001 第七条（引文：「商业银行开办并购贷款业务应当遵循依法合规、审慎经营、风险可控、商业可持续的原则。…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T21:40:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-cec110c7",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-TF-001 第五条（引文：「本办法所称贴现是指持票人在商业汇票到期日前，贴付一定利息将票据转让至具有贷款业务资质机构的行为。持票人持有的票据应为依法…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T21:40:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-cb216e1c",
+      "rationale": "Owner 2026-09-22 指示『签 r3』；采纳条款 = 该产品**族专属**监管源按(sourceId,条款号)最小者：REG-TF-002 第四条（引文：「信用证业务的各方当事人应当遵守中华人民共和国的法律、法规以及本办法的规定，遵守诚实信用原则，认真履行义务，不得利用信用证…」）。裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
     }
   ]
 }

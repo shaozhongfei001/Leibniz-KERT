@@ -1,5 +1,5 @@
 {
-  "compiledAt": "2026-09-22T20:05:00+08:00",
+  "compiledAt": "2026-09-22T21:40:00+08:00",
   "fieldCount": 7,
   "fields": [
     {
@@ -76,7 +76,7 @@
         "EVS-REGXFAM001-fd8cf7ce"
       ],
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "CANDIDATE",
+      "knowledgeState": "SUPPORTED",
       "provenanceState": "DEMO",
       "value": null
     },

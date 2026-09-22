@@ -36,14 +36,14 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 8,
+      "assertionCount": 9,
       "conflictId": null,
-      "evidenceCount": 8,
+      "evidenceCount": 9,
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "CANDIDATE",
+      "knowledgeState": "SUPPORTED",
       "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "待裁决",
+      "reason": "Owner 已裁决",
       "required": "REQUIRED_HARD"
     },
     {
@@ -58,7 +58,7 @@
       "required": "REQUIRED_SOFT"
     }
   ],
-  "generatedAt": "2026-09-22T20:05:00+08:00",
+  "generatedAt": "2026-09-22T21:40:00+08:00",
   "interpretationReady": true,
   "policyId": "FLD-TRADE_FINANCE-001",
   "policyOwnerApproved": false,

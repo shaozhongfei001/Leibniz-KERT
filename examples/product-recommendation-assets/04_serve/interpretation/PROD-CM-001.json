@@ -1,6 +1,6 @@
 {
-  "bundleHash": "135b95902cf9ad4878bfbe6575a980eea681c8065174370400184aa23f739a7e",
-  "generatedAt": "2026-09-22T20:05:00+08:00",
+  "bundleHash": "05c6c055e822fb39823489c28fc6748fad970634bd21da215c92cb7d2c6f829c",
+  "generatedAt": "2026-09-22T21:40:00+08:00",
   "isStale": false,
   "lifecycleState": "PUBLISHED",
   "productId": "PROD-CM-001",
@@ -9,7 +9,7 @@
     "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.101",
+  "releaseId": "RLS-2026.09.22.116",
   "sourceVersions": [
     "SV-REGCB002-20260922-e2e87a3c",
     "SV-REGCM002-20260922-70856944",
@@ -82,9 +82,18 @@
       {
         "conflictId": null,
         "displayValue": null,
-        "evidenceSummaries": [],
+        "evidenceSummaries": [
+          {
+            "authorityLevel": "REGULATORY",
+            "evidenceId": "EVS-REGCM002-27feabfc",
+            "locatorHint": "第五条",
+            "quoteExcerpt": "存款人应在注册地或住所地开立银行结算账户。符合本办法规定可以在异地(跨省、市、县)开立银行结算账户的除外。",
+            "sourceId": "REG-CM-002",
+            "sourceVersionId": "SV-REGCM002-20260922-70856944"
+          }
+        ],
         "fieldPath": "compliance.regulatoryBasis",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "SUPPORTED"
       }
     ],
     "PRICING": [

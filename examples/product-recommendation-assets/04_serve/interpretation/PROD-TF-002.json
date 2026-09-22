@@ -1,6 +1,6 @@
 {
-  "bundleHash": "ba0f978108b2ceac251d70aec4b7e38420fac5646c09bfc3b8b9e26dbf067762",
-  "generatedAt": "2026-09-22T20:05:00+08:00",
+  "bundleHash": "06f391e8c97608becf3e56681231c804e9ec1718a54d9968a93178bf63846f05",
+  "generatedAt": "2026-09-22T21:40:00+08:00",
   "isStale": false,
   "lifecycleState": "PUBLISHED",
   "productId": "PROD-TF-002",
@@ -9,7 +9,7 @@
     "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.111",
+  "releaseId": "RLS-2026.09.22.120",
   "sourceVersions": [
     "SV-REGCB002-20260922-e2e87a3c",
     "SV-REGCM002-20260922-70856944",
@@ -73,9 +73,18 @@
       {
         "conflictId": null,
         "displayValue": null,
-        "evidenceSummaries": [],
+        "evidenceSummaries": [
+          {
+            "authorityLevel": "REGULATORY",
+            "evidenceId": "EVS-REGTF002-41f5f699",
+            "locatorHint": "第四条",
+            "quoteExcerpt": "信用证业务的各方当事人应当遵守中华人民共和国的法律、法规以及本办法的规定，遵守诚实信用原则，认真履行义务，不得利用信用证进行欺诈等违法犯罪活动，不得损害社会公共利益。",
+            "sourceId": "REG-TF-002",
+            "sourceVersionId": "SV-REGTF002-20260922-617e9640"
+          }
+        ],
         "fieldPath": "compliance.regulatoryBasis",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "SUPPORTED"
       }
     ],
     "PRICING": [
