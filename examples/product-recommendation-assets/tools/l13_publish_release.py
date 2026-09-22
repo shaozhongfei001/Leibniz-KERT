@@ -320,9 +320,29 @@ def main():
         "generatedAt": ts.isoformat(),
     }
     INT_DIR.mkdir(parents=True, exist_ok=True)
-    (INT_DIR / f"{PRODUCT_ID}.json").write_text(
-        json.dumps(projection, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8")
+    int_path = INT_DIR / f"{PRODUCT_ID}.json"
+    # PC8 F-PC8-13：**不得用 DRAFT 覆盖既有已发布投影**（原实现无条件覆盖 ⇒ 重跑链在"新 Release 未签署"时
+    # 会把"已发布可读"退回 404 —— 实测 PROD-CM-001 曾由 RLS-2026.09.06.1 变为 DRAFT 投影而 404）。
+    # 策略：DRAFT 且已有已发布投影 ⇒ 保留旧投影；若上游制品已变（bundleHash 不同）⇒ 把旧投影**显式标 stale**，
+    # 消费者收到 409 RELEASE_STALE 而不是静默读到过期内容；从未发布过的产品仍写入 DRAFT 投影（看得到"未发布"）。
+    if lifecycle != "PUBLISHED" and int_path.exists():
+        prev = json.loads(int_path.read_text(encoding="utf-8"))
+        if prev.get("lifecycleState") == "PUBLISHED":
+            if prev.get("bundleHash") != bundle:
+                prev["isStale"] = True
+                prev["staleReason"] = (f"上游制品已变更（当前 bundleHash={bundle[:12]}… ≠ 已发布 "
+                                       f"{str(prev.get('bundleHash'))[:12]}…），需重新发布后再消费")
+                int_path.write_text(json.dumps(prev, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                                    encoding="utf-8")
+                print(f"KEEP   | 保留既有已发布投影并标 stale（本次 Release {release_id} 为 {lifecycle}）")
+            else:
+                print(f"KEEP   | 保留既有已发布投影（本次 Release {release_id} 为 {lifecycle}，内容一致）")
+        else:
+            int_path.write_text(json.dumps(projection, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                                encoding="utf-8")
+    else:
+        int_path.write_text(json.dumps(projection, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+                            encoding="utf-8")
 
     if lifecycle != "PUBLISHED":
         (BASE / "90_control" / "BLOCKED_ON_OWNER.json").write_text(
