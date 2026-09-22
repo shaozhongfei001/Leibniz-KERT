@@ -219,6 +219,31 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | 未完成 | 未取得人行 PDF 原版核对字形标点；未确认是否有后续修订 |
 | 未做 | 本行合规对「现行有效性 / 适用性」的确认 |
 
+| REG-TF-003 | 《中华人民共和国票据法》（1995 通过 / 2004 修正；**法律·上位法**）— **新增行（D-R1，Owner 2026-09-22 同意）** | REGULATORY | 合规管理部 | **AVAILABLE** | 七章一百一十条已入库，条款号待 Owner 核定 | PROD-TF-001 |
+
+**REG-TF-003 入库记录（新增行；《票据法》为上位法）**
+
+| 项 | 值 |
+|---|---|
+| 文件字节数 | 29338 |
+| bytes_sha256 | fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8 |
+| 制定机关 | 全国人民代表大会常务委员会 |
+| 通过 / 修正 | 1995-05-10 通过；根据 2004-08-28 修正决定修正 |
+| 施行日期 | 1996-01-01 |
+| 章节条款 | 七章一百一十条 |
+| 定位方式 | CLAUSE |
+| usage | AUTHORITATIVE |
+| authorityLevel | REGULATORY（法律，本枚举最高级） |
+| clauseVerified | false（条款号待 Owner 核定） |
+| 来源 URL | http://www.npc.gov.cn/zgrdw/npc/xinwen/lfgz/zxfl/2004-08/30/content_332314.htm |
+| 抓取时间 | 2026-09-22（PC8 真实法规入库） |
+| 抓取凭据 | `01_raw/_authoritative/snapshots/REG-TF-003.provenance.md` |
+| **新增理由（D-R1）** | `REG-TF-001` 已指名到《商业汇票承兑、贴现与再贴现管理办法》（令〔2022〕第4号），而《票据法》为**法律（上位法）**、不在其覆盖范围 ⇒ **新增本行**（基数 27 → **28**，同步门禁期望值与汇总口径，显式登记未静默改） |
+| 抓取纠错留痕 | TL 提问时误述"共 111 条"；官方页面核对为**最后一条为第一百一十条**（不存在第一百一十一条）⇒ 以官方为准，已在凭据文件 §3 留痕 |
+| 凭据强度局限 | **转写文本**，非原始 HTML 字节快照 ⇒ `bytes_sha256` 只保证入库文件自身完整性 |
+| 未完成 | 未取得全国人大官方 PDF 原版核对；未确认 2004 年修正之后是否另有修改 |
+| 未做 | 本行合规对「现行有效性 / 适用性」的确认 |
+
 ### 5.5 CROSS_BORDER 跨境金融（2 卡）
 
 | source_id | source_title | authority_level | owner | status | clause（待核定） | 被引用产品卡 |
@@ -301,7 +326,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 >
 > **红线（L10 落地）**：
 > 1. 本节 6 条**均为虚构演示文本**，不代表任何真实机构制度；
-> 2. DEMO 源**不计入** §5 真实权威区基数（27），**不抵扣** 20/27 真实缺口 —— **F-L00-07 未解除**；
+> 2. DEMO 源**不计入** §5 真实权威区基数（28），**不抵扣** 20/28 真实缺口 —— **F-L00-07 未解除**；
 > 3. 依 DEMO 源编译的 Release 必须带 `provenance_state=DEMO`，**不得**进入 `RECOMMENDATION_READY`（INV-EVS-09/10/11）；
 > 4. DEMO 证据**不得与** VERIFIED 证据混合支撑同一字段断言，禁止用演示材料补真实材料缺口。
 
@@ -396,14 +421,14 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 |---|---|---|---|---|---|
 | CASH_MANAGEMENT（pilot） | — SRC-CM-001 | — SRC-CM-002 | — SRC-CM-003 | ○ REG-CM-001 · ○ REG-CM-002 | 3 |
 | SETTLEMENT | — SRC-SET-001 | — SRC-SET-002 | — 复用 SRC-XFAM-003 | → REG-CM-002（别名） | 2 |
-| TRADE_FINANCE | — SRC-TF-001 | — SRC-TF-002 | — SRC-TF-003 | ○ REG-TF-001 · ○ REG-TF-002 | 3 |
+| TRADE_FINANCE | — SRC-TF-001 | — SRC-TF-002 | — SRC-TF-003 | ○ REG-TF-001 · ○ REG-TF-002 · ○ REG-TF-003 | 3 |
 | CROSS_BORDER | — SRC-CB-001 | — SRC-CB-002 | — 复用 SRC-XFAM-003 | — REG-CB-001/002 | 4 |
 | FINANCING | — SRC-FIN-001 | — SRC-FIN-003 | — SRC-FIN-005 | ○ REG-FIN-001 · — REG-FIN-002 | 4 |
 | INVESTMENT_BANKING | — SRC-IB-001 | — 复用 SRC-XFAM-003 | — 复用 SRC-XFAM-003 | ○ REG-IB-001 | 1 |
 | 跨族通用 | — SRC-XFAM-001/002 | — | — SRC-XFAM-003 | ○ REG-XFAM-001 | 3 |
 
-**汇总**：权威区登记源 **27** 条 = **20 `PENDING_SOURCE` + 7 `AVAILABLE`**（REG-CM-001、REG-XFAM-001、REG-FIN-001、REG-IB-001、REG-CM-002、REG-TF-001、REG-TF-002，
-七份均已入库且条款文本完整，均 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **20/27**，
+**汇总**：权威区登记源 **28** 条 = **20 `PENDING_SOURCE` + 8 `AVAILABLE`**（REG-CM-001、REG-XFAM-001、REG-FIN-001、REG-IB-001、REG-CM-002、REG-TF-001、REG-TF-002、REG-TF-003，
+八份均已入库且条款文本完整，均 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **20/28**，
 （⚠ **计数口径（机器可复核）**：明细行中**含「别名」/「复用」字样者不计入基数**（与 `tools/check_registry_consistency.py` 解析行为一致，对齐 §5.6 `SRC-FIN-002/004` 先例）⇒ 原 28 条基数扣 `REG-SET-001`（别名）后为 **27** 条。此前本件一度写作「仍计入 28 条」，与解析器实际行为不符，**已更正**。）
 `CLAUSE_VERIFIED` **0** 条。
 公开参考区登记源 **2 条**，均已 `AVAILABLE`（PUB-PRICE-001 / PUB-PRICE-002）。

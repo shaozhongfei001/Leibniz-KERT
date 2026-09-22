@@ -95,7 +95,8 @@ def main():
     # 该条自 PI-0 起从未被计入汇总，见 FAILURES F-L03-02），非历史沿用的 27。
     # PC8（2026-09-22）：REG-SET-001 按 Owner 裁定登记为 REG-CM-002 的**别名**
     # ⇒ 含「别名」字样的明细行不计入基数（对齐 SRC-FIN-002/004 先例）⇒ 28 - 1 = 27。
-    EXPECTED_AUTH = 27
+    # PC8 追加（D-R1，Owner 同意）：新增 REG-TF-003 挂《票据法》（法律，上位法）⇒ 27 + 1 = **28**。
+    EXPECTED_AUTH = 28
     EXPECTED_PUB = 2
     # L10：Owner 决议 DECISION-20260906-01 路径 C 生成的 3 份演示制度文本
     EXPECTED_DEMO = 6
