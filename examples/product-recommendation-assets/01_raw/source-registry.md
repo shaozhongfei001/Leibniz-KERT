@@ -348,7 +348,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 > Owner 决议 **DECISION-20260906-01（演示路径 C）**：批准生成演示制度文本，明确标记为 DEMO 而非真实制度。
 >
 > **红线（L10 落地）**：
-> 1. 本节 14 条**均为虚构演示文本**，不代表任何真实机构制度；
+> 1. 本节 17 条**均为虚构演示文本**，不代表任何真实机构制度；
 > 2. DEMO 源**不计入** §5 真实权威区基数（28），**不抵扣** 19/28 真实缺口 —— **F-L00-07 未解除**；
 > 3. 依 DEMO 源编译的 Release 必须带 `provenance_state=DEMO`，**不得**进入 `RECOMMENDATION_READY`（INV-EVS-09/10/11）；
 > 4. DEMO 证据**不得与** VERIFIED 证据混合支撑同一字段断言，禁止用演示材料补真实材料缺口。
@@ -369,6 +369,9 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-TF-001 | 《银行承兑汇票业务管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-TF-001.DEMO.md` | 无 |
 | SRC-TF-002 | 《国内信用证业务操作规程（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-TF-002.DEMO.md` | 无 |
 | SRC-TF-003 | 《贸易背景真实性审查指引（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-TF-003.DEMO.md` | 无 |
+| SRC-CB-001 | 《跨境人民币业务管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-CB-001.DEMO.md` | 无 |
+| SRC-CB-002 | 《内保外贷业务管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-CB-002.DEMO.md` | 无 |
+| SRC-IB-001 | 《并购贷款业务管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-IB-001.DEMO.md` | 无 |
 
 **物理隔离约定**：真实行内制度上传时落 `SRC-CM-001.pdf` / `SRC-CM-001.md`；演示文本固定带
 `.DEMO.md` 后缀。§5.2 中 `SRC-CM-001/002/003` 三行**仍记 `PENDING_SOURCE`** —— 真实行内制度尚未上传，
@@ -392,6 +395,9 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-TF-001 | 5856 | `1ac1446e84b4766b0493d14a13ded2548dbdd614b303ef3996fe5d57f0eec6d2` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
 | SRC-TF-002 | 5251 | `1c45f1015ff4753f616370947fe57e69cf8ff9a3ff065acd7b4e4624325030c1` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
 | SRC-TF-003 | 4949 | `fd3850991b9a67a6ca6dceaaa3053e2a3f1c4f073216cc58950805a79485be8a` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
+| SRC-CB-001 | 5396 | `75a3b60228ab7e815590381d49f71ece4e0862a51406941b9a78e7f62e586ead` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
+| SRC-CB-002 | 5472 | `fdb439c392089f107e77ebd66b4a8971a0b60016defb47153eb3758ee61e7235` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
+| SRC-IB-001 | 5664 | `45bd33064e341f1f9a4848841e7bbf6915cd465651f32bd62ad09dc37a4e67b9` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
 
 **内建已知冲突（演示数据，非缺陷）**：`SRC-CM-001` 第十条规定现金池主账户最低留存 **50 万元**，
 `SRC-CM-003` 第六条规定集团现金池主账户最低留存 **100 万元**。该 VALUE_MISMATCH 由 L10 故意保留，
@@ -472,10 +478,16 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 `CLAUSE_VERIFIED` **0** 条。
 公开参考区登记源 **2 条**，均已 `AVAILABLE`（PUB-PRICE-001 / PUB-PRICE-002）。
 
-**DEMO 演示轨（Owner 决议 DECISION-20260906-01 路径 C）**：演示源 **14** 条（SRC-CM-001/002/003、SRC-XFAM-001/002/003、SRC-FIN-001/003/005、SRC-SET-001/002、SRC-TF-001/002/003），
+**DEMO 演示轨（Owner 决议 DECISION-20260906-01 路径 C）**：演示源 **17** 条（SRC-CM-001/002/003、SRC-XFAM-001/002/003、SRC-FIN-001/003/005、SRC-SET-001/002、SRC-TF-001/002/003、SRC-CB-001/002、SRC-IB-001），
 均为 `provenance_state: DEMO` 的**虚构文本**，**单列统计、不计入上列 28 条、不抵扣 27/28 真实缺口**，
 F-L00-07 **仍未解除**。详见 §5.8。
 
+> **PC8 造数批次 B5+B6（2026-09-22）**：新增 `SRC-CB-001/002`（跨境族）与 `SRC-IB-001`（投行族）
+> 三份演示源，覆盖 `PROD-CB-001/002` 与 `PROD-IB-001` —— **至此 DEMO 演示轨 17/17 全覆盖 13 张产品卡**。
+> 同 B4 纪律：**法定要件一律引监管源**（`SRC-CB-001` 引 `REG-CB-001`；`SRC-CB-002` 的担保登记/履约款划出引
+> `REG-CB-002`；`SRC-IB-001` 的法定定义与**法定比例/期限上限**引 `REG-IB-001`），行内件不重复、不摘要；
+> **`SRC-IB-001` 特别声明：本行内部标准只能更严、不得更宽**，文内数值均标「演示参考值」且**不得高于监管上限**。
+>
 > **PC8 造数批次 B4（2026-09-22）**：新增 `SRC-TF-001/002/003` 三份**贸易金融族**演示源
 > （银行承兑汇票业务管理办法 / 国内信用证业务操作规程 / 贸易背景真实性审查指引），覆盖 `PROD-TF-001/002`；
 > **本批核心纪律 = 与在库 3 份真实监管源显式分工**：法定要件**一律引** `REG-TF-003`（票据法）、`REG-TF-001`
