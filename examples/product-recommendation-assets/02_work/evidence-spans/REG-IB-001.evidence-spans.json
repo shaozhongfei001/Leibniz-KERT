@@ -9,7 +9,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-d5fcca0b",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0001",
       "locator": {
         "clause": "第一条",
@@ -33,7 +33,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-REGIB001-0a6c4e48",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0002",
       "locator": {
         "clause": "第二条",
@@ -57,7 +57,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-59d4d2f1",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0004",
       "locator": {
         "clause": "第四条",
@@ -81,7 +81,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-REGIB001-681260f8",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0005",
       "locator": {
         "clause": "第五条",
@@ -105,7 +105,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGIB001-24ee17b5",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0006",
       "locator": {
         "clause": "第六条",
@@ -129,7 +129,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGIB001-699f7b49",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0007",
       "locator": {
         "clause": "第七条",
@@ -153,7 +153,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-REGIB001-6185dc87",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0008",
       "locator": {
         "clause": "第八条",
@@ -177,7 +177,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-fbb52843",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0009",
       "locator": {
         "clause": "第九条",
@@ -201,7 +201,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGIB001-713392c5",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0010",
       "locator": {
         "clause": "第十条",
@@ -225,7 +225,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGIB001-3375183b",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0011",
       "locator": {
         "clause": "第十一条",
@@ -249,7 +249,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-d896ebe3",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0013",
       "locator": {
         "clause": "第十三条",
@@ -273,7 +273,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGIB001-ba508e87",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0014",
       "locator": {
         "clause": "第十四条",
@@ -297,7 +297,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-a6c1c15d",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0015",
       "locator": {
         "clause": "第十五条",
@@ -321,7 +321,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-8b456afe",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0016",
       "locator": {
         "clause": "第十六条",
@@ -345,7 +345,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-072ec5ad",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0017",
       "locator": {
         "clause": "第十七条",
@@ -369,7 +369,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-5b7a2a19",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0018",
       "locator": {
         "clause": "第十八条",
@@ -393,7 +393,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-7fda3743",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0019",
       "locator": {
         "clause": "第十九条",
@@ -417,7 +417,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGIB001-9610bfbf",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0020",
       "locator": {
         "clause": "第二十条",
@@ -441,7 +441,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-c81f2a20",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0021",
       "locator": {
         "clause": "第二十一条",
@@ -465,7 +465,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-5e3a0750",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0022",
       "locator": {
         "clause": "第二十二条",
@@ -489,7 +489,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-07203bf1",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0024",
       "locator": {
         "clause": "第二十四条",
@@ -513,7 +513,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-0033b9ed",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0025",
       "locator": {
         "clause": "第二十五条",
@@ -537,7 +537,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGIB001-d3dab6fd",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0026",
       "locator": {
         "clause": "第二十六条",
@@ -561,7 +561,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-REGIB001-c66f005b",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0028",
       "locator": {
         "clause": "第二十八条",
@@ -585,7 +585,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-d91bf588",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0030",
       "locator": {
         "clause": "第三十条",
@@ -609,7 +609,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGIB001-73824fb6",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0031",
       "locator": {
         "clause": "第三十一条",
@@ -633,7 +633,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "RISK",
       "evidenceId": "EVS-REGIB001-21a7daac",
-      "extractionRunId": "RUN-20260922-2a797e16",
+      "extractionRunId": "RUN-20260922-84773271",
       "fragmentId": "FRG-REGIB001-0034",
       "locator": {
         "clause": "第三十四条",

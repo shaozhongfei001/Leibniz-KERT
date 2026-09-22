@@ -36,9 +36,9 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 2,
+      "assertionCount": 6,
       "conflictId": null,
-      "evidenceCount": 2,
+      "evidenceCount": 6,
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "CANDIDATE",
       "needsHumanReview": false,
@@ -58,7 +58,7 @@
       "required": "REQUIRED_SOFT"
     }
   ],
-  "generatedAt": "2026-09-22T22:30:00+08:00",
+  "generatedAt": "2026-09-22T21:40:00+08:00",
   "interpretationReady": true,
   "policyId": "FLD-CROSS_BORDER-001",
   "policyOwnerApproved": false,

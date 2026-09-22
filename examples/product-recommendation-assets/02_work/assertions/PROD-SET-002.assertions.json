@@ -9,7 +9,7 @@
       "assertionId": "ASM-PRODSET002-6a016ba9",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -29,7 +29,7 @@
       "assertionId": "ASM-PRODSET002-06788647",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -51,7 +51,7 @@
       "assertionId": "ASM-PRODSET002-e986a3e3",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -73,7 +73,7 @@
       "assertionId": "ASM-PRODSET002-a3b1c5eb",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [
         "EVS-REGXFAM001-0b940e85"
       ],
@@ -95,7 +95,7 @@
       "assertionId": "ASM-PRODSET002-746762c4",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [
         "EVS-REGXFAM001-fd8cf7ce"
       ],
@@ -117,7 +117,7 @@
       "assertionId": "ASM-PRODSET002-74a3e633",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -136,8 +136,8 @@
       },
       "assertionId": "ASM-PRODSET002-38efa32b",
       "conflictId": null,
-      "createdAt": "2026-09-22T22:30:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -150,7 +150,7 @@
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-2a797e16",
+  "extractionRunId": "RUN-20260922-84773271",
   "policyId": "FLD-SETTLEMENT-001",
   "policyOwnerApproved": false,
   "productId": "PROD-SET-002",

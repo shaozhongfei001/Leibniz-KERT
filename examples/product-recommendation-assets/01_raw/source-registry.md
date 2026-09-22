@@ -250,9 +250,29 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 |---|---|---|---|---|---|---|
 | SRC-CB-001 | 《跨境人民币业务管理办法》（行内制度） | INTERNAL_POLICY | 国际业务部 | PENDING_SOURCE | 跨境结算准入、真实性审核、报送要求 | PROD-CB-001 |
 | SRC-CB-002 | 《内保外贷业务管理办法》（行内制度） | INTERNAL_POLICY | 国际业务部 | PENDING_SOURCE | 担保额度、境外主体资质、履约风险 | PROD-CB-002 |
-| REG-CB-001 | 跨境人民币结算相关监管规定 | REGULATORY | 合规管理部 | PENDING_SOURCE | 跨境人民币结算的展业三原则与合规要求 | PROD-CB-001 |
+| REG-CB-001 | 《中国人民银行关于进一步完善人民币跨境业务政策促进贸易投资便利化的通知》（**银发〔2018〕3 号**）⚠ **指名结果**（2026-09-22）：原登记「跨境人民币结算相关监管规定」未指名；现指名到银发〔2018〕3 号（**监管件**，非行业自律规范） | REGULATORY | 合规管理部 | **AVAILABLE** | 通知体（**无「条」**）正文 5 项已入库（**OCR 转写**，见凭据）；条款号待 Owner 核定 | PROD-CB-001 |
 | REG-CB-002 | 《跨境担保外汇管理规定》（国家外汇管理局 **汇发〔2014〕29 号**，2014-06-01 实施） | REGULATORY | 合规管理部 | **AVAILABLE** | 5 章 33 条已入库（**双源登记**，见凭据），条款号待 Owner 核定 | PROD-CB-002 |
 | REG-CM-001 | 9269 | `28e9b86dec53fd319cf514878a2e91385635c4d608b87102f23d7dab1dbb48e0` | 25 | 2026-09-22 | CLAUSE（章条号） |
+
+**REG-CB-001 入库记录（通知体 · **OCR 转写**）**
+
+| 项 | 值 |
+|---|---|
+| 文件字节数 | 6050 |
+| bytes_sha256 | bb4365f45979f88abc42102d80e28e811d1c9562ede0962000e34108f4794f8b |
+| 文号 | 银发〔2018〕3 号 |
+| 成文 / 施行 | 2018-01-05 / 自发布之日起实施 |
+| 正文条款 | **通知体 5 项（一~五）**，全文无「条」 |
+| 定位方式 | **SECTION（通知体条款项）** |
+| usage | AUTHORITATIVE |
+| authorityLevel | REGULATORY |
+| clauseVerified | false（条款号待 Owner 核定） |
+| 来源 URL（官方扫描 PDF） | https://www.yidaiyilu.gov.cn/wcm.files/upload/CMSydylgw/201801/201801060952023.pdf |
+| 抓取时间 | 2026-09-22（PC8 真实法规入库 · **OCR 路径，经 Owner 授权**） |
+| 抓取凭据 | `01_raw/_authoritative/snapshots/REG-CB-001.provenance.md` |
+| **转写方式（显式登记）** | 官方 HTML 页**仅为新闻稿**（无逐字条款）⇒ 改用官方扫描 PDF（4 页 · 500759 字节 · `sha256:3eded6f9ba5c40cf…`）以 `rapidocr-onnxruntime` PP-OCR 400 DPI 转写；**声明式归一 3 条**（剔除页码行 / 括号样式归一 / 硬换行按段合并），**无润色无补字**；机器终检：**字符多重集完全相等** + 每段可原样定位 |
+| 凭据强度局限 | **OCR 转写文本**（非官方文本层字节）⇒ `bytes_sha256` 只保证**入库文件自身**完整性；OCR 存在识别误差风险，作合规依据前须**对照 PDF 原件逐字复核** |
+| 分级提示 | 「SECTION 粒度」与「章条号」口径**不同**，**不得混算** |
 
 **REG-CB-002 入库记录（双源：条文取政府网站 HTML 承载；文号/日期取外汇局官网通知）**
 
@@ -350,7 +370,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 >
 > **红线（L10 落地）**：
 > 1. 本节 17 条**均为虚构演示文本**，不代表任何真实机构制度；
-> 2. DEMO 源**不计入** §5 真实权威区基数（28），**不抵扣** 19/28 真实缺口 —— **F-L00-07 未解除**；
+> 2. DEMO 源**不计入** §5 真实权威区基数（28），**不抵扣** 18/28 真实缺口 —— **F-L00-07 未解除**；
 > 5. **条款数已回填**（2026-09-22）：由 `tools/l10_build_source_versions.py` 的产物（`02_work/source-versions/manifest.json` 的 `fragmentCount`）机械回填，非人工编造；
 > 3. 依 DEMO 源编译的 Release 必须带 `provenance_state=DEMO`，**不得**进入 `RECOMMENDATION_READY`（INV-EVS-09/10/11）；
 > 4. DEMO 证据**不得与** VERIFIED 证据混合支撑同一字段断言，禁止用演示材料补真实材料缺口。
@@ -414,6 +434,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 
 | source_id | 文件字节数 | bytes_sha256 | 条款数 | 入库时间 | 定位方式 |
 |---|---|---|---|---|---|
+| REG-CB-001 | 6050 | `bb4365f45979f88abc42102d80e28e811d1c9562ede0962000e34108f4794f8b` | 5 | 2026-09-22 | **SECTION（通知体条款项）** |
 | REG-CB-002 | 12512 | `e2e87a3c0fcc3294de04c72e923439cec32d60a5bac6add4c7f0f5716d439b8d` | 33 | 2026-09-22 | CLAUSE（章条号） |
 | REG-CM-002 | 33182 | `70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654` | 71 | 2026-09-22 | CLAUSE（章条号） |
 | REG-FIN-001 | 21864 | `dfa2dbff3746a7e20462178268e62bcb7626ba009a32389193afd3cd9bb4fdc5` | 51 | 2026-09-22 | CLAUSE（章条号） |
@@ -489,8 +510,8 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | INVESTMENT_BANKING | — SRC-IB-001 | — 复用 SRC-XFAM-003 | — 复用 SRC-XFAM-003 | ○ REG-IB-001 | 1 |
 | 跨族通用 | — SRC-XFAM-001/002 | — | — SRC-XFAM-003 | ○ REG-XFAM-001 | 3 |
 
-**汇总**：权威区登记源 **28** 条 = **19 `PENDING_SOURCE` + 9 `AVAILABLE`**（REG-CM-001、REG-XFAM-001、REG-FIN-001、REG-IB-001、REG-CM-002、REG-TF-001、REG-TF-002、REG-TF-003、REG-CB-002，
-九份均已入库且条款文本完整，均 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **19/28**，
+**汇总**：权威区登记源 **28** 条 = **18 `PENDING_SOURCE` + 10 `AVAILABLE`**（REG-CM-001、REG-XFAM-001、REG-FIN-001、REG-IB-001、REG-CM-002、REG-TF-001、REG-TF-002、REG-TF-003、REG-CB-002、**REG-CB-001**（**OCR 转写**，条款号未核定），
+十份均已入库且条款文本完整，均 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **18/28**，
 （⚠ **计数口径（机器可复核）**：明细行中**含「别名」/「复用」字样者不计入基数**（与 `tools/check_registry_consistency.py` 解析行为一致，对齐 §5.6 `SRC-FIN-002/004` 先例）⇒ 原 28 条基数扣 `REG-SET-001`（别名）后为 **27** 条。此前本件一度写作「仍计入 28 条」，与解析器实际行为不符，**已更正**。）
 `CLAUSE_VERIFIED` **0** 条。
 公开参考区登记源 **2 条**，均已 `AVAILABLE`（PUB-PRICE-001 / PUB-PRICE-002）。
@@ -624,6 +645,15 @@ F-L00-07 **仍未解除**。详见 §5.8。
   **推荐处置（请 Owner 择一）**：① 提供**文本版**官方承载（或已 OCR 校对件）⇒ TL 立即转写入库；
   ② 授权本机安装 OCR 引擎并由 TL 转写（**须接受 OCR 识别误差**，仍记 `clause_verified=false`）；
   ③ 维持 `PENDING_SOURCE`（`PROD-CB-001` 的 `regulatoryBasis` 长期显示"未核验"，**不假装有依据**）。
+
+- **`REG-CB-001` 取证完成（2026-09-22 · OCR 路径，经 Owner 授权）**：Owner 择定选项 ②「授权安装 OCR 并转写」⇒
+  TL 以 `rapidocr-onnxruntime`（PP-OCR，400 DPI）对官方扫描 PDF 转写，**已入库** `REG-CB-001.md`
+  （**通知体无「条」**，按顶层 5 项切分；见 `snapshots/REG-CB-001.provenance.md`）。
+  **两条机器终检 PASS**：① 正文与 OCR 非空白字符**多重集完全相等**（未增删改字）② 每段可原样定位。
+  **限制**：`clause_verified=false` 不变；OCR 存在识别误差风险，作合规依据前须**对照 PDF 原件逐字复核**；
+  抽取粒度记 `SECTION（通知体条款项）`，**与"章条号"口径不同**，已显式登记。
+  **链路改动**：`l10` 新增**文档级模式开关**（仅当全文无「第X条」才按「一、」分节），
+  隔离验证既有 26 源 **逐字节不变**（`REG-FIN-001` 附录 3 处同形标记未受影响，仍 51 片段）。
 
 > **口径自查（2026-09-22）**：本轮首版只把 `AVAILABLE` 8→9，**漏改 `PENDING` 20→19**，
 > 被 `check_registry_consistency.py`「汇总 PENDING == 明细 PENDING」断言挡下（99/101）⇒ 已修正为

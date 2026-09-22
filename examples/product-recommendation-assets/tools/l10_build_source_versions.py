@@ -36,6 +36,11 @@ FRG_DIR = BASE / "02_work" / "fragments"
 CST = timezone(timedelta(hours=8))
 CLAUSE_RE = re.compile(r"^\*\*第([一二三四五六七八九十百零〇]+)条\*\*")
 CHUNK_SPLIT = re.compile(r"^(#{1,6}\s|\*\*第[一二三四五六七八九十百零〇]+条\*\*)")
+# 通知体（无「条」的规范性文件，如 银发〔2018〕3 号）：顶层以「一、二、…」分节。
+# ⚠ 仅当**全文无任何「第X条」**时启用（见 split_fragments 的 mode 判定）：
+#   含「条」的文件里，附件/附录也可能出现同形标记（如 REG-FIN-001 附录有 3 处 `**一、…**`），
+#   一刀切会把它们的片段数切变（51 → 54），破坏既有门禁与已发布产物。故用**文档级模式开关**。
+SECTION_RE = re.compile(r"^\*\*([一二三四五六七八九十]+)、")
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -82,14 +87,18 @@ def split_fragments(body: str):
     这是 INV-EVS-02（quote 必须能在 Fragment 内定位）的前置条件。
     """
     lines = body.splitlines()
+    # 文档级模式开关（PC8 · REG-CB-001）：全文无「第X条」⇒ 按通知体顶层「一、」分节；
+    # 否则一律沿用「条」（保护含「条」文件的附录同形标记不被重切，见 SECTION_RE 注释）。
+    boundary_re = CLAUSE_RE if any(CLAUSE_RE.match(l) for l in lines) else SECTION_RE
     chunks = []
     cur_title = None
     buf = []
     for line in lines:
-        if CLAUSE_RE.match(line):
+        m = boundary_re.match(line)
+        if m:
             if cur_title is not None:
                 chunks.append((cur_title, "\n".join(buf).strip()))
-            cur_title = CLAUSE_RE.match(line).group(1)
+            cur_title = m.group(1)
             buf = [line]
         elif cur_title is not None:
             if CHUNK_SPLIT.match(line):

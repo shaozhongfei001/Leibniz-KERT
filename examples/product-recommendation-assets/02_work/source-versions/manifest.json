@@ -1,7 +1,15 @@
 {
-  "extractionRunId": "RUN-20260922-a0aa0a1b",
+  "extractionRunId": "RUN-20260922-c0fd8262",
   "generatedAt": "2026-09-22T21:40:00+08:00",
   "sourceVersions": [
+    {
+      "byteSize": 6050,
+      "bytesSha256": "bb4365f45979f88abc42102d80e28e811d1c9562ede0962000e34108f4794f8b",
+      "fragmentCount": 5,
+      "provenanceState": "VERIFIED",
+      "sourceId": "REG-CB-001",
+      "sourceVersionId": "SV-REGCB001-20260922-bb4365f4"
+    },
     {
       "byteSize": 12512,
       "bytesSha256": "e2e87a3c0fcc3294de04c72e923439cec32d60a5bac6add4c7f0f5716d439b8d",

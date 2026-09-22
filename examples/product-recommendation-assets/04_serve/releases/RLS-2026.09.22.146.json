@@ -1,0 +1,62 @@
+{
+  "assertionManifestHash": "dc4ecc279b156c6ff8a49dc9aca84beb10a103258d12299a1988e9d1cae372dc",
+  "bundleHash": "06b03157f8739ba6dc4ba519c3215bd3c3c420763a0712ad3914279aaa00cdbe",
+  "cardProjectionHash": "3eafe90f036da021b8cab9ff211862acc5ba7a760be573fdc6a1ed9ad272094b",
+  "evidenceManifestHash": "e8d1e4ad9c2fc8788f53b87c835ddf2c06bd4d26f92b4eb67448570be9e16e5c",
+  "gateReport": {
+    "blockingReasons": [],
+    "conflict": 0,
+    "notApplicableApproved": 0,
+    "requiredHardFieldsTotal": 3,
+    "stale": 0,
+    "supported": 1,
+    "unknown": 1
+  },
+  "lifecycleState": "PUBLISHED",
+  "ownerDecisionIds": [
+    "DEC-20260922-8d000b42",
+    "DEC-20260922-f65dcf8d",
+    "DEC-20260922-5e5be653",
+    "DEC-20260922-d896a5ad",
+    "DEC-20260922-2e9172da",
+    "DEC-20260922-a8dc8fd7",
+    "DEC-20260922-1e1c3280",
+    "DEC-20260922-fa02aa26",
+    "DEC-20260922-5e870de1",
+    "DEC-20260922-62ec6fb1",
+    "DEC-20260922-8c0996cd",
+    "DEC-20260922-9e119c1a",
+    "DEC-20260922-85bffd39",
+    "DEC-20260922-5b35ceaf",
+    "DEC-20260922-558146e4",
+    "DEC-20260922-200b8307",
+    "DEC-20260922-f6735d9b",
+    "DEC-20260922-60bfa64d",
+    "DEC-20260922-c8341fd9",
+    "DEC-20260922-0706abc4",
+    "DEC-20260922-cec110c7",
+    "DEC-20260922-cb216e1c",
+    "DEC-20260922-2b72ac84",
+    "DEC-20260922-58b39b1a",
+    "DEC-20260922-17fb032f"
+  ],
+  "productIds": [
+    "PROD-TF-002"
+  ],
+  "provenanceState": "DEMO",
+  "publishedAt": "2026-09-22T21:40:00+08:00",
+  "purposeFlags": {
+    "interpretationReady": true,
+    "recommendationReady": false
+  },
+  "qualityRunId": "QR-20260922-c782862c",
+  "releaseId": "RLS-2026.09.22.146",
+  "rulePackageHash": "52eb5e2358221a2fc276b3838f097610d41c7e8da9ff77c67596e307846cdab3",
+  "staleFlag": {
+    "isStale": false,
+    "staleReason": null,
+    "staleSince": null,
+    "triggeringSourceVersionId": null
+  },
+  "taxonomyVersion": "CTR-PK-TAX-001@v1"
+}

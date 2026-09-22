@@ -1,5 +1,5 @@
 {
-  "assertionCount": 7,
+  "assertionCount": 11,
   "assertions": [
     {
       "applicabilityScope": {
@@ -9,7 +9,7 @@
       "assertionId": "ASM-PRODCB001-b40103f9",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -29,7 +29,7 @@
       "assertionId": "ASM-PRODCB001-7bc11c96",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -51,7 +51,7 @@
       "assertionId": "ASM-PRODCB001-66b18cf9",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -70,10 +70,98 @@
         "effectiveFrom": "2026-09-06",
         "effectiveTo": null
       },
+      "assertionId": "ASM-PRODCB001-cd6e8ca4",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCB001-355470e6"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "凡依法可以使用外汇结算的跨境交易，企业都可以使用人民币结算。银行应以服务实体经济、促进贸易投资便利化为导向，根据跨境人民币政策，创新人民币金融产品，提升金融服务能力，充分满足客户真实、合规的人民币跨境业务需求。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB001-388a931c",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCB001-9ced501c"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "境外机构按照国务院碳交易主管部门相关规定，通过境内碳排放权交易机构以人民币开展碳排放权交易的，应按照《境外机构人民币银行结算账户管理办法》（银发〔2010〕249号文印发）和《中国人民银行关于境外机构人民币银行结算账户开立和使用有关问题的通知》（银发〔2012〕183号）等规定，在银行开立境外机构碳交易人民币专用存款账户，办理碳排放权交易项下资金收付。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB001-825db2c8",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCB001-bd000da7"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "进一步完善和优化《外商直接投资人民币结算业务管理办法》（中国人民银行公告〔2011〕第23号公布）、《中国人民银行关于明确外商直接投资人民币结算业务操作细则的通知》（银发〔2012〕165号）相关规定：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB001-e59e1185",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCB001-b33ee28c"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "境内企业在境外发行人民币债券，按全口径跨境融资宏观审慎管理规定办理相关手续后，可根据实际需要将募集资金汇入境内使用。境内企业在境外发行股票募集的人民币资金，可按实际需要汇入境内使用。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
       "assertionId": "ASM-PRODCB001-cd2843e8",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [
         "EVS-REGXFAM001-0b940e85"
       ],
@@ -95,7 +183,7 @@
       "assertionId": "ASM-PRODCB001-481066ca",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [
         "EVS-REGXFAM001-fd8cf7ce"
       ],
@@ -117,7 +205,7 @@
       "assertionId": "ASM-PRODCB001-83052d9f",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -136,8 +224,8 @@
       },
       "assertionId": "ASM-PRODCB001-7f0e00d3",
       "conflictId": null,
-      "createdAt": "2026-09-22T22:30:00+08:00",
-      "createdByRunId": "RUN-20260922-2a797e16",
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -150,7 +238,7 @@
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-2a797e16",
+  "extractionRunId": "RUN-20260922-84773271",
   "policyId": "FLD-CROSS_BORDER-001",
   "policyOwnerApproved": false,
   "productId": "PROD-CB-001",

@@ -1,6 +1,6 @@
 {
-  "bundleHash": "2f33efb56ad55245385a14fd6a99f82b51db02916067861c2dcad52cd850dbdb",
-  "generatedAt": "2026-09-22T22:30:00+08:00",
+  "bundleHash": "67306a6aaf8a7a4d4ad0d6cd352cc292f57a1f640584f6bc07a133c6123618a0",
+  "generatedAt": "2026-09-22T21:40:00+08:00",
   "isStale": false,
   "lifecycleState": "PUBLISHED",
   "productId": "PROD-TF-001",
@@ -9,8 +9,9 @@
     "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.129",
+  "releaseId": "RLS-2026.09.22.158",
   "sourceVersions": [
+    "SV-REGCB001-20260922-bb4365f4",
     "SV-REGCB002-20260922-e2e87a3c",
     "SV-REGCM001-20260922-28e9b86d",
     "SV-REGCM002-20260922-70856944",

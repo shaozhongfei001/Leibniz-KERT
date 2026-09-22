@@ -42,6 +42,12 @@ POLICY = GITS / "specs" / "product-knowledge" / "field-policy.schema.json"
 
 CST = timezone(timedelta(hours=8))
 CLAUSE_RE = re.compile(r"^\*\*(第[一二三四五六七八九十百零〇]+条)\*\*\s*(.*)$")
+# 通知体（无「条」的规范性文件，如 银发〔2018〕3 号）：顶层以「一、二、…」分节。
+# ⚠ 与 l10 同规则 —— 仅当**该源全部片段都不是「第X条」**时才启用（见 main 内的 mode 判定）：
+#   含「条」文件的附录也可能出现同形标记（如 REG-FIN-001 附录 3 处），一刀切会改动既有证据。
+# locator 仍用合同允许的 kind="CLAUSE"（evidence-span.schema.json 为 const），clause 记**节序**（如「一」）；
+# 该源的抽取粒度登记为 SECTION（通知体条款项），与"章条号"口径不同。
+SECTION_RE = re.compile(r"^\*\*([一二三四五六七八九十]+)、\s*(.*?)\*\*\s*$")
 
 # 权威级排序：数值越小权威越高。证据权威级必须 <= 字段要求的权威级
 AUTHORITY_RANK = {
@@ -259,11 +265,21 @@ def main():
         allowed = sv.get("allowedClaimTypes") or []
         eff_from = front_matter_effective_date(d["sourceId"])
         spans = []
+        # 文档级模式开关（PC8 · REG-CB-001）：该源无任何「第X条」⇒ 按通知体顶层「一、」分节取条款。
+        _heads = [f["contentText"].splitlines()[0] for f in d["fragments"] if f["contentText"].strip()]
+        _sec_mode = not any(CLAUSE_RE.match(h) for h in _heads)
+        boundary_re = SECTION_RE if _sec_mode else CLAUSE_RE
         for frg in d["fragments"]:
-            m = CLAUSE_RE.match(frg["contentText"].splitlines()[0])
+            _lines = frg["contentText"].splitlines()
+            m = boundary_re.match(_lines[0])
             if not m:
                 continue
-            clause, quote = m.group(1), m.group(2).strip()
+            # 通知体：标记行**只有节标题**（不是引文）⇒ 引文一律取该节首个非空正文行；
+            # 条式：沿用「标记行余下文本」为引文（既有行为，不改）。
+            clause = m.group(1)
+            quote = "" if _sec_mode else m.group(2).strip()
+            if not quote:
+                quote = next((ln.strip() for ln in _lines[1:] if ln.strip()), "")
             if not quote:
                 continue
             ctype = classify_claim_type(quote, allowed)

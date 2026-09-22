@@ -8,8 +8,8 @@
       ],
       "conflictId": "CNF-PRODCM001-757c6c3b",
       "conflictType": "VALUE_MISMATCH",
-      "detectedAt": "2026-09-22T22:30:00+08:00",
-      "detectedByRunId": "RUN-20260922-2a797e16",
+      "detectedAt": "2026-09-22T21:40:00+08:00",
+      "detectedByRunId": "RUN-20260922-84773271",
       "fieldPath": "eligibility.minAccountBalance",
       "impactedObjects": [
         "PROD-CM-001"
