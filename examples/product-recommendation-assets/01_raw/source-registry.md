@@ -172,7 +172,29 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-TF-001 | 《银行承兑汇票业务管理办法》（行内制度） | INTERNAL_POLICY | 交易银行部 | PENDING_SOURCE | 承兑准入、保证金比例、期限 | PROD-TF-001 |
 | SRC-TF-002 | 《国内信用证业务操作规程》（行内制度） | INTERNAL_POLICY | 交易银行部 | PENDING_SOURCE | 开证条件、单据审核、付款期限 | PROD-TF-002 |
 | SRC-TF-003 | 《贸易背景真实性审查指引》（行内制度） | INTERNAL_POLICY | 风险管理部 | PENDING_SOURCE | 贸易背景核验、单据要求、虚假贸易防范 | PROD-TF-001/002 |
-| REG-TF-001 | 《票据法》及票据业务相关监管规定 | REGULATORY | 合规管理部 | PENDING_SOURCE | 票据承兑、贴现的法定要件 | PROD-TF-001 |
+| REG-TF-001 | 《商业汇票承兑、贴现与再贴现管理办法》（中国人民银行 银保监会令〔2022〕第 4 号）⚠ **指名结果**：原登记「《票据法》及票据业务相关监管规定」未指名具体文件；本 source_id 现指名到本办法。**《票据法》（法律，上位法）不在本 file 覆盖范围，需另行登记（待 Owner 裁定）** | REGULATORY | 合规管理部 | **AVAILABLE** | 八章四十二条已入库，条款号待 Owner 核定 | PROD-TF-001 |
+
+**REG-TF-001 入库记录（指名文件：2022 年第 4 号令）**
+
+| 项 | 值 |
+|---|---|
+| 文件字节数 | 13440 |
+| bytes_sha256 | 5aeaa4ae76deeac981ae385a0857dd07a5d80df0f1fb123ef575da895d0f7102 |
+| 令号 | 中国人民银行 中国银行保险监督管理委员会令〔2022〕第 4 号 |
+| 发布 / 施行 | 2022-11-11 / 2023-01-01（第二十四条自 2024-01-01 起实施） |
+| 章节条款 | 八章四十二条 |
+| 定位方式 | CLAUSE |
+| usage | AUTHORITATIVE |
+| authorityLevel | REGULATORY |
+| clauseVerified | false（条款号待 Owner 核定） |
+| 来源 URL | https://www.gov.cn/zhengce/zhengceku/2022-11/18/content_5727779.htm |
+| 抓取时间 | 2026-09-22（PC8 真实法规入库） |
+| 抓取凭据 | `01_raw/_authoritative/snapshots/REG-TF-001.provenance.md` |
+| 废止关系 | 《商业汇票承兑、贴现与再贴现管理暂行办法》（银发〔1997〕216 号）、《中国人民银行关于切实加强商业汇票承兑贴现和再贴现业务管理的通知》（银发〔2001〕236 号）同时废止 |
+| 指名未覆盖（显式） | 《中华人民共和国票据法》为法律（上位法），**不在本 source_id 覆盖范围**（本办法第一条仅列为制定依据）⇒ 若需引用《票据法》条文须另行登记 source_id（待 Owner 裁定，不擅自新增行） |
+| 凭据强度局限 | **转写文本**，非原始 HTML 字节快照 ⇒ `bytes_sha256` 只保证入库文件自身完整性 |
+| 未完成 | 未取得人民银行 PDF 原版核对字形标点；未确认是否存在后续修订 |
+| 未做 | 本行合规对「现行有效性 / 适用性」的确认 |
 | REG-TF-002 | 《国内信用证结算办法》 | REGULATORY | 合规管理部 | PENDING_SOURCE | 国内信用证开立、议付、偿付规则 | PROD-TF-002 |
 
 ### 5.5 CROSS_BORDER 跨境金融（2 卡）
@@ -257,7 +279,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 >
 > **红线（L10 落地）**：
 > 1. 本节 6 条**均为虚构演示文本**，不代表任何真实机构制度；
-> 2. DEMO 源**不计入** §5 真实权威区基数（27），**不抵扣** 22/27 真实缺口 —— **F-L00-07 未解除**；
+> 2. DEMO 源**不计入** §5 真实权威区基数（27），**不抵扣** 21/27 真实缺口 —— **F-L00-07 未解除**；
 > 3. 依 DEMO 源编译的 Release 必须带 `provenance_state=DEMO`，**不得**进入 `RECOMMENDATION_READY`（INV-EVS-09/10/11）；
 > 4. DEMO 证据**不得与** VERIFIED 证据混合支撑同一字段断言，禁止用演示材料补真实材料缺口。
 
@@ -352,14 +374,14 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 |---|---|---|---|---|---|
 | CASH_MANAGEMENT（pilot） | — SRC-CM-001 | — SRC-CM-002 | — SRC-CM-003 | ○ REG-CM-001 · ○ REG-CM-002 | 3 |
 | SETTLEMENT | — SRC-SET-001 | — SRC-SET-002 | — 复用 SRC-XFAM-003 | → REG-CM-002（别名） | 2 |
-| TRADE_FINANCE | — SRC-TF-001 | — SRC-TF-002 | — SRC-TF-003 | — REG-TF-001/002 | 5 |
+| TRADE_FINANCE | — SRC-TF-001 | — SRC-TF-002 | — SRC-TF-003 | ○ REG-TF-001 · — REG-TF-002 | 4 |
 | CROSS_BORDER | — SRC-CB-001 | — SRC-CB-002 | — 复用 SRC-XFAM-003 | — REG-CB-001/002 | 4 |
 | FINANCING | — SRC-FIN-001 | — SRC-FIN-003 | — SRC-FIN-005 | ○ REG-FIN-001 · — REG-FIN-002 | 4 |
 | INVESTMENT_BANKING | — SRC-IB-001 | — 复用 SRC-XFAM-003 | — 复用 SRC-XFAM-003 | ○ REG-IB-001 | 1 |
 | 跨族通用 | — SRC-XFAM-001/002 | — | — SRC-XFAM-003 | ○ REG-XFAM-001 | 3 |
 
-**汇总**：权威区登记源 **27** 条 = **22 `PENDING_SOURCE` + 5 `AVAILABLE`**（REG-CM-001、REG-XFAM-001、REG-FIN-001、REG-IB-001、REG-CM-002，
-五份均已入库且条款文本完整，均 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **22/27**，
+**汇总**：权威区登记源 **27** 条 = **21 `PENDING_SOURCE` + 6 `AVAILABLE`**（REG-CM-001、REG-XFAM-001、REG-FIN-001、REG-IB-001、REG-CM-002，
+六份均已入库且条款文本完整，均 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **21/27**，
 （⚠ **计数口径（机器可复核）**：明细行中**含「别名」/「复用」字样者不计入基数**（与 `tools/check_registry_consistency.py` 解析行为一致，对齐 §5.6 `SRC-FIN-002/004` 先例）⇒ 原 28 条基数扣 `REG-SET-001`（别名）后为 **27** 条。此前本件一度写作「仍计入 28 条」，与解析器实际行为不符，**已更正**。）
 `CLAUSE_VERIFIED` **0** 条。
 公开参考区登记源 **2 条**，均已 `AVAILABLE`（PUB-PRICE-001 / PUB-PRICE-002）。
