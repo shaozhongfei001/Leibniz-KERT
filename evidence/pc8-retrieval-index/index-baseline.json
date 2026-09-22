@@ -1,0 +1,74 @@
+{
+  "schema": "retrieval_index_evidence/v1",
+  "instance": "http://127.0.0.1:9621",
+  "workspace": "/tmp/lr-ws",
+  "glob": "04_serve/**/PROD-*.json",
+  "queries": [
+    "现金池 集团资金归集 资金下拨",
+    "流动资金贷款 融资 准入",
+    "跨境人民币结算 展业三原则"
+  ],
+  "at": "2026-09-22T22:17:57+0800",
+  "ingest": {
+    "artifacts": 26,
+    "states": {
+      "current": 26
+    },
+    "documents": 26,
+    "statusCounts": {
+      "processed": 26
+    },
+    "chunks": 145,
+    "storage": {
+      "status": "measured",
+      "files": 12,
+      "bytes": 12288190
+    },
+    "graph": {
+      "status": "measured",
+      "file": "/tmp/lightrag-storage/graph_chunk_entity_relation.graphml",
+      "bytes": 446346,
+      "nodes": 191,
+      "edges": 318
+    },
+    "citationSets": {
+      "现金池 集团资金归集 资金下拨": [
+        "04_serve__product-center__PROD-CB-001.json",
+        "04_serve__product-center__PROD-CB-002.json",
+        "04_serve__product-center__PROD-CM-001.json",
+        "04_serve__product-center__PROD-CM-002.json",
+        "04_serve__product-center__PROD-FIN-001.json",
+        "04_serve__product-center__PROD-FIN-002.json",
+        "04_serve__product-center__PROD-FIN-003.json",
+        "04_serve__product-center__PROD-SET-001.json"
+      ],
+      "流动资金贷款 融资 准入": [
+        "04_serve__product-center__PROD-CB-002.json",
+        "04_serve__product-center__PROD-CM-002.json",
+        "04_serve__product-center__PROD-FIN-001.json",
+        "04_serve__product-center__PROD-FIN-002.json",
+        "04_serve__product-center__PROD-FIN-003.json",
+        "04_serve__product-center__PROD-IB-001.json",
+        "04_serve__product-center__PROD-SET-002.json",
+        "04_serve__product-center__PROD-TF-002.json"
+      ],
+      "跨境人民币结算 展业三原则": [
+        "04_serve__interpretation__PROD-CM-003.json",
+        "04_serve__interpretation__PROD-FIN-001.json",
+        "04_serve__interpretation__PROD-FIN-002.json",
+        "04_serve__interpretation__PROD-FIN-003.json",
+        "04_serve__interpretation__PROD-IB-001.json",
+        "04_serve__interpretation__PROD-SET-002.json",
+        "04_serve__interpretation__PROD-TF-002.json",
+        "04_serve__product-center__PROD-FIN-001.json"
+      ]
+    },
+    "citationCounts": {
+      "现金池 集团资金归集 资金下拨": 8,
+      "流动资金贷款 融资 准入": 8,
+      "跨境人民币结算 展业三原则": 8
+    },
+    "managedCount": 26,
+    "nonManagedDocuments": []
+  }
+}
