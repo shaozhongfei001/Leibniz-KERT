@@ -37,7 +37,15 @@ POLICY = GITS / "specs" / "product-knowledge" / "field-policy.schema.json"
 CST = timezone(timedelta(hours=8))
 OWNER_ROLES = {"PRODUCT_OWNER", "RISK_OWNER", "COMPLIANCE_OWNER"}
 MONEY_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(万元|亿元|元)")
-PRODUCT_ID = "PROD-CM-001"
+def _resolve_args() -> argparse.Namespace:
+    """PC8 T1：产品可由命令行指定；**默认值保持既有行为不变**（PROD-CM-001）。"""
+    ap = argparse.ArgumentParser(add_help=False)
+    ap.add_argument("--product", default="PROD-CM-001")
+    args, _ = ap.parse_known_args()
+    return args
+
+
+PRODUCT_ID = _resolve_args().product
 
 
 def sha256_text(t: str) -> str:

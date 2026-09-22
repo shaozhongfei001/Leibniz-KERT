@@ -21,10 +21,12 @@
     python3 tools/l11_extract_evidence_spans.py
 """
 
+import argparse
 import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -70,7 +72,46 @@ FIELD_KEYWORDS = {
     "process.openingChannel": ["渠道", "柜面", "企业网银", "银企直联"],
 }
 
-PRODUCT_ID = "PROD-CM-001"
+def _resolve_args() -> argparse.Namespace:
+    """PC8 T1/T2：产品与族可由命令行指定；**默认值保持既有行为不变**（PROD-CM-001 / CASH_MANAGEMENT）。
+
+    `parse_known_args` 使本模块级解析不与各脚本 main() 内既有 argparse 冲突（如 l13 的 --decisions）。
+    """
+    ap = argparse.ArgumentParser(add_help=False)
+    ap.add_argument("--product", default="PROD-CM-001")
+    ap.add_argument("--family", default="CASH_MANAGEMENT")
+    ap.add_argument("--all", action="store_true")
+    args, _ = ap.parse_known_args()
+    return args
+
+
+_ARGS = _resolve_args()
+PRODUCT_ID = _ARGS.product
+FAMILY = _ARGS.family
+
+# 目录名 ↔ taxonomy(CTR-PK-TAX-001) family id 适配表。
+# 依据：03_core/<dir>/version=<x>/product-cards/ 是 KERT workspace 既有约定，dir 名与 taxonomy family 同源。
+# 未单点化：taxonomy 目前未提供机器可读的 product→family 反查（记为 F-PC8-06，待单点化）。
+FAMILY_BY_DIR = {
+    "cash-management": "CASH_MANAGEMENT",
+    "financing": "FINANCING",
+    "settlement": "SETTLEMENT",
+    "trade-finance": "TRADE_FINANCE",
+    "cross-border": "CROSS_BORDER",
+    "investment-banking": "INVESTMENT_BANKING",
+}
+
+
+def discover_products() -> list:
+    """从 03_core 产品卡目录派生产品与族（`--all` 用），不新造产品清单。"""
+    found = {}
+    for card in sorted((BASE / "03_core").glob("*/version=*/product-cards/PROD-*.md")):
+        dir_name = card.parent.parent.parent.name
+        found[card.stem] = FAMILY_BY_DIR.get(dir_name)
+    return found
+
+
+# T4 挂起：本常量的语义待澄清（产品卡目录版本 vs Release 版本），澄清前**不改为派生**。
 PRODUCT_VERSION_SCOPE = "version=2026.09.06.1"
 
 
@@ -109,17 +150,37 @@ def classify_claim_type(quote: str, allowed: list) -> str:
     return None
 
 
-def load_policy_fields():
-    """从 CTR-PK-FLD-001 的 CASH_MANAGEMENT 正例读取七字段策略。"""
+def load_policy_fields(family: str = FAMILY):
+    """从 CTR-PK-FLD-001 读取**指定族**的字段策略实例。
+
+    PC8 T2：**fail-closed** —— 找不到该族实例即非零退出，**不再回落** CASH_MANAGEMENT。
+    理由：回落会让缺实例的族产出"现金管理字段"的假断言（看起来在干活，字段集其实是错的）。
+    """
     doc = json.loads(POLICY.read_text(encoding="utf-8"))
     for ex in doc.get("examples", []):
-        if ex.get("productFamily") == "CASH_MANAGEMENT":
+        if ex.get("productFamily") == family:
             return ex
-    raise SystemExit("未找到 CASH_MANAGEMENT 字段策略实例")
+    raise SystemExit(
+        f"FAIL | 未找到 {family} 的字段策略实例（CTR-PK-FLD-001 · field-policy.schema.json）；"
+        f"按 fail-closed 拒绝回落其他族 —— 需先补齐该族实例（PC8 T3 / B-5b）"
+    )
 
 
 def main():
-    policy = load_policy_fields()
+    # PC8 T1：`--all` 从 03_core 产品卡目录派生逐产品执行（族由目录名映射，不新造清单）。
+    # 注意：缺字段策略实例的族会在子进程中 fail-closed 退出 ⇒ 这是**期望行为**（T2 的依赖可见化）。
+    if _ARGS.all:
+        rc = 0
+        for pid, fam in sorted(discover_products().items()):
+            if fam is None:
+                print(f"FAIL | {pid}: 目录名无法映射到 taxonomy family id")
+                return 1
+            print(f"\n=== {pid}（family={fam}）===")
+            r = subprocess.run([sys.executable, __file__, "--product", pid, "--family", fam], check=False)
+            rc = rc or r.returncode
+        return rc
+
+    policy = load_policy_fields(FAMILY)
     fields = policy["fields"]
     retrieved = now_cst()
     run_date = retrieved.strftime("%Y%m%d")

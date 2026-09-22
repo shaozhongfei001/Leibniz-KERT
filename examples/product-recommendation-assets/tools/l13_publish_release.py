@@ -49,7 +49,18 @@ VIEW_FIELDS = {
                     "eligibility.prerequisiteProducts"],
     "PRICING": ["pricing.serviceFee"],
 }
-PRODUCT_ID = "PROD-CM-001"
+def _resolve_args() -> argparse.Namespace:
+    """PC8 T1：产品可由命令行指定；**默认值保持既有行为不变**（PROD-CM-001）。
+
+    `parse_known_args` 使本模块级解析不与 main() 内既有 `--decisions` 解析冲突。
+    """
+    ap = argparse.ArgumentParser(add_help=False)
+    ap.add_argument("--product", default="PROD-CM-001")
+    args, _ = ap.parse_known_args()
+    return args
+
+
+PRODUCT_ID = _resolve_args().product
 TAXONOMY_VERSION = "CTR-PK-TAX-001@v1"
 
 

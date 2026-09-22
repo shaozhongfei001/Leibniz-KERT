@@ -20,6 +20,7 @@
     python3 tools/l12_detect_conflicts.py
 """
 
+import argparse
 import hashlib
 import json
 import os
@@ -43,7 +44,15 @@ RATE_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(%|个百分点|个基点)")
 ENUM_TOKENS = ["大型企业客户", "集团客户", "机构客户", "小微企业客户",
                "柜面", "企业网银", "银企直联", "开放银行接口"]
 
-PRODUCT_ID = "PROD-CM-001"
+def _resolve_args() -> argparse.Namespace:
+    """PC8 T1：产品可由命令行指定；**默认值保持既有行为不变**（PROD-CM-001）。"""
+    ap = argparse.ArgumentParser(add_help=False)
+    ap.add_argument("--product", default="PROD-CM-001")
+    args, _ = ap.parse_known_args()
+    return args
+
+
+PRODUCT_ID = _resolve_args().product
 
 
 def sha256_text(t: str) -> str:
