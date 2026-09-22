@@ -133,7 +133,29 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-CM-002 | 《法人账户透支业务操作规程》（行内制度） | INTERNAL_POLICY | 交易银行部 | PENDING_SOURCE | 透支额度、期限、还款与风险控制 | PROD-CM-003 |
 | SRC-CM-003 | 《集团客户资金集中管理风险政策》（行内制度） | INTERNAL_POLICY | 风险管理部 | PENDING_SOURCE | 集团授信联动、成员户风险隔离 | PROD-CM-001/002/003 |
 | REG-CM-001 | 《现金管理暂行条例》（2011修订，国务院令第12号） | REGULATORY | 合规管理部 | **AVAILABLE** | 25条已抽取，待Owner核定后转CLAUSE_VERIFIED | PROD-CM-001/002/003 |
-| REG-CM-002 | 《人民币银行结算账户管理办法》 | REGULATORY | 合规管理部 | PENDING_SOURCE | 账户开立、使用与资金归集合规要求 | PROD-CM-001/002 |
+| REG-CM-002 | 《人民币银行结算账户管理办法》 | REGULATORY | 合规管理部 | **AVAILABLE** | 七章七十一条已入库（含 2020 年修订标注），条款号待 Owner 核定；**本法规唯一 source_id** | PROD-CM-001/002 |
+
+**REG-CM-002 入库记录（本法规唯一 source_id；`REG-SET-001` 合并为别名）**
+
+| 项 | 值 |
+|---|---|
+| 文件字节数 | 33182 |
+| bytes_sha256 | 70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654 |
+| 令号 | 中国人民银行令〔2003〕第 5 号 |
+| 公布 / 施行 | 2003-04-10 / 2003-09-01 |
+| 章节条款 | 七章七十一条 |
+| 定位方式 | CLAUSE |
+| usage | AUTHORITATIVE |
+| authorityLevel | REGULATORY |
+| clauseVerified | false（条款号待 Owner 核定） |
+| 来源 URL | https://www.gov.cn/gongbao/content/2003/content_62368.htm |
+| 抓取时间 | 2026-09-22（PC8 真实法规入库） |
+| 抓取凭据 | `01_raw/_authoritative/snapshots/REG-CM-002.provenance.md` |
+| **修订沿革（显式登记）** | 经《中国人民银行关于修改〈教育储蓄管理办法〉等规章的决定》（**中国人民银行令〔2020〕第 2 号**，2020-04-29 公布并施行）**删除第二十三条第一款第一项**；入库件为 2003 年公报原文，被删项**原位 ⚠ 标注**；**不自行拼装"修订后合并正文"**（无官方来源的合成文本禁止）。⚠ 该项自 2020-04-29 起失效，**条款级引用不得引用该项** |
+| 合并登记 | 与 §5.3 `REG-SET-001` 为**同一部法规**（重复登记）。Owner 2026-09-22 裁定：保留 `REG-CM-002` 为唯一 `source_id`，`REG-SET-001` 记为别名（对齐 §5.6 既有先例，收敛由 PI-1 管道统一执行） |
+| 凭据强度局限 | **转写文本**，非原始 HTML 字节快照 ⇒ `bytes_sha256` 只保证入库文件自身完整性 |
+| 未完成 | 本次**未取得**人民银行发布的"修订后合并全文"官方版本；亦未确认是否存在 2020 年第 2 号令以外的其他修订 |
+| 未做 | 本行合规对「现行有效性 / 适用性」的确认 |
 
 ### 5.3 SETTLEMENT 结算（2 卡）
 
@@ -141,7 +163,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 |---|---|---|---|---|---|---|
 | SRC-SET-001 | 《单位结算账户管理实施细则》（行内制度） | INTERNAL_POLICY | 交易银行部 | PENDING_SOURCE | 开户准入、材料清单、账户分类 | PROD-SET-001 |
 | SRC-SET-002 | 《国内保理业务管理办法》（行内制度） | INTERNAL_POLICY | 交易银行部 | PENDING_SOURCE | 应收账款转让、确权、追索权约定 | PROD-SET-002 |
-| REG-SET-001 | 《人民币银行结算账户管理办法》 | REGULATORY | 合规管理部 | PENDING_SOURCE | 单位银行结算账户开立与管理 | PROD-SET-001 |
+| REG-SET-001 | 《人民币银行结算账户管理办法》— **别名**，见 `REG-CM-002`（**同一部法规，不重复入库**；Owner 2026-09-22 裁定保留 `REG-CM-002`；**引用须用 `REG-CM-002`**，收敛由 PI-1 管道统一执行） | REGULATORY | 合规管理部 | PENDING_SOURCE | 单位银行结算账户开立与管理（见 `REG-CM-002`） | PROD-SET-001 |
 
 ### 5.4 TRADE_FINANCE 贸易金融（2 卡）
 
@@ -235,7 +257,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 >
 > **红线（L10 落地）**：
 > 1. 本节 6 条**均为虚构演示文本**，不代表任何真实机构制度；
-> 2. DEMO 源**不计入** §5 真实权威区基数（28），**不抵扣** 27/28 真实缺口 —— **F-L00-07 未解除**；
+> 2. DEMO 源**不计入** §5 真实权威区基数（27），**不抵扣** 22/27 真实缺口 —— **F-L00-07 未解除**；
 > 3. 依 DEMO 源编译的 Release 必须带 `provenance_state=DEMO`，**不得**进入 `RECOMMENDATION_READY`（INV-EVS-09/10/11）；
 > 4. DEMO 证据**不得与** VERIFIED 证据混合支撑同一字段断言，禁止用演示材料补真实材料缺口。
 
@@ -328,16 +350,17 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 
 | 产品族 | 产品管理办法 | 业务操作规程 | 风险政策 | 监管法规 | 缺口数 |
 |---|---|---|---|---|---|
-| CASH_MANAGEMENT（pilot） | — SRC-CM-001 | — SRC-CM-002 | — SRC-CM-003 | ○ REG-CM-001 · — REG-CM-002 | 4 |
-| SETTLEMENT | — SRC-SET-001 | — SRC-SET-002 | — 复用 SRC-XFAM-003 | — REG-SET-001 | 3 |
+| CASH_MANAGEMENT（pilot） | — SRC-CM-001 | — SRC-CM-002 | — SRC-CM-003 | ○ REG-CM-001 · ○ REG-CM-002 | 3 |
+| SETTLEMENT | — SRC-SET-001 | — SRC-SET-002 | — 复用 SRC-XFAM-003 | → REG-CM-002（别名） | 2 |
 | TRADE_FINANCE | — SRC-TF-001 | — SRC-TF-002 | — SRC-TF-003 | — REG-TF-001/002 | 5 |
 | CROSS_BORDER | — SRC-CB-001 | — SRC-CB-002 | — 复用 SRC-XFAM-003 | — REG-CB-001/002 | 4 |
 | FINANCING | — SRC-FIN-001 | — SRC-FIN-003 | — SRC-FIN-005 | ○ REG-FIN-001 · — REG-FIN-002 | 4 |
 | INVESTMENT_BANKING | — SRC-IB-001 | — 复用 SRC-XFAM-003 | — 复用 SRC-XFAM-003 | ○ REG-IB-001 | 1 |
 | 跨族通用 | — SRC-XFAM-001/002 | — | — SRC-XFAM-003 | ○ REG-XFAM-001 | 3 |
 
-**汇总**：权威区登记源 **28** 条 = **24 `PENDING_SOURCE` + 4 `AVAILABLE`**（REG-CM-001、REG-XFAM-001、REG-FIN-001、REG-IB-001，
-四份均已入库且条款文本完整，均 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **24/28**，
+**汇总**：权威区登记源 **27** 条 = **22 `PENDING_SOURCE` + 5 `AVAILABLE`**（REG-CM-001、REG-XFAM-001、REG-FIN-001、REG-IB-001、REG-CM-002，
+五份均已入库且条款文本完整，均 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **22/27**，
+（⚠ **计数口径（机器可复核）**：明细行中**含「别名」/「复用」字样者不计入基数**（与 `tools/check_registry_consistency.py` 解析行为一致，对齐 §5.6 `SRC-FIN-002/004` 先例）⇒ 原 28 条基数扣 `REG-SET-001`（别名）后为 **27** 条。此前本件一度写作「仍计入 28 条」，与解析器实际行为不符，**已更正**。）
 `CLAUSE_VERIFIED` **0** 条。
 公开参考区登记源 **2 条**，均已 `AVAILABLE`（PUB-PRICE-001 / PUB-PRICE-002）。
 

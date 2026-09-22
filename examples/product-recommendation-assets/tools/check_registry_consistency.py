@@ -93,7 +93,9 @@ def main():
 
     # 期望基数按明细行真值。L03 核算确认权威区为 28 条（含 REG-CM-002，
     # 该条自 PI-0 起从未被计入汇总，见 FAILURES F-L03-02），非历史沿用的 27。
-    EXPECTED_AUTH = 28
+    # PC8（2026-09-22）：REG-SET-001 按 Owner 裁定登记为 REG-CM-002 的**别名**
+    # ⇒ 含「别名」字样的明细行不计入基数（对齐 SRC-FIN-002/004 先例）⇒ 28 - 1 = 27。
+    EXPECTED_AUTH = 27
     EXPECTED_PUB = 2
     # L10：Owner 决议 DECISION-20260906-01 路径 C 生成的 3 份演示制度文本
     EXPECTED_DEMO = 6
