@@ -36,14 +36,14 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 12,
+      "assertionCount": 11,
       "conflictId": null,
       "evidenceCount": 11,
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "NOT_APPLICABLE",
+      "knowledgeState": "CANDIDATE",
       "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "Owner 已裁决",
+      "reason": "待裁决",
       "required": "REQUIRED_HARD"
     },
     {
@@ -58,7 +58,7 @@
       "required": "REQUIRED_SOFT"
     }
   ],
-  "generatedAt": "2026-09-22T19:10:00+08:00",
+  "generatedAt": "2026-09-22T20:05:00+08:00",
   "interpretationReady": true,
   "policyId": "FLD-FINANCING-001",
   "policyOwnerApproved": false,

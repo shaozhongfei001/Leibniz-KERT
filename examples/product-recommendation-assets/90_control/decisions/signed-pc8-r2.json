@@ -1,0 +1,294 @@
+{
+  "ownerAttested": true,
+  "attestedBy": "OWNER",
+  "attestation": "Owner 于 2026-09-22 会话中就 gits 侧方案 §16.5 指示『① 撤销 N/A（让监管证据生效）』，授权 TL 落盘本 r2 决议：撤销 13 条 compliance.regulatoryBasis=NOT_APPLICABLE，其余裁决（identity.productCode ×13、eligibility.minAccountBalance ×2、CM-001 冲突 ×1）沿用 2026-09-06 先例口径不变。TL 未代改原签署件 signed-pc8.json（append-only 留存）；本文件 supersedes 之。",
+  "attestedAt": "2026-09-22T20:05:00+08:00",
+  "_format": "PC8 扩展：每项决策带 productId 限定适用产品（工具向后兼容，缺省=不限）",
+  "supersedes": "90_control/decisions/signed-pc8.json",
+  "supersedeReason": "撤销 compliance.regulatoryBasis 的 13 条 N/A（原前提『无证据可用』被 T9 推翻）",
+  "revokedDecisions": [
+    {
+      "decisionId": "DEC-20260922-ceb94de5",
+      "productId": "PROD-CB-001",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-23e0953e",
+      "productId": "PROD-CB-002",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-4d87c50b",
+      "productId": "PROD-CM-001",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-d8973a1d",
+      "productId": "PROD-CM-002",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-cae93552",
+      "productId": "PROD-CM-003",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-b7e561f3",
+      "productId": "PROD-FIN-001",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-0d9f732a",
+      "productId": "PROD-FIN-002",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-ea3436f2",
+      "productId": "PROD-FIN-003",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-68daa2f0",
+      "productId": "PROD-IB-001",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-3bc9e542",
+      "productId": "PROD-SET-001",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-664744ea",
+      "productId": "PROD-SET-002",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-247f5606",
+      "productId": "PROD-TF-001",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    },
+    {
+      "decisionId": "DEC-20260922-e987d7fd",
+      "productId": "PROD-TF-002",
+      "revokedAt": "2026-09-22T20:05:00+08:00",
+      "revokedBy": "owner",
+      "revokedByRole": "COMPLIANCE_OWNER",
+      "reason": "Owner 2026-09-22 指示撤销：原裁决理由为『监管依据由受控法规库单独发布…该字段无证据可用』，而 T9 已使真实监管源进入 fragments、该字段现有 CANDIDATE 级真实证据 ⇒ 原前提失效，撤销 N/A 以让证据生效（字段回到 CANDIDATE，由 Review 阶段收敛）。"
+    }
+  ],
+  "decisions": [
+    {
+      "decisionId": "DEC-20260922-8d000b42",
+      "productId": "PROD-CB-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-f65dcf8d",
+      "productId": "PROD-CB-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-5e5be653",
+      "productId": "PROD-CM-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-d896a5ad",
+      "productId": "PROD-CM-001",
+      "subjectKind": "CONFLICT",
+      "subjectId": "CNF-PRODCM001-757c6c3b",
+      "decision": "ADOPT_ASSERTION",
+      "rationale": "沿用 2026-09-06 裁决：PROD-CM-001 面向单一法人客户现金池，采用 SRC-CM-001 第十条的 50 万元标准；集团客户场景（SRC-CM-003 第六条 100 万元）由集团现金池场景规则另行覆盖，不在本产品卡字段承载。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00",
+      "resolvedAssertionId": "ASM-PRODCM001-991baf6e"
+    },
+    {
+      "decisionId": "DEC-20260922-2e9172da",
+      "productId": "PROD-CM-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-a8dc8fd7",
+      "productId": "PROD-CM-002",
+      "subjectKind": "FIELD",
+      "subjectId": "eligibility.minAccountBalance",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "当前无制度证据命中该字段；Owner 2026-09-22 知悉须先补源方能取值（真实源上传义务未完成）。本裁决为 DEMO 轨链路解阻，非业务结论，补源后须重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-1e1c3280",
+      "productId": "PROD-CM-003",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-fa02aa26",
+      "productId": "PROD-CM-003",
+      "subjectKind": "FIELD",
+      "subjectId": "eligibility.minAccountBalance",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "当前无制度证据命中该字段；Owner 2026-09-22 知悉须先补源方能取值（真实源上传义务未完成）。本裁决为 DEMO 轨链路解阻，非业务结论，补源后须重裁。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-5e870de1",
+      "productId": "PROD-FIN-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-62ec6fb1",
+      "productId": "PROD-FIN-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-8c0996cd",
+      "productId": "PROD-FIN-003",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-9e119c1a",
+      "productId": "PROD-IB-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-85bffd39",
+      "productId": "PROD-SET-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-5b35ceaf",
+      "productId": "PROD-SET-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-558146e4",
+      "productId": "PROD-TF-001",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    },
+    {
+      "decisionId": "DEC-20260922-200b8307",
+      "productId": "PROD-TF-002",
+      "subjectKind": "FIELD",
+      "subjectId": "identity.productCode",
+      "decision": "NOT_APPLICABLE",
+      "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
+      "decidedBy": "owner",
+      "decidedByRole": "PRODUCT_OWNER",
+      "decidedAt": "2026-09-22T19:10:00+08:00"
+    }
+  ]
+}

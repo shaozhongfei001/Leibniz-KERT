@@ -1,5 +1,5 @@
 {
-  "assertionCount": 11,
+  "assertionCount": 10,
   "assertions": [
     {
       "applicabilityScope": {
@@ -8,7 +8,7 @@
       },
       "assertionId": "ASM-PRODCM002-7855e2e6",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
@@ -28,7 +28,7 @@
       },
       "assertionId": "ASM-PRODCM002-3d5c3f8e",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
@@ -50,7 +50,7 @@
       },
       "assertionId": "ASM-PRODCM002-5ef904d1",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "eligibility.minAccountBalance",
@@ -70,7 +70,7 @@
       },
       "assertionId": "ASM-PRODCM002-f5e50bb6",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
@@ -92,7 +92,7 @@
       },
       "assertionId": "ASM-PRODCM002-901fe409",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-REGXFAM001-0b940e85"
@@ -114,7 +114,7 @@
       },
       "assertionId": "ASM-PRODCM002-83e859cb",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-REGXFAM001-fd8cf7ce"
@@ -136,7 +136,7 @@
       },
       "assertionId": "ASM-PRODCM002-11b658ed",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
@@ -156,7 +156,7 @@
       },
       "assertionId": "ASM-PRODCM002-6f17b454",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM003-f351ef59"
@@ -178,7 +178,7 @@
       },
       "assertionId": "ASM-PRODCM002-991e39db",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
@@ -198,7 +198,7 @@
       },
       "assertionId": "ASM-PRODCM002-e207e467",
       "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdAt": "2026-09-22T20:05:00+08:00",
       "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "eligibility.minAccountBalance",
@@ -210,26 +210,6 @@
       "reviewDecisionId": "DEC-20260922-a8dc8fd7",
       "supersedes": "ASM-PRODCM002-5ef904d1",
       "valueType": "MONEY"
-    },
-    {
-      "applicabilityScope": {
-        "effectiveFrom": "2026-09-06",
-        "effectiveTo": null
-      },
-      "assertionId": "ASM-PRODCM002-be4a536e",
-      "conflictId": null,
-      "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-2922ed36",
-      "evidenceIds": [],
-      "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "NOT_APPLICABLE",
-      "normalizedValue": null,
-      "productId": "PROD-CM-002",
-      "productVersionScope": "version=2026.09.06.1",
-      "rawValue": null,
-      "reviewDecisionId": "DEC-20260922-d8973a1d",
-      "supersedes": "ASM-PRODCM002-901fe409",
-      "valueType": "TEXT"
     }
   ],
   "extractionRunId": "RUN-20260922-2922ed36",

@@ -1,6 +1,6 @@
 {
-  "bundleHash": "e673cd21b9004683ba3a25b4240ea3bbf0df9ccb11391a0c76ba837071218918",
-  "generatedAt": "2026-09-22T19:10:00+08:00",
+  "bundleHash": "7765d79219356523c6ee1c270871384a8cd7a14f4bfac922855cf1c09279604c",
+  "generatedAt": "2026-09-22T20:05:00+08:00",
   "isStale": false,
   "lifecycleState": "PUBLISHED",
   "productId": "PROD-CM-002",
@@ -9,7 +9,7 @@
     "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.89",
+  "releaseId": "RLS-2026.09.22.102",
   "sourceVersions": [
     "SV-REGCB002-20260922-e2e87a3c",
     "SV-REGCM002-20260922-70856944",
@@ -75,7 +75,7 @@
         "displayValue": null,
         "evidenceSummaries": [],
         "fieldPath": "compliance.regulatoryBasis",
-        "knowledgeState": "NOT_APPLICABLE"
+        "knowledgeState": "UNKNOWN"
       }
     ],
     "PRICING": [

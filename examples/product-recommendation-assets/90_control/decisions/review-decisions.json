@@ -14,31 +14,11 @@
     {
       "decidedAt": "2026-09-22T19:10:00+08:00",
       "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-ceb94de5",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
       "decidedByRole": "PRODUCT_OWNER",
       "decision": "NOT_APPLICABLE",
       "decisionId": "DEC-20260922-f65dcf8d",
       "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
       "subjectId": "identity.productCode",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-23e0953e",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
       "subjectKind": "FIELD"
     },
     {
@@ -64,16 +44,6 @@
     {
       "decidedAt": "2026-09-22T19:10:00+08:00",
       "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-4d87c50b",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
       "decidedByRole": "PRODUCT_OWNER",
       "decision": "NOT_APPLICABLE",
       "decisionId": "DEC-20260922-2e9172da",
@@ -89,16 +59,6 @@
       "decisionId": "DEC-20260922-a8dc8fd7",
       "rationale": "当前无制度证据命中该字段；Owner 2026-09-22 知悉须先补源方能取值（真实源上传义务未完成）。本裁决为 DEMO 轨链路解阻，非业务结论，补源后须重裁。",
       "subjectId": "eligibility.minAccountBalance",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-d8973a1d",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
       "subjectKind": "FIELD"
     },
     {
@@ -124,31 +84,11 @@
     {
       "decidedAt": "2026-09-22T19:10:00+08:00",
       "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-cae93552",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
       "decidedByRole": "PRODUCT_OWNER",
       "decision": "NOT_APPLICABLE",
       "decisionId": "DEC-20260922-5e870de1",
       "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
       "subjectId": "identity.productCode",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-b7e561f3",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
       "subjectKind": "FIELD"
     },
     {
@@ -164,31 +104,11 @@
     {
       "decidedAt": "2026-09-22T19:10:00+08:00",
       "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-0d9f732a",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
       "decidedByRole": "PRODUCT_OWNER",
       "decision": "NOT_APPLICABLE",
       "decisionId": "DEC-20260922-8c0996cd",
       "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
       "subjectId": "identity.productCode",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-ea3436f2",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
       "subjectKind": "FIELD"
     },
     {
@@ -204,31 +124,11 @@
     {
       "decidedAt": "2026-09-22T19:10:00+08:00",
       "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-68daa2f0",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
       "decidedByRole": "PRODUCT_OWNER",
       "decision": "NOT_APPLICABLE",
       "decisionId": "DEC-20260922-85bffd39",
       "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
       "subjectId": "identity.productCode",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-3bc9e542",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
       "subjectKind": "FIELD"
     },
     {
@@ -244,16 +144,6 @@
     {
       "decidedAt": "2026-09-22T19:10:00+08:00",
       "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-664744ea",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
       "decidedByRole": "PRODUCT_OWNER",
       "decision": "NOT_APPLICABLE",
       "decisionId": "DEC-20260922-558146e4",
@@ -264,31 +154,11 @@
     {
       "decidedAt": "2026-09-22T19:10:00+08:00",
       "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-247f5606",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
       "decidedByRole": "PRODUCT_OWNER",
       "decision": "NOT_APPLICABLE",
       "decisionId": "DEC-20260922-200b8307",
       "rationale": "产品代码由 KERT 产品主数据下发并单独绑定，不由本产品制度文本承载（沿用 DEC-20260906-22222222 口径；Owner 2026-09-22 会话确认）。",
       "subjectId": "identity.productCode",
-      "subjectKind": "FIELD"
-    },
-    {
-      "decidedAt": "2026-09-22T19:10:00+08:00",
-      "decidedBy": "owner",
-      "decidedByRole": "COMPLIANCE_OWNER",
-      "decision": "NOT_APPLICABLE",
-      "decisionId": "DEC-20260922-e987d7fd",
-      "rationale": "监管依据由受控法规库单独发布并与产品版本绑定，产品卡字段不重复承载（沿用 DEC-20260906-33333333）。Owner 2026-09-22 已知悉 T9：真实 REG-* 源当前不入 fragments、该字段无证据可用；本裁决仅为解锁链路联调，不构成合规结论。",
-      "subjectId": "compliance.regulatoryBasis",
       "subjectKind": "FIELD"
     }
   ]
