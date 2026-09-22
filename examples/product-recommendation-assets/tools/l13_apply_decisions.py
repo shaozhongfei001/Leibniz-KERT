@@ -216,6 +216,54 @@ def main():
             })
             applied.append(f"CONFLICT {cid} -> {d['resolvedAssertionId']}")
 
+        elif d["subjectKind"] == "FIELD" and d["decision"] == "ADOPT_ASSERTION":
+            # PC8 T17（**能力扩展**，非缺陷修复）：为**非冲突字段**提供"采纳候选断言 ⇒ SUPPORTED"通道。
+            # 必要性：呈现层（l13_publish:264-267 依 CTR-PK-INT-001 五态）把 CANDIDATE 归一为 UNKNOWN 且不回链证据
+            # ⇒ 没有本通道时，非冲突字段永远停在 CANDIDATE、证据在页面上永不出现（F-PC8-18）。
+            # 严格性：必须属于本产品该字段的断言集、必须有证据；归一值只从证据原文解析（不生成）。
+            fp = d["subjectId"]
+            if fp not in spec_by_field:
+                print(f"SKIP  | 字段不属于本产品策略（{PRODUCT_ID} 无 {fp}）—— 未应用，留痕")
+                skipped_product_scoped += 1
+                continue
+            target = next((a for a in by_field.get(fp, [])
+                           if a["assertionId"] == d.get("resolvedAssertionId")), None)
+            if target is None:
+                print(f"FAIL | resolvedAssertionId 不属于本产品字段 {fp} 的断言集: {d.get('resolvedAssertionId')}")
+                return 1
+            if not target.get("evidenceIds"):
+                print(f"FAIL | 采纳的断言无证据，拒绝提升为 SUPPORTED: {target['assertionId']}")
+                return 1
+            if any(a["fieldPath"] == fp and a["knowledgeState"] == "SUPPORTED"
+                   and a.get("reviewDecisionId") == d["decisionId"] for a in asm_doc["assertions"]):
+                print(f"SKIP  | 字段 {fp} 已按 {d['decisionId']} 采纳（幂等跳过）")
+                continue
+            _val = None
+            for _eid in target["evidenceIds"]:
+                _val = money_value(evs[_eid]["quote"])
+                if _val is not None:
+                    break
+            new_assertions.append({
+                "assertionId": f"ASM-{sid_key(PRODUCT_ID)}-"
+                               f"{sha256_text(PRODUCT_ID + '|' + fp + '|ADOPTED|' + target['assertionId'])[:8]}",
+                "productId": PRODUCT_ID,
+                "productVersionScope": asm_doc["productVersionScope"],
+                "fieldPath": fp,
+                "rawValue": target.get("rawValue"),
+                "normalizedValue": _val,
+                "valueType": spec_by_field[fp]["valueType"],
+                "knowledgeState": "SUPPORTED",
+                "applicabilityScope": target.get("applicabilityScope")
+                                       or {"effectiveFrom": "2026-09-06", "effectiveTo": None},
+                "evidenceIds": list(target["evidenceIds"]),
+                "conflictId": None,
+                "reviewDecisionId": d["decisionId"],
+                "supersedes": target["assertionId"],
+                "createdByRunId": asm_doc["extractionRunId"],
+                "createdAt": ts.isoformat(),
+            })
+            applied.append(f"FIELD {fp} -> SUPPORTED (adopt {target['assertionId']})")
+
         elif d["subjectKind"] == "FIELD" and d["decision"] == "NOT_APPLICABLE":
             fp = d["subjectId"]
             # PC8 T14：跨产品签署件里可能含"本产品策略没有的字段"（如 CM 族专有的
