@@ -1,5 +1,5 @@
 {
-  "bundleHash": "a3f623cd34fb1dc32e2495f3d65ec0a2ee2de0d8880c19747efe8d7bcc32dcb4",
+  "bundleHash": "1b3051b60b8658daab970e7f8a43449a475e4f313d5a504b3ccdc89cd217c3d2",
   "generatedAt": "2026-09-22T21:40:00+08:00",
   "isStale": false,
   "lifecycleState": "PUBLISHED",
@@ -9,7 +9,7 @@
     "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.147",
+  "releaseId": "RLS-2026.09.22.160",
   "sourceVersions": [
     "SV-REGCB001-20260922-bb4365f4",
     "SV-REGCB002-20260922-e2e87a3c",
@@ -75,9 +75,18 @@
       {
         "conflictId": null,
         "displayValue": null,
-        "evidenceSummaries": [],
+        "evidenceSummaries": [
+          {
+            "authorityLevel": "REGULATORY",
+            "evidenceId": "EVS-REGCB001-355470e6",
+            "locatorHint": "一",
+            "quoteExcerpt": "凡依法可以使用外汇结算的跨境交易，企业都可以使用人民币结算。银行应以服务实体经济、促进贸易投资便利化为导向，根据跨境人民币政策，创新人民币金融产品，提升金融服务能力，充分满足客户真实、合规的人民币跨境业务需求。",
+            "sourceId": "REG-CB-001",
+            "sourceVersionId": "SV-REGCB001-20260922-bb4365f4"
+          }
+        ],
         "fieldPath": "compliance.regulatoryBasis",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "SUPPORTED"
       }
     ],
     "PRICING": [

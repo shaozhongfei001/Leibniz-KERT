@@ -1,5 +1,5 @@
 {
-  "bundleHash": "5a528c414a5f522fa5b0ea465e9558aaaced158132e7a627576baa27af2cd987",
+  "bundleHash": "800596af777d94823fe0da0f61568117b93dce5390ba856f621d2342da97f520",
   "generatedAt": "2026-09-22T21:40:00+08:00",
   "isStale": false,
   "lifecycleState": "PUBLISHED",
@@ -9,7 +9,7 @@
     "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.153",
+  "releaseId": "RLS-2026.09.22.166",
   "sourceVersions": [
     "SV-REGCB001-20260922-bb4365f4",
     "SV-REGCB002-20260922-e2e87a3c",
@@ -75,9 +75,18 @@
       {
         "conflictId": null,
         "displayValue": null,
-        "evidenceSummaries": [],
+        "evidenceSummaries": [
+          {
+            "authorityLevel": "REGULATORY",
+            "evidenceId": "EVS-REGFIN001-f6c3d72a",
+            "locatorHint": "第三条",
+            "quoteExcerpt": "本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的，用于借款人日常经营周转的本外币贷款。",
+            "sourceId": "REG-FIN-001",
+            "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+          }
+        ],
         "fieldPath": "compliance.regulatoryBasis",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "SUPPORTED"
       }
     ],
     "PRICING": [

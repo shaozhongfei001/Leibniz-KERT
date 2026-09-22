@@ -1,5 +1,5 @@
 {
-  "assertionCount": 7,
+  "assertionCount": 30,
   "assertions": [
     {
       "applicabilityScope": {
@@ -64,6 +64,490 @@
       "reviewDecisionId": null,
       "supersedes": null,
       "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-64f9409b",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-27feabfc"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人应在注册地或住所地开立银行结算账户。符合本办法规定可以在异地(跨省、市、县)开立银行结算账户的除外。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-7f121097",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-f4432e16"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人可以自主选择银行开立银行结算账户。除国家法律、行政法规和国务院规定外，任何单位和个人不得强令存款人到指定银行开立银行结算账户。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-b85e136d",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-8c9733d6"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行应依法为存款人的银行结算账户信息保密。对单位银行结算账户的存款和有关资料，除国家法律、行政法规另有规定外，银行有权拒绝任何单位或个人查询。对个人银行结算账户的存款和有关资料，除国家法律另有规定外，银行有权拒绝任何单位或个人查询。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-d6479ba2",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-8998c7c5"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "临时存款账户是存款人因临时需要并在规定期限内使用而开立的银行结算账户。有下列情况的，存款人可以申请开立临时存款账户：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-e5097096",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-8daeb469"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人申请开立一般存款账户，应向银行出具其开立基本存款账户规定的证明文件、基本存款账户开户登记证和下列证明文件：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-87d7360c",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-05d1fbea"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人申请开立专用存款账户，应向银行出具其开立基本存款账户规定的证明文件、基本存款账户开户登记证和下列证明文件:",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-48b5a03d",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-93aa398a"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人需要在异地开立单位银行结算账户，除出具本办法第十七条、十八条、十九条、二十一条规定的有关证明文件外，应出具下列相应的证明文件：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-065d6d86",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-a60a5c56"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人申请开立银行结算账户时，应填制开户申请书。开户申请书按照中国人民银行的规定记载有关事项。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-94d0cf59",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-cbac73ca"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行应对存款人的开户申请书填写的事项和证明文件的真实性、完整性、合规性进行认真审查。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-167c3aa1",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-ee8b3fed"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "中国人民银行应于 2 个工作日内对银行报送的基本存款账户、临时存款账户和预算单位专用存款账户的开户资料的合规性予以审核，符合开户条件的，予以核准；不符合开户条件的，应在开户申请书上签署意见，连同有关证明文件一并退回报送银行。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-ae891d9d",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-d604e610"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行为存款人开立银行结算账户，应与存款人签订银行结算账户管理协议，明确双方的权利与义务。除中国人民银行另有规定的以外，应建立存款人预留签章卡片，并将签章式样和有关证明文件的原件或复印件留存归档。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-dfd5f7b1",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-a16b9be8"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "开户登记证是记载单位银行结算账户信息的有效证明，存款人应按本办法的规定使用，并妥善保管。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-c7caedbf",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-f2163560"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "有下列情形之一的，个人应出具本办法第四十条规定的有关收款依据。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-18b7fc45",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-281f7c5a"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "单位银行结算账户支付给个人银行结算账户款项的，银行应按第四十条、第四十一条规定认真审查付款依据或收款依据的原件，并留存复印件，按会计档案保管。未提供相关依据或相关依据不符合规定的，银行应拒绝办理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-03cb5d85",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-10787611"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行应按规定与存款人核对账务。银行结算账户的存款人收到对账单或对账信息后，应及时核对账务并在规定期限内向银行发出对账回单或确认信息。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-a41db36e",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-ba384794"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人应按照本办法的规定使用银行结算账户办理结算业务。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-6ecb747d",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-0290d4b6"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行得知存款人有本办法第四十九条第一、二项情况，存款人超过规定期限未主动办理撤销银行结算账户手续的，银行有权停止其银行结算账户的对外支付。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-a7618236",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-71855351"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人撤销银行结算账户，必须与开户银行核对银行结算账户存款余额，交回各种重要空白票据及结算凭证和开户登记证，银行核对无误后方可办理销户手续。存款人未按规定交回各种重要空白票据及结算凭证的，应出具有关证明，造成损失的，由其自行承担。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-91d06a6a",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-d21a984a"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "中国人民银行负责监督、检查银行结算账户的开立和使用，对存款人、银行违反银行结算账户管理规定的行为予以处罚。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-c0050c0c",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-a6100f3b"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行应明确专人负责银行结算账户的开立、使用和撤销的审查和管理，负责对存款人开户申请资料的审查，并按照本办法的规定及时报送存款人开销户信息资料，建立健全开销户登记制度，建立银行结算账户管理档案，按会计档案进行管理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-de4f36ed",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-8c161427"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行应对已开立的单位银行结算账户实行年检制度，检查开立的银行结算账户的合规性，核实开户资料的真实性；对不符合本办法规定开立的单位银行结算账户，应予以撤销。对经核实的各类银行结算账户的资料变动情况，应及时报告中国人民银行当地分支行。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-9a5710f3",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-20a7e54d"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "违反本办法规定，伪造、变造、私自印制开户登记证的存款人，属非经营性的处以 1000 元罚款；属经营性的处以 1 万元以上 3 万元以下的罚款；构成犯罪的，移交司法机关依法追究刑事责任。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
     },
     {
       "applicabilityScope": {
@@ -147,6 +631,28 @@
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-85bffd39",
       "supersedes": "ASM-PRODSET001-4238dc98",
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODSET001-661804bb",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCM002-27feabfc"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": null,
+      "productId": "PROD-SET-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "存款人应在注册地或住所地开立银行结算账户。符合本办法规定可以在异地(跨省、市、县)开立银行结算账户的除外。",
+      "reviewDecisionId": "DEC-20260922-6101335b",
+      "supersedes": "ASM-PRODSET001-64f9409b",
       "valueType": "TEXT"
     }
   ],

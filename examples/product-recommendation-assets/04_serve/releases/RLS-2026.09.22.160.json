@@ -1,0 +1,66 @@
+{
+  "assertionManifestHash": "1fc88566d671754162a17a8d20b147623699f46af53efc05b05563f6632aaa6e",
+  "bundleHash": "1b3051b60b8658daab970e7f8a43449a475e4f313d5a504b3ccdc89cd217c3d2",
+  "cardProjectionHash": "bc92f0d570fdbf927ee2c846362006274e4d7543b5ac454e1a02d3780c671b8b",
+  "evidenceManifestHash": "dae6009675cfa9054a34dade3490b62e47374acc7f72c47c0661e2dc0cec1f77",
+  "gateReport": {
+    "blockingReasons": [],
+    "conflict": 0,
+    "notApplicableApproved": 0,
+    "requiredHardFieldsTotal": 3,
+    "stale": 0,
+    "supported": 1,
+    "unknown": 1
+  },
+  "lifecycleState": "PUBLISHED",
+  "ownerDecisionIds": [
+    "DEC-20260922-8d000b42",
+    "DEC-20260922-f65dcf8d",
+    "DEC-20260922-5e5be653",
+    "DEC-20260922-d896a5ad",
+    "DEC-20260922-2e9172da",
+    "DEC-20260922-a8dc8fd7",
+    "DEC-20260922-1e1c3280",
+    "DEC-20260922-fa02aa26",
+    "DEC-20260922-5e870de1",
+    "DEC-20260922-62ec6fb1",
+    "DEC-20260922-8c0996cd",
+    "DEC-20260922-9e119c1a",
+    "DEC-20260922-85bffd39",
+    "DEC-20260922-5b35ceaf",
+    "DEC-20260922-558146e4",
+    "DEC-20260922-200b8307",
+    "DEC-20260922-f6735d9b",
+    "DEC-20260922-60bfa64d",
+    "DEC-20260922-c8341fd9",
+    "DEC-20260922-0706abc4",
+    "DEC-20260922-cec110c7",
+    "DEC-20260922-cb216e1c",
+    "DEC-20260922-2b72ac84",
+    "DEC-20260922-58b39b1a",
+    "DEC-20260922-17fb032f",
+    "DEC-20260922-a99b2796",
+    "DEC-20260922-35d63d20",
+    "DEC-20260922-6101335b",
+    "DEC-20260922-58532e74"
+  ],
+  "productIds": [
+    "PROD-CB-001"
+  ],
+  "provenanceState": "DEMO",
+  "publishedAt": "2026-09-22T21:40:00+08:00",
+  "purposeFlags": {
+    "interpretationReady": true,
+    "recommendationReady": false
+  },
+  "qualityRunId": "QR-20260922-9c020563",
+  "releaseId": "RLS-2026.09.22.160",
+  "rulePackageHash": "d1d0f1c013fbb925830fd64b5ac9ac92413cc6fc52d369bf0adc3de50bcd61f3",
+  "staleFlag": {
+    "isStale": false,
+    "staleReason": null,
+    "staleSince": null,
+    "triggeringSourceVersionId": null
+  },
+  "taxonomyVersion": "CTR-PK-TAX-001@v1"
+}

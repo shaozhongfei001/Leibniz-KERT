@@ -41,7 +41,7 @@
         "EVS-REGXFAM001-fd8cf7ce"
       ],
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "CANDIDATE",
+      "knowledgeState": "SUPPORTED",
       "provenanceState": "DEMO",
       "value": null
     },

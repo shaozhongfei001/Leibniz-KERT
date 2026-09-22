@@ -36,14 +36,14 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 2,
+      "assertionCount": 25,
       "conflictId": null,
-      "evidenceCount": 2,
+      "evidenceCount": 25,
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "CANDIDATE",
+      "knowledgeState": "SUPPORTED",
       "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "待裁决",
+      "reason": "Owner 已裁决",
       "required": "REQUIRED_HARD"
     },
     {

@@ -1,5 +1,5 @@
 {
-  "assertionCount": 11,
+  "assertionCount": 12,
   "assertions": [
     {
       "applicabilityScope": {
@@ -235,6 +235,28 @@
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-8d000b42",
       "supersedes": "ASM-PRODCB001-b40103f9",
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB001-f25136cb",
+      "conflictId": null,
+      "createdAt": "2026-09-22T21:40:00+08:00",
+      "createdByRunId": "RUN-20260922-84773271",
+      "evidenceIds": [
+        "EVS-REGCB001-355470e6"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": null,
+      "productId": "PROD-CB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "凡依法可以使用外汇结算的跨境交易，企业都可以使用人民币结算。银行应以服务实体经济、促进贸易投资便利化为导向，根据跨境人民币政策，创新人民币金融产品，提升金融服务能力，充分满足客户真实、合规的人民币跨境业务需求。",
+      "reviewDecisionId": "DEC-20260922-a99b2796",
+      "supersedes": "ASM-PRODCB001-cd6e8ca4",
       "valueType": "TEXT"
     }
   ],
