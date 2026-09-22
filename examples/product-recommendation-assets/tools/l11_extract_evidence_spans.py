@@ -111,6 +111,42 @@ def discover_products() -> list:
     return found
 
 
+SOURCE_REGISTRY = BASE / "01_raw" / "source-registry.md"
+
+
+def load_source_product_binding() -> dict:
+    """PC8 T8：从 `01_raw/source-registry.md` 族表（§5.1–§5.7）解析 `source_id → 被引用产品卡集合`。
+
+    - 取值为「全部 13 张」⇒ 展开为全部产品卡 id；否则抽取其中的 `PROD-XX-NNN` 串。
+    - 同一 source_id 出现在多张表时**取并集**（下游按并集判定合法性）。
+    - §5.8 DEMO 行的「无（禁止沿用 13 张 legacy card）」**不并入**：该列的语义是 DEMO 源不得用于
+      13 张 legacy 卡的真实结论，**不是**源自身的引用范围；DEMO 轨的合法引用范围取自同 source_id 的族表行。
+      （该口径已上报 Owner，见 gits 侧 `B-6`；此处为**显式**选择，不做静默处理。）
+    - **fail-closed**：解析不出任何绑定即退出非零（禁止"无绑定"放行）。
+    """
+    if not SOURCE_REGISTRY.is_file():
+        raise SystemExit(f"FAIL | 源登记表不可读：{SOURCE_REGISTRY}（T8 fail-closed）")
+    all_products = set(discover_products())
+    bind = {}
+    for line in SOURCE_REGISTRY.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("| ") or line.startswith("|---"):
+            continue
+        cols = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cols) < 7:
+            continue
+        sid, last = cols[0], cols[-1]
+        if not re.fullmatch(r"(SRC|REG)-[A-Z]+-\d{3}", sid):
+            continue
+        if last.startswith("无"):
+            continue
+        ids = set(all_products) if "全部 13" in last else set(re.findall(r"PROD-[A-Z]+-\d{3}", last))
+        if ids:
+            bind.setdefault(sid, set()).update(ids)
+    if not bind:
+        raise SystemExit("FAIL | registry 未解析出任何「源→产品」绑定（T8 fail-closed）")
+    return bind
+
+
 # T4 挂起：本常量的语义待澄清（产品卡目录版本 vs Release 版本），澄清前**不改为派生**。
 PRODUCT_VERSION_SCOPE = "version=2026.09.06.1"
 
@@ -257,6 +293,18 @@ def main():
     for s in all_spans:
         s["extractionRunId"] = run_id
 
+    # PC8 T8：源 ↔ 产品绑定（**W2 强制前置**）。
+    # 根因（F-PC8-07 实证）：此前按全部 fragments 无差别匹配，导致 PROD-CM-001 吸收了 SRC-CB-001/SRC-FIN-001
+    # 等非登记源的证据。此处按 registry 族表的「被引用产品卡」列收窄参与集合。
+    binding = load_source_product_binding()
+    legal_sources = {sid for sid, prods in binding.items() if PRODUCT_ID in prods}
+    if not legal_sources:
+        print(f"FAIL | {PRODUCT_ID} 在 registry 中没有任何被引用源（T8 fail-closed，拒绝无绑定产出）")
+        return 1
+    scoped_spans = [s for s in all_spans if s["sourceId"] in legal_sources]
+    print(f"SCOPE | {PRODUCT_ID} 合法源 {len(legal_sources)} 个｜参与证据 {len(scoped_spans)}/{len(all_spans)}"
+          f"（剔除 {len(all_spans) - len(scoped_spans)} 条非登记源证据）")
+
     # ---------------- FieldAssertion 编译 ----------------
     ASM_DIR.mkdir(parents=True, exist_ok=True)
     assertions = []
@@ -266,7 +314,7 @@ def main():
         allow_types = set(spec["allowedClaimTypes"])
         need_rank = AUTHORITY_RANK[spec["minAuthorityLevel"]]
         matched = []
-        for s in all_spans:
+        for s in scoped_spans:
             if s["claimType"] not in allow_types:
                 continue
             if AUTHORITY_RANK[s["authorityLevel"]] > need_rank:
