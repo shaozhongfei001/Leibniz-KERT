@@ -614,6 +614,17 @@ F-L00-07 **仍未解除**。详见 §5.8。
   **不得**挂入 `REG-*`（`authorityLevel=REGULATORY` 会构成"以自律冒充监管"）；若将来确需收录，
   须**先新增相应口径**（另立前缀或 authorityLevel），并经 Owner 同意。
 
+- **`REG-CB-001` 取证进展（2026-09-22 · TL，追加留痕）**：已定位**官方 PDF 承载** ——
+  中国一带一路网（`yidaiyilu.gov.cn`，gov.cn 站）所附银发〔2018〕3 号通知原文附件
+  `…/wcm.files/upload/CMSydylgw/201801/201801060952023.pdf`（4 页 · 500759 字节 ·
+  `sha256:3eded6f9ba5c40cf292e6889…`）。**实测为扫描件**：4 页各 1 个图像对象、**文本层 0 字节**
+  ⇒ 本机无 OCR 引擎（`tesseract`/`pytesseract` 均缺失，仅 `pdftoppm` 可栅格化）⇒ **按纪律仍不入库**
+  （不 OCR 猜条文、不以报道冒充条文）。**本轮未把该 PDF 存入仓**（避免纳入未经 Owner 上传的二进制件）；
+  需要它时可凭上述 URL + sha256 复核。
+  **推荐处置（请 Owner 择一）**：① 提供**文本版**官方承载（或已 OCR 校对件）⇒ TL 立即转写入库；
+  ② 授权本机安装 OCR 引擎并由 TL 转写（**须接受 OCR 识别误差**，仍记 `clause_verified=false`）；
+  ③ 维持 `PENDING_SOURCE`（`PROD-CB-001` 的 `regulatoryBasis` 长期显示"未核验"，**不假装有依据**）。
+
 > **口径自查（2026-09-22）**：本轮首版只把 `AVAILABLE` 8→9，**漏改 `PENDING` 20→19**，
 > 被 `check_registry_consistency.py`「汇总 PENDING == 明细 PENDING」断言挡下（99/101）⇒ 已修正为
 > **19 + 9 = 28**。留痕说明：汇总数字改动必须**成对**推进，改一侧即会破坏等式。
