@@ -1,0 +1,969 @@
+{
+  "agreementClauses": [],
+  "boundaries": [
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-FIN-003-TYPICAL",
+      "boundaryType": "TYPICAL_USE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S02-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S02",
+          "title": "产品卡《订单融资》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "接到大额采购订单但缺备货/生产资金；订单回款有账期。",
+      "scenarioName": "适用场景"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-FIN-003-EXCL1",
+      "boundaryType": "NOT_SUITABLE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S05-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S05",
+          "title": "产品卡《订单融资》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "排除条件：虚假/倒签订单；无履约能力的空壳；订单项下未来应收账款已用于其他融资。",
+      "scenarioName": "排除条件"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-FIN-003-EXCL2",
+      "boundaryType": "PROHIBITED_USE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S05-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S05",
+          "title": "产品卡《订单融资》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "禁止用途：融资资金不得用于与订单无关用途；不得虚构订单套取资金；同一订单项下不得重复融资。",
+      "scenarioName": "禁止用途"
+    }
+  ],
+  "comparison": {
+    "comparisonAsOf": "2026-09-01",
+    "comparisonSetId": "CMP-PROD-FIN-003",
+    "dimensions": [
+      {
+        "dimensionId": "RELATION",
+        "dimensionName": "与本产品关系"
+      },
+      {
+        "dimensionId": "SOURCE_ALIAS",
+        "dimensionName": "卡片原始编码"
+      }
+    ],
+    "reviewState": "DRAFT",
+    "rows": [
+      {
+        "productId": "PROD-SET-001",
+        "values": {
+          "RELATION": "前置产品",
+          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
+        },
+        "versionId": ""
+      },
+      {
+        "productId": "PROD-SET-001",
+        "values": {
+          "RELATION": "配套产品",
+          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
+        },
+        "versionId": ""
+      }
+    ]
+  },
+  "derivation": {
+    "absentSections": {
+      "FAQ": "全仓无 FAQ 来源 ⇒ 不生成问答（不编造）",
+      "PRICING": "卡片 §8 仅记「按行内收费标准执行（待核定）」⇒ 不出内容（Owner 裁定 O-2）",
+      "TERMS_missing_keys": [
+        "LIMIT",
+        "TENOR",
+        "DRAW_MODE",
+        "INTEREST",
+        "REPAYMENT",
+        "COLLATERAL"
+      ]
+    },
+    "aliasMapSource": "gits `specs/knowledge-architecture/instances/product/sim/product-relations.SIM.ttl`（`sim:sourceAlias` ⇒ `rdf:object` 产品 id；含 Owner 决策 `OWNER-DECISION-2026-09-22-D2`）",
+    "notes": "证据 isDemo=true（SIM 阶段资产）；卡片 §9 风险与 §11 版本语义不属 8 章，未产出。",
+    "rules": [
+      "TERMS ← §2 适用客户/适用场景（只产出 ELIGIBLE_ENTITY / PURPOSE）",
+      "FIT ← §2 场景（TYPICAL_USE）+ §5 排除/禁止（NOT_SUITABLE/PROHIBITED_USE）+ §4 准入（ACCOUNT/CREDIT/CONTRACT）+ §6 前置",
+      "PROCESS ← §7 流程（按 → 切分；卡片无细节 ⇒ summary=stepName）",
+      "MATERIALS ← §7 材料（枚举清单；卡片无用途说明 ⇒ 如实标注）",
+      "SALES ← §10 销售边界",
+      "COMPARE ← §6 关系 + front matter 前置/配套产品码（reviewState=DRAFT：脚本派生未人工复核）"
+    ],
+    "tool": "tools/l40_build_product_center_sections.py",
+    "unresolvedRelationCodes": [
+      "ORDER_RECEIVABLE_CLOSED_ACCOUNT"
+    ]
+  },
+  "evidenceRefs": [
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§1",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S01-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S01",
+      "title": "产品卡《订单融资》§1 产品概览与客户价值",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§2",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S02-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S02",
+      "title": "产品卡《订单融资》§2 适用客户与适用场景",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§3",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S03-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S03",
+      "title": "产品卡《订单融资》§3 产品能力",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§4",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S04-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S04",
+      "title": "产品卡《订单融资》§4 准入条件",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§5",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S05-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S05",
+      "title": "产品卡《订单融资》§5 排除条件与禁止用途",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§6",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S06-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S06",
+      "title": "产品卡《订单融资》§6 前置、互斥、替代与配套产品",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§7",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+      "title": "产品卡《订单融资》§7 流程与材料",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§8",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S08-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S08",
+      "title": "产品卡《订单融资》§8 价格边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§9",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S09-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S09",
+      "title": "产品卡《订单融资》§9 风险提示与人工复核",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§10",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S10-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S10",
+      "title": "产品卡《订单融资》§10 销售边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§11",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S11-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S11",
+      "title": "产品卡《订单融资》§11 EvidenceRef（源文件与条款定位）",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§12",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN003-S12-2baf3a6f",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S12",
+      "title": "产品卡《订单融资》§12 不可变版本语义",
+      "verificationState": "VERIFIED"
+    }
+  ],
+  "faqs": [],
+  "generatedAt": "2026-09-22T21:40:00+08:00",
+  "materialGroups": [
+    {
+      "groupType": "BASIC_REQUIRED",
+      "items": [
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+              "title": "产品卡《订单融资》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-003-01",
+          "materialName": "订单合同",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+              "title": "产品卡《订单融资》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-003-02",
+          "materialName": "买方资信材料",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+              "title": "产品卡《订单融资》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-003-03",
+          "materialName": "采购计划",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+              "title": "产品卡《订单融资》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-003-04",
+          "materialName": "生产/履约能力证明",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+              "title": "产品卡《订单融资》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-003-05",
+          "materialName": "营业执照与财报",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        }
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S04-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S04",
+          "title": "产品卡《订单融资》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-003-S4-1",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "采购订单真实、合法、有效，买方资信良好。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S04-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S04",
+          "title": "产品卡《订单融资》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-003-S4-2",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "企业具备订单履约能力（生产/交付能力可核实）。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S04-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S04",
+          "title": "产品卡《订单融资》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-003-S4-3",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "贸易背景真实，合同齐备可核。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S04-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S04",
+          "title": "产品卡《订单融资》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-003-S4-4",
+      "prerequisiteType": "ACCOUNT",
+      "requirementText": "在本行开立结算账户，订单回款路径封闭可控。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S04-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S04",
+          "title": "产品卡《订单融资》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-003-S4-5",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "企业主体准入同流动资金贷款基本要求（见 PROD-FIN-001）。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§6",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S06-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S06",
+          "title": "产品卡《订单融资》§6 前置、互斥、替代与配套产品",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-003-S6",
+      "prerequisiteType": "ACCOUNT",
+      "requirementText": "产品：与买方的真实订单合同、本行结算账户。"
+    }
+  ],
+  "pricingItems": [],
+  "processSteps": [
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+          "title": "产品卡《订单融资》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 1,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-003-01",
+      "stepName": "订单审核",
+      "summary": "订单审核"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+          "title": "产品卡《订单融资》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 2,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-003-02",
+      "stepName": "买方资信核查",
+      "summary": "买方资信核查"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+          "title": "产品卡《订单融资》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 3,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-003-03",
+      "stepName": "融资审批与放款",
+      "summary": "融资审批与放款"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+          "title": "产品卡《订单融资》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 4,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-003-04",
+      "stepName": "订单回款封闭管理",
+      "summary": "订单回款封闭管理"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S07-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S07",
+          "title": "产品卡《订单融资》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 5,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-003-05",
+      "stepName": "结清",
+      "summary": "结清"
+    }
+  ],
+  "productFamily": "FINANCING",
+  "productId": "PROD-FIN-003",
+  "salesBoundaries": [
+    {
+      "boundaryId": "SLB-PROD-FIN-003-01",
+      "boundaryKind": "PROHIBITED_PROMISE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S10-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S10",
+          "title": "产品卡《订单融资》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": true,
+      "riskCategory": "PURPOSE",
+      "text": "不得虚构订单背景、不得承诺「按订单全额放款」。"
+    },
+    {
+      "boundaryId": "SLB-PROD-FIN-003-02",
+      "boundaryKind": "ALLOWED_EXPLANATION",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S10-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S10",
+          "title": "产品卡《订单融资》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": false,
+      "riskCategory": "APPROVAL",
+      "text": "AI/模型不得直接创建授信/放款/审批动作（INV-09）。"
+    },
+    {
+      "boundaryId": "SLB-PROD-FIN-003-03",
+      "boundaryKind": "ALLOWED_EXPLANATION",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S10-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S10",
+          "title": "产品卡《订单融资》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": false,
+      "riskCategory": "PURPOSE",
+      "text": "推荐仅为候选建议，最终以订单核实与审批为准。"
+    }
+  ],
+  "schema": "product_center_sections/v1",
+  "sourceCardRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md",
+  "sourceCardSha256": "2baf3a6ff2939d93855ab4e1be73dc4510e2a0d569a97509ea26d50ccfe4279b",
+  "summary": {
+    "boundaryStatement": "排除条件：虚假/倒签订单；无履约能力的空壳；订单项下未来应收账款已用于其他融资。",
+    "isNot": [
+      "排除条件：虚假/倒签订单；无履约能力的空壳；订单项下未来应收账款已用于其他融资。",
+      "禁止用途：融资资金不得用于与订单无关用途；不得虚构订单套取资金；同一订单项下不得重复融资。"
+    ],
+    "nearestDifference": "配套产品：对公结算账户、订单回款封闭账户。",
+    "oneSentenceDefinition": "基于真实采购订单、以订单项下未来回款/货物为保障的融资，用于订单项下备货/生产资金。",
+    "solves": [
+      "提供订单项下融资（备货/生产资金），订单回款封闭管理。",
+      "解决：订单备货/生产阶段的前置资金缺口，匹配订单履约周期。"
+    ]
+  },
+  "terms": [
+    {
+      "businessDefinition": "承接优质买方真实订单、具备稳定履约能力的中型/小型企业。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 1,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S02-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S02",
+          "title": "产品卡《订单融资》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "承接优质买方真实订单、具备稳定履约能力的中型/小型企业。",
+      "termId": "TRM-PROD-FIN-003-ELIGIBLE_ENTITY",
+      "termKey": "ELIGIBLE_ENTITY"
+    },
+    {
+      "businessDefinition": "接到大额采购订单但缺备货/生产资金；订单回款有账期。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 2,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN003-S02-2baf3a6f",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-003.md#S02",
+          "title": "产品卡《订单融资》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "接到大额采购订单但缺备货/生产资金；订单回款有账期。",
+      "termId": "TRM-PROD-FIN-003-PURPOSE",
+      "termKey": "PURPOSE"
+    }
+  ],
+  "versionId": "1.0.0"
+}

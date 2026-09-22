@@ -1,0 +1,783 @@
+{
+  "agreementClauses": [],
+  "boundaries": [
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-SET-001-TYPICAL",
+      "boundaryType": "TYPICAL_USE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S02-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S02",
+          "title": "产品卡《单位结算账户》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "日常资金收付、工资发放、贸易结算。",
+      "scenarioName": "适用场景"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-SET-001-EXCL1",
+      "boundaryType": "NOT_SUITABLE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S05-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S05",
+          "title": "产品卡《单位结算账户》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "无合法经营主体资格的机构。",
+      "scenarioName": "排除条件"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-SET-001-EXCL2",
+      "boundaryType": "NOT_SUITABLE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S05-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S05",
+          "title": "产品卡《单位结算账户》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "被列入制裁名单或高风险名单的主体。",
+      "scenarioName": "排除条件"
+    }
+  ],
+  "comparison": {
+    "comparisonAsOf": "2026-09-01",
+    "comparisonSetId": "CMP-PROD-SET-001",
+    "dimensions": [
+      {
+        "dimensionId": "RELATION",
+        "dimensionName": "与本产品关系"
+      },
+      {
+        "dimensionId": "SOURCE_ALIAS",
+        "dimensionName": "卡片原始编码"
+      }
+    ],
+    "reviewState": "DRAFT",
+    "rows": [
+      {
+        "productId": "PROD-CM-001",
+        "values": {
+          "RELATION": "配套产品",
+          "SOURCE_ALIAS": "CASH_MANAGEMENT"
+        },
+        "versionId": ""
+      }
+    ]
+  },
+  "derivation": {
+    "absentSections": {
+      "FAQ": "全仓无 FAQ 来源 ⇒ 不生成问答（不编造）",
+      "PRICING": "卡片 §8 仅记「按行内收费标准执行（待核定）」⇒ 不出内容（Owner 裁定 O-2）",
+      "TERMS_missing_keys": [
+        "LIMIT",
+        "TENOR",
+        "DRAW_MODE",
+        "INTEREST",
+        "REPAYMENT",
+        "COLLATERAL"
+      ]
+    },
+    "aliasMapSource": "gits `specs/knowledge-architecture/instances/product/sim/product-relations.SIM.ttl`（`sim:sourceAlias` ⇒ `rdf:object` 产品 id；含 Owner 决策 `OWNER-DECISION-2026-09-22-D2`）",
+    "notes": "证据 isDemo=true（SIM 阶段资产）；卡片 §9 风险与 §11 版本语义不属 8 章，未产出。",
+    "rules": [
+      "TERMS ← §2 适用客户/适用场景（只产出 ELIGIBLE_ENTITY / PURPOSE）",
+      "FIT ← §2 场景（TYPICAL_USE）+ §5 排除/禁止（NOT_SUITABLE/PROHIBITED_USE）+ §4 准入（ACCOUNT/CREDIT/CONTRACT）+ §6 前置",
+      "PROCESS ← §7 流程（按 → 切分；卡片无细节 ⇒ summary=stepName）",
+      "MATERIALS ← §7 材料（枚举清单；卡片无用途说明 ⇒ 如实标注）",
+      "SALES ← §10 销售边界",
+      "COMPARE ← §6 关系 + front matter 前置/配套产品码（reviewState=DRAFT：脚本派生未人工复核）"
+    ],
+    "tool": "tools/l40_build_product_center_sections.py",
+    "unresolvedRelationCodes": [
+      "CORPORATE_E_BANK"
+    ]
+  },
+  "evidenceRefs": [
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§1",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S01-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S01",
+      "title": "产品卡《单位结算账户》§1 产品概览与客户价值",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§2",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S02-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S02",
+      "title": "产品卡《单位结算账户》§2 适用客户与适用场景",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§3",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S03-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S03",
+      "title": "产品卡《单位结算账户》§3 产品能力",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§4",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S04-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S04",
+      "title": "产品卡《单位结算账户》§4 准入条件",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§5",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S05-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S05",
+      "title": "产品卡《单位结算账户》§5 排除条件与禁止用途",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§6",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S06-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S06",
+      "title": "产品卡《单位结算账户》§6 前置、互斥、替代与配套产品",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§7",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S07-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S07",
+      "title": "产品卡《单位结算账户》§7 流程与材料",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§8",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S08-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S08",
+      "title": "产品卡《单位结算账户》§8 价格边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§9",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S09-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S09",
+      "title": "产品卡《单位结算账户》§9 风险提示与人工复核",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§10",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S10-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S10",
+      "title": "产品卡《单位结算账户》§10 销售边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§11",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODSET001-S11-0ff57952",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S11",
+      "title": "产品卡《单位结算账户》§11 不可变版本语义",
+      "verificationState": "VERIFIED"
+    }
+  ],
+  "faqs": [],
+  "generatedAt": "2026-09-22T21:40:00+08:00",
+  "materialGroups": [
+    {
+      "groupType": "BASIC_REQUIRED",
+      "items": [
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODSET001-S07-0ff57952",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S07",
+              "title": "产品卡《单位结算账户》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-SET-001-01",
+          "materialName": "营业执照",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODSET001-S07-0ff57952",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S07",
+              "title": "产品卡《单位结算账户》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-SET-001-02",
+          "materialName": "组织机构代码证",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODSET001-S07-0ff57952",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S07",
+              "title": "产品卡《单位结算账户》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-SET-001-03",
+          "materialName": "税务登记证",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODSET001-S07-0ff57952",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S07",
+              "title": "产品卡《单位结算账户》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-SET-001-04",
+          "materialName": "法定代表人身份证",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        }
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S04-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S04",
+          "title": "产品卡《单位结算账户》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-SET-001-S4-1",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "依法设立并有效存续；证照齐全有效。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S04-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S04",
+          "title": "产品卡《单位结算账户》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-SET-001-S4-2",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "符合反洗钱客户身份识别要求。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§6",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S06-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S06",
+          "title": "产品卡《单位结算账户》§6 前置、互斥、替代与配套产品",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-SET-001-S6",
+      "prerequisiteType": "ACCOUNT",
+      "requirementText": "产品：无。"
+    }
+  ],
+  "pricingItems": [],
+  "processSteps": [
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S07-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S07",
+          "title": "产品卡《单位结算账户》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 1,
+      "slaReference": null,
+      "stepId": "STP-PROD-SET-001-01",
+      "stepName": "申请受理",
+      "summary": "申请受理"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S07-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S07",
+          "title": "产品卡《单位结算账户》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 2,
+      "slaReference": null,
+      "stepId": "STP-PROD-SET-001-02",
+      "stepName": "客户身份识别",
+      "summary": "客户身份识别"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S07-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S07",
+          "title": "产品卡《单位结算账户》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 3,
+      "slaReference": null,
+      "stepId": "STP-PROD-SET-001-03",
+      "stepName": "账户开立",
+      "summary": "账户开立"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S07-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S07",
+          "title": "产品卡《单位结算账户》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 4,
+      "slaReference": null,
+      "stepId": "STP-PROD-SET-001-04",
+      "stepName": "启用",
+      "summary": "启用"
+    }
+  ],
+  "productFamily": "SETTLEMENT",
+  "productId": "PROD-SET-001",
+  "salesBoundaries": [
+    {
+      "boundaryId": "SLB-PROD-SET-001-01",
+      "boundaryKind": "PROHIBITED_PROMISE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S10-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S10",
+          "title": "产品卡《单位结算账户》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": true,
+      "riskCategory": "PURPOSE",
+      "text": "不得违规开立匿名账户或假名账户。"
+    },
+    {
+      "boundaryId": "SLB-PROD-SET-001-02",
+      "boundaryKind": "ALLOWED_EXPLANATION",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S10-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S10",
+          "title": "产品卡《单位结算账户》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": false,
+      "riskCategory": "APPROVAL",
+      "text": "AI/模型不得直接创建账户（INV-09）。"
+    }
+  ],
+  "schema": "product_center_sections/v1",
+  "sourceCardRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md",
+  "sourceCardSha256": "0ff57952894aeb7e66444bb19390e9e40556bbe4ae32ee9c9fc3a0a0957f27ad",
+  "summary": {
+    "boundaryStatement": "无合法经营主体资格的机构。",
+    "isNot": [
+      "无合法经营主体资格的机构。",
+      "被列入制裁名单或高风险名单的主体。"
+    ],
+    "nearestDifference": "配套产品：企业网银、现金管理。",
+    "oneSentenceDefinition": "对公结算账户是银行为企事业单位开立的基本/一般存款账户，提供日常资金收付、转账结算、代发工资等基础服务。",
+    "solves": [
+      "提供基本/一般/专用/临时存款账户开立与管理。",
+      "支持现金存取、转账结算、代收代付。"
+    ]
+  },
+  "terms": [
+    {
+      "businessDefinition": "依法设立的企业法人、非法人组织。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 1,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S02-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S02",
+          "title": "产品卡《单位结算账户》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "依法设立的企业法人、非法人组织。",
+      "termId": "TRM-PROD-SET-001-ELIGIBLE_ENTITY",
+      "termKey": "ELIGIBLE_ENTITY"
+    },
+    {
+      "businessDefinition": "日常资金收付、工资发放、贸易结算。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 2,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODSET001-S02-0ff57952",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/settlement/version=2026.09.01.1/product-cards/PROD-SET-001.md#S02",
+          "title": "产品卡《单位结算账户》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "日常资金收付、工资发放、贸易结算。",
+      "termId": "TRM-PROD-SET-001-PURPOSE",
+      "termKey": "PURPOSE"
+    }
+  ],
+  "versionId": "1.0.0"
+}

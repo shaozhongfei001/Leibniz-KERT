@@ -1,0 +1,963 @@
+{
+  "agreementClauses": [],
+  "boundaries": [
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-IB-001-TYPICAL",
+      "boundaryType": "TYPICAL_USE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S02-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S02",
+          "title": "产品卡《并购贷款》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "并购与收购、战略重组、产业整合。",
+      "scenarioName": "适用场景"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-IB-001-EXCL1",
+      "boundaryType": "NOT_SUITABLE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S05-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S05",
+          "title": "产品卡《并购贷款》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "房地产开发、高污染、产能过剩行业并购。",
+      "scenarioName": "排除条件"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-IB-001-EXCL2",
+      "boundaryType": "PROHIBITED_USE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S05-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S05",
+          "title": "产品卡《并购贷款》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "禁止用于超出监管比例的股权投资、偿还股东借款等。",
+      "scenarioName": "禁止用途"
+    }
+  ],
+  "comparison": {
+    "comparisonAsOf": "2026-09-01",
+    "comparisonSetId": "CMP-PROD-IB-001",
+    "dimensions": [
+      {
+        "dimensionId": "RELATION",
+        "dimensionName": "与本产品关系"
+      },
+      {
+        "dimensionId": "SOURCE_ALIAS",
+        "dimensionName": "卡片原始编码"
+      }
+    ],
+    "reviewState": "DRAFT",
+    "rows": [
+      {
+        "productId": "PROD-SET-001",
+        "values": {
+          "RELATION": "前置产品",
+          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
+        },
+        "versionId": ""
+      },
+      {
+        "productId": "PROD-SET-001",
+        "values": {
+          "RELATION": "配套产品",
+          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
+        },
+        "versionId": ""
+      }
+    ]
+  },
+  "derivation": {
+    "absentSections": {
+      "FAQ": "全仓无 FAQ 来源 ⇒ 不生成问答（不编造）",
+      "PRICING": "卡片 §8 仅记「按行内收费标准执行（待核定）」⇒ 不出内容（Owner 裁定 O-2）",
+      "TERMS_missing_keys": [
+        "LIMIT",
+        "TENOR",
+        "DRAW_MODE",
+        "INTEREST",
+        "REPAYMENT",
+        "COLLATERAL"
+      ]
+    },
+    "aliasMapSource": "gits `specs/knowledge-architecture/instances/product/sim/product-relations.SIM.ttl`（`sim:sourceAlias` ⇒ `rdf:object` 产品 id；含 Owner 决策 `OWNER-DECISION-2026-09-22-D2`）",
+    "notes": "证据 isDemo=true（SIM 阶段资产）；卡片 §9 风险与 §11 版本语义不属 8 章，未产出。",
+    "rules": [
+      "TERMS ← §2 适用客户/适用场景（只产出 ELIGIBLE_ENTITY / PURPOSE）",
+      "FIT ← §2 场景（TYPICAL_USE）+ §5 排除/禁止（NOT_SUITABLE/PROHIBITED_USE）+ §4 准入（ACCOUNT/CREDIT/CONTRACT）+ §6 前置",
+      "PROCESS ← §7 流程（按 → 切分；卡片无细节 ⇒ summary=stepName）",
+      "MATERIALS ← §7 材料（枚举清单；卡片无用途说明 ⇒ 如实标注）",
+      "SALES ← §10 销售边界",
+      "COMPARE ← §6 关系 + front matter 前置/配套产品码（reviewState=DRAFT：脚本派生未人工复核）"
+    ],
+    "tool": "tools/l40_build_product_center_sections.py",
+    "unresolvedRelationCodes": [
+      "FINANCIAL_ADVISORY"
+    ]
+  },
+  "evidenceRefs": [
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§1",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S01-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S01",
+      "title": "产品卡《并购贷款》§1 产品概览与客户价值",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§2",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S02-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S02",
+      "title": "产品卡《并购贷款》§2 适用客户与适用场景",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§3",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S03-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S03",
+      "title": "产品卡《并购贷款》§3 产品能力",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§4",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S04-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S04",
+      "title": "产品卡《并购贷款》§4 准入条件",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§5",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S05-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S05",
+      "title": "产品卡《并购贷款》§5 排除条件与禁止用途",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§6",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S06-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S06",
+      "title": "产品卡《并购贷款》§6 前置、互斥、替代与配套产品",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§7",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+      "title": "产品卡《并购贷款》§7 流程与材料",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§8",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S08-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S08",
+      "title": "产品卡《并购贷款》§8 价格边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§9",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S09-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S09",
+      "title": "产品卡《并购贷款》§9 风险提示与人工复核",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§10",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S10-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S10",
+      "title": "产品卡《并购贷款》§10 销售边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§11",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODIB001-S11-b27182bd",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "投资银行部",
+      "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S11",
+      "title": "产品卡《并购贷款》§11 不可变版本语义",
+      "verificationState": "VERIFIED"
+    }
+  ],
+  "faqs": [],
+  "generatedAt": "2026-09-22T21:40:00+08:00",
+  "materialGroups": [
+    {
+      "groupType": "BASIC_REQUIRED",
+      "items": [
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "投资银行部",
+              "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+              "title": "产品卡《并购贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-IB-001-01",
+          "materialName": "营业执照",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "投资银行部",
+              "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+              "title": "产品卡《并购贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-IB-001-02",
+          "materialName": "并购协议",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "投资银行部",
+              "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+              "title": "产品卡《并购贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-IB-001-03",
+          "materialName": "尽职调查报告",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "投资银行部",
+              "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+              "title": "产品卡《并购贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-IB-001-04",
+          "materialName": "估值报告",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "投资银行部",
+              "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+              "title": "产品卡《并购贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-IB-001-05",
+          "materialName": "董事会决议",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        }
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S04-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S04",
+          "title": "产品卡《并购贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-IB-001-S4-1",
+      "prerequisiteType": "CREDIT",
+      "requirementText": "依法设立并有效存续；信用评级 AA 及以上。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S04-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S04",
+          "title": "产品卡《并购贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-IB-001-S4-2",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "并购交易合法合规，符合国家产业政策。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S04-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S04",
+          "title": "产品卡《并购贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-IB-001-S4-3",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "并购方与目标企业有产业协同。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S04-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S04",
+          "title": "产品卡《并购贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-IB-001-S4-4",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "并购贷款占比不超过交易价款的 60%（监管要求）。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§6",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S06-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S06",
+          "title": "产品卡《并购贷款》§6 前置、互斥、替代与配套产品",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-IB-001-S6",
+      "prerequisiteType": "ACCOUNT",
+      "requirementText": "产品：对公结算账户。"
+    }
+  ],
+  "pricingItems": [],
+  "processSteps": [
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+          "title": "产品卡《并购贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 1,
+      "slaReference": null,
+      "stepId": "STP-PROD-IB-001-01",
+      "stepName": "业务申请",
+      "summary": "业务申请"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+          "title": "产品卡《并购贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 2,
+      "slaReference": null,
+      "stepId": "STP-PROD-IB-001-02",
+      "stepName": "尽职调查",
+      "summary": "尽职调查"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+          "title": "产品卡《并购贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 3,
+      "slaReference": null,
+      "stepId": "STP-PROD-IB-001-03",
+      "stepName": "并购方案评估",
+      "summary": "并购方案评估"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+          "title": "产品卡《并购贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 4,
+      "slaReference": null,
+      "stepId": "STP-PROD-IB-001-04",
+      "stepName": "审批",
+      "summary": "审批"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+          "title": "产品卡《并购贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 5,
+      "slaReference": null,
+      "stepId": "STP-PROD-IB-001-05",
+      "stepName": "签订合同",
+      "summary": "签订合同"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+          "title": "产品卡《并购贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 6,
+      "slaReference": null,
+      "stepId": "STP-PROD-IB-001-06",
+      "stepName": "放款",
+      "summary": "放款"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S07",
+          "title": "产品卡《并购贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 7,
+      "slaReference": null,
+      "stepId": "STP-PROD-IB-001-07",
+      "stepName": "贷后管理",
+      "summary": "贷后管理"
+    }
+  ],
+  "productFamily": "INVESTMENT_BANKING",
+  "productId": "PROD-IB-001",
+  "salesBoundaries": [
+    {
+      "boundaryId": "SLB-PROD-IB-001-01",
+      "boundaryKind": "PROHIBITED_PROMISE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S10-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S10",
+          "title": "产品卡《并购贷款》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": true,
+      "riskCategory": "PURPOSE",
+      "text": "不得承诺\"必批\"等误导性表述。"
+    },
+    {
+      "boundaryId": "SLB-PROD-IB-001-02",
+      "boundaryKind": "ALLOWED_EXPLANATION",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S10-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S10",
+          "title": "产品卡《并购贷款》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": false,
+      "riskCategory": "APPROVAL",
+      "text": "AI/模型不得直接创建贷款或审批动作（INV-09）。"
+    }
+  ],
+  "schema": "product_center_sections/v1",
+  "sourceCardRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md",
+  "sourceCardSha256": "b27182bdda9a2641b2a202e2529317843e062e851ab7c1417f551caa4d7fe4ad",
+  "summary": {
+    "boundaryStatement": "房地产开发、高污染、产能过剩行业并购。",
+    "isNot": [
+      "房地产开发、高污染、产能过剩行业并购。",
+      "禁止用于超出监管比例的股权投资、偿还股东借款等。"
+    ],
+    "nearestDifference": "配套产品：财务顾问。",
+    "oneSentenceDefinition": "并购贷款是银行向并购方发放的、用于支付并购交易价款的贷款。",
+    "solves": [
+      "提供并购交易价款融资。",
+      "支持同一控制下/非同一控制下并购。"
+    ]
+  },
+  "terms": [
+    {
+      "businessDefinition": "大型企业，有战略并购或产业整合需求。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 1,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S02-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S02",
+          "title": "产品卡《并购贷款》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "大型企业，有战略并购或产业整合需求。",
+      "termId": "TRM-PROD-IB-001-ELIGIBLE_ENTITY",
+      "termKey": "ELIGIBLE_ENTITY"
+    },
+    {
+      "businessDefinition": "并购与收购、战略重组、产业整合。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 2,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S02-b27182bd",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S02",
+          "title": "产品卡《并购贷款》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "并购与收购、战略重组、产业整合。",
+      "termId": "TRM-PROD-IB-001-PURPOSE",
+      "termKey": "PURPOSE"
+    }
+  ],
+  "versionId": "1.0.0"
+}

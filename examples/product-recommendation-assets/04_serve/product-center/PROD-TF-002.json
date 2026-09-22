@@ -1,0 +1,824 @@
+{
+  "agreementClauses": [],
+  "boundaries": [
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-TF-002-TYPICAL",
+      "boundaryType": "TYPICAL_USE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S02-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S02",
+          "title": "产品卡《国内信用证》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "贸易支付、风险缓释、供应商信用支持。",
+      "scenarioName": "适用场景"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-TF-002-EXCL1",
+      "boundaryType": "NOT_SUITABLE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S05-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S05",
+          "title": "产品卡《国内信用证》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "无真实贸易背景的信用证。",
+      "scenarioName": "排除条件"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-TF-002-EXCL2",
+      "boundaryType": "PROHIBITED_USE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S05-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S05",
+          "title": "产品卡《国内信用证》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "禁止用于股权投资等非贸易用途。",
+      "scenarioName": "禁止用途"
+    }
+  ],
+  "comparison": {
+    "comparisonAsOf": "2026-09-01",
+    "comparisonSetId": "CMP-PROD-TF-002",
+    "dimensions": [
+      {
+        "dimensionId": "RELATION",
+        "dimensionName": "与本产品关系"
+      },
+      {
+        "dimensionId": "SOURCE_ALIAS",
+        "dimensionName": "卡片原始编码"
+      }
+    ],
+    "reviewState": "DRAFT",
+    "rows": [
+      {
+        "productId": "PROD-SET-001",
+        "values": {
+          "RELATION": "前置产品",
+          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
+        },
+        "versionId": ""
+      },
+      {
+        "productId": "PROD-SET-001",
+        "values": {
+          "RELATION": "配套产品",
+          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
+        },
+        "versionId": ""
+      },
+      {
+        "productId": "PROD-TF-001",
+        "values": {
+          "RELATION": "配套产品",
+          "SOURCE_ALIAS": "BANK_ACCEPTANCE_DRAFT"
+        },
+        "versionId": ""
+      }
+    ]
+  },
+  "derivation": {
+    "absentSections": {
+      "FAQ": "全仓无 FAQ 来源 ⇒ 不生成问答（不编造）",
+      "PRICING": "卡片 §8 仅记「按行内收费标准执行（待核定）」⇒ 不出内容（Owner 裁定 O-2）",
+      "TERMS_missing_keys": [
+        "LIMIT",
+        "TENOR",
+        "DRAW_MODE",
+        "INTEREST",
+        "REPAYMENT",
+        "COLLATERAL"
+      ]
+    },
+    "aliasMapSource": "gits `specs/knowledge-architecture/instances/product/sim/product-relations.SIM.ttl`（`sim:sourceAlias` ⇒ `rdf:object` 产品 id；含 Owner 决策 `OWNER-DECISION-2026-09-22-D2`）",
+    "notes": "证据 isDemo=true（SIM 阶段资产）；卡片 §9 风险与 §11 版本语义不属 8 章，未产出。",
+    "rules": [
+      "TERMS ← §2 适用客户/适用场景（只产出 ELIGIBLE_ENTITY / PURPOSE）",
+      "FIT ← §2 场景（TYPICAL_USE）+ §5 排除/禁止（NOT_SUITABLE/PROHIBITED_USE）+ §4 准入（ACCOUNT/CREDIT/CONTRACT）+ §6 前置",
+      "PROCESS ← §7 流程（按 → 切分；卡片无细节 ⇒ summary=stepName）",
+      "MATERIALS ← §7 材料（枚举清单；卡片无用途说明 ⇒ 如实标注）",
+      "SALES ← §10 销售边界",
+      "COMPARE ← §6 关系 + front matter 前置/配套产品码（reviewState=DRAFT：脚本派生未人工复核）"
+    ],
+    "tool": "tools/l40_build_product_center_sections.py",
+    "unresolvedRelationCodes": []
+  },
+  "evidenceRefs": [
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§1",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S01-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S01",
+      "title": "产品卡《国内信用证》§1 产品概览与客户价值",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§2",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S02-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S02",
+      "title": "产品卡《国内信用证》§2 适用客户与适用场景",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§3",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S03-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S03",
+      "title": "产品卡《国内信用证》§3 产品能力",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§4",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S04-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S04",
+      "title": "产品卡《国内信用证》§4 准入条件",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§5",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S05-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S05",
+      "title": "产品卡《国内信用证》§5 排除条件与禁止用途",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§6",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S06-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S06",
+      "title": "产品卡《国内信用证》§6 前置、互斥、替代与配套产品",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§7",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S07-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S07",
+      "title": "产品卡《国内信用证》§7 流程与材料",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§8",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S08-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S08",
+      "title": "产品卡《国内信用证》§8 价格边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§9",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S09-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S09",
+      "title": "产品卡《国内信用证》§9 风险提示与人工复核",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§10",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S10-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S10",
+      "title": "产品卡《国内信用证》§10 销售边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§11",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODTF002-S11-ce098faf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S11",
+      "title": "产品卡《国内信用证》§11 不可变版本语义",
+      "verificationState": "VERIFIED"
+    }
+  ],
+  "faqs": [],
+  "generatedAt": "2026-09-22T21:40:00+08:00",
+  "materialGroups": [
+    {
+      "groupType": "BASIC_REQUIRED",
+      "items": [
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODTF002-S07-ce098faf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S07",
+              "title": "产品卡《国内信用证》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-TF-002-01",
+          "materialName": "营业执照",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODTF002-S07-ce098faf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S07",
+              "title": "产品卡《国内信用证》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-TF-002-02",
+          "materialName": "贸易合同",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODTF002-S07-ce098faf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S07",
+              "title": "产品卡《国内信用证》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-TF-002-03",
+          "materialName": "信用证开证申请书",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        }
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S04-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S04",
+          "title": "产品卡《国内信用证》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-TF-002-S4-1",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "依法设立并有效存续；证照齐全有效。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S04-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S04",
+          "title": "产品卡《国内信用证》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-TF-002-S4-2",
+      "prerequisiteType": "CREDIT",
+      "requirementText": "信用评级 BBB 及以上。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S04-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S04",
+          "title": "产品卡《国内信用证》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-TF-002-S4-3",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "有真实贸易背景。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§6",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S06-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S06",
+          "title": "产品卡《国内信用证》§6 前置、互斥、替代与配套产品",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-TF-002-S6",
+      "prerequisiteType": "ACCOUNT",
+      "requirementText": "产品：对公结算账户。"
+    }
+  ],
+  "pricingItems": [],
+  "processSteps": [
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S07-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S07",
+          "title": "产品卡《国内信用证》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 1,
+      "slaReference": null,
+      "stepId": "STP-PROD-TF-002-01",
+      "stepName": "申请开证",
+      "summary": "申请开证"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S07-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S07",
+          "title": "产品卡《国内信用证》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 2,
+      "slaReference": null,
+      "stepId": "STP-PROD-TF-002-02",
+      "stepName": "审核开证",
+      "summary": "审核开证"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S07-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S07",
+          "title": "产品卡《国内信用证》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 3,
+      "slaReference": null,
+      "stepId": "STP-PROD-TF-002-03",
+      "stepName": "通知受益人",
+      "summary": "通知受益人"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S07-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S07",
+          "title": "产品卡《国内信用证》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 4,
+      "slaReference": null,
+      "stepId": "STP-PROD-TF-002-04",
+      "stepName": "交单议付",
+      "summary": "交单议付"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S07-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S07",
+          "title": "产品卡《国内信用证》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 5,
+      "slaReference": null,
+      "stepId": "STP-PROD-TF-002-05",
+      "stepName": "付款/承兑",
+      "summary": "付款/承兑"
+    }
+  ],
+  "productFamily": "TRADE_FINANCE",
+  "productId": "PROD-TF-002",
+  "salesBoundaries": [
+    {
+      "boundaryId": "SLB-PROD-TF-002-01",
+      "boundaryKind": "PROHIBITED_PROMISE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S10-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S10",
+          "title": "产品卡《国内信用证》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": true,
+      "riskCategory": "PURPOSE",
+      "text": "不得违规开立无真实贸易背景的信用证。"
+    },
+    {
+      "boundaryId": "SLB-PROD-TF-002-02",
+      "boundaryKind": "ALLOWED_EXPLANATION",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S10-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S10",
+          "title": "产品卡《国内信用证》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": false,
+      "riskCategory": "APPROVAL",
+      "text": "AI/模型不得直接创建信用证（INV-09）。"
+    }
+  ],
+  "schema": "product_center_sections/v1",
+  "sourceCardRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md",
+  "sourceCardSha256": "ce098fafe283f3a09c608ef6d9e3611410d6a6e32bfab7432714894358e32d3a",
+  "summary": {
+    "boundaryStatement": "无真实贸易背景的信用证。",
+    "isNot": [
+      "无真实贸易背景的信用证。",
+      "禁止用于股权投资等非贸易用途。"
+    ],
+    "nearestDifference": "配套产品：银行承兑汇票。",
+    "oneSentenceDefinition": "国内信用证是银行依照申请人申请开立的、对符合信用证条款的单据进行付款的承诺。",
+    "solves": [
+      "开立/通知/议付/付款全流程服务。",
+      "支持即期/远期信用证。"
+    ]
+  },
+  "terms": [
+    {
+      "businessDefinition": "有国内贸易结算需求、需要银行信用保障的企业。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 1,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S02-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S02",
+          "title": "产品卡《国内信用证》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "有国内贸易结算需求、需要银行信用保障的企业。",
+      "termId": "TRM-PROD-TF-002-ELIGIBLE_ENTITY",
+      "termKey": "ELIGIBLE_ENTITY"
+    },
+    {
+      "businessDefinition": "贸易支付、风险缓释、供应商信用支持。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 2,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODTF002-S02-ce098faf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/trade-finance/version=2026.09.01.1/product-cards/PROD-TF-002.md#S02",
+          "title": "产品卡《国内信用证》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "贸易支付、风险缓释、供应商信用支持。",
+      "termId": "TRM-PROD-TF-002-PURPOSE",
+      "termKey": "PURPOSE"
+    }
+  ],
+  "versionId": "1.0.0"
+}

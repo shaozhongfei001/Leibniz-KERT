@@ -1,0 +1,1116 @@
+{
+  "agreementClauses": [],
+  "boundaries": [
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-FIN-001-TYPICAL",
+      "boundaryType": "TYPICAL_USE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S02-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S02",
+          "title": "产品卡《流动资金贷款》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "原材料采购、季节性备货、订单备货、日常营运资金周转、短期流动性补充。",
+      "scenarioName": "适用场景"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-FIN-001-EXCL1",
+      "boundaryType": "NOT_SUITABLE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S05-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S05",
+          "title": "产品卡《流动资金贷款》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "排除条件：房地产开发、股票/债券/理财等投资性用途主体；无真实贸易背景；产能过剩/淘汰类行业；空壳或无实际经营企业；失信被执行人。",
+      "scenarioName": "排除条件"
+    },
+    {
+      "alternativeDirection": null,
+      "boundaryId": "BND-PROD-FIN-001-EXCL2",
+      "boundaryType": "PROHIBITED_USE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§5",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S05-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S05",
+          "title": "产品卡《流动资金贷款》§5 排除条件与禁止用途",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "scenarioDescription": "禁止用途：不得用于股权投资、证券投资、固定资产投资（长期）、偿还其他金融机构贷款、以贷收贷、流向房地产/股市/理财、向关系人利益输送等。",
+      "scenarioName": "禁止用途"
+    }
+  ],
+  "comparison": {
+    "comparisonAsOf": "2026-09-01",
+    "comparisonSetId": "CMP-PROD-FIN-001",
+    "dimensions": [
+      {
+        "dimensionId": "RELATION",
+        "dimensionName": "与本产品关系"
+      },
+      {
+        "dimensionId": "SOURCE_ALIAS",
+        "dimensionName": "卡片原始编码"
+      }
+    ],
+    "reviewState": "DRAFT",
+    "rows": [
+      {
+        "productId": "PROD-SET-001",
+        "values": {
+          "RELATION": "前置产品",
+          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
+        },
+        "versionId": ""
+      },
+      {
+        "productId": "PROD-SET-001",
+        "values": {
+          "RELATION": "配套产品",
+          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
+        },
+        "versionId": ""
+      },
+      {
+        "productId": "PROD-CM-001",
+        "values": {
+          "RELATION": "配套产品",
+          "SOURCE_ALIAS": "CASH_MANAGEMENT"
+        },
+        "versionId": ""
+      }
+    ]
+  },
+  "derivation": {
+    "absentSections": {
+      "FAQ": "全仓无 FAQ 来源 ⇒ 不生成问答（不编造）",
+      "PRICING": "卡片 §8 仅记「按行内收费标准执行（待核定）」⇒ 不出内容（Owner 裁定 O-2）",
+      "TERMS_missing_keys": [
+        "LIMIT",
+        "TENOR",
+        "DRAW_MODE",
+        "INTEREST",
+        "REPAYMENT",
+        "COLLATERAL"
+      ]
+    },
+    "aliasMapSource": "gits `specs/knowledge-architecture/instances/product/sim/product-relations.SIM.ttl`（`sim:sourceAlias` ⇒ `rdf:object` 产品 id；含 Owner 决策 `OWNER-DECISION-2026-09-22-D2`）",
+    "notes": "证据 isDemo=true（SIM 阶段资产）；卡片 §9 风险与 §11 版本语义不属 8 章，未产出。",
+    "rules": [
+      "TERMS ← §2 适用客户/适用场景（只产出 ELIGIBLE_ENTITY / PURPOSE）",
+      "FIT ← §2 场景（TYPICAL_USE）+ §5 排除/禁止（NOT_SUITABLE/PROHIBITED_USE）+ §4 准入（ACCOUNT/CREDIT/CONTRACT）+ §6 前置",
+      "PROCESS ← §7 流程（按 → 切分；卡片无细节 ⇒ summary=stepName）",
+      "MATERIALS ← §7 材料（枚举清单；卡片无用途说明 ⇒ 如实标注）",
+      "SALES ← §10 销售边界",
+      "COMPARE ← §6 关系 + front matter 前置/配套产品码（reviewState=DRAFT：脚本派生未人工复核）"
+    ],
+    "tool": "tools/l40_build_product_center_sections.py",
+    "unresolvedRelationCodes": [
+      "CORPORATE_E_BANK"
+    ]
+  },
+  "evidenceRefs": [
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§1",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S01-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S01",
+      "title": "产品卡《流动资金贷款》§1 产品概览与客户价值",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§2",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S02-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S02",
+      "title": "产品卡《流动资金贷款》§2 适用客户与适用场景",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§3",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S03-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S03",
+      "title": "产品卡《流动资金贷款》§3 产品能力",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§4",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S04-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S04",
+      "title": "产品卡《流动资金贷款》§4 准入条件",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§5",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S05-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S05",
+      "title": "产品卡《流动资金贷款》§5 排除条件与禁止用途",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§6",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S06-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S06",
+      "title": "产品卡《流动资金贷款》§6 前置、互斥、替代与配套产品",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§7",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+      "title": "产品卡《流动资金贷款》§7 流程与材料",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§8",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S08-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S08",
+      "title": "产品卡《流动资金贷款》§8 价格边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§9",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S09-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S09",
+      "title": "产品卡《流动资金贷款》§9 风险提示与人工复核",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§10",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S10-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S10",
+      "title": "产品卡《流动资金贷款》§10 销售边界",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§11",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S11-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S11",
+      "title": "产品卡《流动资金贷款》§11 EvidenceRef（源文件与条款定位）",
+      "verificationState": "VERIFIED"
+    },
+    {
+      "accessLevel": "RM_INTERNAL",
+      "anchor": "§12",
+      "contentHash": null,
+      "documentNumber": null,
+      "documentVersion": "1.0.0",
+      "effectiveFrom": "2026-09-01",
+      "effectiveTo": null,
+      "evidenceClass": "DOCUMENTED_RULE",
+      "evidenceId": "EVR-PRODFIN001-S12-c8f30dbf",
+      "evidenceType": "PRODUCT_CARD_SECTION",
+      "isDemo": true,
+      "ownerOrg": "公司金融产品管理部",
+      "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S12",
+      "title": "产品卡《流动资金贷款》§12 不可变版本语义",
+      "verificationState": "VERIFIED"
+    }
+  ],
+  "faqs": [],
+  "generatedAt": "2026-09-22T21:40:00+08:00",
+  "materialGroups": [
+    {
+      "groupType": "BASIC_REQUIRED",
+      "items": [
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+              "title": "产品卡《流动资金贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-001-01",
+          "materialName": "营业执照",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+              "title": "产品卡《流动资金贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-001-02",
+          "materialName": "公司章程",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+              "title": "产品卡《流动资金贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-001-03",
+          "materialName": "财务报表",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+              "title": "产品卡《流动资金贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-001-04",
+          "materialName": "纳税证明",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+              "title": "产品卡《流动资金贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-001-05",
+          "materialName": "购销/经营合同",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+              "title": "产品卡《流动资金贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-001-06",
+          "materialName": "银行流水",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        },
+        {
+          "conditionExpression": null,
+          "evidenceRefs": [
+            {
+              "accessLevel": "RM_INTERNAL",
+              "anchor": "§7",
+              "contentHash": null,
+              "documentNumber": null,
+              "documentVersion": "1.0.0",
+              "effectiveFrom": "2026-09-01",
+              "effectiveTo": null,
+              "evidenceClass": "DOCUMENTED_RULE",
+              "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+              "evidenceType": "PRODUCT_CARD_SECTION",
+              "isDemo": true,
+              "ownerOrg": "公司金融产品管理部",
+              "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+              "title": "产品卡《流动资金贷款》§7 流程与材料",
+              "verificationState": "VERIFIED"
+            }
+          ],
+          "materialId": "MAT-PROD-FIN-001-07",
+          "materialName": "担保材料（如抵押/质押/保证）",
+          "purpose": "（卡片仅列材料名，未给用途说明）",
+          "requirementLevel": "REQUIRED",
+          "sampleFileRef": null,
+          "templateFileRef": null,
+          "validityRule": null
+        }
+      ]
+    }
+  ],
+  "prerequisites": [
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S04-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S04",
+          "title": "产品卡《流动资金贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-001-S4-1",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "依法设立并有效存续；证照齐全有效。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S04-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S04",
+          "title": "产品卡《流动资金贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-001-S4-2",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "经营年限 ≥2 年（待核定）；具有真实、持续的经营与还款能力。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S04-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S04",
+          "title": "产品卡《流动资金贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-001-S4-3",
+      "prerequisiteType": "CREDIT",
+      "requirementText": "行内信用评级达标（BBB 及以上，待核定）。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S04-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S04",
+          "title": "产品卡《流动资金贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-001-S4-4",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "无重大不良信用记录、无失信被执行等负面信息。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S04-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S04",
+          "title": "产品卡《流动资金贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-001-S4-5",
+      "prerequisiteType": "ACCOUNT",
+      "requirementText": "在本行开立对公结算账户，结算流水可核实。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S04-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S04",
+          "title": "产品卡《流动资金贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-001-S4-6",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "资金用途合法合规、与经营背景匹配。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S04-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S04",
+          "title": "产品卡《流动资金贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-001-S4-7",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "提供足额合法有效担保或经信用审批通过。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§6",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S06-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S06",
+          "title": "产品卡《流动资金贷款》§6 前置、互斥、替代与配套产品",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-FIN-001-S6",
+      "prerequisiteType": "ACCOUNT",
+      "requirementText": "产品：对公结算账户。"
+    }
+  ],
+  "pricingItems": [],
+  "processSteps": [
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+          "title": "产品卡《流动资金贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 1,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-001-01",
+      "stepName": "申请受理",
+      "summary": "申请受理"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+          "title": "产品卡《流动资金贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 2,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-001-02",
+      "stepName": "尽职调查",
+      "summary": "尽职调查"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+          "title": "产品卡《流动资金贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 3,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-001-03",
+      "stepName": "评级授信审批",
+      "summary": "评级授信审批"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+          "title": "产品卡《流动资金贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 4,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-001-04",
+      "stepName": "合同签订（含担保）",
+      "summary": "合同签订（含担保）"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+          "title": "产品卡《流动资金贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 5,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-001-05",
+      "stepName": "放款（受托支付/自主支付）",
+      "summary": "放款（受托支付/自主支付）"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S07-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S07",
+          "title": "产品卡《流动资金贷款》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 6,
+      "slaReference": null,
+      "stepId": "STP-PROD-FIN-001-06",
+      "stepName": "贷后管理",
+      "summary": "贷后管理"
+    }
+  ],
+  "productFamily": "FINANCING",
+  "productId": "PROD-FIN-001",
+  "salesBoundaries": [
+    {
+      "boundaryId": "SLB-PROD-FIN-001-01",
+      "boundaryKind": "PROHIBITED_PROMISE",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S10-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S10",
+          "title": "产品卡《流动资金贷款》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": true,
+      "riskCategory": "PURPOSE",
+      "text": "不得承诺「必批」「固定利率」「无抵押放款」等无依据承诺。"
+    },
+    {
+      "boundaryId": "SLB-PROD-FIN-001-02",
+      "boundaryKind": "ALLOWED_EXPLANATION",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S10-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S10",
+          "title": "产品卡《流动资金贷款》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": false,
+      "riskCategory": "APPROVAL",
+      "text": "AI/模型不得直接创建授信、定价、审批或写回动作（INV-09）。"
+    },
+    {
+      "boundaryId": "SLB-PROD-FIN-001-03",
+      "boundaryKind": "ALLOWED_EXPLANATION",
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§10",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S10-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S10",
+          "title": "产品卡《流动资金贷款》§10 销售边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "mandatoryDisplay": false,
+      "riskCategory": "PURPOSE",
+      "text": "推荐仅为候选建议，最终以准入审批与合同为准。"
+    }
+  ],
+  "schema": "product_center_sections/v1",
+  "sourceCardRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md",
+  "sourceCardSha256": "c8f30dbf365b900ce49f5befd591bf1350d8c87b997aff7f07460d872d15fc32",
+  "summary": {
+    "boundaryStatement": "排除条件：房地产开发、股票/债券/理财等投资性用途主体；无真实贸易背景；产能过剩/淘汰类行业；空壳或无实际经营企业；失信被执行人。",
+    "isNot": [
+      "排除条件：房地产开发、股票/债券/理财等投资性用途主体；无真实贸易背景；产能过剩/淘汰类行业；空壳或无实际经营企业；失信被执行人。",
+      "禁止用途：不得用于股权投资、证券投资、固定资产投资（长期）、偿还其他金融机构贷款、以贷收贷、流向房地产/股市/理财、向关系人利益输送等。"
+    ],
+    "nearestDifference": "配套产品：对公结算账户、企业网银/现金管理。",
+    "oneSentenceDefinition": "短期流动资金贷款，用于企业日常生产经营周转（采购原材料、季节性备货、营运资金周转等），期限 ≤1 年（循环/非循环额度待核定）。",
+    "solves": [
+      "提供短期流动资金授信额度，支持循环/非循环使用（待核定）。",
+      "解决：日常生产经营中的短期营运资金缺口，匹配真实购销/经营周期。"
+    ]
+  },
+  "terms": [
+    {
+      "businessDefinition": "依法设立、正常经营满 2 年（待核定）、信用评级达标、有稳定经营流水与真实经营背景的中型/小型企业。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 1,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S02-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S02",
+          "title": "产品卡《流动资金贷款》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "依法设立、正常经营满 2 年（待核定）、信用评级达标、有稳定经营流水与真实经营背景的中型/小型企业。",
+      "termId": "TRM-PROD-FIN-001-ELIGIBLE_ENTITY",
+      "termKey": "ELIGIBLE_ENTITY"
+    },
+    {
+      "businessDefinition": "原材料采购、季节性备货、订单备货、日常营运资金周转、短期流动性补充。",
+      "certaintyType": "VERIFIED",
+      "displayOrder": 2,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§2",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODFIN001-S02-c8f30dbf",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/financing/version=2026.08.31.1/product-cards/PROD-FIN-001.md#S02",
+          "title": "产品卡《流动资金贷款》§2 适用客户与适用场景",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "explanationForRm": "原材料采购、季节性备货、订单备货、日常营运资金周转、短期流动性补充。",
+      "termId": "TRM-PROD-FIN-001-PURPOSE",
+      "termKey": "PURPOSE"
+    }
+  ],
+  "versionId": "1.0.0"
+}
