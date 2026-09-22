@@ -250,6 +250,46 @@
       "rationale": "Owner 指示『接着做』；沿用 r3 口径（族专属监管源按 (sourceId,条款号) 最小）采纳 REG-FIN-001 第三条（引文：「本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的，用于借款人日常…」）。该 3 卡在 r3 时**无族专属候选**（F-PC8-19/F-PC8-20 修复后新解锁）。范围同 r3：仅 DEMO 轨呈现，**不构成合规结论**，以条款作合规依据须合规 Owner 逐条复核后重裁。",
       "subjectId": "compliance.regulatoryBasis",
       "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T23:30:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-a99b2796",
+      "rationale": "Owner 2026-09-22 指示「可以」⇒ 批准本件（r5）。采纳条款 = 该产品**族专属**监管源按 (sourceId,条款号) 最小者：REG-CB-001 一（引文：「凡依法可以使用外汇结算的跨境交易，企业都可以使用人民币结算。银行应以服务实体经济、促进贸易投资便利化为导向，根据跨境人民…」）。族专属 REG-CB-001（银发〔2018〕3 号）优于跨族 REG-XFAM-001（价格边界章节）；条款序最小者「一」。本件条款为**OCR 转写**（Owner 授权），clause_verified=false。 裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T23:30:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-35d63d20",
+      "rationale": "Owner 2026-09-22 指示「可以」⇒ 批准本件（r5）。采纳条款 = 该产品**族专属**监管源按 (sourceId,条款号) 最小者：REG-FIN-001 第三条（引文：「本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的、用于借款人日常…」）。绑定增补（Owner 2026-09-22 确认适用性）后，族专属 REG-FIN-001 进入本卡合法源；条款序最小者「第三条」。 裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T23:30:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-6101335b",
+      "rationale": "Owner 2026-09-22 指示「可以」⇒ 批准本件（r5）。采纳条款 = 该产品**族专属**监管源按 (sourceId,条款号) 最小者：REG-CM-002 第五条（引文：「存款人应在注册地或住所地开立银行结算账户。符合本办法规定可以在异地（跨省、市、县）开立银行结算账户的除外。…」）。经别名 REG-SET-001 收敛到 REG-CM-002；绑定增补（Owner 2026-09-22 确认适用性）后进入本卡合法源；条款序最小者「第五条」。 裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
+    },
+    {
+      "decidedAt": "2026-09-22T23:30:00+08:00",
+      "decidedBy": "owner",
+      "decidedByRole": "COMPLIANCE_OWNER",
+      "decision": "ADOPT_ASSERTION",
+      "decisionId": "DEC-20260922-58532e74",
+      "rationale": "Owner 2026-09-22 指示「可以」⇒ 批准本件（r5）。采纳条款 = 该产品**族专属**监管源按 (sourceId,条款号) 最小者：REG-CM-002 第五条（引文：「存款人应在注册地或住所地开立银行结算账户。符合本办法规定可以在异地（跨省、市、县）开立银行结算账户的除外。…」）。同 PROD-SET-001：别名收敛 + 绑定增补后进入本卡合法源；条款序最小者「第五条」。 裁决范围：仅为 DEMO 轨链路演示，使该字段在解读页呈现证据；**不构成合规结论**，如以具体条款作为合规依据须由合规 Owner 逐条复核后重裁。",
+      "subjectId": "compliance.regulatoryBasis",
+      "subjectKind": "FIELD"
     }
   ]
 }
