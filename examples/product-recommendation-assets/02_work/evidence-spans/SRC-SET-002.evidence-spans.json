@@ -1,0 +1,247 @@
+{
+  "evidenceCount": 10,
+  "evidenceSpans": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCSET002-3f314070",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0003",
+      "locator": {
+        "clause": "第三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "保理业务按**是否保留追索权**分为：**有追索权保理**（本行在约定期限内未收到应收账款回款时，有权向卖方追索）与**无追索权保理**（本行承担买方信用风险，除约定例外情形外不向卖方追索）。",
+      "quoteHash": "3f314070b87995b1d609980efa0349c331767cb18623202fa69d18040ef09746",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCSET002-49ef45ec",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0004",
+      "locator": {
+        "clause": "第四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "保理业务应当以**真实交易背景**为基础，遵循\"贸易真实、转让有效、回款闭环、风险可测\"原则。",
+      "quoteHash": "49ef45ec4c2a633868c5cb96f8fe3f62b7f17b7eb83a8ea1ceb0dc68b29c74f9",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCSET002-1090adbf",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0005",
+      "locator": {
+        "clause": "第五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "卖方（融资申请人）应同时满足：一、依法登记并存续；二、内部评级不低于本行准入线（见 `SRC-XFAM-001`）；三、与买方存在**连续、稳定**的交易记录（原则上不少于**六个月**）；四、无非正常商业纠纷与重大涉诉记录。",
+      "quoteHash": "1090adbf133edc1897d7c6657539848f8cd225a264e121beac2b225213214197",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCSET002-d0ee5867",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0007",
+      "locator": {
+        "clause": "第七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "下列应收账款**不得**受理：一、权属不清或存在争议；二、已被转让、质押或设定其他权利负担且未解除；三、因票据或其他有价证券产生的付款请求权（另有专门规定的从其规定）；四、卖方与买方为关联方且交易价格明显偏离市场公允水平；五、应收账款的付款条件存在重大不确定性。",
+      "quoteHash": "d0ee5867c935e7c8d0ccee6a1fcacbc7bfb390e4338f1452497a9a9310b253c2",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCSET002-1aaae829",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0008",
+      "locator": {
+        "clause": "第八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "办理**无追索权保理**的，除前条要求外，还应对买方进行**独立信用评估**，并按本行风险管理规定核定买方信用额度。",
+      "quoteHash": "1aaae82929761e397c2a9d09035ef91da2de7c34475be40baceed2cb36fb53fb",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCSET002-1133d450",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0009",
+      "locator": {
+        "clause": "第九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "应收账款转让应当签订书面保理合同，并在合同中明确：转让标的、转让价款或预付款比例、追索权安排、回款账户与扣划授权、违约情形与救济措施。",
+      "quoteHash": "1133d450c450172a67b2b9c242a3902e6a42e5de2677773dac0d86f8698d54c8",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCSET002-32e3e6a5",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0012",
+      "locator": {
+        "clause": "第十二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "应收账款转让的**登记**，应当在**法定登记机构**完成；登记信息应与合同标的**一致**，并在放款前核验登记状态。已登记事项发生变更或注销的，应及时办理相应手续。",
+      "quoteHash": "32e3e6a57199808515aeec4c3ececada693ca7fce8bf4e57ae347f262b267a31",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCSET002-d48c79fb",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0016",
+      "locator": {
+        "clause": "第十六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "保理**预付款比例**、**融资期限**与**宽限期**应在审批意见中明确，并遵守本行风险限额管理要求。**（演示参考值：融资比例原则上不超过应收账款金额的 80%，融资期限原则上不超过应收账款到期日后 30 天）** 上述数值为演示参考值，实际执行以本行定价与风险政策为准。",
+      "quoteHash": "d48c79fbc7271494ca79bd195cd8ef0bf6a9b1861b26f4b2ee1763ae99856270",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCSET002-b29bcf2e",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0017",
+      "locator": {
+        "clause": "第十七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "保理**手续费**与**融资利率**适用《产品定价管理办法》（`SRC-XFAM-002`）及本行利率管理规定，**不得**低于本行成本与风险下限审批发放。",
+      "quoteHash": "b29bcf2e8faf93270997b816baf4671e607c7cb2b25fed54241a065d28136ba0",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCSET002-0aa9bc64",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCSET002-0019",
+      "locator": {
+        "clause": "第十九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "贷后应至少监控：应收账款账龄、买方付款行为变化、卖方经营与涉诉状况、以及是否存在**重复转让**情形；发现异常的，按 `SRC-FIN-005` 的风险处置流程执行。",
+      "quoteHash": "0aa9bc646f87000f62d9c422ab0ecfa9ffeb86b147b7548e8ed56871f5755161",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "sourceId": "SRC-SET-002",
+      "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+      "usage": "AUTHORITATIVE"
+    }
+  ],
+  "sourceId": "SRC-SET-002",
+  "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+}

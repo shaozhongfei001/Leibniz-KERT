@@ -1,0 +1,167 @@
+{
+  "fragmentCount": 20,
+  "fragments": [
+    {
+      "contentSha256": "97f9778ae635502f8b213409966958bd426782fd32a5e5009f43a95f64ebf23c",
+      "contentText": "**第一条** 为规范 DEMO-BANK 跨境人民币业务的行内受理、审核与后续管理，明确岗位职责与内部授权，制定本办法。",
+      "fragmentId": "FRG-SRCCB001-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "9d76fda80af140b8c514c29db1ae22f8cf0b623c530b5809e03b91e549b2bae3",
+      "contentText": "**第二条** 本办法适用于本行办理的**跨境人民币结算、跨境人民币融资及与之相关的账户与资金划转**业务。",
+      "fragmentId": "FRG-SRCCB001-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "a4d5a53645bb2d9b3425a807acd628b9511f96d5671d6c18439d26b355322364",
+      "contentText": "**第三条** 办理本业务应贯彻**展业三原则**（了解客户、了解业务、尽职审查），并落实\"**交易可核验、资金可追溯、报送可复算**\"三项行内要求。",
+      "fragmentId": "FRG-SRCCB001-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "43d83eaf25bfc12dbfb677886206b56aa33f240843468a876ef26080eb48efe8",
+      "contentText": "**第四条** 本业务实行\"受理与审核分离、审核与放款分离、操作与复核分离\"的岗位制衡。",
+      "fragmentId": "FRG-SRCCB001-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "ee4f5d38157e0fd44d1a3c01950cf99e3eb9f2069c51b50df3d314dd20231382",
+      "contentText": "**第五条** 申请办理跨境人民币业务的客户应同时满足：一、依法登记并在本行开立账户；二、内部评级不低于本行跨境业务准入线（见 `SRC-XFAM-001`）；三、具有真实、合法的跨境交易背景（核验按 `SRC-TF-003`）；四、不属于本行名单类管控对象。",
+      "fragmentId": "FRG-SRCCB001-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "6c350a414182ffb5911874c4bb9c66a2a6d2ff2216a8b883ca7942c3e3b2af1c",
+      "contentText": "**第六条** 尽职调查应至少查明：客户主营业务与跨境交易的匹配性、交易对手所在地与交易性质、资金用途与来源、以及是否涉及本行限制类行业或地区。",
+      "fragmentId": "FRG-SRCCB001-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "2eb990d0988f7c30479694f5422f53d965ce9a31a6e529a9dcec59b0aeb5683b",
+      "contentText": "**第七条** 下列情形**不得**受理：一、交易背景无法核验或明显不真实；二、资金用途违反本行合规政策；三、客户拒绝提供必要的交易与身份材料；四、交易对手或交易性质属于本行明令禁止范围。",
+      "fragmentId": "FRG-SRCCB001-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "378e040e44a9088880dce2465e1ec744bb09fc5d2abc4da6dd1750d531311643",
+      "contentText": "**第八条** 对**新增客户、大额交易、交易对手所在地区属高风险**的业务，应作为重点样本启动**加强尽调**并留存尽调记录。",
+      "fragmentId": "FRG-SRCCB001-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "3528c0d962edf548f8b65a6ba2b94264b63350d0d12fb0d7c453b62be5060b27",
+      "contentText": "**第九条** 受理环节应取得并留档：业务申请书、交易合同或其他交易证明材料、发票或对账凭证、以及本行要求的其他材料。",
+      "fragmentId": "FRG-SRCCB001-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "42639250cbc407de520ec28ec4d624d11cc307c2bfb37f4274212141050cb00f",
+      "contentText": "**第十条** 审核环节应形成书面审核意见，至少包括：交易背景核查结论、资金用途判断、限制类情形排查结论、以及**法定报送要求是否已落实**（报送口径以 `REG-CB-001` 为准，本件不规定）。",
+      "fragmentId": "FRG-SRCCB001-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "0511064a8402cd739c0846817c65ae05446562be07df56f40870fd303bb47761",
+      "contentText": "**第十一条** 跨境人民币资金划转应通过**指定账户**办理；账户使用范围与资金划转的**法定规则以 `REG-CB-001` 为准**。",
+      "fragmentId": "FRG-SRCCB001-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "e76b5b57601548bd08534e1cf30185ba46c43f1471663095491e3dd0457d2540",
+      "contentText": "**第十二条** 业务办理应在行内系统全程留痕，关键节点（受理、审核、放款/划转、复核）应可回溯；不得以线下手工方式替代系统登记。",
+      "fragmentId": "FRG-SRCCB001-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "f51e3d8b09c5bf2bae9c003dba3a1ab64125620e516c378d02da2d45b0422066",
+      "contentText": "**第十三条** 涉及跨境担保、保函等增信安排的，**依法应当办理的登记或备案手续以 `REG-CB-002` 及相关规定为准**，本件不另行规定。",
+      "fragmentId": "FRG-SRCCB001-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "98c81641f81b5dabac3d16ad6f1715948f8b356ac83904f8c71da101d78ec594",
+      "contentText": "**第十四条** 业务数据**报送**应在规定时限内完成，报送数据应与系统记录、业务凭证一致；**报送口径、字段与时限以 `REG-CB-001` 及本行报送管理规定为准**。",
+      "fragmentId": "FRG-SRCCB001-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "424ad89334d9f235df6373beee7a62ecc2fc78cfbc565fd52132bb153ddaf391",
+      "contentText": "**第十五条** 监测要点至少包括：跨境资金**高频或大额异常**流动、交易对手集中度、资金**回流或对冲**特征、以及交易背景与资金流向的一致性。",
+      "fragmentId": "FRG-SRCCB001-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "3cee2f491db2ec648dc978ee0097af42665c3883204549f20f9439647f7c1959",
+      "contentText": "**第十六条** 发现异常的，应暂停后续办理并查明原因；涉嫌可疑交易的，按本行可疑交易报告相关规定处理。",
+      "fragmentId": "FRG-SRCCB001-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "e7d9af5e6ce1542c7974210fe8deaa394a521fd325d5065af29b677625e7ccc4",
+      "contentText": "**第十七条** 对**虚假交易背景、构造交易或以跨境渠道套利**的情形，按本行风险处置流程处理，并追究相关人员责任。",
+      "fragmentId": "FRG-SRCCB001-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "c4482bc92efd4bf5dc67e4dfabb42e7caabe00ab02c67f513d59f1468dcd0e40",
+      "contentText": "**第十八条** 本办法与上位监管规定不一致的，**适用监管规定**；本行其他制度与本办法不一致的，按\"从严\"原则执行。",
+      "fragmentId": "FRG-SRCCB001-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "922ec376bec5c677ae214f0d56ba2cbdc01ef8081eca4e68a2262cf0e5f71a0a",
+      "contentText": "**第十九条** 本办法由 DEMO-BANK 国际业务部负责解释与修订。",
+      "fragmentId": "FRG-SRCCB001-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "contentSha256": "84044e2163807a76248d34c6a51ff767d59e9252307b7892a1ce862f3308ace8",
+      "contentText": "**第二十条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCCB001-0020",
+      "pageNo": null,
+      "seqNo": 20,
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    }
+  ],
+  "sourceId": "SRC-CB-001",
+  "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+}

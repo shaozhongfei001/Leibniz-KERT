@@ -193,12 +193,19 @@ def load_policy_fields(family: str = FAMILY):
     理由：回落会让缺实例的族产出"现金管理字段"的假断言（看起来在干活，字段集其实是错的）。
     """
     doc = json.loads(POLICY.read_text(encoding="utf-8"))
-    for ex in doc.get("examples", []):
-        if ex.get("productFamily") == family:
-            return ex
+    candidates = [ex for ex in doc.get("examples", [])
+                  if ex.get("productFamily") == family
+                  and (ex.get("_case") or "").split("—")[0].strip() == "POSITIVE"]
+    if len(candidates) == 1:
+        return candidates[0]
+    if not candidates:
+        raise SystemExit(
+            f"FAIL | 未找到 {family} 的 POSITIVE 字段策略实例（CTR-PK-FLD-001 · field-policy.schema.json）；"
+            f"按 fail-closed 拒绝回落其他族 —— 需先补齐该族实例（PC8 T3 / B-5b）"
+        )
     raise SystemExit(
-        f"FAIL | 未找到 {family} 的字段策略实例（CTR-PK-FLD-001 · field-policy.schema.json）；"
-        f"按 fail-closed 拒绝回落其他族 —— 需先补齐该族实例（PC8 T3 / B-5b）"
+        f"FAIL | {family} 的 POSITIVE 实例数 = {len(candidates)}（期望恰好 1）——"
+        f"拒绝在歧义下产出断言"
     )
 
 

@@ -1,0 +1,136 @@
+{
+  "assertionCount": 6,
+  "assertions": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN001-31030276",
+      "conflictId": null,
+      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [],
+      "fieldPath": "identity.productCode",
+      "knowledgeState": "UNKNOWN",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN001-00b98f63",
+      "conflictId": null,
+      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [
+        "EVS-SRCXFAM001-40b34db6"
+      ],
+      "fieldPath": "eligibility.customerSegment",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "小微企业客户按本办法及结算类产品的专项简化流程受理；集团客户须以集团口径合并计算规模与评级。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN001-b25aba8d",
+      "conflictId": null,
+      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [
+        "EVS-SRCFIN001-99d99ca7"
+      ],
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "内部评级与受理档位：AA 级及以上可受理全部流动资金贷款品种；BB 级至 A 级可受理标准流动资金贷款；B 级至 BB 级以下须经一级分行交易银行部与风险管理部双签方可受理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN001-7d2240d8",
+      "conflictId": null,
+      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [
+        "EVS-SRCXFAM001-d3e72c76"
+      ],
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "评级低于本办法第八条要求但高于 B 级的，须经一级分行交易银行部与风险管理部双签审批，方可受理；被列入本行制裁或限制名单的，一律不得受理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "ENUM"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN001-21b6cc91",
+      "conflictId": null,
+      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "UNKNOWN",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODFIN001-edd9822e",
+      "conflictId": null,
+      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [],
+      "fieldPath": "pricing.serviceFee",
+      "knowledgeState": "UNKNOWN",
+      "normalizedValue": null,
+      "productId": "PROD-FIN-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "MONEY"
+    }
+  ],
+  "extractionRunId": "RUN-20260922-415977d1",
+  "policyId": "FLD-FINANCING-001",
+  "policyOwnerApproved": false,
+  "productId": "PROD-FIN-001",
+  "productVersionScope": "version=2026.09.06.1"
+}

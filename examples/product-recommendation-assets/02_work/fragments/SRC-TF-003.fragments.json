@@ -1,0 +1,151 @@
+{
+  "fragmentCount": 18,
+  "fragments": [
+    {
+      "contentSha256": "7a056706eb9f1a30da4c80fc5e30999995ed11d76b87c1654aa966bc07443567",
+      "contentText": "**第一条** 为防范虚构交易、虚假贸易背景导致的信用与合规风险，规范交易背景真实性的审查方法与留档要求，制定本指引。",
+      "fragmentId": "FRG-SRCTF003-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "8d3cec272ed42b0eb7dbdb4a2e68e1963728aaa60859ac38f4639c0affb96acb",
+      "contentText": "**第二条** 本指引所称**贸易背景真实性审查**，是指对交易双方主体关系、交易标的、商业逻辑、单据链条与资金流向的**相互印证性**作出判断的过程。",
+      "fragmentId": "FRG-SRCTF003-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "38a1b3b811b875921751b044aae9b76528b5863fb105e396f29f2bc67a42b83e",
+      "contentText": "**第三条** 审查应遵循\"**交易可核验、单据可关联、资金可闭环、逻辑可自证**\"四项要求；四项中存在无法解释的矛盾的，不得认定背景真实。",
+      "fragmentId": "FRG-SRCTF003-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "2e4378b3607d8e3a40660ee118fe06c4862f34fab40d623a53277d06bfc828ce",
+      "contentText": "**第四条** 审查应至少取得下列**两类以上相互独立**的证据：一、交易合同或订单；二、增值税发票或其他税务凭证；三、物流、仓储或交付验收凭证；四、银行流水或收付款记录；五、双方历史交易台账。",
+      "fragmentId": "FRG-SRCTF003-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "af694108c00a6488fb5fa2f678c9c4e8efe3281f751325e8e2675e50aa5ef7c0",
+      "contentText": "**第五条** 证据之间应满足**要素一致**：交易双方名称、标的、数量、金额、日期区间应能相互对应；不一致的须说明合理原因并留档。",
+      "fragmentId": "FRG-SRCTF003-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "18d2d4c76d51605fffe21d74e905fbffc5bc6513c006b11ce9c5810201df5003",
+      "contentText": "**第六条** **商业逻辑**审查要点：交易标的是否属于客户主营范围；交易规模是否与客户经营体量匹配；价格是否明显偏离同类市场水平；上下游关系是否符合行业惯例。",
+      "fragmentId": "FRG-SRCTF003-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "c36ee94881f5bff4f298dc56c27a79436aaf9334c88d548a57514a12b9ecff92",
+      "contentText": "**第七条** 对**关联方交易**应显著加强审查：核查关联关系、定价公允性、是否存在**自开自贴、循环交易**等构造交易特征。",
+      "fragmentId": "FRG-SRCTF003-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "741af8bd140faf6904538c9029e1b79eecaf49f879a538ecbb0a955bbefdc8c6",
+      "contentText": "**第八条** 对**大额、异常频次或期限集中**的交易，应作为重点样本启动**加强尽调**，并留存尽调过程记录。",
+      "fragmentId": "FRG-SRCTF003-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "341e63a9c34a8745a254269cce9083cf9f682500822b425ba633457393e6bbe5",
+      "contentText": "**第九条** 应重点识别下列特征：一、合同要素高度雷同或模板化；二、发票与合同、物流凭证无法对应；三、资金在关联账户间**回流或对冲**；四、交易标的与客户实际经营不符；五、短期内同一对手方高频重复交易且规模异常。",
+      "fragmentId": "FRG-SRCTF003-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "46d4c7df1257401b492e054939217b99b6668727a383fd9f904e6e21294c2289",
+      "contentText": "**第十条** 发现前条特征之一的，应暂停业务办理，补充核查；**不得**以客户说明替代证据，**不得**以后续补交单据追溯到已办理业务。",
+      "fragmentId": "FRG-SRCTF003-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "a447aa0a8809a01497d3cdd0b91a3cc9366b91a8ce36aa4619b433fc9dfae8aa",
+      "contentText": "**第十一条** 核查结论应形成书面审查意见，明确结论为\"真实\"、\"无法核实\"或\"不真实\"，并载明所依据的证据清单与矛盾点。",
+      "fragmentId": "FRG-SRCTF003-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "e86c95a06ed12ed9411da6cfb1bc79e81f2ed1a56d36e99ede8b0e48a69a897f",
+      "contentText": "**第十二条** 结论为\"无法核实\"且客户无法补充有效证据的，按**不予办理**处理；结论为\"不真实\"的，按本行风险处置流程处理并向管理部门报告。",
+      "fragmentId": "FRG-SRCTF003-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "26b0b4948de60dbe5511c4f9eae4745b916f4d746e6060950fa1201441c5bf51",
+      "contentText": "**第十三条** 留档要求：审查意见、证据清单、影像件、矛盾点及解释说明应成套归档，与业务台账关联，做到**可回溯、可复核**。",
+      "fragmentId": "FRG-SRCTF003-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "8f3430de7af0371e26e7130c54d5cb7109a67c7119b07b8254a21410d44a3888",
+      "contentText": "**第十四条** 审查人员应对审查结论的真实性负责；复核人员应对结论与证据的一致性进行独立复核，**不得**在无证据支撑时签署\"真实\"结论。",
+      "fragmentId": "FRG-SRCTF003-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "69b5ef32f134808e48acdcf0ddd02326424e54052e64fcd7b9d31fd0da583eda",
+      "contentText": "**第十五条** 对未按本指引履职导致本行损失的，按内部问责规定处理；涉嫌违法犯罪的，按规定移送。",
+      "fragmentId": "FRG-SRCTF003-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "3fc586a43df1a1ec903b420d4d149ff3561a0039d56b5e7906247b054c2fcf23",
+      "contentText": "**第十六条** 本指引与上位监管规定不一致的，**适用监管规定**；本行其他制度与本指引不一致的，按\"从严\"原则执行。",
+      "fragmentId": "FRG-SRCTF003-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "20f41d640eba91de7a70e30c5cb730c7ae153cc3d9054604519bcc9e3d3314e3",
+      "contentText": "**第十七条** 本指引由 DEMO-BANK 风险管理部负责解释与修订。",
+      "fragmentId": "FRG-SRCTF003-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "contentSha256": "5fc7b69c8733930563b06f3b22a5db6905e859ae7bcf786a38c370b944d07bc5",
+      "contentText": "**第十八条** 本指引自发布之日起施行。",
+      "fragmentId": "FRG-SRCTF003-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    }
+  ],
+  "sourceId": "SRC-TF-003",
+  "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+}

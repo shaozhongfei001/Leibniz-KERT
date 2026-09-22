@@ -1,0 +1,40 @@
+{
+  "assertionManifestHash": "71c8ef289708e6538396e3f5c928d6b42819c2267f70e3d9bb5afa9e2067d406",
+  "bundleHash": "2e2b674f4449371475df4ccdefa251d006b35b54536e74c037b1084f6b039116",
+  "cardProjectionHash": "73c4eaa511aeb268d5a93685c30bb944a8f068a774ce0c4163dedab2432e8db5",
+  "evidenceManifestHash": "7a907dd9d24e7641c75144148ad61b429295beedd6b94edd57813d0a353d2ceb",
+  "gateReport": {
+    "blockingReasons": [
+      "identity.productCode=UNKNOWN",
+      "eligibility.minAccountBalance=CONFLICT",
+      "compliance.regulatoryBasis=UNKNOWN"
+    ],
+    "conflict": 1,
+    "notApplicableApproved": 0,
+    "requiredHardFieldsTotal": 4,
+    "stale": 0,
+    "supported": 0,
+    "unknown": 3
+  },
+  "lifecycleState": "DRAFT",
+  "ownerDecisionIds": [],
+  "productIds": [
+    "PROD-CM-001"
+  ],
+  "provenanceState": "DEMO",
+  "publishedAt": null,
+  "purposeFlags": {
+    "interpretationReady": false,
+    "recommendationReady": false
+  },
+  "qualityRunId": "QR-20260922-978dfbc2",
+  "releaseId": "RLS-2026.09.22.3",
+  "rulePackageHash": "25cdaaa713c082ff31adbf7a54238fddb1355fed16bfb73a1d9f5fd39ed77b1f",
+  "staleFlag": {
+    "isStale": false,
+    "staleReason": null,
+    "staleSince": null,
+    "triggeringSourceVersionId": null
+  },
+  "taxonomyVersion": "CTR-PK-TAX-001@v1"
+}

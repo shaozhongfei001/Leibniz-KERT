@@ -101,7 +101,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--decisions", type=str, default=None,
                     help="Owner 已签署的决策文件路径")
+    ap.add_argument("--product", type=str, default=None,
+                    help="PC8 T1：覆盖产品（默认取模块级 PROD-CM-001）")
     args = ap.parse_args()
+    global PRODUCT_ID
+    if args.product:
+        PRODUCT_ID = args.product
 
     asm = load(ASM_DIR / f"{PRODUCT_ID}.assertions.json")
     health = load(RPT_DIR / f"{PRODUCT_ID}.health.json")

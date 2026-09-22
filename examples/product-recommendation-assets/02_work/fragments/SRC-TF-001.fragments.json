@@ -1,0 +1,183 @@
+{
+  "fragmentCount": 22,
+  "fragments": [
+    {
+      "contentSha256": "d1c3e18a8872b96036b48c17577310c8973e4ba9037a0f70adeb76e8b876b760",
+      "contentText": "**第一条** 为规范 DEMO-BANK 银行承兑汇票业务的受理、审查、承兑与后续管理，明确岗位职责与授权边界，制定本办法。",
+      "fragmentId": "FRG-SRCTF001-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "fb2e630005c9e9fc8be45d089bf025e8e6e5724665ac0709f1f08434854ee2ea",
+      "contentText": "**第二条** 本办法所称**银行承兑汇票业务**，是指本行作为承兑人，在客户（出票人）签发汇票后予以承兑，并承诺在汇票到期日无条件付款的业务行为。",
+      "fragmentId": "FRG-SRCTF001-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "cf971b201fde5ba67dd9f7f84ba9138baa223ce77cba4d20b042f489cd2f0d0f",
+      "contentText": "**第三条** 本行业务范围包括：承兑、贴现（含转贴现）、以及与本业务相关的查询查复与到期提示付款服务。",
+      "fragmentId": "FRG-SRCTF001-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "70cccd727cbcffe579e139df95d1f04695e5ed85ba18d1fecd3d86b5f7ff77d2",
+      "contentText": "**第四条** 办理本业务应遵循\"真实交易、额度控制、敞口可测、票据要件完整\"原则。",
+      "fragmentId": "FRG-SRCTF001-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "fc0c5d1747183ce7d5dfd156d6d39ef973e21145db697a8e61e942911b74c437",
+      "contentText": "**第五条** 申请承兑的客户应同时满足：一、依法登记且在本行开立结算账户；二、内部评级不低于本行对公承兑业务准入线（见 `SRC-XFAM-001`）；三、与交易对手存在**真实交易背景**（核验按 `SRC-TF-003`）；四、无重大票据违约或不良信用记录。",
+      "fragmentId": "FRG-SRCTF001-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "b896e479fff3e7a9d0c9758e3ae2f5112f06b2eda03635098e285065b8b5a94e",
+      "contentText": "**第六条** 承兑业务应纳入**客户统一授信额度**管理：承兑敞口按本行风险折算规则占用授信；未落实额度不得承兑。",
+      "fragmentId": "FRG-SRCTF001-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "d0a110eb1086e257b13e0759b5f64db653cc8619d3e98537b7f383675ec74624",
+      "contentText": "**第七条** 下列情形**不得**受理承兑：一、交易背景不真实或无法核验；二、出票人已有到期未付票据；三、被列入本行名单类管控；四、票据要素存在明显瑕疵且无法补正。",
+      "fragmentId": "FRG-SRCTF001-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "aa178434da25612cb52a3bca70e882c28653850396c952b680e01283db83c8ea",
+      "contentText": "**第八条** **保证金比例**与**担保方式**应在审批意见中明确。**（演示参考值：保证金比例原则上不低于票面金额的 30%；对优质客户可按内部授权下调，但不得低于本行风险下限）** 上述数值为演示参考值，实际执行以本行风险政策与授权为准。",
+      "fragmentId": "FRG-SRCTF001-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "d4929b6479151c0cd2b0da9e357aa0f893d28a211d8b0c0d8873b6444bc73a3d",
+      "contentText": "**第九条** 承兑业务的**审批权限**按金额区间分级授权，超权限业务应上报有权机构审批；不得以拆分票面金额规避授权。",
+      "fragmentId": "FRG-SRCTF001-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "ecb4e30674cf121bb29966ad7e5778379fdf493b204598bb991112f04d7a58ae",
+      "contentText": "**第十条** 受理环节应核验：申请书、贸易背景材料、出票人签章与预留签章一致性、账户余额或保证金到位情况。",
+      "fragmentId": "FRG-SRCTF001-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "954cfa19a542f554ef8291ad13a2634aa77f60ed29532940dad20a7f2f834b0b",
+      "contentText": "**第十一条** 审查环节应形成书面审查意见，至少包括：客户与交易背景核查结论、额度占用情况、保证金与担保落实情况、票据要件完整性结论。",
+      "fragmentId": "FRG-SRCTF001-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "2e73a10e2ecfff70d42d2eed925e9186451428b37ead6fe5a17506ded9d61af6",
+      "contentText": "**第十二条** 承兑环节应在汇票正面记载\"承兑\"字样并由本行签章；**签章与记载要求的法定形式以 `REG-TF-003` 为准**，本件不另行规定。",
+      "fragmentId": "FRG-SRCTF001-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "1882052fc40b1776d7720d06372eabd73f65a7fcb492123f2947252160bef29f",
+      "contentText": "**第十三条** 承兑后应在**三个工作日内**完成台账登记，登记要素至少包括：票号、出票人、收款人、票面金额、出票日与到期日、保证金比例、担保方式、经手人与复核人。",
+      "fragmentId": "FRG-SRCTF001-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "06b17efd9b448cf46a564d8ca5a4a65a94570098e3e6940f190f49912d4c79d3",
+      "contentText": "**第十四条** 贴现业务应核验票据真实性与背书连续性，并查验前手与出票人信用状况；**贴现条件与法定限制以 `REG-TF-001` 为准**。",
+      "fragmentId": "FRG-SRCTF001-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "91b109c362396e3d692dcb80a69bc46b99ed6c3154f86476ee9160de659a24d3",
+      "contentText": "**第十五条** 查询查复应按票据系统的既定流程办理，查询结果与回复内容应留档；对查询结果异常未澄清前不得办理贴现。",
+      "fragmentId": "FRG-SRCTF001-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "d1fe92d7e9abd863bb54e28f531ac3e228724981a1560a3081837f999705ed39",
+      "contentText": "**第十六条** 到期日前**五个工作日**应提示承兑申请人备足资金；到期日应按时履行付款义务。",
+      "fragmentId": "FRG-SRCTF001-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "b5159afea0e2ef40732f0c5c70140e73fe5561a010360bedaf7c47086c46fe67",
+      "contentText": "**第十七条** 发生**垫款**（客户未在到期日前足额交存票款）的，本行按合同约定向客户追偿，并按本行授信管理规定计收利息；垫款情况应于发生后**一个工作日内**上报风险管理部门。",
+      "fragmentId": "FRG-SRCTF001-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "ccd3d93a9f96a24245c7bdcefa6fb7a7a12ff23c8c1e01e820fe5fd3c5f17708",
+      "contentText": "**第十八条** 贷后监控至少包括：票据到期兑付情况、客户保证金变动、是否存在滚动承兑掩盖风险、以及交易背景的持续真实性。",
+      "fragmentId": "FRG-SRCTF001-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "d36690f1cfeb658212cee58e70d5985e5365f9fbd4958890d7c2f4e2dc422e7a",
+      "contentText": "**第十九条** 发现客户存在**虚构交易、自开自贴、循环开票**等情形的，应立即停止新增承兑业务并按本行风险处置流程处理。",
+      "fragmentId": "FRG-SRCTF001-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "e570471247213d8bf4a013d5d55d4a09a47cdc04fa9d8e83dcf8233f2992a8fb",
+      "contentText": "**第二十条** 本办法与上位监管规定不一致的，**适用监管规定**；本行其他制度与本办法不一致的，按\"从严\"原则执行。",
+      "fragmentId": "FRG-SRCTF001-0020",
+      "pageNo": null,
+      "seqNo": 20,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "88862b60ac6432767579baa7cf05d4f19efa5b44582e9e7d3c45795b3ef77223",
+      "contentText": "**第二十一条** 本办法由 DEMO-BANK 交易银行部负责解释与修订。",
+      "fragmentId": "FRG-SRCTF001-0021",
+      "pageNo": null,
+      "seqNo": 21,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "contentSha256": "b9a24afe30d7728d34deb02642b2bb77ff3f607bfd0ac621586b76cc08ab9659",
+      "contentText": "**第二十二条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCTF001-0022",
+      "pageNo": null,
+      "seqNo": 22,
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    }
+  ],
+  "sourceId": "SRC-TF-001",
+  "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+}

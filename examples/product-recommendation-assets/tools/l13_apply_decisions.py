@@ -108,7 +108,12 @@ def latest_state(items):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--decisions", required=True)
+    ap.add_argument("--product", type=str, default=None,
+                    help="PC8 T1：覆盖产品（默认取模块级 PROD-CM-001）")
     args = ap.parse_args()
+    global PRODUCT_ID
+    if args.product:
+        PRODUCT_ID = args.product
 
     doc = load(Path(args.decisions))
     errs = validate(doc)

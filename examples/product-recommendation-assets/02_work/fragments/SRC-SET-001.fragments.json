@@ -1,0 +1,183 @@
+{
+  "fragmentCount": 22,
+  "fragments": [
+    {
+      "contentSha256": "322b2485675c19d6bf398730ab9d5711679df35e7a74827b3c3983771e6611b0",
+      "contentText": "**第一条** 为规范 DEMO-BANK 单位结算账户的开立、使用、变更与撤销，明确各环节职责与材料要求，制定本细则。",
+      "fragmentId": "FRG-SRCSET001-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "dad73a9d2bbea7ea54e52887a2ddffe39bf5cfb9ad84caf401c562f392862b2e",
+      "contentText": "**第二条** 本细则适用于 DEMO-BANK 各级机构为**单位客户**办理的人民币结算账户业务，包括基本存款账户、一般存款账户、专用存款账户与临时存款账户。",
+      "fragmentId": "FRG-SRCSET001-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "f681cb87e357d1e8994360ead4484e21cc474fb838676af195adac5161608124",
+      "contentText": "**第三条** 账户业务应遵循\"了解客户、真实意愿、资料完整、用途明确\"原则，并纳入客户统一身份识别与尽职调查管理。",
+      "fragmentId": "FRG-SRCSET001-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "8e81cc743c62da6f214b4cac9029e26f7f6e59cc17edc9434490001485123946",
+      "contentText": "**第四条** 账户按用途分类受理：**基本存款账户**用于客户日常转账结算与现金收付；**一般存款账户**用于借款转存等结算需要；**专用存款账户**用于特定用途资金专项管理；**临时存款账户**用于临时机构或临时经营活动。",
+      "fragmentId": "FRG-SRCSET001-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "a5d2d2579a9cb9ea57c4b80df0cb6cebb82cb02cd72fd9ac87c82b4c360f016b",
+      "contentText": "**第五条** 客户申请开立单位结算账户，应当同时满足：一、依法登记并存续；二、已完成本行客户身份识别与受益所有人识别；三、不存在本行名单类管控限制；四、开户用途与经营需要相符。",
+      "fragmentId": "FRG-SRCSET001-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "ae8a3768f77c30b6caae97f86635c81ec7bc7445aa070e8ae210faef836f75c0",
+      "contentText": "**第六条** 客户应在**注册地或经营地**开立账户；确有异地开户需要的，按本行异地开户管理规定办理，并留存说明材料。",
+      "fragmentId": "FRG-SRCSET001-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "1a95252e071c9b39efc11e5142e0e2e856afcf5ada2d9e1c6c2e3c42d54453cb",
+      "contentText": "**第七条** 下列情形不得受理开户：一、身份识别资料存在伪造、变造嫌疑；二、开户用途明显与经营实际不符；三、被司法机关或监管机构依法限制开户；四、客户拒绝提供必要身份与受益所有人信息。",
+      "fragmentId": "FRG-SRCSET001-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "cbc24bb62251fabea59dc05ec44591db250d5f01483810389ac6dd93f30de29a",
+      "contentText": "**第八条** 单位客户开立基本存款账户应提交：一、营业执照或其他登记证明文件；二、法定代表人或单位负责人身份证件；三、授权他人办理的授权委托书及被授权人身份证件；四、受益所有人身份信息与股权（控制）结构材料；五、预留签章及相关授权文件。",
+      "fragmentId": "FRG-SRCSET001-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "90b9a47b51f8b6320e52dce12f557d07916d6e2ab522ad813eb58ffe6c98f030",
+      "contentText": "**第九条** 开立一般存款账户、专用存款账户，除前条材料外，还应提交与账户用途相对应的**指定用途证明材料**；专用存款账户另需提交主管部门批文或证明文件。",
+      "fragmentId": "FRG-SRCSET001-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "e7ade8086a7ce7a1c21151fb1fdc29550454884ad93f37643bdbdbc542f764ab",
+      "contentText": "**第十条** 开立临时存款账户应提交临时机构设立批文或临时经营活动的证明材料；用于注册验资的，按专门流程受理并标注用途限制。",
+      "fragmentId": "FRG-SRCSET001-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "f15b861c576c97b4c9f757d8ebdaa960c148c093865d09bc5b63893c6f405b7e",
+      "contentText": "**第十一条** 客户提供的材料应由**双人复核**，复核要点包括：材料表面真实性、证件有效期、签章一致性、授权链条完整性；发现疑点的，启动加强尽调程序。",
+      "fragmentId": "FRG-SRCSET001-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "10e063ba01ef127dfecf776f7b4a785f77517abd18ec83002ba0f7b57f1cadae",
+      "contentText": "**第十二条** 账户开立后，客户经理应在协议中明确账户使用范围、预留签章管理与对账义务；客户应及时签收账户管理协议。",
+      "fragmentId": "FRG-SRCSET001-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "88bae0496b3e07bb70cfb7942f8be2671582e06b7b6cbf4d77106193f287a6a6",
+      "contentText": "**第十三条** 对**单位银行结算账户**实行**年检**制度：每年至少核对一次客户登记信息、受益所有人信息与账户实际用途；信息变更的，督促客户及时办理变更。",
+      "fragmentId": "FRG-SRCSET001-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "f25534ff6b175bdd7853c33119496ad7b7f789f9caccfdfb46cd8b92dca094c6",
+      "contentText": "**第十四条** 对账要求：高风险客户按月对账，一般客户按季度对账；对账不一致的，应在十个工作日内查明原因并留存记录。",
+      "fragmentId": "FRG-SRCSET001-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "bd711e9ec80f45a2eb5a077b8c17bc8bc5e7b78e4de39d36c87ee0231354223c",
+      "contentText": "**第十五条** 本行建立账户风险监测：对长期不动户、频繁大额异动、与经营不符的资金流向，按可疑交易报告相关规定处理。",
+      "fragmentId": "FRG-SRCSET001-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "b072a9b63895247f9e5357b431e2587a8dd28523c61cb0ff4f7b952f139eb795",
+      "contentText": "**第十六条** 客户名称、法定代表人、注册地址、预留签章等发生变更的，应自变更之日起**十个工作日内**向本行提出变更申请，并提交证明文件。",
+      "fragmentId": "FRG-SRCSET001-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "39b7128e26db61df034010a7d68c2863fdae3c4b963e30e653391ed1fc099d4f",
+      "contentText": "**第十七条** 客户申请撤销账户的，应与本行核对余额、交回重要空白凭证及其他相关凭证；**未清偿本行债务的**，原则上不得先行撤销。",
+      "fragmentId": "FRG-SRCSET001-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "8c90eef6623e266ca76473a4780d64390b3ff5dfa033dbe6e52d8de46dd0b0ac",
+      "contentText": "**第十八条** 久悬管理：对连续**一年**未发生收付活动且未欠本行债务的单位账户，本行应通知客户办理销户；通知后**三十日**内未办理的，转入久悬账户管理并限制支付功能。",
+      "fragmentId": "FRG-SRCSET001-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "bbd42c638fc0478081d80cc6402111f9c99d437ec19c82b6edb05255716eb892",
+      "contentText": "**第十九条** 账户业务实行岗位制衡：受理、复核、审批、监测四岗分离；未按本细则履职的，按内部问责规定处理。",
+      "fragmentId": "FRG-SRCSET001-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "edbe595980ab38efd813bf021c441c920d91926c9d7ad4fa7781b71a04a5d4b2",
+      "contentText": "**第二十条** 本细则与上位监管规定不一致的，**适用监管规定**；本行其他制度与本细则不一致的，按\"从严\"原则执行。",
+      "fragmentId": "FRG-SRCSET001-0020",
+      "pageNo": null,
+      "seqNo": 20,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "5a8bc2be41429b6e0a6b422eaadd110b3c10392240d4e617c00f65a444508198",
+      "contentText": "**第二十一条** 本细则由 DEMO-BANK 交易银行部负责解释与修订。",
+      "fragmentId": "FRG-SRCSET001-0021",
+      "pageNo": null,
+      "seqNo": 21,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "contentSha256": "b76f4f3a2daeaa9923e9efa78cf6e1828fadb538d424256b6eede919b88ef5c0",
+      "contentText": "**第二十二条** 本细则自发布之日起施行。",
+      "fragmentId": "FRG-SRCSET001-0022",
+      "pageNo": null,
+      "seqNo": 22,
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    }
+  ],
+  "sourceId": "SRC-SET-001",
+  "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+}

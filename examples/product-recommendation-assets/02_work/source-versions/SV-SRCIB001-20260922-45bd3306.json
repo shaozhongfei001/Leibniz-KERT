@@ -1,0 +1,21 @@
+{
+  "allowedClaimTypes": [
+    "ELIGIBILITY",
+    "PRICE",
+    "PROCESS",
+    "RISK"
+  ],
+  "authorityLevel": "INTERNAL_POLICY",
+  "byteSize": 5664,
+  "bytesSha256": "45bd33064e341f1f9a4848841e7bbf6915cd465651f32bd62ad09dc37a4e67b9",
+  "ingestedAt": "2026-09-22T00:00:00+08:00",
+  "pageCount": null,
+  "productFamily": "INVESTMENT_BANKING",
+  "provenanceState": "DEMO",
+  "provenanceUrl": null,
+  "sourceId": "SRC-IB-001",
+  "sourcePath": "01_raw/_authoritative/SRC-IB-001.DEMO.md",
+  "sourceVersionId": "SV-SRCIB001-20260922-45bd3306",
+  "supersededBy": null,
+  "zone": "_authoritative"
+}

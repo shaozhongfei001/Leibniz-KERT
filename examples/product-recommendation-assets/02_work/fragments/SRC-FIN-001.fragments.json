@@ -1,0 +1,175 @@
+{
+  "fragmentCount": 21,
+  "fragments": [
+    {
+      "contentSha256": "84bcb362350e48f2c1aef47e259e92765027c9e39206428625f237f17458c6ef",
+      "contentText": "**第一条** 为规范 DEMO-BANK 流动资金贷款业务经营行为，明确受理、审批、发放与贷后各环节要求，制定本办法。",
+      "fragmentId": "FRG-SRCFIN001-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "9e5c1e54e0fc89f0cc78038d4909b00a9b82ff559c6ff00e1fca506e88e2c916",
+      "contentText": "**第二条** 本办法适用于 DEMO-BANK 各级机构办理的流动资金贷款业务，包括流动资金授信、流动资金贷款及其项下的资金支付管理。",
+      "fragmentId": "FRG-SRCFIN001-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "7f9239b0785bf195c14677d63a6076b164a51757fc3ef70aaa79319152e3f6b6",
+      "contentText": "**第三条** 流动资金贷款应当遵循\"依法合规、审慎经营、用途明确、支付可控\"原则，并纳入客户统一授信管理。",
+      "fragmentId": "FRG-SRCFIN001-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "b2f5205459f74e5bf0a8429730ff87559c352f5a006a86fdae93d3bbbf4c4d83",
+      "contentText": "**第四条** 本办法所称借款人应为依法登记并存续的法人或非法人组织；按照国家有关规定不得办理银行贷款的主体除外。",
+      "fragmentId": "FRG-SRCFIN001-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "aedffdf57428d5afd549e60e7ef34124f5869393e572861b846f4c5e71652f3f",
+      "contentText": "**第五条** 借款人应同时满足下列基本条件：一、依法经市场监督管理部门或主管部门核准登记；二、借款用途明确、合法；三、具有持续经营能力与合法还款来源；四、信用状况良好、近十二个月无重大结算违规记录；五、内部评级不低于本办法第六条要求。",
+      "fragmentId": "FRG-SRCFIN001-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "d25e6eb4c521d5acff791d3dd24a1425e3cc2929fca8d5f221eef9d1e05fa231",
+      "contentText": "**第六条** 内部评级与受理档位：AA 级及以上可受理全部流动资金贷款品种；BB 级至 A 级可受理标准流动资金贷款；B 级至 BB 级以下须经一级分行交易银行部与风险管理部双签方可受理。",
+      "fragmentId": "FRG-SRCFIN001-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "0176016ab19efd76ef2a217348c4c3b0652b5a895b1bd31e6272dde420c6885f",
+      "contentText": "**第七条** 下列情形不得受理：一、借款用途属本办法第九条禁止用途；二、被列入本行制裁或限制名单；三、近十二个月发生贷款资金挪用且未整改完毕。",
+      "fragmentId": "FRG-SRCFIN001-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "8da8b5d868eb844082d86afc2ec0904a1310f8bf561eefc045859fefc4fbc73b",
+      "contentText": "**第八条** 授信额度应当根据借款人营运资金需求测算确定，**不得超过借款人实际需求**；测算方法与参数由一级分行结合行业特征确定并留存底稿。",
+      "fragmentId": "FRG-SRCFIN001-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "6fe22da0ff28a7252a2de263f5b4a5f5f2fd8cbf032085f4c610c55060745cf7",
+      "contentText": "**第九条** 流动资金贷款**不得**用于下列用途：一、借款人股东分红；二、金融资产投资；三、固定资产投资；四、股权投资；五、国家禁止生产、经营的领域与用途。",
+      "fragmentId": "FRG-SRCFIN001-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "c2b7b9cfb129a42d090b4d6344ee983391c07b860a2e7ffcdeeb22c3b17f9f93",
+      "contentText": "**第十条** 流动资金贷款期限原则上不超过三年；对经营现金流回收周期较长的，可适当延长，**最长不超过五年**。期限超过一年的，原则上约定本金分期偿还。",
+      "fragmentId": "FRG-SRCFIN001-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "a7a0a7cbd700dc926487550dee63e276752ab44b3b2e80a25be0bb2ea8e3c69c",
+      "contentText": "**第十一条** 贷款利率按照本行定价管理有关规定确定，并在借款合同中明确约定；涉及利率调整的，应当约定调整条件与生效方式。",
+      "fragmentId": "FRG-SRCFIN001-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "7e78d9496c88a90dd26fac01de8c04442263db881399f348777eaf1f1723ce77",
+      "contentText": "**第十二条** 受理环节应收集：营业执照或组织文件、章程、股东与实际控制人信息、近两年经审计财务报表、纳税与结算流水、借款用途相关交易背景材料。",
+      "fragmentId": "FRG-SRCFIN001-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "415501c1600d3e0cab0d8ed2f6afe2345cef5297a0abd7ef3a9e38cfac767ec0",
+      "contentText": "**第十三条** 尽职调查应采取现场与非现场相结合方式，并形成书面报告；对符合条件的小微企业借款人，可通过非现场手段有效核实信息真实性的，可简化或不再进行现场调查，具体金额上限由一级分行审慎确定。",
+      "fragmentId": "FRG-SRCFIN001-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "dd136aba0c7665564488c05f003a9b4f78ca27e1f15cc2797f123825e8dfd687",
+      "contentText": "**第十四条** 审批应坚持\"贷审分离、分级审批\"：审批人员应在授权范围内按流程审批，**不得越权审批**；为股东等关联方办理的，条件不得优于一般借款人，并在风险评价报告中说明。",
+      "fragmentId": "FRG-SRCFIN001-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "3c462c34efeb8c84fd505696ae2ad320ceb2124a7df21c8de2fc6db636864b6f",
+      "contentText": "**第十五条** 发放前应确认借款人满足合同约定的提款条件；贷款资金支付分为**受托支付**与**自主支付**两种方式。",
+      "fragmentId": "FRG-SRCFIN001-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "a709295c659c635b7e7eca69382a5c3a7593967013ead237ea71df7e21940c4a",
+      "contentText": "**第十六条** 具有下列情形之一的原则上应采用受托支付：一、与借款人新建立信贷业务关系且信用状况一般；二、支付对象明确且向单一交易对象单笔支付金额超过人民币一千万元；三、本行认定的其他情形。",
+      "fragmentId": "FRG-SRCFIN001-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "527255ab3f00268233bc35163a4612e8d446507e85b5fda84e16236bf285a990",
+      "contentText": "**第十七条** 采用自主支付的，应要求借款人按约定定期汇总报告资金支付情况，并通过账户分析、凭证查验或现场核查等方式核实支付是否符合约定用途，**防止以化整为零方式规避受托支付**。",
+      "fragmentId": "FRG-SRCFIN001-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "0ec6a1578eecb445b838b06f34b517b1b90f97418c4e88da8df5d648c6bdcf2f",
+      "contentText": "**第十八条** 贷后管理应至少包括：资金挪用监控、指定资金回笼账户管理、预警信号跟踪与处置、贷款风险分类复核。发现挪用的，按合同约定要求整改、提前收回或下调风险分类。",
+      "fragmentId": "FRG-SRCFIN001-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "296aeda502362d9a38b956426c96c0c54db1fb58fd9792113ba591e989d04bd9",
+      "contentText": "**第十九条** 借款人申请展期的，应审慎评估展期原因与后续还款安排；同意展期的，合理确定展期期限并按实质风险状况进行风险分类。",
+      "fragmentId": "FRG-SRCFIN001-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "25a9c3b611458430549b60ae101fee1a2b5ee22c0fc029282508a7a232b3de5f",
+      "contentText": "**第二十条** 本办法由 DEMO-BANK 公司金融产品管理部负责解释与修订。",
+      "fragmentId": "FRG-SRCFIN001-0020",
+      "pageNo": null,
+      "seqNo": 20,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "contentSha256": "ad857c7ca4f55dbbde297a4e4219e2b2abc3149746351679671e9133b6782dfa",
+      "contentText": "**第二十一条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCFIN001-0021",
+      "pageNo": null,
+      "seqNo": 21,
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    }
+  ],
+  "sourceId": "SRC-FIN-001",
+  "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+}

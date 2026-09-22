@@ -1,0 +1,143 @@
+{
+  "fragmentCount": 17,
+  "fragments": [
+    {
+      "contentSha256": "e6dbcb6f79e0e4db1d61036a8bfac34855bf35626fa5243e0eb838f9799853ae",
+      "contentText": "**第一条** 为规范 DEMO-BANK 对公客户准入与内部评级管理，统一各类对公产品的客户受理标准，制定本办法。",
+      "fragmentId": "FRG-SRCXFAM001-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "76111f09fff544b5d11cfcbb84dd1ba91e5899e496debeead6729fc74c70d4d0",
+      "contentText": "**第二条** 本办法适用于 DEMO-BANK 各级机构办理的全部对公产品业务，包括现金管理、结算、贸易金融、跨境金融、融资与投资银行类产品。",
+      "fragmentId": "FRG-SRCXFAM001-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "3e702150c0d04589700dfc562f970808858292fbd206515b573c7d5ef2b03ff4",
+      "contentText": "**第三条** 客户准入应当遵循\"了解你的客户、统一授信、分级授权、独立核验\"原则，不得以单一维度替代综合判断。",
+      "fragmentId": "FRG-SRCXFAM001-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "071b1441e9a062e48316c3099460a4e721fc5dcfd7a82c5458e375091b4e7808",
+      "contentText": "**第四条** 对公客户按法律主体分为三类：企业法人客户、集团客户（含企业集团以及由同一实际控制人控制的多法人组合）、机构客户（机关、事业单位、社会团体）。",
+      "fragmentId": "FRG-SRCXFAM001-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "f0d48f855909b8cb47cb26fd78e3b3220f3f37a17b3a2489b1f3be9a99665d2f",
+      "contentText": "**第五条** 对公客户按年营业收入分为四层：大型（不低于人民币 20 亿元）、中型（4 亿元至 20 亿元）、小型（3000 万元至 4 亿元）、微型（低于 3000 万元）。",
+      "fragmentId": "FRG-SRCXFAM001-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "0b8fa9b7fe186cf9970a4ac7e0ada49e1b2e0847fe412a3589e38949a9a22fce",
+      "contentText": "**第六条** 小微企业客户按本办法及结算类产品的专项简化流程受理；集团客户须以集团口径合并计算规模与评级。",
+      "fragmentId": "FRG-SRCXFAM001-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "5dfc4346d6b6e9dd00a60611a5a564ecd7675845138dbffd1ac9756f65d273c1",
+      "contentText": "**第七条** 客户申请办理对公产品，应当同时满足下列条件：一、依法设立并存续；二、在本行开立单位银行结算账户；三、内部评级不低于本办法第八条规定的档位；四、申请日前连续十二个月无重大结算违规记录；五、不属于本行制裁或限制名单。",
+      "fragmentId": "FRG-SRCXFAM001-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "ccc1c78f058f8389e5ce253fb92f0d69402ab6f592e43980b6a846234038c07e",
+      "contentText": "**第八条** 内部评级档位与准入范围的对应关系为：AA 级及以上可受理全部对公产品；BB 级至 A 级可受理除投资银行类产品外的对公产品；B 级至 BB 级以下仅可受理结算类与现金管理类产品，且须按第九条审批。",
+      "fragmentId": "FRG-SRCXFAM001-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "4b1f3b12a2fab4920fa421417680517ae0e8f3739d1b2c886c526bedb2f5b564",
+      "contentText": "**第九条** 评级低于本办法第八条要求但高于 B 级的，须经一级分行交易银行部与风险管理部双签审批，方可受理；被列入本行制裁或限制名单的，一律不得受理。",
+      "fragmentId": "FRG-SRCXFAM001-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "d8915d3273174e5e15dbf96d2c305effa5f88343db1467c500dd9ddf8fbbdda1",
+      "contentText": "**第十条** 客户存在重大未决诉讼、重大失信记录或近十二个月内发生贷款资金挪用的，不得受理融资类与投资银行类产品。",
+      "fragmentId": "FRG-SRCXFAM001-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "4595c71aea300e0f07577ed52945f721d83e4dabdac5d8454cd27bf18916bc3f",
+      "contentText": "**第十一条** 内部评级每年至少复评一次；发生股权变更、实际控制人变更、重大诉讼或评级下调预警的，应当在三十个自然日内重新评级。",
+      "fragmentId": "FRG-SRCXFAM001-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "9e7c47d415488d52f08001b0d8cf952353cda6a5413ebad233ad3e36eda23965",
+      "contentText": "**第十二条** 准入核验材料包括：营业执照、公司章程或组织文件、股东与实际控制人信息、近两年经审计财务报表、纳税与结算流水。",
+      "fragmentId": "FRG-SRCXFAM001-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "767ed981c649d5e0eec5cb4be497f5d185ddac0d4a4867065cacbb35ee615cce",
+      "contentText": "**第十三条** 客户提供的材料经形式审查后，由授信审查部门独立核验；核验结果不一致的，以本行独立核验结果为准。",
+      "fragmentId": "FRG-SRCXFAM001-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "70e6a54d67c32d207e89eca7226315ea7c816b1339ee5b2773968c5c2d08c735",
+      "contentText": "**第十四条** 因特殊情形确需突破本办法准入标准的，应当由一级分行风险管理部出具书面意见，报总行风险管理部审批。",
+      "fragmentId": "FRG-SRCXFAM001-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "ae4c7d7cc5e9e77048ac8cf768b74009f6f3a0713812b74ec30bff51181326f2",
+      "contentText": "**第十五条** 本办法与具体产品管理制度不一致的，按\"就高不就低\"原则执行。",
+      "fragmentId": "FRG-SRCXFAM001-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "e131ca64d5bf5c6ea640916e69127a2d2a00003abca340584b9337cc6fbe6782",
+      "contentText": "**第十六条** 本办法由 DEMO-BANK 公司金融产品管理部负责解释与修订。",
+      "fragmentId": "FRG-SRCXFAM001-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "contentSha256": "083de06580694058fb8dbff1a3486397a9fc2cc2f85e07634b70b68ad9e8f8b7",
+      "contentText": "**第十七条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCXFAM001-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    }
+  ],
+  "sourceId": "SRC-XFAM-001",
+  "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+}

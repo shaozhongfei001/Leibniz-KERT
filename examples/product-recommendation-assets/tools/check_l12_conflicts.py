@@ -137,11 +137,19 @@ def main():
         overlap = sorted(set(a["evidenceIds"]) & rejected)
         check(f"{aid} INV-ASM-09 不得含被否决证据", not overlap, str(overlap))
 
+    # PC8 F-PC8-11：字段集按**本产品策略**判定（由断言产物 policyId 回查），不再硬编码 7。
+    _policies = {e.get("policyId"): e for e in load_json(PK / "field-policy.schema.json").get("examples", [])}
+
     # ---- 体检报告 ----
     for p in sorted(RPT_DIR.glob("*.health.json")):
         d = load_json(p)
         pid = d["productId"]
-        check(f"{pid} 体检覆盖七字段", d["fieldCount"] == 7, str(d["fieldCount"]))
+        _asm = load_json(ASM_DIR / f"{pid}.assertions.json")
+        _pid_spec = _policies.get(_asm.get("policyId"))
+        check(f"{pid} policyId 已登记策略实例: {_asm.get('policyId')}", _pid_spec is not None, "")
+        check(f"{pid} 体检字段数 == 本产品策略字段数",
+              d["fieldCount"] == len((_pid_spec or {"fields": []})["fields"]),
+              f"{d['fieldCount']} vs {len((_pid_spec or {'fields': []})['fields'])}")
         check(f"{pid} 有阻断项 => interpretationReady=false",
               (not d["blockers"]) or d["interpretationReady"] is False,
               f"blockers={len(d['blockers'])} ready={d['interpretationReady']}")
@@ -167,7 +175,11 @@ def main():
         check(f"{pid} 候选卡未复核字段值为 null",
               all(f["value"] is None for f in d["fields"]),
               str([f["fieldPath"] for f in d["fields"] if f["value"] is not None]))
-        check(f"{pid} 候选卡字段数 == 七字段", d["fieldCount"] == 7, str(d["fieldCount"]))
+        _asm2 = load_json(ASM_DIR / f"{pid}.assertions.json")
+        _spec2 = _policies.get(_asm2.get("policyId")) or {"fields": []}
+        check(f"{pid} 候选卡字段数 == 本产品策略字段数",
+              d["fieldCount"] == len(_spec2["fields"]),
+              f"{d['fieldCount']} vs {len(_spec2['fields'])}")
 
     failed = [r for r in results if not r[1]]
     print(f"\n{'=' * 60}")

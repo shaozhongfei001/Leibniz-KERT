@@ -1,60 +1,76 @@
 {
-  "blockers": [],
+  "blockers": [
+    {
+      "fieldPath": "identity.productCode",
+      "required": "REQUIRED_HARD",
+      "state": "UNKNOWN"
+    },
+    {
+      "fieldPath": "eligibility.minAccountBalance",
+      "required": "REQUIRED_HARD",
+      "state": "CONFLICT"
+    },
+    {
+      "fieldPath": "compliance.regulatoryBasis",
+      "required": "REQUIRED_HARD",
+      "state": "UNKNOWN"
+    }
+  ],
   "fieldCount": 7,
   "fields": [
     {
-      "assertionCount": 2,
+      "assertionCount": 1,
       "conflictId": null,
       "evidenceCount": 0,
       "fieldPath": "identity.productCode",
-      "knowledgeState": "NOT_APPLICABLE",
-      "needsHumanReview": false,
+      "knowledgeState": "UNKNOWN",
+      "needsHumanReview": true,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "Owner 已裁决",
+      "reason": "无合格证据（资格/权威级/Owner 未裁决）",
       "required": "REQUIRED_HARD"
     },
     {
-      "assertionCount": 3,
+      "assertionCount": 4,
       "conflictId": null,
-      "evidenceCount": 3,
+      "evidenceCount": 4,
       "fieldPath": "eligibility.customerSegment",
       "knowledgeState": "CANDIDATE",
-      "needsHumanReview": false,
+      "needsHumanReview": true,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "待裁决",
+      "reason": "有候选证据，未 Owner 复核",
       "required": "REQUIRED_HARD"
     },
     {
       "assertionCount": 6,
       "conflictId": "CNF-PRODCM001-757c6c3b",
-      "evidenceCount": 9,
+      "evidenceCount": 12,
       "fieldPath": "eligibility.minAccountBalance",
-      "knowledgeState": "SUPPORTED",
+      "knowledgeState": "CONFLICT",
       "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "Owner 已裁决",
+      "reason": "同字段多来源值不一致，冲突未决",
       "required": "REQUIRED_HARD"
-    },
-    {
-      "assertionCount": 1,
-      "conflictId": null,
-      "evidenceCount": 1,
-      "fieldPath": "eligibility.prerequisiteProducts",
-      "knowledgeState": "CANDIDATE",
-      "needsHumanReview": false,
-      "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "待裁决",
-      "required": "REQUIRED_SOFT"
     },
     {
       "assertionCount": 2,
       "conflictId": null,
+      "evidenceCount": 2,
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "needsHumanReview": true,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "有候选证据，未 Owner 复核",
+      "required": "REQUIRED_SOFT"
+    },
+    {
+      "assertionCount": 1,
+      "conflictId": null,
       "evidenceCount": 0,
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "NOT_APPLICABLE",
-      "needsHumanReview": false,
+      "knowledgeState": "UNKNOWN",
+      "needsHumanReview": true,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "Owner 已裁决",
+      "reason": "无合格证据（资格/权威级/Owner 未裁决）",
       "required": "REQUIRED_HARD"
     },
     {
@@ -65,7 +81,7 @@
       "knowledgeState": "UNKNOWN",
       "needsHumanReview": false,
       "purposeGate": "INTERPRETATION_ONLY",
-      "reason": "待裁决",
+      "reason": "无合格证据（资格/权威级/Owner 未裁决）",
       "required": "REQUIRED_SOFT"
     },
     {
@@ -74,14 +90,14 @@
       "evidenceCount": 3,
       "fieldPath": "process.openingChannel",
       "knowledgeState": "CANDIDATE",
-      "needsHumanReview": false,
+      "needsHumanReview": true,
       "purposeGate": "INTERPRETATION_ONLY",
-      "reason": "待裁决",
+      "reason": "有候选证据，未 Owner 复核",
       "required": "OPTIONAL"
     }
   ],
-  "generatedAt": "2026-09-06T12:00:00+08:00",
-  "interpretationReady": true,
+  "generatedAt": "2026-09-22T00:00:00+08:00",
+  "interpretationReady": false,
   "policyId": "FLD-CASH_MANAGEMENT-001",
   "policyOwnerApproved": false,
   "productId": "PROD-CM-001",

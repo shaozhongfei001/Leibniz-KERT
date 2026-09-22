@@ -1,12 +1,12 @@
 {
-  "compiledAt": "2026-09-06T12:00:00+08:00",
+  "compiledAt": "2026-09-22T00:00:00+08:00",
   "fieldCount": 7,
   "fields": [
     {
       "conflictId": null,
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
-      "knowledgeState": "NOT_APPLICABLE",
+      "knowledgeState": "UNKNOWN",
       "provenanceState": "DEMO",
       "value": null
     },
@@ -15,7 +15,8 @@
       "evidenceIds": [
         "EVS-SRCCM001-f9281e09",
         "EVS-SRCCM003-79cdb73c",
-        "EVS-SRCCM003-969d8e2e"
+        "EVS-SRCCM003-969d8e2e",
+        "EVS-SRCXFAM001-40b34db6"
       ],
       "fieldPath": "eligibility.customerSegment",
       "knowledgeState": "CANDIDATE",
@@ -31,14 +32,15 @@
         "EVS-SRCCM003-4302d512"
       ],
       "fieldPath": "eligibility.minAccountBalance",
-      "knowledgeState": "SUPPORTED",
+      "knowledgeState": "CONFLICT",
       "provenanceState": "DEMO",
       "value": null
     },
     {
       "conflictId": null,
       "evidenceIds": [
-        "EVS-SRCCM001-14e72136"
+        "EVS-SRCCM001-14e72136",
+        "EVS-SRCXFAM001-d3e72c76"
       ],
       "fieldPath": "eligibility.prerequisiteProducts",
       "knowledgeState": "CANDIDATE",
@@ -49,7 +51,7 @@
       "conflictId": null,
       "evidenceIds": [],
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "NOT_APPLICABLE",
+      "knowledgeState": "UNKNOWN",
       "provenanceState": "DEMO",
       "value": null
     },
@@ -66,7 +68,7 @@
       "evidenceIds": [
         "EVS-SRCCM001-f92129c2",
         "EVS-SRCCM001-fb2963c0",
-        "EVS-SRCCM002-68db5549"
+        "EVS-SRCXFAM003-f351ef59"
       ],
       "fieldPath": "process.openingChannel",
       "knowledgeState": "CANDIDATE",
@@ -74,7 +76,7 @@
       "value": null
     }
   ],
-  "interpretationReady": true,
+  "interpretationReady": false,
   "legacyCardReused": false,
   "productId": "PROD-CM-001",
   "productVersionScope": "version=2026.09.06.1",

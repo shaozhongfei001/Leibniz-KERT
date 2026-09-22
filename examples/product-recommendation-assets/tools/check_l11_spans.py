@@ -13,7 +13,8 @@
   8. INV-ASM-02：UNKNOWN => rawValue/normalizedValue 为 null 且 evidenceIds 为空
   9. INV-ASM-07：本轮全部断言 normalizedValue 必须为 null（禁止模型产生规范值）
  10. DEMO 红线：DEMO 源派生断言不得出现 SUPPORTED / REVIEWED
- 11. 字段白名单：fieldPath 必须 ∈ CTR-PK-FLD-001 的 CASH_MANAGEMENT 七字段
+ 11. 字段白名单：fieldPath 必须 ∈ **本产品自己的策略实例**（由 assertions 产物的 `policyId` 回查
+     CTR-PK-FLD-001；各族字段集不同，不再把 CASH_MANAGEMENT 七字段当所有产品的期望）
 
 用法:
     python3 tools/check_l11_spans.py
@@ -64,9 +65,9 @@ def main():
     evs_schema = load_json(PK / "evidence-span.schema.json")
     asm_schema = load_json(PK / "field-assertion.schema.json")
     policy_doc = load_json(PK / "field-policy.schema.json")
-    policy = next(e for e in policy_doc["examples"]
-                  if e.get("productFamily") == "CASH_MANAGEMENT")
-    field_spec = {f["fieldPath"]: f for f in policy["fields"]}
+    # PC8 T3/T11：字段集**按本产品自己的策略实例**判定（不再把 CASH_MANAGEMENT 七字段当所有产品的期望）。
+    # 依据：assertions 产物自带 policyId（l11 写入），由此回查策略实例，无需在门禁里再维护族映射。
+    policies = {e.get("policyId"): e for e in policy_doc.get("examples", [])}
 
     if not EVS_DIR.exists() or not ASM_DIR.exists():
         check("L11 产物目录存在", False, "请先运行 l11_extract_evidence_spans.py")
@@ -139,6 +140,11 @@ def main():
         check(f"{d['productId']} assertionCount == 条目数",
               d["assertionCount"] == len(d["assertions"]),
               f"声明 {d['assertionCount']} vs 实际 {len(d['assertions'])}")
+        # 本产品的策略实例（由产物自带的 policyId 回查）
+        _pid = d.get("policyId")
+        _policy = policies.get(_pid)
+        check(f"{d['productId']} policyId 已登记策略实例: {_pid}", _policy is not None, str(_pid))
+        field_spec = {f["fieldPath"]: f for f in (_policy or {"fields": []}).get("fields", [])}
         covered = set()
         for a in d["assertions"]:
             aid = a["assertionId"]
@@ -149,7 +155,7 @@ def main():
             check(f"{aid} 符合 CTR-PK-ASM-001", not errs,
                   str(errs[0].message)[:80] if errs else "")
 
-            check(f"{aid} fieldPath ∈ FLD-001 七字段",
+            check(f"{aid} fieldPath ∈ 本产品策略字段集（{_pid}）",
                   a["fieldPath"] in field_spec, a["fieldPath"])
 
             if a["knowledgeState"] == "UNKNOWN":
@@ -193,7 +199,7 @@ def main():
                           f"{s['claimType']} ∉ {spec['allowedClaimTypes']}")
 
         missing = set(field_spec) - covered
-        check(f"{d['productId']} 七字段全部有断言（含 UNKNOWN）", not missing,
+        check(f"{d['productId']} 本产品策略字段全部有断言（含 UNKNOWN）", not missing,
               f"缺失 {sorted(missing)}")
 
     failed = [r for r in results if not r[1]]

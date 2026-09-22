@@ -148,7 +148,11 @@ def main():
         missing = [f["fragmentId"] for f in frgs if f["contentText"] not in body]
         check(f"{sid} 全部 fragment 可在源文件原样定位", not missing, str(missing[:3]))
 
-    check("DEMO 源数量 == 3（DECISION-20260906-01 路径 C）", demo_count == 3,
+    # PC8 F-PC8-05：期望值**单点化** —— 由 registry §5.8 登记行推导，不再硬编码（原为 3）。
+    _reg = BASE / "01_raw" / "source-registry.md"
+    expected_demo = sum(1 for _l in _reg.read_text(encoding="utf-8").splitlines()
+                        if _l.startswith("| ") and "**AVAILABLE (DEMO)**" in _l)
+    check(f"DEMO 源数量 == registry §5.8 登记数（{expected_demo}）", demo_count == expected_demo,
           f"实际 {demo_count}")
 
     failed = [r for r in results if not r[1]]

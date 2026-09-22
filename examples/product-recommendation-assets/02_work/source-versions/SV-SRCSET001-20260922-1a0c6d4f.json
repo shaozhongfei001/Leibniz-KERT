@@ -1,0 +1,19 @@
+{
+  "allowedClaimTypes": [
+    "ELIGIBILITY",
+    "PROCESS"
+  ],
+  "authorityLevel": "INTERNAL_POLICY",
+  "byteSize": 6084,
+  "bytesSha256": "1a0c6d4f6de7fcd468ffd8224954484d13a020e65b4d73198f98c19ebf86ead3",
+  "ingestedAt": "2026-09-22T00:00:00+08:00",
+  "pageCount": null,
+  "productFamily": "SETTLEMENT",
+  "provenanceState": "DEMO",
+  "provenanceUrl": null,
+  "sourceId": "SRC-SET-001",
+  "sourcePath": "01_raw/_authoritative/SRC-SET-001.DEMO.md",
+  "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f",
+  "supersededBy": null,
+  "zone": "_authoritative"
+}

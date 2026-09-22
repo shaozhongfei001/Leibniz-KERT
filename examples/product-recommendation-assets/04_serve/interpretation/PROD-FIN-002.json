@@ -1,0 +1,83 @@
+{
+  "bundleHash": "44d66ce1a90b7e6a0f6952935dc2a061857bb60bd31f33e90eb314e376078825",
+  "generatedAt": "2026-09-22T00:00:00+08:00",
+  "isStale": false,
+  "lifecycleState": "DRAFT",
+  "productId": "PROD-FIN-002",
+  "provenanceState": "DEMO",
+  "purposeAllowed": {
+    "INTERPRETATION": false,
+    "RECOMMENDATION": false
+  },
+  "releaseId": "RLS-2026.09.22.7",
+  "sourceVersions": [
+    "SV-SRCCB001-20260922-75a3b602",
+    "SV-SRCCB002-20260922-fdb439c3",
+    "SV-SRCCM001-20260922-5879e814",
+    "SV-SRCCM002-20260922-984fe6cd",
+    "SV-SRCCM003-20260922-b4599dd1",
+    "SV-SRCFIN001-20260922-2a95a8c6",
+    "SV-SRCFIN003-20260922-3ec1e5d2",
+    "SV-SRCFIN005-20260922-81362bf8",
+    "SV-SRCIB001-20260922-45bd3306",
+    "SV-SRCSET001-20260922-1a0c6d4f",
+    "SV-SRCSET002-20260922-7e91a8a7",
+    "SV-SRCTF001-20260922-1ac1446e",
+    "SV-SRCTF002-20260922-1c45f101",
+    "SV-SRCTF003-20260922-fd385099",
+    "SV-SRCXFAM001-20260922-ae7e77d2",
+    "SV-SRCXFAM002-20260922-2f0760cc",
+    "SV-SRCXFAM003-20260922-4713b5e3"
+  ],
+  "staleReason": null,
+  "views": {
+    "ELIGIBILITY": [
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "eligibility.customerSegment",
+        "knowledgeState": "UNKNOWN"
+      },
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "eligibility.minAccountBalance",
+        "knowledgeState": "UNKNOWN"
+      },
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "eligibility.prerequisiteProducts",
+        "knowledgeState": "UNKNOWN"
+      }
+    ],
+    "OVERVIEW": [
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "identity.productCode",
+        "knowledgeState": "UNKNOWN"
+      },
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "compliance.regulatoryBasis",
+        "knowledgeState": "UNKNOWN"
+      }
+    ],
+    "PRICING": [
+      {
+        "conflictId": null,
+        "displayValue": null,
+        "evidenceSummaries": [],
+        "fieldPath": "pricing.serviceFee",
+        "knowledgeState": "UNKNOWN"
+      }
+    ]
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "fragmentCount": 22,
+  "fragments": [
+    {
+      "contentSha256": "9a275713e5dc1ede7eb3da659c6cbae61c735cc9e41f40cc6917eaf2615518b5",
+      "contentText": "**第一条** 为规范 DEMO-BANK 国内保理业务的受理、审核、放款与贷后管理，明确各方权利义务，制定本办法。",
+      "fragmentId": "FRG-SRCSET002-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "ee523194d2902c3cfc92f2f6d40539f6d1f66a5450d6e9877d4aa788e2f8f40d",
+      "contentText": "**第二条** 本办法所称**国内保理**，是指卖方将其与买方之间因真实交易产生的应收账款转让给本行，\n由本行提供融资、应收账款管理、催收或坏账担保等服务的业务。",
+      "fragmentId": "FRG-SRCSET002-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "8802bccae36d9f81165aea5325125e041ba77fdeebb545dfe57e7772f7d77ec4",
+      "contentText": "**第三条** 保理业务按**是否保留追索权**分为：**有追索权保理**（本行在约定期限内未收到应收账款回款时，有权向卖方追索）与**无追索权保理**（本行承担买方信用风险，除约定例外情形外不向卖方追索）。",
+      "fragmentId": "FRG-SRCSET002-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "c5f34a5b3e909eb3f9885bedc26d1703e250a476dac2b6e3500c5d58fbea3516",
+      "contentText": "**第四条** 保理业务应当以**真实交易背景**为基础，遵循\"贸易真实、转让有效、回款闭环、风险可测\"原则。",
+      "fragmentId": "FRG-SRCSET002-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "4e30c444344e70a466d615a3efe83c29f972024697f06278d4e54964cc37031d",
+      "contentText": "**第五条** 卖方（融资申请人）应同时满足：一、依法登记并存续；二、内部评级不低于本行准入线（见 `SRC-XFAM-001`）；三、与买方存在**连续、稳定**的交易记录（原则上不少于**六个月**）；四、无非正常商业纠纷与重大涉诉记录。",
+      "fragmentId": "FRG-SRCSET002-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "5d76f82b3c39f993c6c157516bd3c97eecfee80968310fb3521ac5a8fcff3842",
+      "contentText": "**第六条** 买方（应收账款债务人）应满足：一、资信状况良好、无重大不良记录；二、具备到期付款的经营与财务能力；三、不属于本行名单类管控对象。",
+      "fragmentId": "FRG-SRCSET002-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "51b9465af13786aa50db8889a2c290c964094f970bd071d97e083a48bd693cbc",
+      "contentText": "**第七条** 下列应收账款**不得**受理：一、权属不清或存在争议；二、已被转让、质押或设定其他权利负担且未解除；三、因票据或其他有价证券产生的付款请求权（另有专门规定的从其规定）；四、卖方与买方为关联方且交易价格明显偏离市场公允水平；五、应收账款的付款条件存在重大不确定性。",
+      "fragmentId": "FRG-SRCSET002-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "898b4b992b581f519f746fa242444b60f9b3df3915f6fc6771342ca44d3a349f",
+      "contentText": "**第八条** 办理**无追索权保理**的，除前条要求外，还应对买方进行**独立信用评估**，并按本行风险管理规定核定买方信用额度。",
+      "fragmentId": "FRG-SRCSET002-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "31493765dc76e26e0af3578366b20ffeec5bc9ee87c7e6cde5d0d961452645d2",
+      "contentText": "**第九条** 应收账款转让应当签订书面保理合同，并在合同中明确：转让标的、转让价款或预付款比例、追索权安排、回款账户与扣划授权、违约情形与救济措施。",
+      "fragmentId": "FRG-SRCSET002-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "9b59c6d155aab71d2664c77a1b2ebba63763d18c4971cffd6ae79ff35f6b7d8c",
+      "contentText": "**第十条** 本行应核查基础交易材料，包括但不限于：贸易合同、发票、物流或交付凭证、验收或对账记录，并留存影像件。",
+      "fragmentId": "FRG-SRCSET002-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "37cf2c5e727094686978e0ea3a065e04ba404ec23fc1276b71cc534e87d33e87",
+      "contentText": "**第十一条** 应收账款**确权**方式包括：一、买方书面确认（三方确认）；二、双方对账记录确认；三、其他可核验方式。**确权结果**应在放款前的审查报告中明确记载；未取得有效确权的，不得放款。",
+      "fragmentId": "FRG-SRCSET002-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "252f0ac03f4407d319d228c5ce42b1f76fcd641d50fe1a558127f5486de1321d",
+      "contentText": "**第十二条** 应收账款转让的**登记**，应当在**法定登记机构**完成；登记信息应与合同标的**一致**，并在放款前核验登记状态。已登记事项发生变更或注销的，应及时办理相应手续。",
+      "fragmentId": "FRG-SRCSET002-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "16177dda737ad29b53f784feb6cf5a9ecece3912b652c1703627390a286470d7",
+      "contentText": "**第十三条** 转让应当以适当方式**通知买方**；合同约定需买方确认的，未取得确认前不得放款。",
+      "fragmentId": "FRG-SRCSET002-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "c54fee0ef646ba6f58e16e0e0b5386d40df33094f785b15fde4ba07c0780ea6d",
+      "contentText": "**第十四条** **有追索权保理**项下，出现下列情形之一，本行有权向卖方追索：一、应收账款到期后未收回或未足额收回；二、基础交易被认定不真实；三、卖方违反合同约定（含重复转让、隐瞒权利负担）。",
+      "fragmentId": "FRG-SRCSET002-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "814b0e42238882f85f9e6d530e47f83e79faaef01f10f68bb7a27cfb0fe50193",
+      "contentText": "**第十五条** **无追索权保理**项下，本行原则上不向卖方追索，但下列情形除外：一、卖方欺诈或基础交易不真实；二、应收账款存在权利瑕疵且卖方未如实披露；三、买卖双方发生商业纠纷导致买方拒付；四、合同约定的其他例外情形。",
+      "fragmentId": "FRG-SRCSET002-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "210ba93162a64c4c1695180ddbfc3385e1a8f0c107f6f4eae673276a3bc2aa9f",
+      "contentText": "**第十六条** 保理**预付款比例**、**融资期限**与**宽限期**应在审批意见中明确，并遵守本行风险限额管理要求。**（演示参考值：融资比例原则上不超过应收账款金额的 80%，融资期限原则上不超过应收账款到期日后 30 天）** 上述数值为演示参考值，实际执行以本行定价与风险政策为准。",
+      "fragmentId": "FRG-SRCSET002-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "5561c94080ba9c15681edd31ff79b940847e90016643b40529d67760adcc97e3",
+      "contentText": "**第十七条** 保理**手续费**与**融资利率**适用《产品定价管理办法》（`SRC-XFAM-002`）及本行利率管理规定，**不得**低于本行成本与风险下限审批发放。",
+      "fragmentId": "FRG-SRCSET002-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "e56da5ca751f5e8a0861230571a94fc43e6f1819463b0616d529c58654b4a2d3",
+      "contentText": "**第十八条** 保理项下应收账款**回款应进入指定账户**，优先用于偿还融资本息；买方直接付款至其他账户的，卖方应在**三个工作日内**划转至指定账户并说明原因。",
+      "fragmentId": "FRG-SRCSET002-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "20570a40a3a246ded0a3c2c691bc73bfa0b8b0622bfa8d4153a64116968b17bf",
+      "contentText": "**第十九条** 贷后应至少监控：应收账款账龄、买方付款行为变化、卖方经营与涉诉状况、以及是否存在**重复转让**情形；发现异常的，按 `SRC-FIN-005` 的风险处置流程执行。",
+      "fragmentId": "FRG-SRCSET002-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "e570471247213d8bf4a013d5d55d4a09a47cdc04fa9d8e83dcf8233f2992a8fb",
+      "contentText": "**第二十条** 本办法与上位监管规定不一致的，**适用监管规定**；本行其他制度与本办法不一致的，按\"从严\"原则执行。",
+      "fragmentId": "FRG-SRCSET002-0020",
+      "pageNo": null,
+      "seqNo": 20,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "88862b60ac6432767579baa7cf05d4f19efa5b44582e9e7d3c45795b3ef77223",
+      "contentText": "**第二十一条** 本办法由 DEMO-BANK 交易银行部负责解释与修订。",
+      "fragmentId": "FRG-SRCSET002-0021",
+      "pageNo": null,
+      "seqNo": 21,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "contentSha256": "b9a24afe30d7728d34deb02642b2bb77ff3f607bfd0ac621586b76cc08ab9659",
+      "contentText": "**第二十二条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCSET002-0022",
+      "pageNo": null,
+      "seqNo": 22,
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    }
+  ],
+  "sourceId": "SRC-SET-002",
+  "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+}

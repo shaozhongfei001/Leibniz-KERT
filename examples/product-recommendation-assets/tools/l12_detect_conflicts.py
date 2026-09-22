@@ -105,9 +105,16 @@ def vtype_of(spec) -> str:
     return spec.get("valueType", "TEXT")
 
 
-def load_policy():
+def load_policy(policy_id: str):
+    """PC8 F-PC8-11：按**本产品断言产物自带的 policyId** 取策略实例（不再写死 CASH_MANAGEMENT）。
+
+    fail-closed：找不到该实例即非零退出 —— 回落默认族会让各族产品拿到"现金管理字段集"。
+    """
     doc = json.loads(POLICY.read_text(encoding="utf-8"))
-    return next(e for e in doc["examples"] if e.get("productFamily") == "CASH_MANAGEMENT")
+    for e in doc.get("examples", []):
+        if e.get("policyId") == policy_id:
+            return e
+    raise SystemExit(f"FAIL | 未找到策略实例 {policy_id}（CTR-PK-FLD-001）；fail-closed 拒绝回落默认族")
 
 
 def main():
@@ -116,7 +123,7 @@ def main():
         print("FAIL | 未找到 L11 断言产物")
         return 1
     asm_doc = json.loads(asm_path.read_text(encoding="utf-8"))
-    policy = load_policy()
+    policy = load_policy(asm_doc.get("policyId"))
     spec_by_field = {f["fieldPath"]: f for f in policy["fields"]}
 
     evs_by_id = {}

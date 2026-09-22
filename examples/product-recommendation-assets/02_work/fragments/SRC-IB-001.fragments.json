@@ -1,0 +1,159 @@
+{
+  "fragmentCount": 19,
+  "fragments": [
+    {
+      "contentSha256": "bdcde8f1f925e985c838ff49e44b49f7d3ff59dcd11887d726c020fe655c97a9",
+      "contentText": "**第一条** 为规范 DEMO-BANK 并购贷款业务的受理、评估、审批与贷后管理，明确内部标准与授权边界，制定本办法。",
+      "fragmentId": "FRG-SRCIB001-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "7239252cc9ac73a275fc395e9ff9adadc5165774ce98f03f6eb0d7a5343f921c",
+      "contentText": "**第二条** 本业务服务于**并购方**为支付并购交易价款而提出的融资需求；**是否构成监管口径下的并购贷款，以 `REG-IB-001` 的定义为准**，本件不另行定义。",
+      "fragmentId": "FRG-SRCIB001-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "1fbb42ea73be3f85c7f941c09830f24a9a5fd8a58ce6cba0d92804a5106e0051",
+      "contentText": "**第三条** 办理本业务应遵循\"**并购真实、主体合格、偿付可测、整合可行**\"四项原则；四项中任一无法论证的，不予受理。",
+      "fragmentId": "FRG-SRCIB001-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "ebb48aa9f10204fae5dd8e22ed722f359165ea3de85715d037daa8010f435125",
+      "contentText": "**第四条** 并购方（借款人）应同时满足：一、依法登记并存续，具备相应行业经营资质；二、内部评级不低于本行并购贷款准入线（见 `SRC-XFAM-001`）；三、已核定并购贷款专项额度；四、并购交易真实、合法，且已就交易背景完成核验（按 `SRC-TF-003`）。",
+      "fragmentId": "FRG-SRCIB001-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "99866e0da129bd22a05fc5dcba6e8fd39064b7e9fcf49dd892bd29a638340d91",
+      "contentText": "**第五条** 目标企业应满足：一、股权权属清晰、无重大未决争议；二、主要资产与业务权属合法；三、无影响交易完成的重大诉讼、行政处罚或担保负担未披露事项。",
+      "fragmentId": "FRG-SRCIB001-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "802f1fef4ce6d9d405984749aec5736bbd0a0ef7d6ae7a78b504ec7ca8217538",
+      "contentText": "**第六条** 下列情形**不得**受理：一、并购交易真实性或合法性无法确认；二、并购方**无实际控制或整合能力**且无可行整合方案；三、交易目的为**规避监管、圈地或变相融资**；四、涉及本行限制类行业或名单。",
+      "fragmentId": "FRG-SRCIB001-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "3b79ac7ba0dfd06696d7f92fdb7aaeea9fd0dcee4006cd08eeace544a055badb",
+      "contentText": "**第七条** 对**跨境并购、关联并购、交易对价显著偏离评估值**的，应启动**加强尽调**并取得独立第三方评估或法律意见。",
+      "fragmentId": "FRG-SRCIB001-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "541101529f0549e294af982613ed8cd3a422336f596a6ee26e61cafd11d9c097",
+      "contentText": "**第八条** 贷款金额与并购交易价款的关系应满足**监管上限**（以 `REG-IB-001` 为准）；本行在此基础上设**更严的内部上限**。**（演示参考值：内部上限原则上为并购交易价款的 50%）** 上述数值为演示参考值，且**不得**高于监管上限。",
+      "fragmentId": "FRG-SRCIB001-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "49758342feeed7bcad321f97b2459cf41b0f0d708a3ce930eed7a4306cd71921",
+      "contentText": "**第九条** 贷款期限应在**监管上限之内**；本行内部期限原则上按并购后整合规划与现金流回收期确定。**（演示参考值：内部期限原则上不超过五年）**",
+      "fragmentId": "FRG-SRCIB001-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "df4534c49e2de9548bb4a395c9c84dd6c4b1aac52ccb21eb795adaf9c72bca76",
+      "contentText": "**第十条** 还款来源应以**并购后企业的经营性现金流**为主；以股权分红、资产处置等作为补充来源的，应提供可验证的测算依据。",
+      "fragmentId": "FRG-SRCIB001-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "3f464152f9016faf6c1eeb34c95b0e855bd9e5e2bb24250aefe700762b04a0f4",
+      "contentText": "**第十一条** **担保安排**：应至少包含股权质押或其他有效担保，并明确触发处置的条件；担保物价值应以审慎口径评估。",
+      "fragmentId": "FRG-SRCIB001-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "3681b1fef31aad164cf1950cc816b0c44b3fc84d2b4a27cc47282d3e3498b2e2",
+      "contentText": "**第十二条** 并购贷款**利率**适用《产品定价管理办法》（`SRC-XFAM-002`）及本行利率管理规定，**不得**低于本行成本与风险下限审批发放。",
+      "fragmentId": "FRG-SRCIB001-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "9ea94bbcc2efb5d4d8cf5ca3ead78a5a5a8ba9225a1d40ab3c8e89fd1e3d4857",
+      "contentText": "**第十三条** 审批应形成书面意见，至少包含：并购交易与主体合规性结论、金额与期限的内部标准符合性、还款来源测算、担保与质押落实、以及**是否触及法定限制**的判断依据（涉法部分引 `REG-IB-001`，本件不复述）。",
+      "fragmentId": "FRG-SRCIB001-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "667a6c8f5b1f4efbe88eda2927c2b0828e24c315fa3b8441addbc87cfcaa4be2",
+      "contentText": "**第十四条** 放款前应核查：并购交易的交割条件与付款进度是否匹配、担保与质押登记是否完成、以及内部标准的符合性。",
+      "fragmentId": "FRG-SRCIB001-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "25a30bd4fd3724989d9717721f1e9af524d38f0b403bccd5671017bd9c15d931",
+      "contentText": "**第十五条** 贷后应至少监控：并购后企业经营与现金流实现情况、整合进展与协同效果、股权与担保物价值变动、以及是否存在**资金挪用**（挪用防范按 `SRC-FIN-005`）。",
+      "fragmentId": "FRG-SRCIB001-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "921ea09dfdddee3a15b5c3946cb130c837535328132014cb21a62b8f28d19fcb",
+      "contentText": "**第十六条** 发现**整合失败、现金流显著偏离测算、或资金挪用**的，应上调风险分类并按本行风险处置流程处理。",
+      "fragmentId": "FRG-SRCIB001-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "6d3b1a3b6d0ac780ffd631a6ece42adf396ddd95430a067348cda66c38c2bc94",
+      "contentText": "**第十七条** 本办法与上位监管规定不一致的，**适用监管规定**；本行的内部标准**只能更严**。本行其他制度与本办法不一致的，按\"从严\"原则执行。",
+      "fragmentId": "FRG-SRCIB001-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "3b49167dfab1a635eff142dbc8aa1e2a6e781d62c251ba37cd488d3896159cd3",
+      "contentText": "**第十八条** 本办法由 DEMO-BANK 投资银行部负责解释与修订。",
+      "fragmentId": "FRG-SRCIB001-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "contentSha256": "870ac52a10a1c16c4d7d47e031f730ceb5cfa0e7064fb50103b0ef545d2fd28a",
+      "contentText": "**第十九条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCIB001-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    }
+  ],
+  "sourceId": "SRC-IB-001",
+  "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+}

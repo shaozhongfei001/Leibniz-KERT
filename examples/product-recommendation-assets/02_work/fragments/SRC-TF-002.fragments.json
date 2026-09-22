@@ -1,0 +1,167 @@
+{
+  "fragmentCount": 20,
+  "fragments": [
+    {
+      "contentSha256": "ba638ff4ea8be78e0657e0eb3964dc623bf0c1c2bf1a506f930f71849b5d91e4",
+      "contentText": "**第一条** 为规范 DEMO-BANK 国内信用证业务的开证受理、单据处理与付款操作，明确岗位分工与内部时限，制定本规程。",
+      "fragmentId": "FRG-SRCTF002-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "3d6d9da205dd55d1d1ede7fb223ab9c197c6016a364f6a39ba4fac12ddfbda79",
+      "contentText": "**第二条** 本规程适用于本行办理的**国内信用证**开立、通知、交单、审单、付款与议付环节的行内操作。",
+      "fragmentId": "FRG-SRCTF002-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "bcff6513cf1346e0ffcbeff2e2a430a8109f13ef7fa66d2045bf0f6635e3a01c",
+      "contentText": "**第三条** 本业务实行\"开证与审单分离、审查与放款分离、经办与复核分离\"的岗位制衡。",
+      "fragmentId": "FRG-SRCTF002-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "a2345c00502b581926d8664e693ca3b9a2c0d5996c162ebeb05795cf8af84ebf",
+      "contentText": "**第四条** 申请开证的客户应满足：一、依法登记并在本行开立结算账户；二、内部评级不低于本行国内信用证业务准入线（见 `SRC-XFAM-001`）；三、已核定**开证额度**；四、基础交易真实、可核验（按 `SRC-TF-003`）。",
+      "fragmentId": "FRG-SRCTF002-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "19deb2ac1d30f309e51c051b5d854405e50c3db348122d0b934b8dba60197365",
+      "contentText": "**第五条** 开证申请材料至少包括：开证申请书、基础交易合同或其他交易证明材料、受益人信息、以及本行要求的担保或保证金落实文件。",
+      "fragmentId": "FRG-SRCTF002-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "87cf6e3b94c3ce3db6a9b374073ef7f4a0a96087e7972a2516a6b495e87f030e",
+      "contentText": "**第六条** **保证金比例**应在审批意见中明确。**（演示参考值：保证金比例原则上不低于开证金额的 20%；对优质客户可按内部授权下调）** 上述数值为演示参考值，实际执行以本行风险政策与授权为准。",
+      "fragmentId": "FRG-SRCTF002-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "1869cee88f2eacf30b102d777623e31d9644df56c4bc9ed07a49359ad832874a",
+      "contentText": "**第七条** 下列情形不得受理开证：一、基础交易不真实或材料无法核验；二、未落实开证额度或担保；三、客户处于本行名单类管控；四、申请内容与基础交易明显不符。",
+      "fragmentId": "FRG-SRCTF002-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "bb1d881e87adf80237d2e4bca5b131f6bbae2beda0a36086e24078f59770af75",
+      "contentText": "**第八条** 开证文本的**要件与措辞**应经复核岗确认；**法定必备记载事项以 `REG-TF-002` 为准**，本规程不另行规定。",
+      "fragmentId": "FRG-SRCTF002-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "ad6777a9bd6177c3e7342188dce92d042d3b7a2b59013e71ab1393cc9200d622",
+      "contentText": "**第九条** 收到单据后，经办岗应在**两个工作日内**完成初审，复核岗在**一个工作日内**完成复审；超期未处理的应说明原因并留档。",
+      "fragmentId": "FRG-SRCTF002-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "4f3463159556379c45811ccaae3acb407d62a65d8fb75219a80aea6a9855fbe2",
+      "contentText": "**第十条** 审单应核验：单据种类与份数是否与信用证要求一致、单据表面是否符合信用证条款、单据之间是否相互矛盾、单据是否在交单期内提交。",
+      "fragmentId": "FRG-SRCTF002-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "f4723d4ad4d26affa41521cce42bce21eb8dd6407a0cb22d6ea8ff7f0a6bcfc0",
+      "contentText": "**第十一条** 发现**不符点**的，应一次性列明并按行内既定流程处理（退单、要求修改或按客户授权接受不符点）；**不符点处理的法律效果以 `REG-TF-002` 为准**。",
+      "fragmentId": "FRG-SRCTF002-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "7ecc72137d90216ab3542eafb3cda15d84a927dba3c362cdb56cddfd2d6ab328",
+      "contentText": "**第十二条** 付款前应确认：单据已通过复审、客户资金或授信已落实、以及不存在本行管控限制。",
+      "fragmentId": "FRG-SRCTF002-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "bb2a66e59dfe8a5dc7ae9b8d03bd2235cf064ea8cf4753a6cbcb222990f380b2",
+      "contentText": "**第十三条** 议付与融资安排应纳入客户统一授信管理；**议付的法定条件与追索安排以 `REG-TF-002` 为准**。",
+      "fragmentId": "FRG-SRCTF002-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "c63a2103e388c9757ebcf9f10378b8139c4b0a22c275e7b22753335e0e4d6b6d",
+      "contentText": "**第十四条** 客户赎单、付款与单据交付应有完整签收记录，记录至少保存至业务终了后按本行档案规定期限。",
+      "fragmentId": "FRG-SRCTF002-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "3ec3810925705f0e7bb9ceebe732e0b8889e866b240ef4470d9540b66b58451f",
+      "contentText": "**第十五条** 内部时限一览：开证受理至开立**原则上不超过三个工作日**；单据初审**两个工作日**；复审**一个工作日**；付款指令发起**不超过一个工作日**（以上为**行内管理时限**，非法律期限）。",
+      "fragmentId": "FRG-SRCTF002-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "316e89a17acb9d1d64f68637145b1db420a3e3fef4f9bfadf37f832f64db2e39",
+      "contentText": "**第十六条** 业务全程应在行内系统留痕，关键节点（开立、通知、交单登记、审单结论、付款）应可回溯。",
+      "fragmentId": "FRG-SRCTF002-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "6a1e4e8010edbde493e9ef910498be347f1bb36dc60d5f8187813efefbc439f3",
+      "contentText": "**第十七条** 档案管理：申请书、信用证副本、单据影像、审单记录、付款凭证应成套归档，并与客户台账关联。",
+      "fragmentId": "FRG-SRCTF002-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "2231352dca1b7707b0fc97affd0ae7eb25a48b942b10ff2865762d9be00ff60c",
+      "contentText": "**第十八条** 本规程与上位监管规定不一致的，**适用监管规定**；本行其他制度与本规程不一致的，按\"从严\"原则执行。",
+      "fragmentId": "FRG-SRCTF002-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "21bf95d60d70be50d5eea9574c40d734280dd7dee43a8456a67240a4c7a7a410",
+      "contentText": "**第十九条** 本规程由 DEMO-BANK 交易银行部负责解释与修订。",
+      "fragmentId": "FRG-SRCTF002-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "contentSha256": "f97d65b6cf237f2930ecec93ca693c9a5e38249637ed2661158f00e6de9a4dd8",
+      "contentText": "**第二十条** 本规程自发布之日起施行。",
+      "fragmentId": "FRG-SRCTF002-0020",
+      "pageNo": null,
+      "seqNo": 20,
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    }
+  ],
+  "sourceId": "SRC-TF-002",
+  "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+}

@@ -1,0 +1,21 @@
+{
+  "allowedClaimTypes": [
+    "ELIGIBILITY",
+    "PROCESS",
+    "PRICE",
+    "RISK"
+  ],
+  "authorityLevel": "INTERNAL_POLICY",
+  "byteSize": 5858,
+  "bytesSha256": "2a95a8c6f15c0145c06f938259870340187561ab6b6609f2e62aff6a3ae49a56",
+  "ingestedAt": "2026-09-22T00:00:00+08:00",
+  "pageCount": null,
+  "productFamily": "FINANCING",
+  "provenanceState": "DEMO",
+  "provenanceUrl": null,
+  "sourceId": "SRC-FIN-001",
+  "sourcePath": "01_raw/_authoritative/SRC-FIN-001.DEMO.md",
+  "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6",
+  "supersededBy": null,
+  "zone": "_authoritative"
+}

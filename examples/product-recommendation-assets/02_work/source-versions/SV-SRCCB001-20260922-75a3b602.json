@@ -1,0 +1,20 @@
+{
+  "allowedClaimTypes": [
+    "ELIGIBILITY",
+    "PROCESS",
+    "RISK"
+  ],
+  "authorityLevel": "INTERNAL_POLICY",
+  "byteSize": 5396,
+  "bytesSha256": "75a3b60228ab7e815590381d49f71ece4e0862a51406941b9a78e7f62e586ead",
+  "ingestedAt": "2026-09-22T00:00:00+08:00",
+  "pageCount": null,
+  "productFamily": "CROSS_BORDER",
+  "provenanceState": "DEMO",
+  "provenanceUrl": null,
+  "sourceId": "SRC-CB-001",
+  "sourcePath": "01_raw/_authoritative/SRC-CB-001.DEMO.md",
+  "sourceVersionId": "SV-SRCCB001-20260922-75a3b602",
+  "supersededBy": null,
+  "zone": "_authoritative"
+}

@@ -1,0 +1,127 @@
+{
+  "evidenceCount": 5,
+  "evidenceSpans": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCTF003-545603a2",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCTF003-0001",
+      "locator": {
+        "clause": "第一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "为防范虚构交易、虚假贸易背景导致的信用与合规风险，规范交易背景真实性的审查方法与留档要求，制定本指引。",
+      "quoteHash": "545603a2f8f687f2e64f6aae1b85f5c1b9a941b9ef9e3035f5323456d5be2d7c",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "fd3850991b9a67a6ca6dceaaa3053e2a3f1c4f073216cc58950805a79485be8a",
+      "sourceId": "SRC-TF-003",
+      "sourcePath": "01_raw/_authoritative/SRC-TF-003.DEMO.md",
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCTF003-fc16cda5",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCTF003-0010",
+      "locator": {
+        "clause": "第十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "发现前条特征之一的，应暂停业务办理，补充核查；**不得**以客户说明替代证据，**不得**以后续补交单据追溯到已办理业务。",
+      "quoteHash": "fc16cda590c7c19c8f47072fddd5b38c37b0ff70d6788bff6ef5d2561529f997",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "fd3850991b9a67a6ca6dceaaa3053e2a3f1c4f073216cc58950805a79485be8a",
+      "sourceId": "SRC-TF-003",
+      "sourcePath": "01_raw/_authoritative/SRC-TF-003.DEMO.md",
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCTF003-f20404c5",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCTF003-0012",
+      "locator": {
+        "clause": "第十二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "结论为\"无法核实\"且客户无法补充有效证据的，按**不予办理**处理；结论为\"不真实\"的，按本行风险处置流程处理并向管理部门报告。",
+      "quoteHash": "f20404c5978caa209b33082ae59e788cf157d43cdb6a3f2f0318f6f38f140d66",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "fd3850991b9a67a6ca6dceaaa3053e2a3f1c4f073216cc58950805a79485be8a",
+      "sourceId": "SRC-TF-003",
+      "sourcePath": "01_raw/_authoritative/SRC-TF-003.DEMO.md",
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-SRCTF003-bd948712",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCTF003-0014",
+      "locator": {
+        "clause": "第十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "审查人员应对审查结论的真实性负责；复核人员应对结论与证据的一致性进行独立复核，**不得**在无证据支撑时签署\"真实\"结论。",
+      "quoteHash": "bd9487129119a3e10b0a8d3a224c70a90232413d253670a73365d94c4669d8ab",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "fd3850991b9a67a6ca6dceaaa3053e2a3f1c4f073216cc58950805a79485be8a",
+      "sourceId": "SRC-TF-003",
+      "sourcePath": "01_raw/_authoritative/SRC-TF-003.DEMO.md",
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-SRCTF003-21861ba9",
+      "extractionRunId": "RUN-20260922-415977d1",
+      "fragmentId": "FRG-SRCTF003-0017",
+      "locator": {
+        "clause": "第十七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本指引由 DEMO-BANK 风险管理部负责解释与修订。",
+      "quoteHash": "21861ba94f43334baed0c389f6a7a511557fb861724e1d19dcad982fe27baa59",
+      "retrievedAt": "2026-09-22T00:00:00+08:00",
+      "sourceBytesHash": "fd3850991b9a67a6ca6dceaaa3053e2a3f1c4f073216cc58950805a79485be8a",
+      "sourceId": "SRC-TF-003",
+      "sourcePath": "01_raw/_authoritative/SRC-TF-003.DEMO.md",
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099",
+      "usage": "AUTHORITATIVE"
+    }
+  ],
+  "sourceId": "SRC-TF-003",
+  "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+}

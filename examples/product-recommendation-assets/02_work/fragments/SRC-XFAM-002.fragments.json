@@ -1,0 +1,135 @@
+{
+  "fragmentCount": 16,
+  "fragments": [
+    {
+      "contentSha256": "94cd89b87146993a058788380db7495dfc529f500a049292af7f1e953683da53",
+      "contentText": "**第一条** 为规范 DEMO-BANK 对公产品定价行为，明确定价方法、审批权限与公示义务，制定本办法。",
+      "fragmentId": "FRG-SRCXFAM002-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "33cc8cf0b97b1bda05b285706460e645e1345e9b09c9d556ae5c6f44a909282e",
+      "contentText": "**第二条** 本办法适用于 DEMO-BANK 各级机构办理的全部对公产品的利率与费率定价，包括现金管理、结算、贸易金融、跨境金融、融资与投资银行类产品。",
+      "fragmentId": "FRG-SRCXFAM002-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "ba8ee513d56a1baf460826edffb907067d8f6c307762af46992003807580fea7",
+      "contentText": "**第三条** 定价应当遵循\"成本可算、风险可覆盖、市场可比、合规可公示\"原则。",
+      "fragmentId": "FRG-SRCXFAM002-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "a2dacc3fde16c0a8d9ef8440f4b1767c50e29267a384a1419faed0c262deb9c3",
+      "contentText": "**第四条** 利率类产品采用\"参考基准 + 加点/减点\"方式定价，参考基准为同期限贷款市场报价利率（LPR）。",
+      "fragmentId": "FRG-SRCXFAM002-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "8319c54b95d356fad51dd315f53b6d7f86588b92729cf79c8f83a37aedc02437",
+      "contentText": "**第五条** 流动资金类产品利率下限为同期限 LPR 减 50 个基点，上限为同期限 LPR 加 300 个基点（演示参考值）。",
+      "fragmentId": "FRG-SRCXFAM002-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "b5138f163b0b57218f713de23a4e137fbe23dfa34ef0f30b83444ea8ea76eeff",
+      "contentText": "**第六条** 费率类产品采用\"标准费率 + 减免\"方式定价；现金管理类服务费年费率参考区间为 0.05% 至 0.30%；结算类业务按笔收取，参考区间为每笔 1 元至 50 元（演示参考值）。",
+      "fragmentId": "FRG-SRCXFAM002-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "a533182734712e24c8b70bb7404ae4b64f481cd4d7fa553570b7458cf24fcb62",
+      "contentText": "**第七条** 跨境与投资银行类产品因涉及外部市场与监管要求，定价区间按专项制度执行；专项制度未覆盖的，参照本办法原则定价。",
+      "fragmentId": "FRG-SRCXFAM002-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "3496326d758b4ef21cb2383a65b2c7017260e01eb5c6ab41f36e10550351b342",
+      "contentText": "**第八条** 定价在参考区间内的，由一级分行价格管理岗审批；突破参考区间上限或下限的，报总行资产负债管理部审批。",
+      "fragmentId": "FRG-SRCXFAM002-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "496598ec9d505a1f0fb5da917a6831b32539eda4bf5c4b860e98e65338c3c588",
+      "contentText": "**第九条** 减免幅度不超过标准费率 30% 的，由一级分行审批；超过 30% 且不超过 50% 的，报总行审批；超过 50% 的原则上不予减免，另有总行专项决议的除外。",
+      "fragmentId": "FRG-SRCXFAM002-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "27c6691e717a4e83100f26ca576f9a011ee232cc48655dcde6b7b84e1f91ac45",
+      "contentText": "**第十条** 定价审批须完整留痕，记录定价依据、审批人、审批时间与生效日期，并纳入价格台账。",
+      "fragmentId": "FRG-SRCXFAM002-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "c48adaf0fffcadca2d0725cffb3577c7dd2809b89f91aee9e20bd2d2c8b286ed",
+      "contentText": "**第十一条** 属于市场调节价的服务价格项目，应当按照《商业银行服务价格管理办法》关于公示与告知的要求执行，公示口径与实际执行口径一致。",
+      "fragmentId": "FRG-SRCXFAM002-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "fa6a6e2ed05c4e23255e0a99e9e499c4025eed77dd114273dd4108a35faaa096",
+      "contentText": "**第十二条** 存量客户价格调整应当提前三十个自然日通知客户；合同或协议另有约定的，从其约定。",
+      "fragmentId": "FRG-SRCXFAM002-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "235ffd12068b8c0712c1e3873d117c8cb2c54bf4f23368283067b8c7f6fd639f",
+      "contentText": "**第十三条** 禁止下列行为：一、以低于成本的价格营销；二、账外收费或将费用拆分为账外项目；三、变相收取未约定的咨询费、顾问费；四、以\"内部价\"\"特殊渠道价\"等表述对客推介。",
+      "fragmentId": "FRG-SRCXFAM002-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "14cc7626423026ad04fc04882276cb5e467c4b15648be9770b2211a959ac6d8e",
+      "contentText": "**第十四条** 本办法与具体产品管理制度不一致的，按\"就高不就低\"原则执行。",
+      "fragmentId": "FRG-SRCXFAM002-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "ca49291294ce54be8eccb5e817983f5c3c396343bcc58bfcb108619e45b1df00",
+      "contentText": "**第十五条** 本办法由 DEMO-BANK 公司金融产品管理部会同资产负债管理部负责解释与修订。",
+      "fragmentId": "FRG-SRCXFAM002-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "contentSha256": "c9228e065b247decbd7abd6381f28ef2ddecfd0c35c15a24f23e07df97f4ea6e",
+      "contentText": "**第十六条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCXFAM002-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    }
+  ],
+  "sourceId": "SRC-XFAM-002",
+  "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+}

@@ -1,0 +1,80 @@
+{
+  "blockers": [
+    {
+      "fieldPath": "identity.productCode",
+      "required": "REQUIRED_HARD",
+      "state": "UNKNOWN"
+    },
+    {
+      "fieldPath": "compliance.regulatoryBasis",
+      "required": "REQUIRED_HARD",
+      "state": "UNKNOWN"
+    }
+  ],
+  "fieldCount": 5,
+  "fields": [
+    {
+      "assertionCount": 1,
+      "conflictId": null,
+      "evidenceCount": 0,
+      "fieldPath": "identity.productCode",
+      "knowledgeState": "UNKNOWN",
+      "needsHumanReview": true,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "无合格证据（资格/权威级/Owner 未裁决）",
+      "required": "REQUIRED_HARD"
+    },
+    {
+      "assertionCount": 1,
+      "conflictId": null,
+      "evidenceCount": 1,
+      "fieldPath": "eligibility.customerSegment",
+      "knowledgeState": "CANDIDATE",
+      "needsHumanReview": true,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "有候选证据，未 Owner 复核",
+      "required": "REQUIRED_HARD"
+    },
+    {
+      "assertionCount": 1,
+      "conflictId": null,
+      "evidenceCount": 1,
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "needsHumanReview": true,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "有候选证据，未 Owner 复核",
+      "required": "REQUIRED_SOFT"
+    },
+    {
+      "assertionCount": 1,
+      "conflictId": null,
+      "evidenceCount": 0,
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "UNKNOWN",
+      "needsHumanReview": true,
+      "purposeGate": "RECOMMENDATION_ELIGIBLE",
+      "reason": "无合格证据（资格/权威级/Owner 未裁决）",
+      "required": "REQUIRED_HARD"
+    },
+    {
+      "assertionCount": 1,
+      "conflictId": null,
+      "evidenceCount": 0,
+      "fieldPath": "pricing.serviceFee",
+      "knowledgeState": "UNKNOWN",
+      "needsHumanReview": false,
+      "purposeGate": "INTERPRETATION_ONLY",
+      "reason": "无合格证据（资格/权威级/Owner 未裁决）",
+      "required": "REQUIRED_SOFT"
+    }
+  ],
+  "generatedAt": "2026-09-22T00:00:00+08:00",
+  "interpretationReady": false,
+  "policyId": "FLD-TRADE_FINANCE-001",
+  "policyOwnerApproved": false,
+  "productId": "PROD-TF-001",
+  "productVersionScope": "version=2026.09.06.1",
+  "recommendationReady": false,
+  "recommendationReadyReason": "DEMO 派生知识（provenanceState=DEMO）不得进入 RECOMMENDATION_READY"
+}

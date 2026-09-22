@@ -1,0 +1,159 @@
+{
+  "fragmentCount": 19,
+  "fragments": [
+    {
+      "contentSha256": "a90678d4a7fc110654d8a4115ff12e455a8bcce7d705cee2b8efeb672259d585",
+      "contentText": "**第一条** 为规范 DEMO-BANK 内保外贷业务（境内担保、境外融资）的受理、审查与履约管理，明确额度与授权边界，制定本办法。",
+      "fragmentId": "FRG-SRCCB002-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "27d17bdb77cf3b7ff9190665dcc82af10683812d443a1059580cf3c0be9ea306",
+      "contentText": "**第二条** 本办法所称**内保外贷**，是指本行作为**担保人**，为境外债务人向境外债权人融资提供担保，并由境内主体提供反担保或质押安排的业务。",
+      "fragmentId": "FRG-SRCCB002-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "30438d25539ee28ad21d7fa7c3b4c60614490ea7450c673e1075d9c4204cb919",
+      "contentText": "**第三条** 本业务可采用**保函、备用信用证、担保函**等形式；**何种形式合法有效及法定必备要素以 `REG-CB-002` 为准**，本件不另行规定。",
+      "fragmentId": "FRG-SRCCB002-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "2b3fdfb254412997577a154a51927899f3047f490a84da94f568d6ffb683ed58",
+      "contentText": "**第四条** 办理本业务应遵循\"**境外主体可核、担保额度可控、履约资金来源可溯、跨境合规可验**\"四项原则。",
+      "fragmentId": "FRG-SRCCB002-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "a81d3fe6846f62c3962909af0ff4b0d9a38438c8b8224639365a72e5f071d9f3",
+      "contentText": "**第五条** 担保申请人（境内主体）应同时满足：一、依法登记并在本行开立账户；二、内部评级不低于本行担保业务准入线（见 `SRC-XFAM-001`）；三、已核定**担保类额度**；四、反担保或质押安排已落实并经审查通过。",
+      "fragmentId": "FRG-SRCCB002-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "88d03d66952c5f8446bc3b469a43a64adfc33369bc7c66b0daa081f34e9aec7d",
+      "contentText": "**第六条** **境外债务人**与**境外债权人**应同时满足：一、主体依当地法律依法设立并存续；二、无重大不良信用记录；三、与本行反洗钱、制裁与限制类名单无冲突；四、境外债权人具备**独立主张权利**的法律地位。",
+      "fragmentId": "FRG-SRCCB002-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "815ca3476a7d255c2868b0cf6df3ad7a627fcef6f14e932034e7249c92dd3062",
+      "contentText": "**第七条** 下列情形**不得**受理：一、无法核实境外主体身份或股权结构；二、反担保安排不足或权属不清；三、涉及本行限制类行业、地区或名单；四、申请用途与融资安排明显不符。",
+      "fragmentId": "FRG-SRCCB002-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "f08aeab819f6e90b220e2c5836fd50cb2f53adf6c1639bf65db9c8f0e7d13d3f",
+      "contentText": "**第八条** 对**股权关系复杂、境外主体位于高风险地区、或金额显著偏大**的业务，应启动**加强尽调**并留存记录。",
+      "fragmentId": "FRG-SRCCB002-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "5476d4349d3a566f56adf76da1b374d0c70b03389a6456e6fee519d9de77599d",
+      "contentText": "**第九条** 担保额度应纳入客户**统一授信与担保类额度**管理；同时办理多笔业务的，应**累计占用**额度，不得以拆分方式规避授权。",
+      "fragmentId": "FRG-SRCCB002-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "ba60e15345df8b76666f81e43bb279434cdb230698ea64fe351d7f3dede2ad3b",
+      "contentText": "**第十条** 担保金额与融资期限应在审批意见中明确。**（演示参考值：单笔担保金额原则上不超过经审计净资产的一定倍数；期限原则上不超过三年）** 上述数值为演示参考值，实际执行以本行风险政策与授权为准。",
+      "fragmentId": "FRG-SRCCB002-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "c3bc3e19a6980f0fec1e0698955804487f0384252f37882502447b6a9eedba38",
+      "contentText": "**第十一条** 担保**费率**适用《产品定价管理办法》（`SRC-XFAM-002`）及本行收费管理规定，**不得**低于本行成本与风险下限审批收费。",
+      "fragmentId": "FRG-SRCCB002-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "212272d2a4f1e0de52c02b1f4a970e5b677a5f4290bc160bfd3745837d5e0292",
+      "contentText": "**第十二条** 审批权限按金额区间分级授权；超权限业务应上报有权机构审批。",
+      "fragmentId": "FRG-SRCCB002-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "ae7dfd4dcb694502e41c4ed1a0ac333d271f3b71332ca1f8f8e288fdccba2d3c",
+      "contentText": "**第十三条** 放款前应核查：**依法应当办理的登记手续是否已完成**（登记要求以 `REG-CB-002` 为准）、反担保是否生效、以及担保文本要素是否齐备。",
+      "fragmentId": "FRG-SRCCB002-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "4fde679702c255aa352bebfa55dd4f66c3bf1636ecf1442ca3f8de6d4af4951a",
+      "contentText": "**第十四条** 存续期应至少监控：境外债务人经营与偿债能力变化、境外债权人主张权利的动向、反担保物价值变动、以及跨境监管规则或限制类名单的变化。",
+      "fragmentId": "FRG-SRCCB002-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "13c8f92c2bf6e937d26ea0ed999283f0b747be6cf86533cf2943cbe0440a07d8",
+      "contentText": "**第十五条** 出现**履约**情形（境外债权人主张担保责任）时，应按下列行内顺序处置：一、核实履约主张的真实性与合法性；二、启动反担保处置；三、按 `REG-CB-002` 及本行规定办理资金划出与相关手续；四、留存完整过程凭证。",
+      "fragmentId": "FRG-SRCCB002-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "b1b2e19dbd3de758c9c7d74da7d77f32621503c24a016820e718c718748d7d5c",
+      "contentText": "**第十六条** **履约资金**应来源合法、路径可溯；不得以虚构交易或构造路径规避跨境资金管理要求。",
+      "fragmentId": "FRG-SRCCB002-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "ab8c151b9360e35ebe5b85bb5a7cc71979318d9da336b16b0920a095cd5b0e22",
+      "contentText": "**第十七条** 本办法与上位监管规定不一致的，**适用监管规定**；本行其他制度与本办法不一致的，按\"从严\"原则执行。",
+      "fragmentId": "FRG-SRCCB002-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "12e9e48955e291d62d44ba19c0a92cdfb4e9ed1bfe49e2e7a49e627c878b6c85",
+      "contentText": "**第十八条** 本办法由 DEMO-BANK 国际业务部负责解释与修订。",
+      "fragmentId": "FRG-SRCCB002-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
+    {
+      "contentSha256": "870ac52a10a1c16c4d7d47e031f730ceb5cfa0e7064fb50103b0ef545d2fd28a",
+      "contentText": "**第十九条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCCB002-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    }
+  ],
+  "sourceId": "SRC-CB-002",
+  "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+}

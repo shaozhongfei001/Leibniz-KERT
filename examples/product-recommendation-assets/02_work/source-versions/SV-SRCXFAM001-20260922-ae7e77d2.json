@@ -1,0 +1,18 @@
+{
+  "allowedClaimTypes": [
+    "ELIGIBILITY"
+  ],
+  "authorityLevel": "INTERNAL_POLICY",
+  "byteSize": 4404,
+  "bytesSha256": "ae7e77d22770d0ea6712827bc04a2b7f9cc1fc1378ee2c06562c70f137917c23",
+  "ingestedAt": "2026-09-22T00:00:00+08:00",
+  "pageCount": null,
+  "productFamily": null,
+  "provenanceState": "DEMO",
+  "provenanceUrl": null,
+  "sourceId": "SRC-XFAM-001",
+  "sourcePath": "01_raw/_authoritative/SRC-XFAM-001.DEMO.md",
+  "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2",
+  "supersededBy": null,
+  "zone": "_authoritative"
+}

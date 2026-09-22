@@ -1,0 +1,19 @@
+{
+  "allowedClaimTypes": [
+    "PROCESS",
+    "RISK"
+  ],
+  "authorityLevel": "INTERNAL_POLICY",
+  "byteSize": 4949,
+  "bytesSha256": "fd3850991b9a67a6ca6dceaaa3053e2a3f1c4f073216cc58950805a79485be8a",
+  "ingestedAt": "2026-09-22T00:00:00+08:00",
+  "pageCount": null,
+  "productFamily": "TRADE_FINANCE",
+  "provenanceState": "DEMO",
+  "provenanceUrl": null,
+  "sourceId": "SRC-TF-003",
+  "sourcePath": "01_raw/_authoritative/SRC-TF-003.DEMO.md",
+  "sourceVersionId": "SV-SRCTF003-20260922-fd385099",
+  "supersededBy": null,
+  "zone": "_authoritative"
+}

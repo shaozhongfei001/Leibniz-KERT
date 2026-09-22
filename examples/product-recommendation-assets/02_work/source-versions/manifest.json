@@ -1,14 +1,30 @@
 {
-  "extractionRunId": "RUN-20260906-c8bb9f1f",
-  "generatedAt": "2026-09-06T12:00:00+08:00",
+  "extractionRunId": "RUN-20260922-cd706f7a",
+  "generatedAt": "2026-09-22T00:00:00+08:00",
   "sourceVersions": [
+    {
+      "byteSize": 5396,
+      "bytesSha256": "75a3b60228ab7e815590381d49f71ece4e0862a51406941b9a78e7f62e586ead",
+      "fragmentCount": 20,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-CB-001",
+      "sourceVersionId": "SV-SRCCB001-20260922-75a3b602"
+    },
+    {
+      "byteSize": 5472,
+      "bytesSha256": "fdb439c392089f107e77ebd66b4a8971a0b60016defb47153eb3758ee61e7235",
+      "fragmentCount": 19,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-CB-002",
+      "sourceVersionId": "SV-SRCCB002-20260922-fdb439c3"
+    },
     {
       "byteSize": 4280,
       "bytesSha256": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
       "fragmentCount": 19,
       "provenanceState": "DEMO",
       "sourceId": "SRC-CM-001",
-      "sourceVersionId": "SV-SRCCM001-20260906-5879e814"
+      "sourceVersionId": "SV-SRCCM001-20260922-5879e814"
     },
     {
       "byteSize": 3509,
@@ -16,7 +32,7 @@
       "fragmentCount": 17,
       "provenanceState": "DEMO",
       "sourceId": "SRC-CM-002",
-      "sourceVersionId": "SV-SRCCM002-20260906-984fe6cd"
+      "sourceVersionId": "SV-SRCCM002-20260922-984fe6cd"
     },
     {
       "byteSize": 3422,
@@ -24,7 +40,103 @@
       "fragmentCount": 15,
       "provenanceState": "DEMO",
       "sourceId": "SRC-CM-003",
-      "sourceVersionId": "SV-SRCCM003-20260906-b4599dd1"
+      "sourceVersionId": "SV-SRCCM003-20260922-b4599dd1"
+    },
+    {
+      "byteSize": 5858,
+      "bytesSha256": "2a95a8c6f15c0145c06f938259870340187561ab6b6609f2e62aff6a3ae49a56",
+      "fragmentCount": 21,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-FIN-001",
+      "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6"
+    },
+    {
+      "byteSize": 4404,
+      "bytesSha256": "3ec1e5d29ecce31be27663c899ad9e8fbfc4fd04e4cf172726e7673602795af2",
+      "fragmentCount": 17,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-FIN-003",
+      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+    },
+    {
+      "byteSize": 4328,
+      "bytesSha256": "81362bf840ddf166eb375c471f248bb967b7d53b370664c0270ecd3ce2725280",
+      "fragmentCount": 19,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-FIN-005",
+      "sourceVersionId": "SV-SRCFIN005-20260922-81362bf8"
+    },
+    {
+      "byteSize": 5664,
+      "bytesSha256": "45bd33064e341f1f9a4848841e7bbf6915cd465651f32bd62ad09dc37a4e67b9",
+      "fragmentCount": 19,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-IB-001",
+      "sourceVersionId": "SV-SRCIB001-20260922-45bd3306"
+    },
+    {
+      "byteSize": 6084,
+      "bytesSha256": "1a0c6d4f6de7fcd468ffd8224954484d13a020e65b4d73198f98c19ebf86ead3",
+      "fragmentCount": 22,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-SET-001",
+      "sourceVersionId": "SV-SRCSET001-20260922-1a0c6d4f"
+    },
+    {
+      "byteSize": 6672,
+      "bytesSha256": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+      "fragmentCount": 22,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-SET-002",
+      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+    },
+    {
+      "byteSize": 5856,
+      "bytesSha256": "1ac1446e84b4766b0493d14a13ded2548dbdd614b303ef3996fe5d57f0eec6d2",
+      "fragmentCount": 22,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-TF-001",
+      "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e"
+    },
+    {
+      "byteSize": 5251,
+      "bytesSha256": "1c45f1015ff4753f616370947fe57e69cf8ff9a3ff065acd7b4e4624325030c1",
+      "fragmentCount": 20,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-TF-002",
+      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+    },
+    {
+      "byteSize": 4949,
+      "bytesSha256": "fd3850991b9a67a6ca6dceaaa3053e2a3f1c4f073216cc58950805a79485be8a",
+      "fragmentCount": 18,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-TF-003",
+      "sourceVersionId": "SV-SRCTF003-20260922-fd385099"
+    },
+    {
+      "byteSize": 4404,
+      "bytesSha256": "ae7e77d22770d0ea6712827bc04a2b7f9cc1fc1378ee2c06562c70f137917c23",
+      "fragmentCount": 17,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-XFAM-001",
+      "sourceVersionId": "SV-SRCXFAM001-20260922-ae7e77d2"
+    },
+    {
+      "byteSize": 3971,
+      "bytesSha256": "2f0760ccf0c600289947be4d7002ffbb0b6c6fdc566ce8753a3901774ba7337f",
+      "fragmentCount": 16,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-XFAM-002",
+      "sourceVersionId": "SV-SRCXFAM002-20260922-2f0760cc"
+    },
+    {
+      "byteSize": 3822,
+      "bytesSha256": "4713b5e305a4deb802ca2619932635fd5f3c44400c5ccad991bca37f0bf910c6",
+      "fragmentCount": 16,
+      "provenanceState": "DEMO",
+      "sourceId": "SRC-XFAM-003",
+      "sourceVersionId": "SV-SRCXFAM003-20260922-4713b5e3"
     }
   ]
 }

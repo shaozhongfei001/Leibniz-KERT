@@ -1,0 +1,57 @@
+{
+  "compiledAt": "2026-09-22T00:00:00+08:00",
+  "fieldCount": 5,
+  "fields": [
+    {
+      "conflictId": null,
+      "evidenceIds": [],
+      "fieldPath": "identity.productCode",
+      "knowledgeState": "UNKNOWN",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": null,
+      "evidenceIds": [
+        "EVS-SRCXFAM001-40b34db6"
+      ],
+      "fieldPath": "eligibility.customerSegment",
+      "knowledgeState": "CANDIDATE",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": null,
+      "evidenceIds": [
+        "EVS-SRCXFAM001-d3e72c76"
+      ],
+      "fieldPath": "eligibility.prerequisiteProducts",
+      "knowledgeState": "CANDIDATE",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": null,
+      "evidenceIds": [],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "UNKNOWN",
+      "provenanceState": "DEMO",
+      "value": null
+    },
+    {
+      "conflictId": null,
+      "evidenceIds": [],
+      "fieldPath": "pricing.serviceFee",
+      "knowledgeState": "UNKNOWN",
+      "provenanceState": "DEMO",
+      "value": null
+    }
+  ],
+  "interpretationReady": false,
+  "legacyCardReused": false,
+  "productId": "PROD-CB-001",
+  "productVersionScope": "version=2026.09.06.1",
+  "provenanceState": "DEMO",
+  "recommendationReady": false,
+  "source": "compiled_from_assertions"
+}
