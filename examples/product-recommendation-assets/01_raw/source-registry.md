@@ -348,7 +348,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 > Owner 决议 **DECISION-20260906-01（演示路径 C）**：批准生成演示制度文本，明确标记为 DEMO 而非真实制度。
 >
 > **红线（L10 落地）**：
-> 1. 本节 9 条**均为虚构演示文本**，不代表任何真实机构制度；
+> 1. 本节 11 条**均为虚构演示文本**，不代表任何真实机构制度；
 > 2. DEMO 源**不计入** §5 真实权威区基数（28），**不抵扣** 19/28 真实缺口 —— **F-L00-07 未解除**；
 > 3. 依 DEMO 源编译的 Release 必须带 `provenance_state=DEMO`，**不得**进入 `RECOMMENDATION_READY`（INV-EVS-09/10/11）；
 > 4. DEMO 证据**不得与** VERIFIED 证据混合支撑同一字段断言，禁止用演示材料补真实材料缺口。
@@ -364,6 +364,8 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-FIN-001 | 《流动资金贷款管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-FIN-001.DEMO.md` | 无 |
 | SRC-FIN-003 | 《供应链金融业务操作规程（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-FIN-003.DEMO.md` | 无 |
 | SRC-FIN-005 | 《流动资金贷款风险管理指引（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-FIN-005.DEMO.md` | 无 |
+| SRC-SET-001 | 《单位结算账户管理实施细则（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-SET-001.DEMO.md` | 无 |
+| SRC-SET-002 | 《国内保理业务管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-SET-002.DEMO.md` | 无 |
 
 **物理隔离约定**：真实行内制度上传时落 `SRC-CM-001.pdf` / `SRC-CM-001.md`；演示文本固定带
 `.DEMO.md` 后缀。§5.2 中 `SRC-CM-001/002/003` 三行**仍记 `PENDING_SOURCE`** —— 真实行内制度尚未上传，
@@ -382,6 +384,8 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-FIN-001 | 5858 | `2a95a8c6f15c0145c06f938259870340187561ab6b6609f2e62aff6a3ae49a56` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
 | SRC-FIN-003 | 4404 | `3ec1e5d29ecce31be27663c899ad9e8fbfc4fd04e4cf172726e7673602795af2` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
 | SRC-FIN-005 | 4328 | `81362bf840ddf166eb375c471f248bb967b7d53b370664c0270ecd3ce2725280` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
+| SRC-SET-001 | 6084 | `1a0c6d4f6de7fcd468ffd8224954484d13a020e65b4d73198f98c19ebf86ead3` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
+| SRC-SET-002 | 6672 | `7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
 
 **内建已知冲突（演示数据，非缺陷）**：`SRC-CM-001` 第十条规定现金池主账户最低留存 **50 万元**，
 `SRC-CM-003` 第六条规定集团现金池主账户最低留存 **100 万元**。该 VALUE_MISMATCH 由 L10 故意保留，
@@ -462,10 +466,17 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 `CLAUSE_VERIFIED` **0** 条。
 公开参考区登记源 **2 条**，均已 `AVAILABLE`（PUB-PRICE-001 / PUB-PRICE-002）。
 
-**DEMO 演示轨（Owner 决议 DECISION-20260906-01 路径 C）**：演示源 **9** 条（SRC-CM-001/002/003、SRC-XFAM-001/002/003、SRC-FIN-001/003/005），
+**DEMO 演示轨（Owner 决议 DECISION-20260906-01 路径 C）**：演示源 **11** 条（SRC-CM-001/002/003、SRC-XFAM-001/002/003、SRC-FIN-001/003/005、SRC-SET-001/002），
 均为 `provenance_state: DEMO` 的**虚构文本**，**单列统计、不计入上列 28 条、不抵扣 27/28 真实缺口**，
 F-L00-07 **仍未解除**。详见 §5.8。
 
+> **PC8 造数批次 B3（2026-09-22）**：新增 `SRC-SET-001/002` 两份**结算族**演示源
+> （单位结算账户管理实施细则 / 国内保理业务管理办法），覆盖 `PROD-SET-001/002`；
+> 写法沿用 B2 口径：**行内制度形态**、**不重复上位监管与法定登记要求**（分别引 `REG-CM-002` 与
+> 法定登记机构规则），并在文内写明**交叉适用**（与 `SRC-FIN-003` 交叉时保理专项优先、从严执行；
+> 定价一律适用 `SRC-XFAM-002`，本件不重复定价规则）⇒ 避免与既有源分叉；
+> 两处数值已标**「演示参考值」**，不得作真实执行依据。
+>
 > **PC8 造数批次 B2（2026-09-22）**：新增 `SRC-FIN-001/003/005` 三份**融资族**演示源
 > （流动资金贷款管理办法 / 供应链金融业务操作规程 / 流动资金贷款风险管理指引），覆盖 `PROD-FIN-001/002/003`；
 > 均为 `provenance_state: DEMO`，**不计入**权威区基数、**不抵扣**真实缺口；条款数与片段数记「待抽取」
