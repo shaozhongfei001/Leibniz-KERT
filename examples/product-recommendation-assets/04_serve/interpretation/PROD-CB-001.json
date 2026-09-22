@@ -1,15 +1,15 @@
 {
-  "bundleHash": "d903f53c9a4612bd8f2204936023006ff9776304d2d1cb3d24312b00be33e013",
-  "generatedAt": "2026-09-22T00:00:00+08:00",
+  "bundleHash": "de22bf071e47c3463bd685be5e7d6228590d580ab25027aa826b8f43fa014bbb",
+  "generatedAt": "2026-09-22T19:10:00+08:00",
   "isStale": false,
-  "lifecycleState": "DRAFT",
+  "lifecycleState": "PUBLISHED",
   "productId": "PROD-CB-001",
   "provenanceState": "DEMO",
   "purposeAllowed": {
-    "INTERPRETATION": false,
+    "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.1",
+  "releaseId": "RLS-2026.09.22.85",
   "sourceVersions": [
     "SV-SRCCB001-20260922-75a3b602",
     "SV-SRCCB002-20260922-fdb439c3",
@@ -60,14 +60,14 @@
         "displayValue": null,
         "evidenceSummaries": [],
         "fieldPath": "identity.productCode",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "NOT_APPLICABLE"
       },
       {
         "conflictId": null,
         "displayValue": null,
         "evidenceSummaries": [],
         "fieldPath": "compliance.regulatoryBasis",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "NOT_APPLICABLE"
       }
     ],
     "PRICING": [

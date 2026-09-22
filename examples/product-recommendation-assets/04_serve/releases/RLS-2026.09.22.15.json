@@ -1,0 +1,70 @@
+{
+  "assertionManifestHash": "8c57548aa9fabd073426dd89bb3057d45bd4fffc1ab03aca559984a5d742c6a0",
+  "bundleHash": "c11756aea5fef60e81981835556f773481ce67959a0355f11bddd9bd4782c88b",
+  "cardProjectionHash": "c1cfd8ffade4b4e7c2a16e15203b04cda508e5c18139d8aec91fa1af6a5f1d6e",
+  "evidenceManifestHash": "7a907dd9d24e7641c75144148ad61b429295beedd6b94edd57813d0a353d2ceb",
+  "gateReport": {
+    "blockingReasons": [
+      "identity.productCode=UNKNOWN",
+      "eligibility.minAccountBalance=UNKNOWN",
+      "compliance.regulatoryBasis=UNKNOWN"
+    ],
+    "conflict": 0,
+    "notApplicableApproved": 0,
+    "requiredHardFieldsTotal": 4,
+    "stale": 0,
+    "supported": 0,
+    "unknown": 4
+  },
+  "lifecycleState": "PUBLISHED",
+  "ownerDecisionIds": [
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-22d070b8",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-90dd14ea",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-90dd14ea",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb",
+    "DEC-20260922-987f19ff",
+    "DEC-20260922-37390deb"
+  ],
+  "productIds": [
+    "PROD-CM-002"
+  ],
+  "provenanceState": "DEMO",
+  "publishedAt": "2026-09-22T19:10:00+08:00",
+  "purposeFlags": {
+    "interpretationReady": false,
+    "recommendationReady": false
+  },
+  "qualityRunId": "QR-20260922-1ea96d43",
+  "releaseId": "RLS-2026.09.22.15",
+  "rulePackageHash": "31d7fc5e31e90be36fc7c05760a36fce7d773b181e4242ac033d39d642ade2cc",
+  "staleFlag": {
+    "isStale": false,
+    "staleReason": null,
+    "staleSince": null,
+    "triggeringSourceVersionId": null
+  },
+  "taxonomyVersion": "CTR-PK-TAX-001@v1"
+}

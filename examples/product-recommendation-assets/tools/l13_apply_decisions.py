@@ -100,6 +100,8 @@ def latest_state(items):
     """
     superseded = {a.get("supersedes") for a in items if a.get("supersedes")}
     alive = [a for a in items if a["assertionId"] not in superseded] or items
+    if not alive:
+        return None  # PC8 T14：空断言集 ⇒ 由调用方给出明确 FAIL，不再抛 IndexError
     return sorted(alive, key=lambda a: (STATE_ORDER.get(a["knowledgeState"], 0),
                                         a.get("createdAt", ""),
                                         a["assertionId"]))[-1]
@@ -126,8 +128,13 @@ def main():
     ts = now_cst()
     asm_doc = load(ASM_DIR / f"{PRODUCT_ID}.assertions.json")
     cnf_doc = load(CNF_DIR / f"{PRODUCT_ID}.conflicts.json")
-    policy = next(e for e in load(POLICY)["examples"]
-                  if e.get("productFamily") == "CASH_MANAGEMENT")
+    # PC8 F-PC8-11 同类修复：按**本产品断言产物自带的 policyId** 取策略实例（原写死 CASH_MANAGEMENT，
+    # 会让非现金管理产品的字段规格取错族）。fail-closed：找不到即退出。
+    _pol_id = asm_doc.get("policyId")
+    policy = next((e for e in load(POLICY).get("examples", []) if e.get("policyId") == _pol_id), None)
+    if policy is None:
+        print(f"FAIL | 未找到策略实例 {_pol_id}（CTR-PK-FLD-001）；fail-closed 拒绝回落默认族")
+        return 1
     spec_by_field = {f["fieldPath"]: f for f in policy["fields"]}
     evs = {s["evidenceId"]: s for p in EVS_DIR.glob("*.evidence-spans.json")
            for s in load(p)["evidenceSpans"]}
@@ -138,6 +145,7 @@ def main():
 
     new_assertions = []
     applied = []
+    skipped_product_scoped = 0  # PC8 T14：不属于本产品的冲突裁决（跨产品签署件的正常跳过）
 
     applied_ids = {a.get("reviewDecisionId") for a in asm_doc["assertions"]}
     applied_ids |= {c.get("resolution", {}).get("decisionId")
@@ -147,12 +155,25 @@ def main():
         if d["decisionId"] in applied_ids:
             print("SKIP  | 已应用:", d["decisionId"])
             continue
+        # PC8 T14：决策可带 `productId` **限定适用产品**；缺省=不限（兼容单产品历史决策文件）。
+        # 必要性（实测根因）：FIELD 决策的 subjectId 只是字段路径、**不含产品维度** ⇒ 跨产品签署件里
+        # 13 个产品各有一条 `identity.productCode` 决策，若不限定产品，一次 apply 会把同一字段
+        # 应用 13 遍（实测 newAssertions=26 造成 13 份重复断言，击穿 L11「assertionId 唯一」）。
+        d_pid = d.get("productId")
+        if d_pid and d_pid != PRODUCT_ID:
+            print(f"SKIP  | 决策 {d['decisionId']} 限定产品 {d_pid} ≠ {PRODUCT_ID} —— 未应用，留痕")
+            skipped_product_scoped += 1
+            continue
         if d["subjectKind"] == "CONFLICT":
             cid = d["subjectId"]
             target = next((c for c in cnf_doc["conflicts"] if c["conflictId"] == cid), None)
             if target is None:
-                print(f"FAIL | 冲突不存在: {cid}")
-                return 1
+                # PC8 T14：决策文件是**跨产品**的（Owner 签一份覆盖 13 卡），本脚本是**单产品**的
+                # ⇒ 不属于本产品的冲突裁决应**跳过并留痕**，而不是硬失败（硬失败会让本产品的字段裁决
+                # 一起不被应用，实测：12 卡因此停留在 blockers>0）。
+                print(f"SKIP  | 冲突不属于本产品（{PRODUCT_ID} 无 {cid}）—— 未应用，留痕")
+                skipped_product_scoped += 1
+                continue
             resolved = next((a for a in asm_doc["assertions"]
                              if a["assertionId"] == d.get("resolvedAssertionId")), None)
             if resolved is None or d["resolvedAssertionId"] not in target["assertionIds"]:
@@ -197,8 +218,25 @@ def main():
 
         elif d["subjectKind"] == "FIELD" and d["decision"] == "NOT_APPLICABLE":
             fp = d["subjectId"]
+            # PC8 T14：跨产品签署件里可能含"本产品策略没有的字段"（如 CM 族专有的
+            # eligibility.minAccountBalance 出现在非 CM 产品的决策清单里）⇒ 跳过并留痕，
+            # 不得崩溃、也不得硬失败（实测：原实现 latest_state([]) 抛 IndexError，10 卡因此卡住）。
+            if fp not in spec_by_field:
+                print(f"SKIP  | 字段不属于本产品策略（{PRODUCT_ID} 无 {fp}）—— 未应用，留痕")
+                skipped_product_scoped += 1
+                continue
             items = by_field.get(fp, [])
             old = latest_state(items)
+            if old is None:
+                print(f"FAIL | 字段 {fp} 无任何断言可供裁决（拒绝在空断言上裁决）")
+                return 1
+            # PC8 T14：**幂等守卫** —— 该字段已有 NOT_APPLICABLE 裁断即跳过。
+            # 依据（实测）：本脚本重复运行时原会重复追加同一 assertionId，导致 L11 门禁
+            # 「assertionId 唯一」FAIL（TF-002 实测出现多份重复 id）。
+            if any(a["fieldPath"] == fp and a["knowledgeState"] == "NOT_APPLICABLE"
+                   for a in asm_doc["assertions"]):
+                print(f"SKIP  | 字段 {fp} 已有 NOT_APPLICABLE 裁断（幂等跳过）")
+                continue
             new_assertions.append({
                 "assertionId": f"ASM-{sid_key(PRODUCT_ID)}-"
                                f"{sha256_text(PRODUCT_ID + '|' + fp + '|NOT_APPLICABLE')[:8]}",
@@ -254,6 +292,8 @@ def main():
             "reason": "Owner 已裁决" if state in ("SUPPORTED", "NOT_APPLICABLE") else "待裁决",
         })
     interpretation_ready = not blockers
+    if skipped_product_scoped:
+        print(f"NOTE  | 跳过 {skipped_product_scoped} 项不属于本产品的冲突裁决（跨产品签署件正常现象，已留痕）")
     RPT_DIR.mkdir(parents=True, exist_ok=True)
     (RPT_DIR / f"{PRODUCT_ID}.health.json").write_text(
         json.dumps({

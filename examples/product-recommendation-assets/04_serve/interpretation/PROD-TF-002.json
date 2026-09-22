@@ -1,15 +1,15 @@
 {
-  "bundleHash": "2eb1e132f21e415611b37c9f134992497309fbd64882a73ab53400b5b0c3a975",
-  "generatedAt": "2026-09-22T00:00:00+08:00",
+  "bundleHash": "fc6eaa7eeedb782d8b79750bdb7d74ad139377d302e75acf5ca327aeca3abb74",
+  "generatedAt": "2026-09-22T19:10:00+08:00",
   "isStale": false,
-  "lifecycleState": "DRAFT",
+  "lifecycleState": "PUBLISHED",
   "productId": "PROD-TF-002",
   "provenanceState": "DEMO",
   "purposeAllowed": {
-    "INTERPRETATION": false,
+    "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.13",
+  "releaseId": "RLS-2026.09.22.84",
   "sourceVersions": [
     "SV-SRCCB001-20260922-75a3b602",
     "SV-SRCCB002-20260922-fdb439c3",
@@ -60,14 +60,14 @@
         "displayValue": null,
         "evidenceSummaries": [],
         "fieldPath": "identity.productCode",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "NOT_APPLICABLE"
       },
       {
         "conflictId": null,
         "displayValue": null,
         "evidenceSummaries": [],
         "fieldPath": "compliance.regulatoryBasis",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "NOT_APPLICABLE"
       }
     ],
     "PRICING": [

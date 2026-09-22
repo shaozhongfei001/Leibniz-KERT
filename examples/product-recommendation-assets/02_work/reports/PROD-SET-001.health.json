@@ -1,27 +1,16 @@
 {
-  "blockers": [
-    {
-      "fieldPath": "identity.productCode",
-      "required": "REQUIRED_HARD",
-      "state": "UNKNOWN"
-    },
-    {
-      "fieldPath": "compliance.regulatoryBasis",
-      "required": "REQUIRED_HARD",
-      "state": "UNKNOWN"
-    }
-  ],
+  "blockers": [],
   "fieldCount": 5,
   "fields": [
     {
-      "assertionCount": 1,
+      "assertionCount": 2,
       "conflictId": null,
       "evidenceCount": 0,
       "fieldPath": "identity.productCode",
-      "knowledgeState": "UNKNOWN",
-      "needsHumanReview": true,
+      "knowledgeState": "NOT_APPLICABLE",
+      "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "无合格证据（资格/权威级/Owner 未裁决）",
+      "reason": "Owner 已裁决",
       "required": "REQUIRED_HARD"
     },
     {
@@ -30,9 +19,9 @@
       "evidenceCount": 1,
       "fieldPath": "eligibility.customerSegment",
       "knowledgeState": "CANDIDATE",
-      "needsHumanReview": true,
+      "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "有候选证据，未 Owner 复核",
+      "reason": "待裁决",
       "required": "REQUIRED_HARD"
     },
     {
@@ -41,20 +30,20 @@
       "evidenceCount": 1,
       "fieldPath": "eligibility.prerequisiteProducts",
       "knowledgeState": "CANDIDATE",
-      "needsHumanReview": true,
+      "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "有候选证据，未 Owner 复核",
+      "reason": "待裁决",
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 1,
+      "assertionCount": 2,
       "conflictId": null,
       "evidenceCount": 0,
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "UNKNOWN",
-      "needsHumanReview": true,
+      "knowledgeState": "NOT_APPLICABLE",
+      "needsHumanReview": false,
       "purposeGate": "RECOMMENDATION_ELIGIBLE",
-      "reason": "无合格证据（资格/权威级/Owner 未裁决）",
+      "reason": "Owner 已裁决",
       "required": "REQUIRED_HARD"
     },
     {
@@ -65,12 +54,12 @@
       "knowledgeState": "UNKNOWN",
       "needsHumanReview": false,
       "purposeGate": "INTERPRETATION_ONLY",
-      "reason": "无合格证据（资格/权威级/Owner 未裁决）",
+      "reason": "待裁决",
       "required": "REQUIRED_SOFT"
     }
   ],
-  "generatedAt": "2026-09-22T00:00:00+08:00",
-  "interpretationReady": false,
+  "generatedAt": "2026-09-22T19:10:00+08:00",
+  "interpretationReady": true,
   "policyId": "FLD-SETTLEMENT-001",
   "policyOwnerApproved": false,
   "productId": "PROD-SET-001",

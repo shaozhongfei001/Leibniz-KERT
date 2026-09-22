@@ -171,6 +171,12 @@ def main():
             for e in errs:
                 print("  -", e)
             return 2
+        # PC8 F-PC8-14（fail-closed）：决策文件**没有任何决策项**时不得据此发布。
+        # 依据（实测）：曾用一份 0 决策的签署件发布，得到 lifecycle=PUBLISHED 但 ownerDecisionIds=[]，
+        # 直接违反 L13 门禁「已发布 ⇒ ownerDecisionIds 非空」（产出 13 份违规 Release 需事后清理）。
+        if not doc.get("decisions"):
+            print("FAIL | 决策文件不含任何决策项，拒绝据此发布（否则 PUBLISHED 且 ownerDecisionIds 为空）")
+            return 2
         for d in doc["decisions"]:
             decisions.append({k: d[k] for k in
                               ("decisionId", "subjectKind", "subjectId", "decision",

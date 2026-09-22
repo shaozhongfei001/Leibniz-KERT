@@ -1,5 +1,5 @@
 {
-  "assertionCount": 5,
+  "assertionCount": 7,
   "assertions": [
     {
       "applicabilityScope": {
@@ -8,7 +8,7 @@
       },
       "assertionId": "ASM-PRODCB001-b40103f9",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
@@ -28,7 +28,7 @@
       },
       "assertionId": "ASM-PRODCB001-7bc11c96",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
@@ -50,7 +50,7 @@
       },
       "assertionId": "ASM-PRODCB001-66b18cf9",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
@@ -72,7 +72,7 @@
       },
       "assertionId": "ASM-PRODCB001-0f626955",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [],
       "fieldPath": "compliance.regulatoryBasis",
@@ -92,7 +92,7 @@
       },
       "assertionId": "ASM-PRODCB001-83052d9f",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
@@ -104,6 +104,46 @@
       "reviewDecisionId": null,
       "supersedes": null,
       "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB001-7f0e00d3",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [],
+      "fieldPath": "identity.productCode",
+      "knowledgeState": "NOT_APPLICABLE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": "DEC-20260922-8d000b42",
+      "supersedes": "ASM-PRODCB001-b40103f9",
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB001-45811035",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "NOT_APPLICABLE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": "DEC-20260922-ceb94de5",
+      "supersedes": "ASM-PRODCB001-0f626955",
+      "valueType": "TEXT"
     }
   ],
   "extractionRunId": "RUN-20260922-415977d1",

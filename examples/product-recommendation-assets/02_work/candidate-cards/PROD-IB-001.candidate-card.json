@@ -1,12 +1,12 @@
 {
-  "compiledAt": "2026-09-22T00:00:00+08:00",
+  "compiledAt": "2026-09-22T19:10:00+08:00",
   "fieldCount": 5,
   "fields": [
     {
       "conflictId": null,
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
-      "knowledgeState": "UNKNOWN",
+      "knowledgeState": "NOT_APPLICABLE",
       "provenanceState": "DEMO",
       "value": null
     },
@@ -34,7 +34,7 @@
       "conflictId": null,
       "evidenceIds": [],
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "UNKNOWN",
+      "knowledgeState": "NOT_APPLICABLE",
       "provenanceState": "DEMO",
       "value": null
     },
@@ -47,7 +47,7 @@
       "value": null
     }
   ],
-  "interpretationReady": false,
+  "interpretationReady": true,
   "legacyCardReused": false,
   "productId": "PROD-IB-001",
   "productVersionScope": "version=2026.09.06.1",

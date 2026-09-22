@@ -1,15 +1,15 @@
 {
-  "bundleHash": "c11756aea5fef60e81981835556f773481ce67959a0355f11bddd9bd4782c88b",
-  "generatedAt": "2026-09-22T00:00:00+08:00",
+  "bundleHash": "aaa655ff85d3ed9a6c281605e8c8573dc0a62ce29d1c838b0a1332b8c89364af",
+  "generatedAt": "2026-09-22T19:10:00+08:00",
   "isStale": false,
-  "lifecycleState": "DRAFT",
+  "lifecycleState": "PUBLISHED",
   "productId": "PROD-CM-002",
   "provenanceState": "DEMO",
   "purposeAllowed": {
-    "INTERPRETATION": false,
+    "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.4",
+  "releaseId": "RLS-2026.09.22.76",
   "sourceVersions": [
     "SV-SRCCB001-20260922-75a3b602",
     "SV-SRCCB002-20260922-fdb439c3",
@@ -44,7 +44,7 @@
         "displayValue": null,
         "evidenceSummaries": [],
         "fieldPath": "eligibility.minAccountBalance",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "NOT_APPLICABLE"
       },
       {
         "conflictId": null,
@@ -60,14 +60,14 @@
         "displayValue": null,
         "evidenceSummaries": [],
         "fieldPath": "identity.productCode",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "NOT_APPLICABLE"
       },
       {
         "conflictId": null,
         "displayValue": null,
         "evidenceSummaries": [],
         "fieldPath": "compliance.regulatoryBasis",
-        "knowledgeState": "UNKNOWN"
+        "knowledgeState": "NOT_APPLICABLE"
       }
     ],
     "PRICING": [

@@ -1,5 +1,5 @@
 {
-  "assertionCount": 18,
+  "assertionCount": 20,
   "assertions": [
     {
       "applicabilityScope": {
@@ -8,7 +8,7 @@
       },
       "assertionId": "ASM-PRODCM001-36cbaf68",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
@@ -28,7 +28,7 @@
       },
       "assertionId": "ASM-PRODCM001-237b0063",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM001-f9281e09"
@@ -50,7 +50,7 @@
       },
       "assertionId": "ASM-PRODCM001-29789042",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM003-79cdb73c"
@@ -72,7 +72,7 @@
       },
       "assertionId": "ASM-PRODCM001-daa0c996",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM003-969d8e2e"
@@ -94,7 +94,7 @@
       },
       "assertionId": "ASM-PRODCM001-6becc949",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
@@ -116,7 +116,7 @@
       },
       "assertionId": "ASM-PRODCM001-991baf6e",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM001-7d3f83e8"
@@ -138,7 +138,7 @@
       },
       "assertionId": "ASM-PRODCM001-a6c2dd45",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM001-b92956e2"
@@ -160,7 +160,7 @@
       },
       "assertionId": "ASM-PRODCM001-54d79577",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM001-b8dc5f5f"
@@ -182,7 +182,7 @@
       },
       "assertionId": "ASM-PRODCM001-629fff8a",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM003-4302d512"
@@ -204,7 +204,7 @@
       },
       "assertionId": "ASM-PRODCM001-e4bf494e",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM001-14e72136"
@@ -226,7 +226,7 @@
       },
       "assertionId": "ASM-PRODCM001-7c1921d4",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
@@ -248,7 +248,7 @@
       },
       "assertionId": "ASM-PRODCM001-34aac9d6",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [],
       "fieldPath": "compliance.regulatoryBasis",
@@ -268,7 +268,7 @@
       },
       "assertionId": "ASM-PRODCM001-bacfd6cb",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
@@ -288,7 +288,7 @@
       },
       "assertionId": "ASM-PRODCM001-f4336572",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM001-fb2963c0"
@@ -310,7 +310,7 @@
       },
       "assertionId": "ASM-PRODCM001-878b4589",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM001-f92129c2"
@@ -332,7 +332,7 @@
       },
       "assertionId": "ASM-PRODCM001-4e561f72",
       "conflictId": null,
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCXFAM003-f351ef59"
@@ -354,7 +354,7 @@
       },
       "assertionId": "ASM-PRODCM001-6a5f4901",
       "conflictId": "CNF-PRODCM001-757c6c3b",
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
       "evidenceIds": [
         "EVS-SRCCM001-7d3f83e8",
@@ -377,25 +377,62 @@
         "effectiveFrom": "2026-09-06",
         "effectiveTo": null
       },
-      "assertionId": "ASM-PRODCM001-6a5f4901",
-      "conflictId": "CNF-PRODCM001-757c6c3b",
-      "createdAt": "2026-09-22T00:00:00+08:00",
+      "assertionId": "ASM-PRODCM001-5c74afdc",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
       "createdByRunId": "RUN-20260922-415977d1",
-      "evidenceIds": [
-        "EVS-SRCCM001-7d3f83e8",
-        "EVS-SRCCM001-b8dc5f5f",
-        "EVS-SRCCM001-b92956e2",
-        "EVS-SRCCM003-4302d512"
-      ],
-      "fieldPath": "eligibility.minAccountBalance",
-      "knowledgeState": "CONFLICT",
+      "evidenceIds": [],
+      "fieldPath": "identity.productCode",
+      "knowledgeState": "NOT_APPLICABLE",
       "normalizedValue": null,
       "productId": "PROD-CM-001",
       "productVersionScope": "version=2026.09.06.1",
       "rawValue": null,
-      "reviewDecisionId": null,
-      "supersedes": "ASM-PRODCM001-629fff8a",
+      "reviewDecisionId": "DEC-20260922-5e5be653",
+      "supersedes": "ASM-PRODCM001-36cbaf68",
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-05016aee",
+      "conflictId": "CNF-PRODCM001-757c6c3b",
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [
+        "EVS-SRCCM001-7d3f83e8"
+      ],
+      "fieldPath": "eligibility.minAccountBalance",
+      "knowledgeState": "SUPPORTED",
+      "normalizedValue": 500000.0,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "现金池主账户每日最低留存余额为人民币 50 万元，成员账户最低留存余额为人民币 10 万元。",
+      "reviewDecisionId": "DEC-20260922-d896a5ad",
+      "supersedes": "ASM-PRODCM001-6a5f4901",
       "valueType": "MONEY"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM001-db80e9d8",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-415977d1",
+      "evidenceIds": [],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "NOT_APPLICABLE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": null,
+      "reviewDecisionId": "DEC-20260922-4d87c50b",
+      "supersedes": "ASM-PRODCM001-34aac9d6",
+      "valueType": "TEXT"
     }
   ],
   "extractionRunId": "RUN-20260922-415977d1",
