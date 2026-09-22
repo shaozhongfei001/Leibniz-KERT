@@ -177,7 +177,27 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-FIN-003 | 《供应链金融业务操作规程》（行内制度） | INTERNAL_POLICY | 公司金融产品管理部 | PENDING_SOURCE | 应收账款确权/登记、订单融资流程条款 | PROD-FIN-002/003 |
 | SRC-FIN-004 | 《产品定价管理办法》（行内制度）— 别名，见 SRC-XFAM-002 | INTERNAL_POLICY | 公司金融产品管理部 | PENDING_SOURCE | 利率/费率定价区间与审批权限 | PROD-FIN-001/002/003 |
 | SRC-FIN-005 | 《流动资金贷款风险管理指引》（行内制度） | INTERNAL_POLICY | 公司金融产品管理部 | PENDING_SOURCE | 风险提示、贷后管理、资金挪用防范条款 | PROD-FIN-001/002/003 |
-| REG-FIN-001 | 《流动资金贷款管理暂行办法》（原银监会令〔2010〕第 1 号） | REGULATORY | 合规管理部 | PENDING_SOURCE | 流动资金贷款用途限制与受托支付标准 | PROD-FIN-001/003 |
+| REG-FIN-001 | 《流动资金贷款管理办法》（国家金融监督管理总局令 2024 年第 2 号）⚠ **版本变更**：原登记的《暂行办法》（银监会令〔2010〕第 1 号）**已被替代** | REGULATORY | 合规管理部 | **AVAILABLE** | 8 章 51 条 + 附件已入库，条款号待 Owner 核定 | PROD-FIN-001/003 |
+
+**REG-FIN-001 入库记录（现行版；原登记标题已废止）**
+
+| 项 | 值 |
+|---|---|
+| 文件字节数 | 21864 |
+| bytes_sha256 | dfa2dbff3746a7e20462178268e62bcb7626ba009a32389193afd3cd9bb4fdc5 |
+| 令号 | 国家金融监督管理总局令 2024 年第 2 号 |
+| 公布 / 施行 | 2024-01-30 / 2024-07-01 |
+| 章节条款 | 8 章 51 条 + 附件（流动资金贷款需求量测算示例） |
+| 定位方式 | CLAUSE |
+| usage | AUTHORITATIVE |
+| authorityLevel | REGULATORY |
+| clauseVerified | false（条款号待 Owner 核定） |
+| 来源 URL | https://www.gov.cn/gongbao/2024/issue_11306/202404/content_6947721.html |
+| 抓取时间 | 2026-09-22（PC8 真实法规入库） |
+| 抓取凭据 | `01_raw/_authoritative/snapshots/REG-FIN-001.provenance.md` |
+| **版本差异（显式登记）** | 登记表原载《流动资金贷款管理暂行办法》（2010 年第 1 号）**已被办法第五十一条同时废止**；本源入库**现行版**，原标题保留为沿革记录，**禁止静默替换** |
+| 凭据强度局限 | **转写文本**，非原始 HTML 字节快照 ⇒ `bytes_sha256` 只保证入库文件自身完整性 |
+| 未做 | 本行合规对「现行有效性/适用性」的确认（含内部细则是否已按 2024 年办法更新） |
 | REG-FIN-002 | 《商业银行互联网贷款管理暂行办法》（如涉及线上化） | REGULATORY | 合规管理部 | PENDING_SOURCE | 线上放款/自主支付额度上限 | PROD-FIN-001（如线上化） |
 
 ### 5.7 INVESTMENT_BANKING 投资银行（1 卡）
@@ -185,7 +205,27 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | source_id | source_title | authority_level | owner | status | clause（待核定） | 被引用产品卡 |
 |---|---|---|---|---|---|---|
 | SRC-IB-001 | 《并购贷款业务管理办法》（行内制度） | INTERNAL_POLICY | 投资银行部 | PENDING_SOURCE | 并购主体资质、贷款比例上限、期限 | PROD-IB-001 |
-| REG-IB-001 | 《商业银行并购贷款风险管理指引》 | REGULATORY | 合规管理部 | PENDING_SOURCE | 并购贷款占比上限、风险评估要求 | PROD-IB-001 |
+| REG-IB-001 | 《商业银行并购贷款管理办法》（金规〔2025〕27 号）⚠ **版本变更**：原登记的《风险管理指引》（银监发〔2015〕5 号）**已被废止**，文种由「指引」升格为「管理办法」 | REGULATORY | 合规管理部 | **AVAILABLE** | 通知 + 正文 34 条已入库，条款号待 Owner 核定 | PROD-IB-001 |
+
+**REG-IB-001 入库记录（现行版；原登记标题已废止）**
+
+| 项 | 值 |
+|---|---|
+| 文件字节数 | 16042 |
+| bytes_sha256 | c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5 |
+| 文号 | 金规〔2025〕27 号（通知） |
+| 成文 / 施行 | 2025-12-31 / 自印发之日起施行 |
+| 正文条款 | 34 条 |
+| 定位方式 | CLAUSE |
+| usage | AUTHORITATIVE |
+| authorityLevel | REGULATORY |
+| clauseVerified | false（条款号待 Owner 核定） |
+| 来源 URL | https://www.gov.cn/zhengce/zhengceku/202601/content_7053613.htm |
+| 抓取时间 | 2026-09-22（PC8 真实法规入库） |
+| 抓取凭据 | `01_raw/_authoritative/snapshots/REG-IB-001.provenance.md` |
+| **版本差异（显式登记）** | 登记表原载《商业银行并购贷款风险管理指引》（银监发〔2015〕5 号）**已被本办法第三十四条同时废止**；本源入库**现行版**，原标题保留为沿革记录，**禁止静默替换** |
+| 凭据强度局限 | **转写文本**，非原始 HTML 字节快照 ⇒ `bytes_sha256` 只保证入库文件自身完整性 |
+| 未做 | 本行合规对「现行有效性/适用性」的确认（含业务开办资格与内部细则） |
 
 ---
 
@@ -292,12 +332,12 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SETTLEMENT | — SRC-SET-001 | — SRC-SET-002 | — 复用 SRC-XFAM-003 | — REG-SET-001 | 3 |
 | TRADE_FINANCE | — SRC-TF-001 | — SRC-TF-002 | — SRC-TF-003 | — REG-TF-001/002 | 5 |
 | CROSS_BORDER | — SRC-CB-001 | — SRC-CB-002 | — 复用 SRC-XFAM-003 | — REG-CB-001/002 | 4 |
-| FINANCING | — SRC-FIN-001 | — SRC-FIN-003 | — SRC-FIN-005 | — REG-FIN-001/002 | 5 |
-| INVESTMENT_BANKING | — SRC-IB-001 | — 复用 SRC-XFAM-003 | — 复用 SRC-XFAM-003 | — REG-IB-001 | 2 |
+| FINANCING | — SRC-FIN-001 | — SRC-FIN-003 | — SRC-FIN-005 | ○ REG-FIN-001 · — REG-FIN-002 | 4 |
+| INVESTMENT_BANKING | — SRC-IB-001 | — 复用 SRC-XFAM-003 | — 复用 SRC-XFAM-003 | ○ REG-IB-001 | 1 |
 | 跨族通用 | — SRC-XFAM-001/002 | — | — SRC-XFAM-003 | ○ REG-XFAM-001 | 3 |
 
-**汇总**：权威区登记源 **28** 条 = **26 `PENDING_SOURCE` + 2 `AVAILABLE`**（REG-CM-001、REG-XFAM-001，
-前者抽出 25 条款、后者已入库全文 7 章 38 条，二者 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **26/28**，
+**汇总**：权威区登记源 **28** 条 = **24 `PENDING_SOURCE` + 4 `AVAILABLE`**（REG-CM-001、REG-XFAM-001、REG-FIN-001、REG-IB-001，
+四份均已入库且条款文本完整，均 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **24/28**，
 `CLAUSE_VERIFIED` **0** 条。
 公开参考区登记源 **2 条**，均已 `AVAILABLE`（PUB-PRICE-001 / PUB-PRICE-002）。
 

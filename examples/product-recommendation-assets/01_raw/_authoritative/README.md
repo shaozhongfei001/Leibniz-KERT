@@ -25,14 +25,16 @@
 > L03 订正 2026-09-05（F-L00-03）：原表述「空。27 条已登记源全部 `PENDING_SOURCE`」
 > 已过时，与 `source-registry.md` 明细行冲突。
 
-**2 份已入库**：
+**4 份已入库**：
 
 | sourceId | 状态 | bytes | SHA-256 | 备注 |
 |---|---|---|---|---|
 | REG-CM-001 | `AVAILABLE` | 92460 | `105df242da87f50587208351c6abb07ddde2d689ab13e0d0619f420875290024` | 抽出 25 条款，`clauseVerified=false`，条款号待 Owner 核定 |
-| REG-XFAM-001 | `AVAILABLE` | 14341 | `300f1d6d68b475c37042e6782d7f882b8105dfca0121a4150879e19b9787d24b` | 《商业银行服务价格管理办法》全文 7 章 38 条（网络公开文本转写入库），`clauseVerified=false` |
+| REG-XFAM-001 | `AVAILABLE` | 14341 | `300f1d6d68b475c37042e6782d7f882b8105dfca0121a4150879e19b9787d24b` | 《商业银行服务价格管理办法》全文 7 章 38 条，`clauseVerified=false` |
+| REG-FIN-001 | `AVAILABLE` | 21864 | `dfa2dbff3746a7e20462178268e62bcb7626ba009a32389193afd3cd9bb4fdc5` | 《流动资金贷款管理办法》现行版（2024 年第 2 号令）8 章 51 条 + 附件；⚠ 原登记 2010 年暂行办法已废止，**版本变更已显式登记** |
+| REG-IB-001 | `AVAILABLE` | 16042 | `c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5` | 《商业银行并购贷款管理办法》现行版（金规〔2025〕27 号）34 条；⚠ 原登记 2015 年指引已废止，**版本变更已显式登记** |
 
-**26 条仍为 `PENDING_SOURCE`**，等待 Owner 上传（Gate G0-6）。
+**24 条仍为 `PENDING_SOURCE`**，等待 Owner 上传（Gate G0-6）。
 `CLAUSE_VERIFIED` 状态目前 **0 条**。
 
 优先级：CASH_MANAGEMENT pilot 族剩余 3 份（SRC-CM-001/002/003）。
