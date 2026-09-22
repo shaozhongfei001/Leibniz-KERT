@@ -152,11 +152,26 @@ def main():
         print(f"FAIL | 权威区目录不存在: {AUTH}")
         return 1
 
-    ingested = now_cst()
     targets = sorted(AUTH.glob("*.DEMO.md"))
     if not targets:
         print("FAIL | 未找到任何 .DEMO.md 演示文本")
         return 1
+
+    # 幂等重建（PC8 · T6）：清理上一轮的 SV 与 fragments 后再全量重生成。
+    # 依据：tools/check_l10_sources.py 强制「SV 文件数 == manifest 声明数」——
+    #   跨日重跑（SV id 含日期）会产生新文件名，若不清旧件则门禁必然 FAIL。
+    # 语义：与 ADR-017「清空 ⇒ 同集重灌 ⇒ 核对覆盖与出处一致」的重建口径同构。
+    # 只清这两类产物，不动 evidence-spans / assertions / candidate-cards 等下游件。
+    pruned = []
+    for target_dir, pattern in ((SV_DIR, "SV-*.json"), (FRG_DIR, "*.fragments.json")):
+        if target_dir.exists():
+            for stale in sorted(target_dir.glob(pattern)):
+                stale.unlink()
+                pruned.append(stale.relative_to(BASE).as_posix())
+    if pruned:
+        print(f"PRUNE | 清理上一轮产物 {len(pruned)} 个（幂等重建）")
+
+    ingested = now_cst()
 
     SV_DIR.mkdir(parents=True, exist_ok=True)
     FRG_DIR.mkdir(parents=True, exist_ok=True)
