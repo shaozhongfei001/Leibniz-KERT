@@ -99,7 +99,7 @@ def main():
     EXPECTED_AUTH = 28
     EXPECTED_PUB = 2
     # L10：Owner 决议 DECISION-20260906-01 路径 C 生成的 3 份演示制度文本
-    EXPECTED_DEMO = 11
+    EXPECTED_DEMO = 14
 
     check(f"权威区明细行解析 {len(auth)} 条", len(auth) == EXPECTED_AUTH,
           f"实际 {len(auth)}，期望 {EXPECTED_AUTH}")
