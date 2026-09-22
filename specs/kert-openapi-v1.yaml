@@ -276,6 +276,43 @@ paths:
               schema:
                 $ref: "#/components/schemas/InfrastructureErrorResponse"
 
+  /v1/retrieval/query:
+    post:
+      tags: [Query]
+      summary: LightRAG 派生检索（实体 / 关系 / 可回译出处）
+      description: |
+        **PC8 · CR-5 新增（纯新增）**。暴露既有 `KnowledgeService.retrieve_via_lightrag`
+        （`services.py` 内 `retrieve_via_lightrag`；接入层 `infrastructure/lightrag_client.py`）。
+
+        边界（CR-5 冻结口径，越界即回问）：
+        - **纯新增**：不改 `/v1/search`、`/v1/data/query`、`/v1/entities/*`、`/v1/evidence/*` 的语义与响应；
+        - 响应带**可回译出处**（`chunkId` = lightRAG `referenceId`；`docId` / `artifact` 可回译到 KERT 产物路径）
+          与 `evidenceClass` / `simulationOnly`；
+        - **fail-closed**：实例不可达 / 鉴权失败 / 响应形状不符 ⇒ 具名 `LIGHTRAG_*` 码，
+          **禁止**用「空结果 + 200」冒充成功；
+        - LightRAG 为**派生检索层**：**字段值不得取自检索**；连接参数只走 env
+          （`KERT_LIGHTRAG_URL` / `KERT_LIGHTRAG_API_KEY` / `KERT_LIGHTRAG_TIMEOUT`）。
+      operationId: retrievalQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RetrievalQueryRequest"
+      responses:
+        "200":
+          description: 检索命中（实体 / 关系 / 出处）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetrievalQueryResponse"
+        "502":
+          description: 上游实例返回错误或响应形状不符（LIGHTRAG_HTTP_ERROR / LIGHTRAG_RESPONSE_INVALID）
+        "503":
+          description: 实例不可达（LIGHTRAG_UNAVAILABLE）
+        "504":
+          description: 检索超时（LIGHTRAG_PIPELINE_TIMEOUT）
+
   /v1/search:
     post:
       tags: [Query]
@@ -2199,6 +2236,64 @@ components:
             count: {type: integer, minimum: 0}
         errors: {type: array, items: {type: object, additionalProperties: true}}
         meta: {type: object, additionalProperties: true}
+
+    RetrievalQueryRequest:
+      type: object
+      description: 请求体 —— `POST /v1/retrieval/query`（实现 `RetrievalQueryRequest` @ `src/kert/api/server.py`）。
+      required: [request_id, query]
+      properties:
+        request_id: {type: string}
+        query: {type: string}
+        mode:
+          type: string
+          description: lightRAG 既有模式；缺省 `hybrid`。
+          enum: [local, global, hybrid, naive, mix]
+          default: hybrid
+        service:
+          type: string
+          nullable: true
+          description: 目标服务投影 id；缺省用服务端 `service_id`。
+
+    RetrievalQueryResponse:
+      type: object
+      description: 响应 —— `POST /v1/retrieval/query` 的 200（派生检索层；出处可回译）。
+      required: [request_id, status, data, errors, meta]
+      additionalProperties: false
+      properties:
+        request_id: {type: string}
+        status: {type: string}
+        errors: {type: array, items: {type: object, additionalProperties: true}}
+        meta: {type: object, additionalProperties: true}
+        data:
+          type: object
+          required: [query, mode, endpoint, entities, relations, citations, evidenceClass, simulationOnly]
+          properties:
+            query: {type: string}
+            mode: {type: string}
+            endpoint: {type: string}
+            entities: {type: array, items: {type: object, additionalProperties: true}}
+            relations: {type: array, items: {type: object, additionalProperties: true}}
+            citations:
+              type: array
+              description: |
+                出处。`chunkId` = lightRAG `referenceId`；`docId` / `artifact` 可回译到 KERT 产物路径。
+                血缘不可回译时**省略** `artifact` / `planId` / `planHash`（不伪造）。
+              items:
+                type: object
+                required: [chunkId, docId]
+                properties:
+                  chunkId: {type: string}
+                  docId: {type: string}
+                  filePath: {type: string}
+                  content: {type: string}
+                  artifact: {type: string}
+                  planId: {type: string}
+                  planHash: {type: string}
+            evidenceClass:
+              type: string
+              enum: [DERIVED_RETRIEVAL]
+              description: 恒定标记：本响应来自**派生检索层**，不得作为字段值来源。
+            simulationOnly: {type: boolean}
 
     SearchRequest:
       type: object

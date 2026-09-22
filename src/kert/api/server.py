@@ -15,6 +15,14 @@ GET  /v1/catalog
 GET  /v1/knowledge-maps            （v1.5：知识地图注册查询）
 GET  /v1/knowledge-maps/{map_id}   （v1.5：单张地图详情）
 POST /v1/routing/plan              （v1.5：路由裁决 + 激活计划，fail-closed）
+GET  /v1/analytics/dimensions      （CCRM-BA：分析维度与成员）
+GET  /v1/analytics/orgs            （CCRM-BA：机构树）
+GET  /v1/analytics/periods         （CCRM-BA：可用期间）
+GET  /v1/analytics/screens         （CCRM-BA：10 个分析屏注册表）
+GET  /v1/analytics/params          （CCRM-BA：生效口径参数）
+GET  /v1/analytics/metrics         （CCRM-BA：按屏/维度/机构/期间聚合指标）
+GET  /v1/analytics/trend           （CCRM-BA：单一成员 12 个月趋势）
+POST /v1/analytics/combo-query     （CCRM-BA：客户级多条件圈选）
 
 发布/审核/回滚不暴露为远程 API（§13.1）。
 """
@@ -37,8 +45,15 @@ from ..application.skills import SkillExecutionService
 from ..domain import timeutil
 from ..domain.activation_plan import ActivationPlanBuilder, PlanDenial
 from ..domain.errors import KERTException, ServiceNotReadyError
+from ..domain.health import HEALTH_OK
 from ..domain.knowledge_map import KnowledgeMapRegistry
+from ..domain.query_modes import (
+    DIRECTION_OUT,
+    GRAPH_MODE_NEIGHBOR,
+    SEARCH_MODE_FULLTEXT,
+)
 from ..domain.route_policy import load_route_policy
+from ..domain.skill_status import SKILL_ERROR
 from ..infrastructure.observability import (
     configure_structured_logging,
     get_metrics_registry,
@@ -81,6 +96,52 @@ DEFAULT_SKILL_PACKAGES = Path(__file__).resolve().parents[3] / "examples" / "ban
 
 #: 显式指定外部 Skill 包根目录的环境变量（优先级高于内置默认）。
 SKILL_PACKAGES_ENV = "KERT_SKILL_PACKAGES"
+
+#: CCRM-BA 落地（2026-09-22）：对公经营分析 DuckDB 路径。
+#: 显式设置且库文件缺失 ⇒ 启动即失败（fail-closed，与 SKILL_PACKAGES 同纪律）；
+#: 未设置 ⇒ 分析能力不接入（不影响既有技能注册表与测试）。
+ANALYTICS_DUCKDB_ENV = "KERT_ANALYTICS_DUCKDB"
+
+#: 4 个数据分析 Skill 包目录（bank-front-operating-metrics 等，确定性执行器）。
+ANALYTICS_SKILL_PACKAGES = (Path(__file__).resolve().parents[3] / "examples"
+                            / "bank-front-analytics" / "skills")
+
+#: D-3：内部错误对外的**通用**文案（**唯一来源**，所有 5xx 兜底路径共用）。
+#: 与 `str(exc)` 无关 —— 响应体不得随异常内容变化（安全口径），异常细节只进服务端日志。
+INTERNAL_ERROR_MESSAGE = "内部错误"
+
+#: D-3：就绪探针检查项失败时对外的固定值（`/readyz` 属 `DEFAULT_EXEMPT_PATHS` ⇒ **公开**）。
+#: 具体异常（可能含路径等内部信息）只进日志，**不回显**。
+READINESS_ERROR = "unavailable"
+
+
+def _internal_error_http_exception(exc: Exception) -> HTTPException:
+    """非领域异常 ⇒ **通用** 500（``INTERNAL_ERROR`` + ``INTERNAL_ERROR_MESSAGE``）。
+
+    D-3（异常口径对齐）：本函数与 app 级 :func:`_unhandled_exception` 同口径 ——
+    非 KERT 异常**不回显** ``str(exc)``/异常类名；异常**类型与消息**写入服务端日志
+    （``exc_info`` 带栈），保证"响应不泄露"不等于"排障靠猜"。
+
+    状态码（500）与响应体形状（``{"error": {"code", "message"}}``）与 D-3 之前**一致**，
+    只把 ``message`` 由 ``str(exc)`` 换成通用文案。
+    """
+    _log.error("非 KERT 异常已转为 500（不回显异常内容）：type=%s message=%s",
+               type(exc).__name__, exc, exc_info=(type(exc), exc, exc.__traceback__))
+    return HTTPException(status_code=500,
+                         detail={"error": {"code": "INTERNAL_ERROR",
+                                           "message": INTERNAL_ERROR_MESSAGE}})
+
+
+def _readiness_check_error(check: str, exc: Exception) -> str:
+    """就绪检查失败 ⇒ 返回**固定**错误值，并把异常类型/消息写入日志（D-3）。
+
+    ``/readyz`` 是公开探测端点（在 ``DEFAULT_EXEMPT_PATHS`` 内），此前把 ``str(exc)``
+    （数据库/文件系统异常常含**内部路径**）直接放进响应体 ⇒ 公开端点泄露内部信息。
+    响应体形状不变（仍是字符串值），只换成固定值 :data:`READINESS_ERROR`。
+    """
+    _log.warning("就绪检查失败（细节仅进日志）：check=%s type=%s message=%s",
+                 check, type(exc).__name__, exc, exc_info=(type(exc), exc, exc.__traceback__))
+    return READINESS_ERROR
 
 
 def _has_skill_packages(path: Path) -> bool:
@@ -169,19 +230,33 @@ class DataQueryRequest(BaseModel):
 class SearchRequest(BaseModel):
     request_id: str
     query: str
-    mode: str = "FULLTEXT"
+    mode: str = SEARCH_MODE_FULLTEXT          # 值域见 domain/query_modes.SEARCH_MODES
     top_k: int = 10
     filters: dict | None = None
+
+
+class RetrievalQueryRequest(BaseModel):
+    """LightRAG **派生检索**请求（PC8 · CR-5，纯新增）。
+
+    - 与既有 ``/v1/search``（库内检索）**语义不同**：本端点走外部 LightRAG 实例的**派生检索层**；
+    - ``mode`` 取 lightRAG 既有模式（``local``/``global``/``hybrid``/``naive``/``mix``）；
+    - ``service`` 缺省用 ``create_app`` 的 ``service_id``（保持既有默认行为）。
+    """
+
+    request_id: str
+    query: str
+    mode: str = "hybrid"
+    service: str | None = None
 
 
 class GraphRequest(BaseModel):
     request_id: str
     start_entity_ids: list[str]
     relation_types: list[str] | None = None
-    direction: str = "OUT"
+    direction: str = DIRECTION_OUT            # 值域见 domain/query_modes.GRAPH_DIRECTIONS
     max_depth: int = 1
     max_nodes: int = 100
-    mode: str = "neighbor"  # neighbor | closure | paths（Kùzu 后端）
+    mode: str = GRAPH_MODE_NEIGHBOR           # 值域见 domain/query_modes.GRAPH_MODES（Kùzu 后端）
     service: str = "product_knowledge"  # 服务 ID（如 supply_chain_graph）
     as_of: str | None = None
 
@@ -203,6 +278,21 @@ class RoutingPlanRequest(BaseModel):
 
     taskType: str
     subjectId: str | None = None
+
+
+class AnalyticsComboQueryRequest(BaseModel):
+    """CCRM-BA 组合查询请求（客户级多条件圈选）。
+
+    ``filters`` 的结构与白名单见
+    ``kert.application.operational_analytics.COMBO_METRIC_COLUMNS``
+    （``amountRules`` 的 metric/op 均为白名单校验，防注入）。
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    filters: dict = Field(default_factory=dict)
+    pageNumber: int = 0
+    pageSize: int = 20
 
 
 def _response(request_id: str, data: dict, meta: dict | None = None) -> dict:
@@ -242,6 +332,25 @@ def _install_hardening(app: FastAPI, cfg: RuntimeConfig) -> None:
     app.add_middleware(SizeLimitMiddleware, config=cfg.size_limit)
     app.add_middleware(ResponseRedactionMiddleware, config=cfg.redaction)
     app.add_middleware(ObservabilityMiddleware, config=cfg.observability)
+
+
+def _maybe_analytics_service():
+    """按 ``KERT_ANALYTICS_DUCKDB`` 构造经营分析服务（可选能力）。
+
+    - 未设置 ⇒ ``None``（不接入；注册表与端点行为不变，既有测试不受扰动）；
+    - 已设置但库文件缺失 ⇒ 启动即失败（fail-closed，与 KERT_SKILL_PACKAGES 同纪律）。
+    """
+    raw = os.environ.get(ANALYTICS_DUCKDB_ENV, "").strip()
+    if not raw:
+        return None
+    from ..application.operational_analytics import OperationalAnalyticsService
+    from ..infrastructure.analytics_store import AnalyticsDuckDb
+
+    path = Path(raw)
+    if not path.is_file():
+        raise ServiceNotReadyError(
+            f"{ANALYTICS_DUCKDB_ENV} 指定的分析库不存在: {raw}")
+    return OperationalAnalyticsService(AnalyticsDuckDb(path, read_only=True))
 
 
 def create_app(workspace: Path, service_id: str = "product_knowledge",
@@ -294,10 +403,21 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
     _registered = [s.skill_id for s in skill_svc.registry()]
     _log.info("外部 Skill 包：resolved=%s；已注册技能 %d 个：%s",
               pkgs, len(_registered), _registered)
+    # CCRM-BA 落地：DuckDB 可用时接入经营分析（4 个数据分析 Skill + REST 端点）。
+    # 未配置 KERT_ANALYTICS_DUCKDB ⇒ 不接入，注册表与既有行为完全不变。
+    analytics_svc = _maybe_analytics_service()
+    if analytics_svc is not None:
+        skill_svc.attach_analytics(analytics_svc, ANALYTICS_SKILL_PACKAGES)
+        _analytics_registered = [s.skill_id for s in skill_svc.registry()
+                                 if s.skill_id.startswith("bank-front-")
+                                 and s.skill_id.endswith(
+                                     ("-metrics", "-segment", "-query", "-monitor"))]
+        _log.info("经营分析已接入：数据分析 Skill=%s", _analytics_registered)
     app.state.runtime_config = cfg
     app.state.runtime_store = store
     # 暴露 Service 便于运维自检与测试断言（M2-P2 Owner 决策 3 的校验链路）
     app.state.skill_service = skill_svc
+    app.state.analytics_service = analytics_svc
     app.state.metrics_registry = registry
     app.state.tracer = tracer
     app.state.observability_capabilities = {
@@ -308,14 +428,18 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
     _install_hardening(app, cfg)
 
     def _handle(exc: Exception) -> HTTPException:
+        """领域异常 ⇒ 其**具名码**（原样透传）；非领域异常 ⇒ 通用 500（见 D-3）。
+
+        非 KERT 分支此前把 ``str(exc)`` 放进响应体，与下面 app 级处理器的 A-5 口径
+        （只给通用文案、细节进日志）不一致 —— D-3 已统一，且该分支**仍保持** 500 与
+        原响应体形状（只换 message 文案）。
+        """
         if isinstance(exc, KERTException):
             return HTTPException(status_code=exc.http_status(),
                                  detail={"error": {"code": exc.error_code,
                                                    "message": exc.message,
                                                    "retryable": exc.retryable()}})
-        return HTTPException(status_code=500,
-                             detail={"error": {"code": "INTERNAL_ERROR",
-                                               "message": str(exc)}})
+        return _internal_error_http_exception(exc)
 
     @app.exception_handler(Exception)
     async def _unhandled_exception(request: Request, exc: Exception) -> JSONResponse:
@@ -331,16 +455,23 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         （异常细节仅进服务端日志）；回传 `requestId` 供排障关联。
         登记：`evidence/m7-3/CANDIDATE-CONTRACT-MERGE-V1-V2.md`；用例
         `tests/integration/test_contract_shape_conformance.py`。
+
+        D-3（2026-09-17）：本处理器是**非 KERT 异常的唯一实际路径**（各路由只捕获
+        ``KERTException``），其口径现与 ``_internal_error_http_exception`` 完全一致
+        （共用 :data:`INTERNAL_ERROR_MESSAGE`）；日志显式带**异常类型与消息**（``type=``
+        / ``message=``）并附 ``exc_info`` 栈，供"响应里没有、日志里有"的机械核对。
         """
         request_id = (getattr(request.state, STATE_REQUEST_ID, None)
                       or new_request_id())
-        _log.error("未捕获异常已转为 ErrorResponse 信封：request_id=%s method=%s path=%s",
+        _log.error("未捕获异常已转为 ErrorResponse 信封：request_id=%s method=%s path=%s "
+                   "type=%s message=%s",
                    request_id, request.method, request.url.path,
+                   type(exc).__name__, exc,
                    exc_info=(type(exc), exc, exc.__traceback__))
         return JSONResponse(status_code=500, content={
             "requestId": request_id,
-            "status": "skill_error",
-            "errors": [{"code": "INTERNAL_ERROR", "message": "内部错误"}],
+            "status": SKILL_ERROR,
+            "errors": [{"code": "INTERNAL_ERROR", "message": INTERNAL_ERROR_MESSAGE}],
         })
 
     @app.get("/livez")
@@ -386,15 +517,16 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
             checks["workspace"] = {"ok": bool(writable), "path": str(ws)}
             ready = ready and bool(writable)
         except OSError as exc:
-            checks["workspace"] = {"ok": False, "error": str(exc)}
+            checks["workspace"] = {"ok": False, "error": _readiness_check_error("workspace", exc)}
             ready = False
 
         try:
             checks["knowledge_projection"] = {"ok": True, "version": svc._active_version()}
         except ServiceNotReadyError as exc:
             # 投影缺失不阻断就绪（见上表说明），仅标记 degraded
-            checks["knowledge_projection"] = {"ok": False, "error": str(exc),
-                                              "blocking": False}
+            checks["knowledge_projection"] = {
+                "ok": False, "error": _readiness_check_error("knowledge_projection", exc),
+                "blocking": False}
             degraded.append("knowledge_projection")
 
         if store is not None:
@@ -403,7 +535,8 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
                                            "schema_version": store.schema_version(),
                                            "journal_mode": store.journal_mode()}
             except Exception as exc:  # noqa: BLE001 - 探针需兜住任何 DB 异常
-                checks["runtime_store"] = {"ok": False, "error": str(exc)}
+                checks["runtime_store"] = {"ok": False,
+                                           "error": _readiness_check_error("runtime_store", exc)}
                 if cfg.observability.readiness_require_store:
                     ready = False
                 else:
@@ -416,7 +549,8 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
                 if stats["expired_leases"] > 0:
                     degraded.append("job_queue_expired_leases")
             except Exception as exc:  # noqa: BLE001 - 队列统计失败不阻断就绪
-                checks["job_queue"] = {"ok": False, "error": str(exc)}
+                checks["job_queue"] = {"ok": False,
+                                       "error": _readiness_check_error("job_queue", exc)}
                 degraded.append("job_queue")
         else:
             checks["runtime_store"] = {"ok": True, "enabled": False,
@@ -573,6 +707,63 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         except KERTException as exc:
             raise _handle(exc)
 
+    # ---------------- PC8 · CR-5：LightRAG 派生检索出口（纯新增） ----------------
+    # 边界（CR-5 冻结口径，越界即回问）：
+    #   1. **纯新增**：不改 /v1/search、/v1/data/query、/v1/entities/*、/v1/evidence/* 的语义与响应；
+    #   2. 响应带**可回译出处**（chunkId = lightRAG referenceId；docId/filePath 可回译到 KERT 产物路径）
+    #      与 `evidenceClass` / `simulationOnly`；
+    #   3. **fail-closed**：实例不可达 / 鉴权失败 / 响应形状不符 ⇒ 返回**具名 `LIGHTRAG_*` 码**，
+    #      **禁止**空结果冒充成功（本端点**不吞错**、**不返回空列表**）；
+    #   4. 不扩 EGRESS_ROOTS（本端点只读检索，不写入）；01_raw 一律 IR 白名单外（由 egress 侧守卫）；
+    #   5. LightRAG 保持**派生检索层**：**字段值不得取自检索**。
+    _LIGHTRAG_HTTP = {
+        "LIGHTRAG_UNAVAILABLE": 503,
+        "LIGHTRAG_HTTP_ERROR": 502,
+        "LIGHTRAG_RESPONSE_INVALID": 502,
+        "LIGHTRAG_PIPELINE_TIMEOUT": 504,
+        "LIGHTRAG_ARTIFACT_REFUSED": 422,
+        "LIGHTRAG_RETRACT_REFUSED": 409,
+        "LIGHTRAG_ERROR": 500,
+    }
+    _LIGHTRAG_RETRYABLE = {"LIGHTRAG_UNAVAILABLE", "LIGHTRAG_HTTP_ERROR",
+                           "LIGHTRAG_PIPELINE_TIMEOUT"}
+
+    @app.post("/v1/retrieval/query")
+    def retrieval_query(req: RetrievalQueryRequest):
+        from ..application.services import KnowledgeService
+        from ..infrastructure.lightrag_client import LightRagError
+
+        try:
+            target = svc if not req.service else KnowledgeService(ws, service_id=req.service)
+            r = target.retrieve_via_lightrag(req.query, mode=req.mode)
+            citations = []
+            for c in r.get("citations", []):
+                item = {"chunkId": c.get("referenceId"), "docId": c.get("filePath")}
+                # 其余键（content / artifact / planId / planHash）**原样透传**：不伪造、不裁剪
+                for k, v in c.items():
+                    if k not in ("referenceId", "filePath"):
+                        item[k] = v
+                citations.append(item)
+            data = {
+                "query": r["query"],
+                "mode": r["mode"],
+                "endpoint": r["endpoint"],
+                "entities": r["entities"],
+                "relations": r["relations"],
+                "citations": citations,
+                "evidenceClass": "DERIVED_RETRIEVAL",
+                "simulationOnly": False,
+            }
+            return _response(req.request_id, data)
+        except LightRagError as exc:
+            code = getattr(exc, "code", "LIGHTRAG_ERROR")
+            raise HTTPException(
+                status_code=_LIGHTRAG_HTTP.get(code, 500),
+                detail={"error": {"code": code, "message": str(exc),
+                                  "retryable": code in _LIGHTRAG_RETRYABLE}})
+        except KERTException as exc:
+            raise _handle(exc)
+
     @app.post("/v1/graph/query")
     def graph(req: GraphRequest):
         try:
@@ -636,9 +827,14 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
 
     @app.get("/api/skill/health")
     def skill_health():
-        """D1：列出已注册 skill 及版本。"""
+        """D1：列出已注册 skill 及版本。
+
+        ``status`` 取**单一命名源** :data:`kert.domain.health.HEALTH_OK`（D-28 层 2 立源：
+        合同 ``SkillHealthResponse.status.enum`` == ``SKILL_HEALTH_STATES`` 由用例机械核对）——
+        本函数体内**不得**再出现状态字面量。
+        """
         return {
-            "status": "ok",
+            "status": HEALTH_OK,
             "service": "customer-engagement",
             "skills": [{"skillId": s.skill_id, "name": s.name, "version": s.version}
                        for s in skill_svc.registry()],
@@ -664,7 +860,7 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         if isinstance(payload.get("data"), dict):
             payload["data"].setdefault(
                 "reportUrl", f"/api/skill/report/{payload.get('requestId', '')}")
-        unknown = result.status == "skill_error" and any(
+        unknown = result.status == SKILL_ERROR and any(
             e.get("code") == "UNKNOWN_SKILL" for e in result.errors)
         return Response(content=_json.dumps(payload, ensure_ascii=False),
                         status_code=404 if unknown else 200,
@@ -773,6 +969,97 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
         else:
             data = {"allowed": True, "plan": decision.to_dict(), "denial": None}
         return _response(f"REQ-RPLAN-{timeutil.ts_utc()[:19]}", data)
+
+    # ── CCRM-BA 对公经营分析（DuckDB，可选接入）──────────────────────────
+
+    def _require_analytics():
+        if analytics_svc is None:
+            raise HTTPException(status_code=503, detail={"error": {
+                "code": "ANALYTICS_UNAVAILABLE",
+                "message": "经营分析未接入（设置 KERT_ANALYTICS_DUCKDB 后重启）",
+                "retryable": False}})
+        return analytics_svc
+
+    @app.get("/v1/analytics/dimensions")
+    def analytics_dimensions():
+        """CCRM-BA：分析维度与成员（原型「分布维度」下拉的数据源）。"""
+        try:
+            return _response(new_request_id(),
+                             {"dimensions": _require_analytics().dimensions()})
+        except KERTException as exc:
+            raise _handle(exc)
+
+    @app.get("/v1/analytics/orgs")
+    def analytics_orgs():
+        """CCRM-BA：机构树（org_path 支持上卷过滤）。"""
+        try:
+            return _response(new_request_id(), {"orgs": _require_analytics().orgs()})
+        except KERTException as exc:
+            raise _handle(exc)
+
+    @app.get("/v1/analytics/periods")
+    def analytics_periods():
+        """CCRM-BA：可用分析期间（YYYYMM）。"""
+        try:
+            return _response(new_request_id(),
+                             {"periods": _require_analytics().periods()})
+        except KERTException as exc:
+            raise _handle(exc)
+
+    @app.get("/v1/analytics/screens")
+    def analytics_screens():
+        """CCRM-BA：10 个分析屏注册表（screen/bizType/dims/metrics）。"""
+        try:
+            return _response(new_request_id(),
+                             {"screens": _require_analytics().screen_catalog()})
+        except KERTException as exc:
+            raise _handle(exc)
+
+    @app.get("/v1/analytics/params")
+    def analytics_params():
+        """CCRM-BA：当前生效的分析口径参数（告警阈值/年化月数/杠杆系数/利润来源）。"""
+        try:
+            return _response(new_request_id(),
+                             {"params": _require_analytics().params()})
+        except KERTException as exc:
+            raise _handle(exc)
+
+    @app.get("/v1/analytics/metrics")
+    def analytics_metrics(screen: str, dim: str, orgId: str, period: str,
+                          bizType: str | None = None,
+                          dimValues: str | None = None):
+        """CCRM-BA：按屏聚合指标（行=机构或维度成员，含 mom/ytd/share）。"""
+        try:
+            values = [v for v in (dimValues or "").split(",") if v.strip()] or None
+            data = _require_analytics().metrics(
+                screen=screen, dim=dim, org_id=orgId, period=period,
+                biz_type=bizType, dim_values=values)
+            return _response(new_request_id(), data, data.pop("meta", None))
+        except KERTException as exc:
+            raise _handle(exc)
+
+    @app.get("/v1/analytics/trend")
+    def analytics_trend(screen: str, dim: str, dimValue: str, orgId: str,
+                        metric: str, months: int = 12):
+        """CCRM-BA：单一维度成员 12 个月趋势（监视器右图 / 走势图）。"""
+        try:
+            data = _require_analytics().trend(
+                screen=screen, dim=dim, dim_value=dimValue, org_id=orgId,
+                metric=metric, months=months)
+            return _response(new_request_id(), data)
+        except KERTException as exc:
+            raise _handle(exc)
+
+    @app.post("/v1/analytics/combo-query")
+    def analytics_combo_query(req: AnalyticsComboQueryRequest):
+        """CCRM-BA：客户级多条件圈选（组合查询工具，白名单 fail-closed）。"""
+        try:
+            data = _require_analytics().combo_query(
+                filters=req.filters, page_number=req.pageNumber,
+                page_size=req.pageSize)
+            return _response(new_request_id(), data)
+        except KERTException as exc:
+            raise _handle(exc)
 
     # ── DSH Web 界面 ──
     from ..dsh.app import mount_dsh
