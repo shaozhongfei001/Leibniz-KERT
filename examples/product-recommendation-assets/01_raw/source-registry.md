@@ -172,7 +172,7 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 > Owner 决议 **DECISION-20260906-01（演示路径 C）**：批准生成演示制度文本，明确标记为 DEMO 而非真实制度。
 >
 > **红线（L10 落地）**：
-> 1. 本节 3 条**均为虚构演示文本**，不代表任何真实机构制度；
+> 1. 本节 6 条**均为虚构演示文本**，不代表任何真实机构制度；
 > 2. DEMO 源**不计入** §5 真实权威区基数（28），**不抵扣** 27/28 真实缺口 —— **F-L00-07 未解除**；
 > 3. 依 DEMO 源编译的 Release 必须带 `provenance_state=DEMO`，**不得**进入 `RECOMMENDATION_READY`（INV-EVS-09/10/11）；
 > 4. DEMO 证据**不得与** VERIFIED 证据混合支撑同一字段断言，禁止用演示材料补真实材料缺口。
@@ -182,6 +182,9 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-CM-001 | 《现金管理业务管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-CM-001.DEMO.md` | 无（禁止沿用 13 张 legacy card） |
 | SRC-CM-002 | 《法人账户透支业务操作规程（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-CM-002.DEMO.md` | 无 |
 | SRC-CM-003 | 《集团客户资金集中管理风险政策（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-CM-003.DEMO.md` | 无 |
+| SRC-XFAM-001 | 《对公客户准入与评级管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-XFAM-001.DEMO.md` | 无 |
+| SRC-XFAM-002 | 《产品定价管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-XFAM-002.DEMO.md` | 无 |
+| SRC-XFAM-003 | 《对公业务销售适当性管理办法（演示文本）》 | INTERNAL_POLICY | DEMO | **AVAILABLE (DEMO)** | `01_raw/_authoritative/SRC-XFAM-003.DEMO.md` | 无 |
 
 **物理隔离约定**：真实行内制度上传时落 `SRC-CM-001.pdf` / `SRC-CM-001.md`；演示文本固定带
 `.DEMO.md` 后缀。§5.2 中 `SRC-CM-001/002/003` 三行**仍记 `PENDING_SOURCE`** —— 真实行内制度尚未上传，
@@ -194,6 +197,9 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-CM-001 | 4280 | `5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f` | 19 | 2026-09-06 | CLAUSE（章条号） |
 | SRC-CM-002 | 3509 | `984fe6cde0c2b17bfad0b1c05d0a6f80ae7701647c8155b85b3ec57c92f375a2` | 17 | 2026-09-06 | CLAUSE（章条号） |
 | SRC-CM-003 | 3422 | `b4599dd141caa7d1934cd69de58fdc8245e6d631d0bec33477593b88e341fe29` | 15 | 2026-09-06 | CLAUSE（章条号） |
+| SRC-XFAM-001 | 4404 | `ae7e77d22770d0ea6712827bc04a2b7f9cc1fc1378ee2c06562c70f137917c23` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
+| SRC-XFAM-002 | 3971 | `2f0760ccf0c600289947be4d7002ffbb0b6c6fdc566ce8753a3901774ba7337f` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
+| SRC-XFAM-003 | 3822 | `4713b5e305a4deb802ca2619932635fd5f3c44400c5ccad991bca37f0bf910c6` | 待抽取 | 2026-09-22 | CLAUSE（章条号） |
 
 **内建已知冲突（演示数据，非缺陷）**：`SRC-CM-001` 第十条规定现金池主账户最低留存 **50 万元**，
 `SRC-CM-003` 第六条规定集团现金池主账户最低留存 **100 万元**。该 VALUE_MISMATCH 由 L10 故意保留，
@@ -273,9 +279,14 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 `CLAUSE_VERIFIED` **0** 条。
 公开参考区登记源 **2 条**，均已 `AVAILABLE`（PUB-PRICE-001 / PUB-PRICE-002）。
 
-**DEMO 演示轨（Owner 决议 DECISION-20260906-01 路径 C）**：演示源 **3** 条（SRC-CM-001/002/003），
+**DEMO 演示轨（Owner 决议 DECISION-20260906-01 路径 C）**：演示源 **6** 条（SRC-CM-001/002/003、SRC-XFAM-001/002/003），
 均为 `provenance_state: DEMO` 的**虚构文本**，**单列统计、不计入上列 28 条、不抵扣 27/28 真实缺口**，
 F-L00-07 **仍未解除**。详见 §5.8。
+
+> **PC8 造数批次 B1（2026-09-22）**：新增 `SRC-XFAM-001/002/003` 三份**跨族通用**演示源
+> （准入与评级 / 产品定价 / 销售适当性），覆盖**全部 13 张产品卡**；三者均为 `provenance_state: DEMO`，
+> **不计入**上列 28 条、**不抵扣**真实缺口。`条款数/片段数` 列记「待抽取」——
+> **不得**手写 pipeline 产物（`02_work/source-versions/*`、`04_serve/releases/*` 必须由流水线生成）。
 
 > **L03 订正记录（F-L00-03）**：原汇总写「27 条全部 `PENDING_SOURCE`，缺口 27/27」，
 > 与本表明细行 REG-CM-001 = `**AVAILABLE**` 直接冲突。
