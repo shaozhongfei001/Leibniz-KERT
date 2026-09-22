@@ -1,0 +1,871 @@
+{
+  "evidenceCount": 36,
+  "evidenceSpans": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-27feabfc",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0005",
+      "locator": {
+        "clause": "第五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人应在注册地或住所地开立银行结算账户。符合本办法规定可以在异地(跨省、市、县)开立银行结算账户的除外。",
+      "quoteHash": "27feabfc4755c75b2a018f6fb08c80e915eed32f2d95eb1d8c1f9c82b2979f83",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-f4432e16",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0007",
+      "locator": {
+        "clause": "第七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人可以自主选择银行开立银行结算账户。除国家法律、行政法规和国务院规定外，任何单位和个人不得强令存款人到指定银行开立银行结算账户。",
+      "quoteHash": "f4432e16e31a41729146d4a42e735b0dbb2c6d98c045bcda52b44fd82826237d",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-8c9733d6",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0009",
+      "locator": {
+        "clause": "第九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "银行应依法为存款人的银行结算账户信息保密。对单位银行结算账户的存款和有关资料，除国家法律、行政法规另有规定外，银行有权拒绝任何单位或个人查询。对个人银行结算账户的存款和有关资料，除国家法律另有规定外，银行有权拒绝任何单位或个人查询。",
+      "quoteHash": "8c9733d643a378abafd795098e69e0c557cbf7346b98042ab8a7a9ef68205d0d",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-ddf15bde",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0011",
+      "locator": {
+        "clause": "第十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "基本存款账户是存款人因办理日常转账结算和现金收付需要开立的银行结算账户。下列存款人，可以申请开立基本存款账户：",
+      "quoteHash": "ddf15bde7ba0c7713525d10ec6adccc4e89d9f78823543c36cbf353e2aad3e03",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-8998c7c5",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0014",
+      "locator": {
+        "clause": "第十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "临时存款账户是存款人因临时需要并在规定期限内使用而开立的银行结算账户。有下列情况的，存款人可以申请开立临时存款账户：",
+      "quoteHash": "8998c7c54f4ab3c0d639ea562edec9746c73862710b776eccdb9ca1518bc7232",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-5e019de6",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0015",
+      "locator": {
+        "clause": "第十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "个人银行结算账户是自然人因投资、消费、结算等而开立的可办理支付结算业务的存款账户。有下列情况的，可以申请开立个人银行结算账户：",
+      "quoteHash": "5e019de60db680e10387becd793771167d37d214edf72e3f7e3756cc443796de",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-8daeb469",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0018",
+      "locator": {
+        "clause": "第十八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人申请开立一般存款账户，应向银行出具其开立基本存款账户规定的证明文件、基本存款账户开户登记证和下列证明文件：",
+      "quoteHash": "8daeb46934d3c516a522f6e37e6ac0455608963561c4679ff527f7b8c08d13f5",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-05d1fbea",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0019",
+      "locator": {
+        "clause": "第十九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人申请开立专用存款账户，应向银行出具其开立基本存款账户规定的证明文件、基本存款账户开户登记证和下列证明文件:",
+      "quoteHash": "05d1fbeac14b4e8c75a2ecf41657b5a78d30fb255f0eac433e572458b042ec40",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-93aa398a",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0023",
+      "locator": {
+        "clause": "第二十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人需要在异地开立单位银行结算账户，除出具本办法第十七条、十八条、十九条、二十一条规定的有关证明文件外，应出具下列相应的证明文件：",
+      "quoteHash": "93aa398a83a5e10d0d21c54e6308db5fcffe7ca5ac52ab63317d330fca696336",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-61525f04",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0026",
+      "locator": {
+        "clause": "第二十六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人申请开立单位银行结算账户时，可由法定代表人或单位负责人直接办理，也可授权他人办理。",
+      "quoteHash": "61525f048b612b2aba10551b9bb5995922c078ae9314ae2803b80df573c43075",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-a60a5c56",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0027",
+      "locator": {
+        "clause": "第二十七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人申请开立银行结算账户时，应填制开户申请书。开户申请书按照中国人民银行的规定记载有关事项。",
+      "quoteHash": "a60a5c562e0901f4ff92a2f26c4ebd801d59d728f2b8348cd9b9096876824df0",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-cbac73ca",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0028",
+      "locator": {
+        "clause": "第二十八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "银行应对存款人的开户申请书填写的事项和证明文件的真实性、完整性、合规性进行认真审查。",
+      "quoteHash": "cbac73cad666c59ad4e452b48c99a93a465a57f5a61389ef3ae578da483aeff0",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-ee8b3fed",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0029",
+      "locator": {
+        "clause": "第二十九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "中国人民银行应于 2 个工作日内对银行报送的基本存款账户、临时存款账户和预算单位专用存款账户的开户资料的合规性予以审核，符合开户条件的，予以核准；不符合开户条件的，应在开户申请书上签署意见，连同有关证明文件一并退回报送银行。",
+      "quoteHash": "ee8b3fed98090ca971b4d9967350ed038bb2f20eaeb288a5803a54f6e1c7a9bd",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-d604e610",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0030",
+      "locator": {
+        "clause": "第三十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "银行为存款人开立银行结算账户，应与存款人签订银行结算账户管理协议，明确双方的权利与义务。除中国人民银行另有规定的以外，应建立存款人预留签章卡片，并将签章式样和有关证明文件的原件或复印件留存归档。",
+      "quoteHash": "d604e6102051b1fdc9be662cbb8fa190ad22116e8849362e3862adf87b4b1e4e",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-a16b9be8",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0031",
+      "locator": {
+        "clause": "第三十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "开户登记证是记载单位银行结算账户信息的有效证明，存款人应按本办法的规定使用，并妥善保管。",
+      "quoteHash": "a16b9be8bb515df2daaf78be662285e5c66fc95fb60bcafdccedb309bf730c7f",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-122c537a",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0033",
+      "locator": {
+        "clause": "第三十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "基本存款账户是存款人的主办账户。存款人日常经营活动的资金收付及其工资、奖金和现金的支取，应通过该账户办理。",
+      "quoteHash": "122c537a1bc8c631c711fa3032ebe8daf9741fe80b7f8cc13280d9b5e057fc91",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-9c8bd3d3",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0034",
+      "locator": {
+        "clause": "第三十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "一般存款账户用于办理存款人借款转存、借款归还和其他结算的资金收付。该账户可以办理现金缴存，但不得办理现金支取。",
+      "quoteHash": "9c8bd3d39dc606c8cdf857cc23be1c8bca87ef5da126d9471885003b939839d0",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-7b1e7775",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0035",
+      "locator": {
+        "clause": "第三十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "专用存款账户用于办理各项专用资金的收付。",
+      "quoteHash": "7b1e77752f5e6a4a1314d9e5df90315c267977130dc0468633ded9b896ef46d6",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-e8b61517",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0036",
+      "locator": {
+        "clause": "第三十六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "临时存款账户用于办理临时机构以及存款人临时经营活动发生的资金收付。",
+      "quoteHash": "e8b61517614111c2be5b171062a3eb4989ebb68a7ddfb5ae634f575b67bf05d3",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-d6c57e52",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0038",
+      "locator": {
+        "clause": "第三十八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人开立单位银行结算账户，自正式开立之日起 3 个工作日后，方可办理付款业务。但注册验资的临时存款账户转为基本存款账户和因借款转存开立的一般存款账户除外。",
+      "quoteHash": "d6c57e524c10fb447fa5e205bd8376f4e5a47b29ed7664da66a38c62279c1a08",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-a39a3efc",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0039",
+      "locator": {
+        "clause": "第三十九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "个人银行结算账户用于办理个人转账收付和现金存取。下列款项可以转入个人银行结算账户：",
+      "quoteHash": "a39a3efc88fe88c0f10c318d53f336e8c25f381572f6086da9515127ed73e7ef",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-f2163560",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0041",
+      "locator": {
+        "clause": "第四十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "有下列情形之一的，个人应出具本办法第四十条规定的有关收款依据。",
+      "quoteHash": "f2163560335009ef9a939f72e82b015b9bf8075a5ad0ff5e54109aba2329d8b8",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-281f7c5a",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0042",
+      "locator": {
+        "clause": "第四十二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "单位银行结算账户支付给个人银行结算账户款项的，银行应按第四十条、第四十一条规定认真审查付款依据或收款依据的原件，并留存复印件，按会计档案保管。未提供相关依据或相关依据不符合规定的，银行应拒绝办理。",
+      "quoteHash": "281f7c5a8adda86e43375d52dd1ff372ba2c193df6ed141cdadb1ded0c38f1d2",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-7c001b23",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0043",
+      "locator": {
+        "clause": "第四十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "储蓄账户仅限于办理现金存取业务，不得办理转账结算。",
+      "quoteHash": "7c001b2389a10cd0cbea87a2f517f9d230ba55eaf51ae0db8a5ae9cee10228c9",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-10787611",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0044",
+      "locator": {
+        "clause": "第四十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "银行应按规定与存款人核对账务。银行结算账户的存款人收到对账单或对账信息后，应及时核对账务并在规定期限内向银行发出对账回单或确认信息。",
+      "quoteHash": "1078761178393fa34ec20be63c2370feb106c15445ea8fdd52b790780f583ff1",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-ba384794",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0045",
+      "locator": {
+        "clause": "第四十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人应按照本办法的规定使用银行结算账户办理结算业务。",
+      "quoteHash": "ba384794056c3cf40bb4ee31d7d227c9f35757a122e91ba0cf92dff775fde249",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-35bae343",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0048",
+      "locator": {
+        "clause": "第四十八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "银行接到存款人的变更通知后，应及时办理变更手续，并于 2 个工作日内向中国人民银行报告。",
+      "quoteHash": "35bae34319b0752e7c4ce3fdd685f956065bca07a346cfc097e1dfac4fba5495",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-624ae168",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0050",
+      "locator": {
+        "clause": "第五十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人因本办法第四十九条第一、二项原因撤销基本存款账户的，存款人基本存款账户的开户银行应自撤销银行结算账户之日起 2 个工作日内将撤销该基本存款账户的情况书面通知该存款人其他银行结算账户的开户银行；存款人其他银行结算账户的开户银行，应自收到通知之日起 2 个工作日内通知存款人撤销有关银行结算账户；存款人应自收到通知之日起 3 个工作日内办理其他银行结算账户的撤销。",
+      "quoteHash": "624ae168c0af5ebd1fb351cbffc2ce6f1a2a1f534069e80d907dcdcb46679ee9",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-0290d4b6",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0051",
+      "locator": {
+        "clause": "第五十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "银行得知存款人有本办法第四十九条第一、二项情况，存款人超过规定期限未主动办理撤销银行结算账户手续的，银行有权停止其银行结算账户的对外支付。",
+      "quoteHash": "0290d4b606dec2d9fdc06c82b87e515ffd4212d2bd209f170c0029d989ca6fa6",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-71855351",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0054",
+      "locator": {
+        "clause": "第五十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人撤销银行结算账户，必须与开户银行核对银行结算账户存款余额，交回各种重要空白票据及结算凭证和开户登记证，银行核对无误后方可办理销户手续。存款人未按规定交回各种重要空白票据及结算凭证的，应出具有关证明，造成损失的，由其自行承担。",
+      "quoteHash": "718553510bf7a12bdf18fa3ea68c2b0d373d9f22c795358625aa1d6ae33341b9",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-453cdab8",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0056",
+      "locator": {
+        "clause": "第五十六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "银行对一年未发生收付活动且未欠开户银行债务的单位银行结算账户,应通知单位自发出通知之日起 30 日内办理销户手续，逾期视同自愿销户，未划转款项列入久悬未取专户管理。",
+      "quoteHash": "453cdab8794a47cf67e03fc05d31d17197593ccd07add635cd0d5722ab9c4569",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-d21a984a",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0057",
+      "locator": {
+        "clause": "第五十七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "中国人民银行负责监督、检查银行结算账户的开立和使用，对存款人、银行违反银行结算账户管理规定的行为予以处罚。",
+      "quoteHash": "d21a984aac845129f2be2fe79df93663f233201f7785858189e7a95ee61575e8",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-a6100f3b",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0061",
+      "locator": {
+        "clause": "第六十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "银行应明确专人负责银行结算账户的开立、使用和撤销的审查和管理，负责对存款人开户申请资料的审查，并按照本办法的规定及时报送存款人开销户信息资料，建立健全开销户登记制度，建立银行结算账户管理档案，按会计档案进行管理。",
+      "quoteHash": "a6100f3b6e4403c961622851adb8ca17f0dc1d814f1e64444d6f73c6efae59c9",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-8c161427",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0062",
+      "locator": {
+        "clause": "第六十二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "银行应对已开立的单位银行结算账户实行年检制度，检查开立的银行结算账户的合规性，核实开户资料的真实性；对不符合本办法规定开立的单位银行结算账户，应予以撤销。对经核实的各类银行结算账户的资料变动情况，应及时报告中国人民银行当地分支行。",
+      "quoteHash": "8c161427b0b7691486d491d8f8679fe3b1b8a10cd315c3f8ae77e174c4515a40",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGCM002-016efede",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0063",
+      "locator": {
+        "clause": "第六十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "存款人应加强对预留银行签章的管理。单位遗失预留公章或财务专用章的，应向开户银行出具书面申请、开户登记证、营业执照等相关证明文件；更换预留公章或财务专用章时，应向开户银行出具书面申请、原预留签章的式样等相关证明文件。个人遗失或更换预留个人印章或更换签字人时，应向开户银行出具书面申请、原预留印章或签字人的个人身份证件。银行应留存相应的复印件，并凭以办理预留银行签章的变更。",
+      "quoteHash": "016efedec8bcc9e28dbafd426be82f9a7c2d38a069acb1392fc58d76f59f19d3",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGCM002-20a7e54d",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGCM002-0068",
+      "locator": {
+        "clause": "第六十八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "违反本办法规定，伪造、变造、私自印制开户登记证的存款人，属非经营性的处以 1000 元罚款；属经营性的处以 1 万元以上 3 万元以下的罚款；构成犯罪的，移交司法机关依法追究刑事责任。",
+      "quoteHash": "20a7e54d3e543f3e24131777eb78f1615b2539f3658c722db40bf5f59b011cee",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654",
+      "sourceId": "REG-CM-002",
+      "sourcePath": "01_raw/_authoritative/REG-CM-002.md",
+      "sourceVersionId": "SV-REGCM002-20260922-70856944",
+      "usage": "AUTHORITATIVE"
+    }
+  ],
+  "sourceId": "REG-CM-002",
+  "sourceVersionId": "SV-REGCM002-20260922-70856944"
+}

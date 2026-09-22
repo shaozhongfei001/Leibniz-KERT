@@ -406,6 +406,21 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 
 ---
 
+### 5.9 真实监管源入库记录（机器可读汇总，供 `check_l10_sources.py` 核对）
+
+> 说明：本节为**汇总表**，与各源上方「入库记录」kv 表同源；`条款数` 由 `02_work/source-versions/manifest.json`
+> 的 `fragmentCount` 机械回填（2026-09-22，T9 纳入真实源后）。
+
+| source_id | 文件字节数 | bytes_sha256 | 条款数 | 入库时间 | 定位方式 |
+|---|---|---|---|---|---|
+| REG-CB-002 | 12512 | `e2e87a3c0fcc3294de04c72e923439cec32d60a5bac6add4c7f0f5716d439b8d` | 33 | 2026-09-22 | CLAUSE（章条号） |
+| REG-CM-002 | 33182 | `70856944765f2ae2192414d2714e1c42bd036ceedd83c80ef4ddbeefa98d1654` | 71 | 2026-09-22 | CLAUSE（章条号） |
+| REG-FIN-001 | 21864 | `dfa2dbff3746a7e20462178268e62bcb7626ba009a32389193afd3cd9bb4fdc5` | 51 | 2026-09-22 | CLAUSE（章条号） |
+| REG-IB-001 | 16042 | `c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5` | 34 | 2026-09-22 | CLAUSE（章条号） |
+| REG-TF-001 | 13440 | `5aeaa4ae76deeac981ae385a0857dd07a5d80df0f1fb123ef575da895d0f7102` | 42 | 2026-09-22 | CLAUSE（章条号） |
+| REG-TF-002 | 29688 | `617e9640e125d100a26f3a4778f37e0ea343ef18ddd81d8e99bb8b6610b4a872` | 60 | 2026-09-22 | CLAUSE（章条号） |
+| REG-TF-003 | 29338 | `fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8` | 110 | 2026-09-22 | CLAUSE（章条号） |
+| REG-XFAM-001 | 14341 | `300f1d6d68b475c37042e6782d7f882b8105dfca0121a4150879e19b9787d24b` | 38 | 2026-09-22 | CLAUSE（章条号） |
 ## 6. 公开参考区登记（`_public_reference/`）
 
 > **本区材料的唯一合法用途是验证解析器能否读取源材料**，不验证内容正确性，

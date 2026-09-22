@@ -1,0 +1,655 @@
+{
+  "evidenceCount": 27,
+  "evidenceSpans": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-d5fcca0b",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0001",
+      "locator": {
+        "clause": "第一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "为规范商业银行并购贷款经营行为，提高并购贷款风险管理能力，加强对经济结构调整和资源优化配置的支持力度，根据《中华人民共和国银行业监督管理法》《中华人民共和国商业银行法》等法律法规，制定本办法。",
+      "quoteHash": "d5fcca0bdee7712be716e5214c661a3073c546704d14250517738f1816136a94",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGIB001-0a6c4e48",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0002",
+      "locator": {
+        "clause": "第二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本办法适用于中华人民共和国境内依法设立的商业银行。",
+      "quoteHash": "0a6c4e480ca004b1a8cdc59bfe7e064974282148f2a31af410a9027226c51d07",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-59d4d2f1",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0004",
+      "locator": {
+        "clause": "第四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "并购贷款用于支持境内并购方企业通过受让现有股权、认购新增股权、收购资产或者承接债务等方式，实现实际控制、合并或者参股已设立并持续经营的目标企业或者资产。根据用途分为控制型并购贷款和参股型并购贷款：",
+      "quoteHash": "59d4d2f1ac8f2e15fef29925338bca1e585948eee763e3ad86d451fb77af23fa",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGIB001-681260f8",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0005",
+      "locator": {
+        "clause": "第五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "开办并购贷款业务的商业银行法人机构应当符合以下条件：",
+      "quoteHash": "681260f8332a3c5836cdef7f194b0c423ea31032dd033d17b7901f17a3d6ddd6",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGIB001-24ee17b5",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0006",
+      "locator": {
+        "clause": "第六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行应当建立健全并购贷款管理机制和信息系统，制定并购贷款管理政策和程序，有效识别、监测、评估、缓释和控制并购贷款风险。",
+      "quoteHash": "24ee17b57221e55f73d5f094d4c57769419b1b87451b9cc66d430f3ac1af375f",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGIB001-699f7b49",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0007",
+      "locator": {
+        "clause": "第七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行开办并购贷款业务应当遵循依法合规、审慎经营、风险可控、商业可持续的原则。",
+      "quoteHash": "699f7b49a432bcf39eafb82252919e5eb2e5b9ae8e90364427bcd222d3093a50",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGIB001-6185dc87",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0008",
+      "locator": {
+        "clause": "第八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行受理的并购贷款申请应当符合以下基本条件：",
+      "quoteHash": "6185dc87491c94be14e3e0a20d5bbf3526c948b1aaf63314d70c68845725ef4a",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-fbb52843",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0009",
+      "locator": {
+        "clause": "第九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行负责并购贷款尽职调查和风险评估的专业团队，应当对本办法第十条至第二十条的内容进行调查、分析和评估，并形成书面报告。",
+      "quoteHash": "fbb528435fa778a7c7216b1bd08af2a3ef39a0c712188be1acea9fc8ecc229db",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGIB001-713392c5",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0010",
+      "locator": {
+        "clause": "第十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行开展尽职调查，应当全面涵盖并购双方的相关情况，包括但不限于目标企业或者资产的商业价值、潜在回报和估值水平，并购双方的股东结构、公司治理、经营状况、财务情况和整体资信，并购交易的合规性等。涉及担保的，应当全面调查担保人的担保能力、抵质押物价值等。",
+      "quoteHash": "713392c5279315805c0fa486cff464f493b80e8a533e2d1fe31d074d2e09ad70",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGIB001-3375183b",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0011",
+      "locator": {
+        "clause": "第十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行应当在全面分析战略风险、法律与合规风险、整合风险、经营及财务风险等与并购有关的各项风险的基础上，审慎评估并购贷款的风险，重点评估借款人的偿债能力，同时关注并购后目标企业的发展前景、协同效应和经营效益，综合评估对并购贷款的影响。涉及跨境交易的，还应当分析国别风险、汇率风险和资金过境风险等。",
+      "quoteHash": "3375183bcf0d4ad95674aa6d9be1426084bfbe715e8a6bd73b0dee2391a159b0",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-d896ebe3",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0013",
+      "locator": {
+        "clause": "第十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行评估战略风险，应当从并购双方经营战略、管理团队和协同效应等方面进行分析，包括但不限于以下内容：",
+      "quoteHash": "d896ebe339be722071054261574bf9c779cf2bc0c278daef86825fc45445de04",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGIB001-ba508e87",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0014",
+      "locator": {
+        "clause": "第十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行评估法律与合规风险，包括但不限于以下内容：",
+      "quoteHash": "ba508e87216a8f9b055166941bcc2e1ee7b6527f0687a8a27de2a1b9678e8c26",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-a6c1c15d",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0015",
+      "locator": {
+        "clause": "第十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行评估整合风险，包括但不限于分析并购双方是否有能力通过以下方面的整合实现协同效应：",
+      "quoteHash": "a6c1c15dc5587e99f1a32aec45711ccf360e15ca51c05332a564942f178ebe1a",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-8b456afe",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0016",
+      "locator": {
+        "clause": "第十六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行评估经营及财务风险，包括但不限于以下内容：",
+      "quoteHash": "8b456afeca50fec3a0b8fd7d347ddaadf523414b3e792235cd3bf016c709f9cd",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-072ec5ad",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0017",
+      "locator": {
+        "clause": "第十七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行应当在全面分析与并购有关的各项风险的基础上，根据并购双方经营和财务状况、并购融资方式和金额等情况，建立审慎的财务模型，测算并购双方未来财务数据，以及对并购贷款风险有重要影响的关键财务杠杆和偿债能力指标。",
+      "quoteHash": "072ec5ad23caef3d207c5ebcb2b4100d429d6e0e4d1070d8755ef2a0bcbd9cf7",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-5b7a2a19",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0018",
+      "locator": {
+        "clause": "第十八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行应当在财务模型测算的基础上进行情景分析和压力测试，充分考虑各种不利情形对并购贷款风险的影响。不利情形包括但不限于：",
+      "quoteHash": "5b7a2a1975e37c20687fff8c29e079800ca8822596beeb1b0e719e2445063832",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-7fda3743",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0019",
+      "locator": {
+        "clause": "第十九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "并购方与目标企业存在关联关系的，商业银行应当加强贷前调查，了解和掌握并购交易的经济动机、并购双方整合的可行性、形成协同效应的可能性等相关情况，核实并购交易的真实性以及并购交易价格的合理性，防范关联企业之间利用虚假并购交易套取银行信贷资金的行为。",
+      "quoteHash": "7fda3743b6b897ec2e791d0e57b0bca22bb39ab201895d32173fee1d94367077",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGIB001-9610bfbf",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0020",
+      "locator": {
+        "clause": "第二十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行原则上应当要求借款人提供能够覆盖并购贷款风险的担保，包括但不限于资产抵押和股权质押，以及符合法律规定的其他形式的担保。以目标企业股权质押时，商业银行应当采用更为审慎的方法，评估其股权价值和确定质押率。",
+      "quoteHash": "9610bfbfd0897ce6913c3b5844c86d5fddf491a9dc169a775227cf88d8d5429b",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-c81f2a20",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0021",
+      "locator": {
+        "clause": "第二十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行应当充分开展尽职调查和风险评估，确认并购交易的真实性和申请并购贷款的合理性，综合判断借款人的还款能力和并购后企业的盈利能力，形成贷款审批意见。",
+      "quoteHash": "c81f2a203fff8423140896fc8229b7488aa8132348f95ffcce055e359080d3c2",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-5e3a0750",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0022",
+      "locator": {
+        "clause": "第二十二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行应当根据并购贷款风险评估结果，综合考虑服务成本收益，合理确定借款合同中贷款金额、期限、利率、分期还款计划、担保方式等基本条款的内容。",
+      "quoteHash": "5e3a075088600ce31ec9c260fcff148b6c8295b7ef4f0c0821f65203e17e36eb",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-07203bf1",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0024",
+      "locator": {
+        "clause": "第二十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行应当综合考虑并购交易和并购贷款风险，审慎确定并购贷款占并购交易价款的比例，确保并购资金中含有合理比例的权益性资金，防范高杠杆并购融资风险。",
+      "quoteHash": "07203bf1a72bedb640be7cecb5cb1694d035c75aabafa737a24575390448d0d6",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-0033b9ed",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0025",
+      "locator": {
+        "clause": "第二十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "控制型并购贷款期限原则上不超过十年，参股型并购贷款期限原则上不超过七年。",
+      "quoteHash": "0033b9edc5e33e2da7e7c119bf4140e764e0c58d6fd8a1e105b5dcd574890e90",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGIB001-d3dab6fd",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0026",
+      "locator": {
+        "clause": "第二十六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行在贷款发放前应当确认借款人满足合同约定的提款条件。提款条件应当至少包括除并购贷款外其他并购交易资金已按约定的支付进度足额到位、并购交易合规性条件已满足等内容。",
+      "quoteHash": "d3dab6fd130ed3c3327df99083eb3bc9079e40b606d82cb836fd024e76f4fbf9",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGIB001-c66f005b",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0028",
+      "locator": {
+        "clause": "第二十八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行应当加强贷款资金发放后的管理，及时跟踪并购实施情况，密切关注借款合同中关键条款的履行情况，监测影响借款人偿债能力的风险因素，严防借款人资金挪用、关联企业借助虚假并购交易套取贷款资金等行为。发现异常的，应当及时采取追加担保、调整贷款发放条件或者还款计划、冻结或者终止授信额度、提前回收贷款等措施。",
+      "quoteHash": "c66f005bb57200346ce632392fe898f7f7c23132cd01e81514fd70f9ece587e2",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-d91bf588",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0030",
+      "locator": {
+        "clause": "第三十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "商业银行应当按照本行并购贷款业务发展策略，分别按单一借款人、集团客户、行业类别、国家或者地区对并购贷款集中度建立相应的限额控制体系。",
+      "quoteHash": "d91bf588f1848ad4dc926d6d159b83573e899e80bf56486a9d8c863d274e5811",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGIB001-73824fb6",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0031",
+      "locator": {
+        "clause": "第三十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "国家金融监督管理总局及其派出机构可以根据商业银行的经营管理情况、风险水平和并购贷款业务开展情况等，对商业银行并购贷款管理提出审慎监管要求。",
+      "quoteHash": "73824fb6eb88a6afe83a559c587cd69e373d36ae3049baee8efc69ad8fd4f06b",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "RISK",
+      "evidenceId": "EVS-REGIB001-21a7daac",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGIB001-0034",
+      "locator": {
+        "clause": "第三十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本办法自印发之日起施行。《中国银监会关于印发〈商业银行并购贷款风险管理指引〉的通知》（银监发〔2015〕5号）同时废止。",
+      "quoteHash": "21a7daac9146b8c3167bd078042e86720838ca900a3bd68e94faf3ce15797e18",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "c9f87041941540d6c65794e3f812b9255cb852e793159f070eba0fec96cf61e5",
+      "sourceId": "REG-IB-001",
+      "sourcePath": "01_raw/_authoritative/REG-IB-001.md",
+      "sourceVersionId": "SV-REGIB001-20260922-c9f87041",
+      "usage": "AUTHORITATIVE"
+    }
+  ],
+  "sourceId": "REG-IB-001",
+  "sourceVersionId": "SV-REGIB001-20260922-c9f87041"
+}

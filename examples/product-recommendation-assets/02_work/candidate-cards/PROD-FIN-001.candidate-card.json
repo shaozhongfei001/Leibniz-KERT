@@ -33,7 +33,19 @@
     },
     {
       "conflictId": null,
-      "evidenceIds": [],
+      "evidenceIds": [
+        "EVS-REGFIN001-1e67bfc8",
+        "EVS-REGFIN001-21daf5a4",
+        "EVS-REGFIN001-4bea3593",
+        "EVS-REGFIN001-6f3bd6ba",
+        "EVS-REGFIN001-870db4b2",
+        "EVS-REGFIN001-9af103c7",
+        "EVS-REGFIN001-abb174af",
+        "EVS-REGFIN001-e7de9826",
+        "EVS-REGFIN001-f6c3d72a",
+        "EVS-REGXFAM001-0b940e85",
+        "EVS-REGXFAM001-fd8cf7ce"
+      ],
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "NOT_APPLICABLE",
       "provenanceState": "DEMO",

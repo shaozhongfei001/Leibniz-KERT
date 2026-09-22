@@ -1,5 +1,5 @@
 {
-  "assertionCount": 7,
+  "assertionCount": 45,
   "assertions": [
     {
       "applicabilityScope": {
@@ -9,7 +9,7 @@
       "assertionId": "ASM-PRODTF001-8c455a63",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -29,7 +29,7 @@
       "assertionId": "ASM-PRODTF001-de8e0e4b",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -51,7 +51,7 @@
       "assertionId": "ASM-PRODTF001-c9d8ef87",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -70,17 +70,855 @@
         "effectiveFrom": "2026-09-06",
         "effectiveTo": null
       },
-      "assertionId": "ASM-PRODTF001-9e015b75",
+      "assertionId": "ASM-PRODTF001-309a00e0",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
-      "evidenceIds": [],
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-6b3f5730"
+      ],
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "UNKNOWN",
+      "knowledgeState": "CANDIDATE",
       "normalizedValue": null,
       "productId": "PROD-TF-001",
       "productVersionScope": "version=2026.09.06.1",
-      "rawValue": null,
+      "rawValue": "本办法所称贴现是指持票人在商业汇票到期日前，贴付一定利息将票据转让至具有贷款业务资质机构的行为。持票人持有的票据应为依法合规取得，具有真实交易关系和债权债务关系，因税收、继承、赠与依法无偿取得票据的除外。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-972c1a44",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-06caa93e"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业汇票的承兑、贴现和再贴现，应当遵循依法合规、公平自愿、诚信自律、风险自担的原则。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-95497839",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-34f8506b"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "申请贴现的持票人取得贴现票据应依法合规，与出票人或前手之间具有真实交易关系和债权债务关系，因税收、继承、赠与依法无偿取得票据的除外。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-9f03f4ba",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-e68df2aa"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "转贴现业务按照人民银行和银保监会票据交易有关规定执行。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-5af2611d",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-9a30faf3"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "办理商业汇票贴现业务的金融机构，可以申请办理再贴现业务。再贴现业务办理的条件、利率、期限和方式，按照人民银行有关规定执行。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-2d8682ef",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-33abc80b"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业汇票的承兑人和贴现人应当具备良好的经营和财务状况，最近二年不得发生票据持续逾期或者未按规定披露信息的行为。商业汇票承兑人对承兑的票据应当具备到期付款的能力。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-6d56779e",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-eccc131a"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "财务公司承兑人所属的集团法人应当具备良好的经营和财务状况，最近二年不得发生票据持续逾期或者未按规定披露信息的行为，最近二年不得发生重大违法行为，以及其他严重损害市场主体合法权益或社会公共利益的行为。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-49a61e6a",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-d25d7ec7"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行承兑汇票和财务公司承兑汇票的最高承兑余额不得超过该承兑人总资产的 15%。银行承兑汇票和财务公司承兑汇票保证金余额不得超过该承兑人吸收存款规模的 10%。人民银行和银保监会可以根据金融机构内控情况设置承兑余额与贷款余额比例上限等其他监管指标。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-8e3e73c9",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-7eb22005"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业汇票信息披露按照人民银行有关规定执行，应当遵循及时、真实、准确、完整的原则。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-c6f7f5bb",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-d4c35d63"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业承兑汇票承兑人和财务公司承兑汇票承兑人应当按照人民银行规定披露票据主要要素及信用信息。银行承兑汇票承兑人应当披露承兑人信用信息。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-e50d5368",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-54469fe1"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "贴现人办理商业汇票贴现的，应当按照人民银行规定核对票据披露信息，信息不存在或者记载事项与披露信息不一致的，不得为持票人办理贴现。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-6eda8677",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-b3ab3310"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业汇票背书转让时，被背书人可以按照人民银行规定核对票据信息，信息不存在或者记载事项与披露信息不一致的，可以采取有效措施识别票据信息真伪及信用风险，加强风险防范。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-a45c877a",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-f63eeea1"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业汇票承兑人为非上市公司、在债券市场无信用评级的，鼓励商业汇票流通前由信用评级机构对承兑人进行主体信用评级，并按照人民银行有关规定披露相关信息。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-e0dee0be",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-62e424d2"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "票据市场基础设施和办理商业汇票承兑、贴现、再贴现业务的主体，应当按规定和监管需要向人民银行和银保监会报送有关业务数据。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-79ab805f",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-1ac73347"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行承兑汇票、财务公司承兑汇票的承兑限额、付款期限超出规定的，由人民银行及其分支机构、银保监会及其派出机构对承兑人进行警告、通报批评，并由银保监会及其派出机构依法处以罚款。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-e06b1bc2",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-add46c3b"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业汇票承兑人最近二年发生票据持续逾期或者未按规定披露信息的，金融机构不得为其办理票据承兑、贴现、保证、质押等业务。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-267022c6",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-2c98f5e1"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "金融机构为不具有真实交易关系和债权债务关系（因税收、继承、赠与依法无偿取得票据的除外）的出票人、持票人办理商业汇票承兑、贴现的，由银保监会及其派出机构根据不同情形依法采取暂停其票据业务等监管措施或者实施行政处罚；对直接负责的董事、高级管理人员和其他直接责任人员，依法追究相关责任。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-64c42c17",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-e08951ba"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "未经依法许可或者违反国家金融管理规定，擅自从事票据贴现的，依照有关法律法规进行处置。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-46e7617b",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF001-5322c9cc"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本办法第二十四条规定自2024年1月1日起实施。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-531306e4",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-9d999004"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "票据上的记载事项必须符合本法的规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-7f341e2b",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-ee60b515"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "汇票上可以记载本法规定事项以外的其他出票事项，但是该记载事项不具有汇票上的效力。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-a3183307",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-b85a348d"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "出票人签发汇票后，即承担保证该汇票承兑和付款的责任。出票人在汇票得不到承兑或者付款时，应当向持票人清偿本法第七十条、第七十一条规定的金额和费用。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-f58f4420",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-0cf5b1a2"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "背书人以背书转让汇票后，即承担保证其后手所持汇票承兑和付款的责任。背书人在汇票得不到承兑或者付款时，应当向持票人清偿本法第七十条、第七十一条规定的金额和费用。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-147ce775",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-58badd5f"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "持票人依照前条规定提示付款的，付款人必须在当日足额付款。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-28487b4c",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-3edf3ec6"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "持票人不能出示拒绝证明、退票理由书或者未按照规定期限提供其他合法证明的，丧失对其前手的追索权。但是，承兑人或者付款人仍应当对持票人承担责任。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-f0d452d3",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-a31e424e"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "被追索人依照前条规定清偿后，可以向其他汇票债务人行使再追索权，请求其他汇票债务人支付下列金额和费用：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-7d2319a1",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-ee51a209"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "被追索人依照前二条规定清偿债务后，其责任解除。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-9a17e369",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-57957120"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本票的持票人未按照规定期限提示见票的，丧失对出票人以外的前手的追索权。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-3c4377fa",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-951b7879"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本票的背书、保证、付款行为和追索权的行使，除本章规定外，适用本法第二章有关汇票的规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-1423ed80",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-7386390b"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "支票的持票人应当自出票日起十日内提示付款；异地使用的支票，其提示付款的期限由中国人民银行另行规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-25ad557f",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-083a0ad7"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "支票的背书、付款行为和追索权的行使，除本章规定外，适用本法第二章有关汇票的规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-f0d601d4",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-9f9a77a5"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "涉外票据的法律适用，依照本章的规定确定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-479b4298",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-7a4dfebb"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "中华人民共和国缔结或者参加的国际条约同本法有不同规定的，适用国际条约的规定。但是，中华人民共和国声明保留的条款除外。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-774b4612",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-0d7da01b"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "有前条所列行为之一，情节轻微，不构成犯罪的，依照国家有关规定给予行政处罚。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-7471001b",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-d0a1a3b7"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "金融机构工作人员在票据业务中玩忽职守，对违反本法规定的票据予以承兑、付款或者保证的，给予处分；造成重大损失，构成犯罪的，依法追究刑事责任。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-6e540a58",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-8076ade9"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "依照本法规定承担赔偿责任以外的其他违反本法规定的行为，给他人造成损失的，应当依法承担民事责任。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-57718426",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF003-01d31b24"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本法规定的各项期限的计算，适用民法通则关于计算期间的规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-fad6b73d",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-0b940e85"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "依据《中华人民共和国商业银行法》和《中华人民共和国外资银行管理条例》设立的商业银行，适用本办法有关规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF001-01ae4b7c",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-fd8cf7ce"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "除国家法律、法规、委托代理合同有相关规定和要求的情况以外，商业银行应当拒绝任何单位和个人利用银行渠道直接向客户收取任何费用。",
       "reviewDecisionId": null,
       "supersedes": null,
       "valueType": "TEXT"
@@ -93,7 +931,7 @@
       "assertionId": "ASM-PRODTF001-54ba639f",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -113,7 +951,7 @@
       "assertionId": "ASM-PRODTF001-5b957cd2",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -133,7 +971,7 @@
       "assertionId": "ASM-PRODTF001-9890d228",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "NOT_APPLICABLE",
@@ -142,11 +980,11 @@
       "productVersionScope": "version=2026.09.06.1",
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-247f5606",
-      "supersedes": "ASM-PRODTF001-9e015b75",
+      "supersedes": "ASM-PRODTF001-fad6b73d",
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-415977d1",
+  "extractionRunId": "RUN-20260922-2922ed36",
   "policyId": "FLD-TRADE_FINANCE-001",
   "policyOwnerApproved": false,
   "productId": "PROD-TF-001",

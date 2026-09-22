@@ -1,0 +1,311 @@
+{
+  "fragmentCount": 38,
+  "fragments": [
+    {
+      "contentSha256": "927b752471078c0b93013d4e942a3a3d35480e7f043a81bb956d5439af6e3927",
+      "contentText": "**第一条** 为规范商业银行服务价格管理活动，保护客户合法权益，促进商业银行健康发展，根据《中华人民共和国银行业监督管理法》、《中华人民共和国商业银行法》、《中华人民共和国价格法》等法律法规，制定本办法。",
+      "fragmentId": "FRG-REGXFAM001-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "fcce09a3808ccf30c7ae9cf107aa43dda8cec8bc2336e0a2d7be047a2d6f2af4",
+      "contentText": "**第二条** 依据《中华人民共和国商业银行法》和《中华人民共和国外资银行管理条例》设立的商业银行，适用本办法有关规定。\n\n经中国银行业监督管理委员会依法批准设立的其他银行业金融机构，适用本办法有关规定。",
+      "fragmentId": "FRG-REGXFAM001-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "9d187044587fabb240ac654f24373c2b2a5fa9d7bf22758b8e423dc7548d5920",
+      "contentText": "**第三条** 本办法所称商业银行服务，是指商业银行向客户提供的各类服务。\n\n本办法所称客户，是指商业银行的服务对象，包括自然人、法人和其他组织。\n\n本办法所称服务价格，是指商业银行提供服务时收取的费用。",
+      "fragmentId": "FRG-REGXFAM001-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "74cd348201aa05a45037430eb0707e041fae84f243c2dff99ad0d54bb29b6697",
+      "contentText": "**第四条** 商业银行服务价格行为应当严格遵守国家法律、法规、规章和有关监管规定，遵循公开、公平、诚实、信用的原则，接受社会监督。",
+      "fragmentId": "FRG-REGXFAM001-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "4e5d291c807b465b1566ea3922cf6772c9f05b0788bddb09fd7651fb2f15324b",
+      "contentText": "**第五条** 商业银行应当建立科学有效的服务价格管理体系，加强内部控制，充分披露服务价格信息，保障客户获得服务价格信息和自主选择服务的权利。",
+      "fragmentId": "FRG-REGXFAM001-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "3dc45a56e8028c8d53ed26f1383d9a0842071f9793c2be1b20d8c229aa898b09",
+      "contentText": "**第六条** 根据服务的性质、特点和市场竞争状况，商业银行服务价格分别实行政府指导价、政府定价和市场调节价。",
+      "fragmentId": "FRG-REGXFAM001-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "e5ffbde3af7d27893203c058f59b9f0a64673b283ecb1043323e0ea80dc009f5",
+      "contentText": "**第七条** 中国银行业监督管理委员会和国务院价格主管部门依照有关法律、法规及本办法的规定对商业银行服务价格管理活动进行监督管理。",
+      "fragmentId": "FRG-REGXFAM001-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "c8ef2a7760ed522a61e510c8ad0afec41d939011603be84f1f1dc7a45f1363e7",
+      "contentText": "**第八条** 对客户普遍使用、与国民经济发展和人民生活关系重大的银行基础服务，实行政府指导价或政府定价。",
+      "fragmentId": "FRG-REGXFAM001-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "cb194fb5498af4336643b3d64f5e2c70dfa926bdfb496941f72935963c670875",
+      "contentText": "**第九条** 国务院价格主管部门会同中国银行业监督管理委员会，根据商业银行服务成本、服务价格对个人或企事业单位的影响程度、市场竞争状况，制定和调整商业银行政府指导价、政府定价项目及标准。",
+      "fragmentId": "FRG-REGXFAM001-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "3564aff923ab377d658121aa30a747b9ad3a46eb2f6028b98c6e6b4515431ce2",
+      "contentText": "**第十条** 制定和调整政府指导价、政府定价，按照以下程序执行：\n\n（一）组织商业银行等相关机构进行成本调查；\n\n（二）征求相关客户、商业银行和有关方面的意见；\n\n（三）做出制定或调整相关服务价格的决定，向社会公布。",
+      "fragmentId": "FRG-REGXFAM001-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "99f984e633c1e91d8b52a38cf191b941f884be623236d12226540eb2bebbeab3",
+      "contentText": "**第十一条** 除实行政府指导价、政府定价的服务价格以外，商业银行服务价格实行市场调节价。",
+      "fragmentId": "FRG-REGXFAM001-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "8510eb20ef5511f99443d6166ba67e7bc712b67891ee4e0a38da39ad364160b5",
+      "contentText": "**第十二条** 实行市场调节价的商业银行服务价格，应当由商业银行总行制定和调整。分支机构不得自行制定和调整服务价格。\n\n商业银行分支机构因地区性明显差异需要实行差别化服务价格的，应当由总行统一制定服务价格，并由总行按照本办法规定统一进行公示。\n\n外国银行分行根据其总行（或地区总部）的授权制定和调整服务价格，按照本办法规定进行公示。",
+      "fragmentId": "FRG-REGXFAM001-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "19602d9978c84c68eb71b5c34c1caa79ca7b17dcace105e10bf04edc45946744",
+      "contentText": "**第十三条** 商业银行制定和调整市场调节价，按照以下程序执行：\n\n（一）制定相关服务价格的定价策略和定价原则；\n\n（二）综合测算相关服务项目的成本和收入情况；\n\n（三）进行价格决策；\n\n（四）形成统一的业务说明和宣传材料；\n\n（五）在各类相关营业场所的醒目位置公示；\n\n（六）设有商业银行网站的，应当在网站主页醒目位置公示。",
+      "fragmentId": "FRG-REGXFAM001-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "46f85eb7a227e58867dc91d2b070bca4b5b1f87f943f30ec7bb1029fb3f1fc96",
+      "contentText": "**第十四条** 商业银行制定和调整实行市场调节价的服务价格，应当合理测算各项服务支出，充分考虑市场因素进行综合决策。",
+      "fragmentId": "FRG-REGXFAM001-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "8a54a68450516f9fcee08417071be8907d900b2a6e8e40cf138cd657f99718c9",
+      "contentText": "**第十五条** 商业银行总行向有关部门报送的本机构服务价格工作报告，包括以下内容：\n\n（一）服务价格管理的组织架构和服务价格管理总体情况；\n\n（二）服务收费项目设置、调整情况和相应的收入变化情况；\n\n（三）免费服务项目设置情况、调整情况、相应的收入变化情况，在服务价格方面承担社会责任的情况；\n\n（四）服务项目的收入结构和评估情况；\n\n（五）服务价格的信息披露情况，包括信息公示的方式和渠道；\n\n（六）与服务价格相关的投诉数量、分类和处理情况；\n\n（七）对客户反馈意见的解释说明情况和意见采纳情况；\n\n（八）附表：本行的分类、具体项目、价格水平等情况；\n\n（九）与服务价格相关的其他情况。",
+      "fragmentId": "FRG-REGXFAM001-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "c9c1ea1cc7285ab8824849d9f257c45056fe37777a14eb63fb0a3570db19ca74",
+      "contentText": "**第十六条** 商业银行按照市场化原则接受相关单位的委托，办理代收水、电、燃气、通讯、有线电视、交通违章罚款等费用以及代付工资、社会保险金、住房公积金等代收代付业务，应当按照\"谁委托、谁付费\"的原则收取委托业务相关手续费，不得向委托方以外的其他单位和个人收取费用。",
+      "fragmentId": "FRG-REGXFAM001-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "fbd537b9bb6a17ae8bfb09effe778afce3d50d648768f768c5cc1eaae6b66680",
+      "contentText": "**第十七条** 客户因商业银行调整服务价格或变更服务合同，要求终止或变更银行服务的，商业银行应当根据客户要求、相关服务合同或其他已签署的法律文件采取合理有效的措施，依法及时终止或变更相关银行服务和对应的服务合同。",
+      "fragmentId": "FRG-REGXFAM001-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "99eb15183ae9721de1abc161fe06d2a849ba61007a919f03019cd50942a84dec",
+      "contentText": "**第十八条** 商业银行向客户收取的服务费用，应当对应明确的服务内容。",
+      "fragmentId": "FRG-REGXFAM001-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "f66f1bedc1176cd9529fcd3cfd2abc62603ff19ec090be667cd0fb419b798231",
+      "contentText": "**第十九条** 商业银行应当按规定进行服务价格信息披露。\n\n商业银行应当在其营业场所醒目位置，设有网站的应当在其网站主页醒目位置，及时、准确公示实行政府指导价、政府定价和市场调节价的服务项目、服务内容、服务价格、适用对象、政府指导价或政府定价的文件文号、生效日期、咨询（投诉）的联系方式等。公示的各类服务价格项目应当统一编号。",
+      "fragmentId": "FRG-REGXFAM001-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "509af0fe31bcdb588533d4b708edb4dfbe2f7223d92f632c143cc0a593aa01d9",
+      "contentText": "**第二十条** 商业银行应当采取以下措施保护客户相关权益：\n\n（一）在营业场所的醒目位置提供相关服务价格目录或说明手册等，供客户免费查阅，有条件的商业银行可采用电子显示屏、多媒体终端、电脑查询等方式披露服务价格信息。\n\n（二）设有商业银行网站的，应当在网站主页醒目位置公示服务价格目录或说明手册等，供客户免费查阅。\n\n（三）使用电子银行等自助渠道提供服务的，应当在收取服务费用之前，提示客户相关服务价格，并保证客户对相关服务的选择权。\n\n（四）明确界定各分支机构同城业务覆盖的区域范围，通过营业场所公示、宣传手册、网站公示等方式告知客户，并提供24小时查询渠道。同城业务覆盖的区域范围应当不小于地级市行政区划，同一直辖市、省会城市、计划单列市应当列入同城范畴。",
+      "fragmentId": "FRG-REGXFAM001-0020",
+      "pageNo": null,
+      "seqNo": 20,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "df33fc6905eae715072246f1a508598f7d9e9e6a3cb02ed3628973e8fd1754f9",
+      "contentText": "**第二十一条** 商业银行应当提醒客户提供真实有效的联系信息并在相关信息变更后及时通知银行，以便商业银行调整服务价格时按照合同约定方式及时告知客户。",
+      "fragmentId": "FRG-REGXFAM001-0021",
+      "pageNo": null,
+      "seqNo": 21,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "edf6b90a726b717eafcd42866c0a53aa07f1d50b67c4221b10cd90f7705b55da",
+      "contentText": "**第二十二条** 商业银行关于服务价格信息的公示涉及优惠措施的，应当明确标注优惠措施的生效和终止日期。",
+      "fragmentId": "FRG-REGXFAM001-0022",
+      "pageNo": null,
+      "seqNo": 22,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "0d2c885da7b71f2d84f722cec32c60160abd91fb97cd5e4f4196ac24a7ee0501",
+      "contentText": "**第二十三条** 商业银行提高实行市场调节价的服务价格，应当至少于实行前3个月按照本办法规定进行公示，必要时应当采用书面、电话、短信、电子邮件、合同约定的其他形式等多种方式通知相关客户。\n\n商业银行设立新的实行市场调节价的服务收费项目，应当至少于实行前3个月按照本办法规定进行公示。",
+      "fragmentId": "FRG-REGXFAM001-0023",
+      "pageNo": null,
+      "seqNo": 23,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "4f95e62610e31626f7ed775c41241df7ba2222f685536819735486c04222ca42",
+      "contentText": "**第二十四条** 商业银行接受其他单位委托开展代理业务收费时，应当将委托方名称、服务项目、收费金额、咨询（投诉）的联系方式等信息告知客户，并在提供给客户的确认单据中明确标注上述信息。",
+      "fragmentId": "FRG-REGXFAM001-0024",
+      "pageNo": null,
+      "seqNo": 24,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "1fba3bfdb17949c76314098685564fa6297b6d84e1ed43154e70f1a85fed260e",
+      "contentText": "**第二十五条** 商业银行应当严格执行服务价格信息披露的有关规定，在为客户提供服务之前，应当告知相关服务项目、服务价格、优惠措施（含生效和终止日期），客户确认接受该服务价格后，方可提供相关服务；客户在使用服务前明确表示不接受相关服务价格的，不得强制或变相强制客户接受服务。",
+      "fragmentId": "FRG-REGXFAM001-0025",
+      "pageNo": null,
+      "seqNo": 25,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "87b7f0db3471ff268b6df6c85a6ca0cd5668a784dbb720088d56d822936bd55a",
+      "contentText": "**第二十六条** 对于需要签署服务章程、协议等合同文件的银行服务项目，商业银行应当在相应的合同文件中以通俗易懂、清晰醒目的方式明示服务项目或服务内容、服务价格、优惠措施及其生效和终止日期、与价格相关的例外条款和限制性条款、咨询（投诉）的联系方式等信息。",
+      "fragmentId": "FRG-REGXFAM001-0026",
+      "pageNo": null,
+      "seqNo": 26,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "fbf5b27108521c2dd1ac5f5941a5cf1e36e75b1a0c8f32c0423cbe4f14022aeb",
+      "contentText": "**第二十七条** 商业银行应当按照审慎经营原则，建立健全服务价格管理制度和内部控制机制，建立清晰的服务价格制定、调整和信息披露流程，严格执行内部授权管理。",
+      "fragmentId": "FRG-REGXFAM001-0027",
+      "pageNo": null,
+      "seqNo": 27,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "6aa6cb7173575e9818b29647a78c714957aa53217e4209f9abf43c7850c67b39",
+      "contentText": "**第二十八条** 商业银行服务价格管理制度应当严格遵守国家法律法规，明确价格行为违规的问责机制和内部处罚措施。",
+      "fragmentId": "FRG-REGXFAM001-0028",
+      "pageNo": null,
+      "seqNo": 28,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "3c739e9a94140345b18583527c95d3859d4ac25de408be7d8bc4bb4ffe7e5a87",
+      "contentText": "**第二十九条** 商业银行应当指定一个部门牵头负责服务价格管理工作，建立服务价格内部审批制度，适时对服务价格管理进行评估和检查，及时纠正相关问题，并组织开展服务价格相关宣传、解释、投诉处理等工作。",
+      "fragmentId": "FRG-REGXFAM001-0029",
+      "pageNo": null,
+      "seqNo": 29,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "545825e16c70ab17229ddc1472fe43c3e158d6db93a31985939f24eb48eb443a",
+      "contentText": "**第三十条** 商业银行应当建立服务价格投诉管理制度，明确客户投诉登记、调查、处理、报告等事项的管理流程、负责部门和处理期限，确保对客户投诉及时进行调查处理。",
+      "fragmentId": "FRG-REGXFAM001-0030",
+      "pageNo": null,
+      "seqNo": 30,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "fc590253e48457236c23797c194662799fc8ca860a7ce80692d32c5819aec0d9",
+      "contentText": "**第三十一条** 商业银行应当设立统一的投诉电话、书面投诉联系方式等渠道，并在营业场所和网站醒目位置进行公示，以便及时受理客户对服务价格的相关投诉。",
+      "fragmentId": "FRG-REGXFAM001-0031",
+      "pageNo": null,
+      "seqNo": 31,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "39d16c0160433d226b4d640200ffab94e891509ea5d4c051e0c6f51b4a20e209",
+      "contentText": "**第三十二条** 商业银行应当认真处理和及时答复客户投诉。\n\n商业银行应当建立相应的投诉自查机制，对投诉管理制度的落实情况、投诉处理情况进行定期或不定期自查。",
+      "fragmentId": "FRG-REGXFAM001-0032",
+      "pageNo": null,
+      "seqNo": 32,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "81fdff8cba7b6139222145794ce65537a255af89e2249cf0775cd4b521570838",
+      "contentText": "**第三十三条** 除国家法律、法规、委托代理合同有相关规定和要求的情况以外，商业银行应当拒绝任何单位和个人利用银行渠道直接向客户收取任何费用。",
+      "fragmentId": "FRG-REGXFAM001-0033",
+      "pageNo": null,
+      "seqNo": 33,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "2b2ecfc5a13ac95a05ae0a79762a6f6c9450a165de00fd11724285b1f3c28c8f",
+      "contentText": "**第三十四条** 商业银行违反本办法规定，有下列行为之一的，由中国银行业监督管理委员会、国务院价格主管部门按照各自法定职责，依据《中华人民共和国银行业监督管理法》、《中华人民共和国价格法》、《价格违法行为行政处罚规定》等法律法规处理：\n\n（一）擅自制定属于政府指导价、政府定价范围的服务价格的；\n\n（二）超出政府指导价浮动幅度的；\n\n（三）提前或推迟执行政府指导价、政府定价的；\n\n（四）擅自对明令禁止收费的服务项目继续收费的；\n\n（五）未按照规定程序制定和调整市场调节价的；\n\n（六）商业银行分支机构擅自制定或调整市场调节价的；\n\n（七）未按照规定进行服务价格信息披露的；\n\n（八）未按照规定开展服务价格相关内部管理工作的；\n\n（九）其他违反本办法规定的行为。",
+      "fragmentId": "FRG-REGXFAM001-0034",
+      "pageNo": null,
+      "seqNo": 34,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "51401d45cb008d673ed9b4b3fab6653f09f43f15600dff4cf876bc4fb9698852",
+      "contentText": "**第三十五条** 鼓励有关单位和个人对商业银行服务价格违法行为进行监督。\n\n有关单位和个人发现商业银行服务价格行为存在侵害其合法权益问题的，可依照法律、法规规定采取相关法律措施或投诉。",
+      "fragmentId": "FRG-REGXFAM001-0035",
+      "pageNo": null,
+      "seqNo": 35,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "8c3620eea5d5a4a7eebc8857e2f12c53b798cc3d4424c4a07c420d926ed01786",
+      "contentText": "**第三十六条** 行业协会等自律组织应当在规范商业银行服务价格行为方面充分发挥自律协调作用。",
+      "fragmentId": "FRG-REGXFAM001-0036",
+      "pageNo": null,
+      "seqNo": 36,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "7ca99197a2d4d33f2b4c0534f795ffbcff42c84eb92d476ac6d58004ffc06fae",
+      "contentText": "**第三十七条** 本办法自2014年8月1日起施行。《商业银行服务价格管理暂行办法》（中国银行业监督管理委员会　国家发展和改革委员会令2003年第3号）同时废止。",
+      "fragmentId": "FRG-REGXFAM001-0037",
+      "pageNo": null,
+      "seqNo": 37,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    },
+    {
+      "contentSha256": "c068ac30ee72ca3939abd66a2429c9a80ecb9d3a3fb88a1880633b64fec45338",
+      "contentText": "**第三十八条** 本办法生效后，此前有关商业银行服务价格或收费的规定与本办法规定不一致的，按照本办法执行。",
+      "fragmentId": "FRG-REGXFAM001-0038",
+      "pageNo": null,
+      "seqNo": 38,
+      "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+    }
+  ],
+  "sourceId": "REG-XFAM-001",
+  "sourceVersionId": "SV-REGXFAM001-20260922-300f1d6d"
+}

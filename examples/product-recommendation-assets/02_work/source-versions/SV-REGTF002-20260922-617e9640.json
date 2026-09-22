@@ -1,0 +1,21 @@
+{
+  "allowedClaimTypes": [
+    "REGULATORY",
+    "PROCESS",
+    "ELIGIBILITY",
+    "PRICE"
+  ],
+  "authorityLevel": "REGULATORY",
+  "byteSize": 29688,
+  "bytesSha256": "617e9640e125d100a26f3a4778f37e0ea343ef18ddd81d8e99bb8b6610b4a872",
+  "ingestedAt": "2026-09-22T19:10:00+08:00",
+  "pageCount": null,
+  "productFamily": null,
+  "provenanceState": "VERIFIED",
+  "provenanceUrl": null,
+  "sourceId": "REG-TF-002",
+  "sourcePath": "01_raw/_authoritative/REG-TF-002.md",
+  "sourceVersionId": "SV-REGTF002-20260922-617e9640",
+  "supersededBy": null,
+  "zone": "_authoritative"
+}

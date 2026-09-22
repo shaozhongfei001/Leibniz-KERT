@@ -36,9 +36,9 @@
       "required": "REQUIRED_SOFT"
     },
     {
-      "assertionCount": 2,
+      "assertionCount": 3,
       "conflictId": null,
-      "evidenceCount": 0,
+      "evidenceCount": 2,
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "NOT_APPLICABLE",
       "needsHumanReview": false,

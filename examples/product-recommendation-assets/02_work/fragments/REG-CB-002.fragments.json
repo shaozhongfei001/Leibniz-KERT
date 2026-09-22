@@ -1,0 +1,271 @@
+{
+  "fragmentCount": 33,
+  "fragments": [
+    {
+      "contentSha256": "7280c0520cf757b9628d936f8986640b2ce06432f2a8c68e43ce8596235fff1f",
+      "contentText": "**第一条** 为完善跨境担保外汇管理，规范跨境担保项下收支行为，促进跨境担保业务健康有序发展，根据《中华人民共和国物权法》、《中华人民共和国担保法》及《中华人民共和国外汇管理条例》等法律法规，特制定本规定。",
+      "fragmentId": "FRG-REGCB002-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "0fb7e13f6031b885713d15ae3415120dd8bcd46a15a83eeb38138c094c6b9093",
+      "contentText": "**第二条** 本规定所称的跨境担保是指担保人向债权人书面作出的、具有法律约束力、承诺按照担保合同约定履行相关付款义务并可能产生资金跨境收付或资产所有权跨境转移等国际收支交易的担保行为。",
+      "fragmentId": "FRG-REGCB002-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "961646ae899ed97b741fb394d414937c2f63fbbc1928d14f1aaab7cb1b0eedf4",
+      "contentText": "**第三条** 按照担保当事各方的注册地，跨境担保分为内保外贷、外保内贷和其他形式跨境担保。\n\n内保外贷是指担保人注册地在境内、债务人和债权人注册地均在境外的跨境担保。\n\n外保内贷是指担保人注册地在境外、债务人和债权人注册地均在境内的跨境担保。\n\n其他形式跨境担保是指除前述内保外贷和外保内贷以外的其他跨境担保情形。",
+      "fragmentId": "FRG-REGCB002-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "a828f7c96918774a06895431b136dde12853a814207f74978888b5a67e8db55b",
+      "contentText": "**第四条** 国家外汇管理局及其分支局（以下简称外汇局）负责规范跨境担保产生的各类国际收支交易。",
+      "fragmentId": "FRG-REGCB002-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "c3d6f07fcf97ab0d2b8cbf422d98dc1b78fc5ad2f60c79baf029bd0b8c344dfa",
+      "contentText": "**第五条** 境内机构提供或接受跨境担保，应当遵守国家法律法规和行业主管部门的规定，并按本规定办理相关外汇管理手续。\n\n担保当事各方从事跨境担保业务，应当恪守商业道德，诚实守信。",
+      "fragmentId": "FRG-REGCB002-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "2a4f5c6efb109f59176d4cbaabcc21a118d16b3d5c9d29f21c996488930890db",
+      "contentText": "**第六条** 外汇局对内保外贷和外保内贷实行登记管理。\n\n境内机构办理内保外贷业务，应按本规定要求办理内保外贷登记；经外汇局登记的内保外贷，发生担保履约的，担保人可自行办理；担保履约后应按本规定要求办理对外债权登记。\n\n境内机构办理外保内贷业务，应符合本规定明确的相关条件；经外汇局登记的外保内贷，债权人可自行办理与担保履约相关的收款；担保履约后境内债务人应按本规定要求办理外债登记手续。",
+      "fragmentId": "FRG-REGCB002-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "1c19337ae32b6c460fd7083166b037632070fa844d1a4734917038a60db78215",
+      "contentText": "**第七条** 境内机构提供或接受其他形式跨境担保，应符合相关外汇管理规定。",
+      "fragmentId": "FRG-REGCB002-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "e2513573d4f2010f588a8d1c3dd7514434fda3076aca83ac2cde7c223eefe5f1",
+      "contentText": "**第八条** 担保人办理内保外贷业务，在遵守国家法律法规、行业主管部门规定及外汇管理规定的前提下，可自行签订内保外贷合同。",
+      "fragmentId": "FRG-REGCB002-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "981bad267ccda4cf5ba63b738d52a1f79da439f5f69596c85444fb042b6260ca",
+      "contentText": "**第九条** 担保人签订内保外贷合同后，应按以下规定办理内保外贷登记。\n\n担保人为银行的，由担保人通过数据接口程序或其他方式向外汇局报送内保外贷业务相关数据。\n\n担保人为非银行金融机构或企业（以下简称非银行机构）的，应在签订担保合同后15个工作日内到所在地外汇局办理内保外贷签约登记手续。担保合同主要条款发生变更的，应当办理内保外贷签约变更登记手续。\n\n外汇局按照真实、合规原则对非银行机构担保人的登记申请进行程序性审核并办理登记手续。",
+      "fragmentId": "FRG-REGCB002-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "fc7928f3bffa57d253e027f8860391f26b35be2f3673a481ecfa47297bd81e66",
+      "contentText": "**第十条** 银行、非银行金融机构作为担保人提供内保外贷，按照行业主管部门规定，应具有相应担保业务经营资格。",
+      "fragmentId": "FRG-REGCB002-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "4120edfcd4acfd3f7e3c1314a4c49ab1909e596cd2de7735875d2196d2ceb978",
+      "contentText": "**第十一条** 内保外贷项下资金用途应当符合以下规定：\n\n（一）内保外贷项下资金仅用于债务人正常经营范围内的相关支出，不得用于支持债务人从事正常业务范围以外的相关交易，不得虚构贸易背景进行套利，或进行其他形式的投机性交易。\n\n（二）未经外汇局批准，债务人不得通过向境内进行借贷、股权投资或证券投资等方式将担保项下资金直接或间接调回境内使用。",
+      "fragmentId": "FRG-REGCB002-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "c8b3e87e02b7389cdd1f262bca42c9e3e506451f5b4de40bf494c7f75b559cbe",
+      "contentText": "**第十二条** 担保人办理内保外贷业务时，应对债务人主体资格、担保项下资金用途、预计的还款资金来源、担保履约的可能性及相关交易背景进行审核，对是否符合境内外相关法律法规进行尽职调查，并以适当方式监督债务人按照其申明的用途使用担保项下资金。",
+      "fragmentId": "FRG-REGCB002-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "91407309a883b6fe8d014a0a10073e82875a4c38f499922b7098da4a70c354f7",
+      "contentText": "**第十三条** 内保外贷项下担保人付款责任到期、债务人清偿担保项下债务或发生担保履约后，担保人应办理内保外贷登记注销手续。",
+      "fragmentId": "FRG-REGCB002-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "58a10c7e666938b94e1104781355217ca75f3c6f9e13cd9d359178982aaf1c86",
+      "contentText": "**第十四条** 如发生内保外贷履约，担保人为银行的，可自行办理担保履约项下对外支付。\n\n担保人为非银行机构的，可凭担保登记文件直接到银行办理担保履约项下购汇及对外支付。在境外债务人偿清因担保人履约而对境内担保人承担的债务之前，未经外汇局批准，担保人须暂停签订新的内保外贷合同。",
+      "fragmentId": "FRG-REGCB002-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "79884e5b09d4ec635019228f2a9422ba97187f6ce93d03ba091b8ca125deea1e",
+      "contentText": "**第十五条** 内保外贷业务发生担保履约的，成为对外债权人的境内担保人或反担保人应当按规定办理对外债权登记手续。",
+      "fragmentId": "FRG-REGCB002-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "4773feb2c8a5027c30fc618bd4d00dfcef1f71e2bbad23ada3dc06e9357cae2c",
+      "contentText": "**第十六条** 境内个人可作为担保人并参照非银行机构办理内保外贷业务。",
+      "fragmentId": "FRG-REGCB002-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "a29c4ae862548231ed9be3bea0e55baa4d20f923662e3577e7ea7b5b5dedc931",
+      "contentText": "**第十七条** 境内非金融机构从境内金融机构借用贷款或获得授信额度，在同时满足以下条件的前提下，可以接受境外机构或个人提供的担保，并自行签订外保内贷合同：\n\n（一）债务人为在境内注册经营的非金融机构；\n\n（二）债权人为在境内注册经营的金融机构；\n\n（三）担保标的为金融机构提供的本外币贷款（不包括委托贷款）或有约束力的授信额度；\n\n（四）担保形式符合境内、外法律法规。\n\n未经批准，境内机构不得超出上述范围办理外保内贷业务。",
+      "fragmentId": "FRG-REGCB002-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "1d6e44ec626904d76a57dff96c16bd58eb37521272d0c5c8cbc0f089abf04519",
+      "contentText": "**第十八条** 境内债务人从事外保内贷业务，由发放贷款或提供授信额度的境内金融机构向外汇局集中报送外保内贷业务相关数据。",
+      "fragmentId": "FRG-REGCB002-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "4856b10520d8329eeed2bb0ed7093246e2573ee1074e6042078792dcd63e113e",
+      "contentText": "**第十九条** 外保内贷业务发生担保履约的，在境内债务人偿清其对境外担保人的债务之前，未经外汇局批准，境内债务人应暂停签订新的外保内贷合同；已经签订外保内贷合同但尚未提款或尚未全部提款的，未经所在地外汇局批准，境内债务人应暂停办理新的提款。\n\n境内债务人因外保内贷项下担保履约形成的对外负债，其未偿本金余额不得超过其上年度末经审计的净资产数额。\n\n境内债务人向债权人申请办理外保内贷业务时，应真实、完整地向债权人提供其已办理外保内贷业务的债务违约、外债登记及债务清偿情况。",
+      "fragmentId": "FRG-REGCB002-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "69ef41c1237d0a825ccfa17ae16d240f3438b8b356471bcf44ca26da3bef0c68",
+      "contentText": "**第二十条** 外保内贷业务发生境外担保履约的，境内债务人应到所在地外汇局办理短期外债签约登记及相关信息备案手续。外汇局在外债签约登记环节对债务人外保内贷业务的合规性进行事后核查。",
+      "fragmentId": "FRG-REGCB002-0020",
+      "pageNo": null,
+      "seqNo": 20,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "92770199c05754c4479489923fbd6849afc0941ac1c7a26bf39aa1309674fe47",
+      "contentText": "**第二十一条** 外汇局不对担保当事各方设定担保物权的合法性进行审查。担保当事各方应自行确认担保合同内容符合境内外相关法律法规和行业主管部门的规定。",
+      "fragmentId": "FRG-REGCB002-0021",
+      "pageNo": null,
+      "seqNo": 21,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "0382d7347b8bb61ea9537732f30d569be09ee010eecc788ce42a80351076c798",
+      "contentText": "**第二十二条** 担保人与债权人之间因提供抵押、质押等物权担保而产生的跨境收支和交易事项，已存在限制或程序性外汇管理规定的，应当符合规定。",
+      "fragmentId": "FRG-REGCB002-0022",
+      "pageNo": null,
+      "seqNo": 22,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "6d6de8c5ed190f4f83f5a015e47482ddef1b845c3d8fa345733b17df066bff3e",
+      "contentText": "**第二十三条** 当担保人与债权人分属境内、境外，或担保物权登记地（或财产所在地、收益来源地）与担保人、债权人的任意一方分属境内、境外时，境内担保人或境内债权人应按下列规定办理相关外汇管理手续：\n\n（一）当担保人、债权人注册地或担保物权登记地（或财产所在地、收益来源地）至少有两项分属境内外时，担保人实现担保物权的方式应当符合相关法律规定。\n\n（二）除另有明确规定外，担保人或债权人申请汇出或收取担保财产处置收益时，可直接向境内银行提出申请；在银行审核担保履约真实性、合规性并留存必要材料后，担保人或债权人可以办理相关购汇、结汇和跨境收支。\n\n（三）相关担保财产所有权在担保人、债权人之间发生转让，按规定需要办理跨境投资外汇登记的，当事人应办理相关登记或变更手续。",
+      "fragmentId": "FRG-REGCB002-0023",
+      "pageNo": null,
+      "seqNo": 23,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "e40bb76b6e067b59203b9a68ee65089b7c99c4d6d4b3cb2df9b9f4b903e028c4",
+      "contentText": "**第二十四条** 担保人为第三方债务人向债权人提供物权担保，构成内保外贷或外保内贷的，应当按照内保外贷或外保内贷相关规定办理担保登记手续，并遵守相关规定。\n\n经外汇局登记的物权担保因任何原因而未合法设立，担保人应到外汇局注销相关登记。",
+      "fragmentId": "FRG-REGCB002-0024",
+      "pageNo": null,
+      "seqNo": 24,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "30c1175cbca7528ea56da731c5ceeae2165ca7ddf97759234af9ab06b87d0ae6",
+      "contentText": "**第二十五条** 境内机构提供或接受除内保外贷和外保内贷以外的其他形式跨境担保，在符合境内外法律法规和本规定的前提下，可自行签订跨境担保合同。除外汇局另有明确规定外，担保人、债务人不需要就其他形式跨境担保到外汇局办理登记或备案。\n\n境内机构办理其他形式跨境担保，可自行办理担保履约。担保项下对外债权债务需要事前审批或核准，或因担保履约发生对外债权债务变动的，应按规定办理相关审批或登记手续。",
+      "fragmentId": "FRG-REGCB002-0025",
+      "pageNo": null,
+      "seqNo": 25,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "133dc2ec88eab29f9cc0fbeb05b1a4e7e4155d75b69e2535524211c90ff3db9c",
+      "contentText": "**第二十六条** 境内债务人对外支付担保费，可按照服务贸易外汇管理有关规定直接向银行申请办理。",
+      "fragmentId": "FRG-REGCB002-0026",
+      "pageNo": null,
+      "seqNo": 26,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "e26685b28318dd404d351b073b63fc2038c037bc9a9d6254a6ea40305838a1de",
+      "contentText": "**第二十七条** 担保人、债务人不得在明知或者应知担保履约义务确定发生的情况下签订跨境担保合同。",
+      "fragmentId": "FRG-REGCB002-0027",
+      "pageNo": null,
+      "seqNo": 27,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "8f6b3422db68ca4d69833f8b55f2e27a0c8e9572f6e1b23c6fee255b03b64704",
+      "contentText": "**第二十八条** 担保人、债务人、债权人向境内银行申请办理与跨境担保相关的购付汇或收结汇业务时，境内银行应当对跨境担保交易的背景进行尽职审查，以确定该担保合同符合中国法律法规和本规定。",
+      "fragmentId": "FRG-REGCB002-0028",
+      "pageNo": null,
+      "seqNo": 28,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "f8be11cf1b5887f096525465ffea9efc0ad70df660b4e38af010bdf1b2eed759",
+      "contentText": "**第二十九条** 外汇局对跨境担保合同的核准、登记或备案情况以及本规定明确的其他管理事项与管理要求，不构成跨境担保合同的生效要件。",
+      "fragmentId": "FRG-REGCB002-0029",
+      "pageNo": null,
+      "seqNo": 29,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "fca4f10ecc016b9d03fb55fbcf0cf58e26ae3ec5ffa9c76775bf5ddbcbb636ed",
+      "contentText": "**第三十条** 外汇局定期分析内保外贷和外保内贷整体情况，密切关注跨境担保对国际收支的影响。",
+      "fragmentId": "FRG-REGCB002-0030",
+      "pageNo": null,
+      "seqNo": 30,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "e86859b12b85efdea4f932ec06c35d04f1001f5b3218c735b47b332b268e3a40",
+      "contentText": "**第三十一条** 外汇局对境内机构跨境担保业务进行核查和检查，担保当事各方、境内银行应按照外汇局要求提供相关资料。对未按本规定及相关规定办理跨境担保业务的，外汇局根据《中华人民共和国外汇管理条例》进行处罚。",
+      "fragmentId": "FRG-REGCB002-0031",
+      "pageNo": null,
+      "seqNo": 31,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "dbde1efec5eb855bbb2e8575c0690701ca09837584a1a90a4fff49c3f453a831",
+      "contentText": "**第三十二条** 国家外汇管理局可出于保障国际收支平衡的目的，对跨境担保管理方式适时进行调整。",
+      "fragmentId": "FRG-REGCB002-0032",
+      "pageNo": null,
+      "seqNo": 32,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    },
+    {
+      "contentSha256": "d2f202c6c5a943f03acb426130733935ab8173aee7c1fbd7a42b52a424c8d361",
+      "contentText": "**第三十三条** 本规定由国家外汇管理局负责解释。",
+      "fragmentId": "FRG-REGCB002-0033",
+      "pageNo": null,
+      "seqNo": 33,
+      "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+    }
+  ],
+  "sourceId": "REG-CB-002",
+  "sourceVersionId": "SV-REGCB002-20260922-e2e87a3c"
+}

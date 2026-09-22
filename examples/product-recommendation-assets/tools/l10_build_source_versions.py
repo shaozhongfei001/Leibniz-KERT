@@ -34,8 +34,8 @@ SV_DIR = BASE / "02_work" / "source-versions"
 FRG_DIR = BASE / "02_work" / "fragments"
 
 CST = timezone(timedelta(hours=8))
-CLAUSE_RE = re.compile(r"^\*\*第([一二三四五六七八九十百]+)条\*\*")
-CHUNK_SPLIT = re.compile(r"^(#{1,6}\s|\*\*第[一二三四五六七八九十百]+条\*\*)")
+CLAUSE_RE = re.compile(r"^\*\*第([一二三四五六七八九十百零〇]+)条\*\*")
+CHUNK_SPLIT = re.compile(r"^(#{1,6}\s|\*\*第[一二三四五六七八九十百零〇]+条\*\*)")
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -156,6 +156,25 @@ def main():
     if not targets:
         print("FAIL | 未找到任何 .DEMO.md 演示文本")
         return 1
+
+    # PC8 T9（修 F-PC8-09）：**纳入非 DEMO 的真实权威源**（REG-* 监管法规等）。
+    # 原实现只 glob `*.DEMO.md` ⇒ 9 份真实监管源从不进入 fragments/evidence ⇒
+    # `compliance.regulatoryBasis`（minAuthorityLevel=REGULATORY）**恒为 UNKNOWN**。
+    # 过滤口径：必须带 front matter 且含 `source_id`（据此排除 README 等非源文件；不做文件名白名单）。
+    extra = []
+    for p in sorted(AUTH.glob("*.md")):
+        if p.name.endswith(".DEMO.md"):
+            continue
+        try:
+            fm = parse_front_matter(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if fm.get("source_id"):
+            extra.append(p)
+    if extra:
+        print(f"INCLUDE | 追加非 DEMO 权威源 {len(extra)} 份: "
+              f"{', '.join(p.stem for p in extra)}")
+    targets = sorted(targets + extra)
 
     # 幂等重建（PC8 · T6）：清理上一轮的 SV 与 fragments 后再全量重生成。
     # 依据：tools/check_l10_sources.py 强制「SV 文件数 == manifest 声明数」——

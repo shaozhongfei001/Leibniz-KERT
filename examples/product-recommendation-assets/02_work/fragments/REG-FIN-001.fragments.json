@@ -1,0 +1,415 @@
+{
+  "fragmentCount": 51,
+  "fragments": [
+    {
+      "contentSha256": "ba1856647091c88f0631b8a55439d4be5833161dc32049a589ddef1faabec3aa",
+      "contentText": "**第一条** 为规范银行业金融机构流动资金贷款业务经营行为，加强流动资金贷款审慎经营管理，促进流动资金贷款业务健康发展，依据《中华人民共和国银行业监督管理法》、《中华人民共和国商业银行法》等法律法规，制定本办法。",
+      "fragmentId": "FRG-REGFIN001-0001",
+      "pageNo": null,
+      "seqNo": 1,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "546744b761aca54c23eeda5e94493ba72287e84f5af225822c4ffba1249d417a",
+      "contentText": "**第二条** 本办法所称银行业金融机构（以下简称贷款人），是指在中华人民共和国境内设立的商业银行、农村合作银行、农村信用合作社等吸收公众存款的金融机构。",
+      "fragmentId": "FRG-REGFIN001-0002",
+      "pageNo": null,
+      "seqNo": 2,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "802cdc60774d786bfc7711241e41c33bde30ba8f82efbb6645fb65f7d9755f7a",
+      "contentText": "**第三条** 本办法所称流动资金贷款，是指贷款人向法人或非法人组织（按照国家有关规定不得办理银行贷款的主体除外）发放的，用于借款人日常经营周转的本外币贷款。",
+      "fragmentId": "FRG-REGFIN001-0003",
+      "pageNo": null,
+      "seqNo": 3,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "666edf3061c7f2630ed2b0ba2fc2dddf3708d969bb314ee9d3ee7b8cc2616548",
+      "contentText": "**第四条** 贷款人开展流动资金贷款业务，应当遵循依法合规、审慎经营、平等自愿、公平诚信的原则。",
+      "fragmentId": "FRG-REGFIN001-0004",
+      "pageNo": null,
+      "seqNo": 4,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "676badf0ff20bbcb0d980ba76261f0ba690b7f58c79a391cd848971abdc8e3e2",
+      "contentText": "**第五条** 贷款人应完善内部控制机制，实行贷款全流程管理，全面了解客户信息，建立流动资金贷款风险管理制度和有效的岗位制衡机制，将贷款管理各环节的责任落实到具体部门和岗位，并建立各岗位的考核和问责机制。",
+      "fragmentId": "FRG-REGFIN001-0005",
+      "pageNo": null,
+      "seqNo": 5,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "f62ddad118ccffe79d451108d2f78859b6c647bf9a709698439d0dd655488950",
+      "contentText": "**第六条** 贷款人应合理测算借款人营运资金需求，审慎确定借款人的流动资金授信总额及具体贷款的额度，不得超过借款人的实际需求发放流动资金贷款。贷款人应根据借款人经营的规模和周期特点，合理设定流动资金贷款的业务品种和期限，以满足借款人经营的资金需求，实现对贷款资金回笼的有效控制。",
+      "fragmentId": "FRG-REGFIN001-0006",
+      "pageNo": null,
+      "seqNo": 6,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "cbf73615b4acfa07d8e8c873a23456ce7e5a1f7e096d2c2159ae91da95ab464f",
+      "contentText": "**第七条** 贷款人应将流动资金贷款纳入对借款人及其所在集团客户的统一授信管理，并根据风险管理实际需要，建立风险限额管理制度。",
+      "fragmentId": "FRG-REGFIN001-0007",
+      "pageNo": null,
+      "seqNo": 7,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "d6e26a24ace4744b0b00a93a1a853643a6669551cc2cd7317891f4e45d0c5e16",
+      "contentText": "**第八条** 贷款人应根据经济运行状况、行业发展规律和借款人的有效信贷需求等，合理确定内部绩效考核指标，不得制订不合理的贷款规模指标，不得恶性竞争和突击放贷。",
+      "fragmentId": "FRG-REGFIN001-0008",
+      "pageNo": null,
+      "seqNo": 8,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "acaf43b8698ff528c76fdf562ceaa3b0092235323d79b44b9bca34587f76cc52",
+      "contentText": "**第九条** 贷款人应与借款人约定明确、合法的贷款用途。\n\n流动资金贷款不得用于借款人股东分红，以及金融资产、固定资产、股权等投资；不得用于国家禁止生产、经营的领域和用途。\n\n对向地方金融组织发放流动资金贷款另有规定的，从其规定。",
+      "fragmentId": "FRG-REGFIN001-0009",
+      "pageNo": null,
+      "seqNo": 9,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "31a02da80c82e21f68cbfbc4679269b9ee42362980cce643a03da9cddfcb88f4",
+      "contentText": "**第十条** 流动资金贷款禁止挪用，贷款人应按照合同约定检查、监督流动资金贷款的使用情况。",
+      "fragmentId": "FRG-REGFIN001-0010",
+      "pageNo": null,
+      "seqNo": 10,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "112308e097290ea44e02ce20de8bda0f2b67d2986f27f816c2d4bad7dfb2378e",
+      "contentText": "**第十一条** 流动资金贷款期限原则上不超过三年。对于经营现金流回收周期较长的，可适当延长贷款期限，最长不超过五年。",
+      "fragmentId": "FRG-REGFIN001-0011",
+      "pageNo": null,
+      "seqNo": 11,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "7798b2e3c2fba4dfce49ed0778d34647a51dbbe6e367256924f4d99d3e8545ad",
+      "contentText": "**第十二条** 流动资金贷款利率应当遵循利率市场化原则，由借贷双方在遵守国家有关规定的前提下协商确定。",
+      "fragmentId": "FRG-REGFIN001-0012",
+      "pageNo": null,
+      "seqNo": 12,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "b23df93dde53e9d0c43c11ab0132493430107b808f6288514ca1e680f20708fb",
+      "contentText": "**第十三条** 国家金融监督管理总局及其派出机构依法对流动资金贷款业务实施监督管理。",
+      "fragmentId": "FRG-REGFIN001-0013",
+      "pageNo": null,
+      "seqNo": 13,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "429fee05702db91c1378851a4ed98c9f71af96e9ffc530dbfac09bd608c1552c",
+      "contentText": "**第十四条** 流动资金贷款申请应具备以下条件：\n\n（一）借款人依法经市场监督管理部门或主管部门核准登记；\n\n（二）借款用途明确、合法；\n\n（三）借款人经营合法、合规；\n\n（四）借款人具有持续经营能力，有合法的还款来源；\n\n（五）借款人信用状况良好；\n\n（六）贷款人要求的其他条件。",
+      "fragmentId": "FRG-REGFIN001-0014",
+      "pageNo": null,
+      "seqNo": 14,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "899a34cbb72780522173747a46c3ad764ca731ae7cfa605b0bd2ea9aa57c6a7e",
+      "contentText": "**第十五条** 贷款人应对流动资金贷款申请材料的方式和具体内容提出要求，并要求借款人恪守诚实守信原则，承诺所提供材料真实、完整、有效。",
+      "fragmentId": "FRG-REGFIN001-0015",
+      "pageNo": null,
+      "seqNo": 15,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "0abbf149a77d2862733a382b067493e81ce770cbb092ddf12192316509881a7c",
+      "contentText": "**第十六条** 贷款人应采取现场与非现场相结合的形式履行尽职调查，形成书面报告，并对其内容的真实性、完整性和有效性负责。\n\n为小微企业办理的流动资金贷款，贷款人通过非现场调查手段可有效核实相关信息真实性，并可据此对借款人作出风险评价的，可简化或不再进行现场调查。\n\n贷款人应根据自身风险管理能力，按照小微企业流动资金贷款的区域、行业、品种等，审慎确定借款人可简化或不再进行现场调查的贷款金额上限。\n\n尽职调查包括但不限于以下内容：\n\n（一）借款人的组织架构、公司治理、内部控制及法定代表人和经营管理团队的资信等情况；\n\n（二）借款人的经营范围、核心主业、生产经营、贷款期内经营规划和重大投资计划等情况；\n\n（三）借款人所在行业状况；\n\n（四）借款人的应收账款、应付账款、存货等真实财务状况；\n\n（五）借款人营运资金总需求和现有融资性负债情况；\n\n（六）借款人关联方及关联交易等情况；\n\n（七）贷款具体用途及与贷款用途相关的交易对象资金占用等情况；\n\n（八）还款来源情况，包括经营产生的现金流、综合收益及其他合法收入等；\n\n（九）对有担保的流动资金贷款，还需调查抵（质）押物的权属、价值和变现难易程度，或保证人的保证资格和能力等情况。",
+      "fragmentId": "FRG-REGFIN001-0016",
+      "pageNo": null,
+      "seqNo": 16,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "1fa584ed4c5c74b55faf41c1b93fec2712175de7600aea0095d0f32eed1fa8ef",
+      "contentText": "**第十七条** 贷款人应建立完善的风险评价机制，落实具体的责任部门和岗位，全面审查流动资金贷款的风险因素。",
+      "fragmentId": "FRG-REGFIN001-0017",
+      "pageNo": null,
+      "seqNo": 17,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "68144d8d75970a23064da8bf1b62d8e15fc4ccf794cea52da38da3c0ac2f1f62",
+      "contentText": "**第十八条** 贷款人应建立和完善内部评级制度，采用科学合理的评级和授信方法，评定客户信用等级，建立客户资信记录。",
+      "fragmentId": "FRG-REGFIN001-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "84920aa0315ffafce3f40da08367ce19d2f5add19bcce77cc774de48f82567ba",
+      "contentText": "**第十九条** 贷款人应根据借款人经营规模、业务特征、资金循环周期等要素测算其营运资金需求（测算方法示例参考附件），并合理确定贷款结构，包括金额、期限、利率、担保和还款方式等。\n\n贷款人可根据实际需要，制定针对不同类型借款人的测算方法，并适时对方法进行评估及调整。\n\n借款人为小微企业的，贷款人可通过其他方式分析判断借款人营运资金需求。",
+      "fragmentId": "FRG-REGFIN001-0019",
+      "pageNo": null,
+      "seqNo": 19,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "161b72a4c40edfe8a1af5ed7399d1ad84dcb57e55653c9087fbc3681e6a06edd",
+      "contentText": "**第二十条** 贷款人应根据贷审分离、分级审批的原则，建立规范的流动资金贷款评审制度和流程，确保风险评价和信贷审批的独立性。\n\n贷款人应建立健全内部审批授权与转授权机制。审批人员应在授权范围内按规定流程审批贷款，不得越权审批。",
+      "fragmentId": "FRG-REGFIN001-0020",
+      "pageNo": null,
+      "seqNo": 20,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "eaee7c9f5ae72b59105a3c726ef5051c3655f3f8c86797a986b7ceddac36b18e",
+      "contentText": "**第二十一条** 贷款人为股东等关联方办理流动资金贷款的，应严格执行关联交易管理的相关监管规定，发放贷款条件不得优于一般借款人，并在风险评价报告中进行说明。",
+      "fragmentId": "FRG-REGFIN001-0021",
+      "pageNo": null,
+      "seqNo": 21,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "dd9898e205431b2a555661de7a18e911e5efc85d833f0c8fcf8ddc25e6aa544b",
+      "contentText": "**第二十二条** 贷款人应与借款人及其他相关当事人签订书面借款合同等相关协议，需担保的应同时签订担保合同或条款。",
+      "fragmentId": "FRG-REGFIN001-0022",
+      "pageNo": null,
+      "seqNo": 22,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "f5c92d8af6c1841294525249c38e76c6061310537c618844e2e09b21c1b4e61f",
+      "contentText": "**第二十三条** 贷款人应在借款合同中与借款人明确约定流动资金贷款的金额、期限、利率、用途、支付、还款方式等条款。\n\n对于期限超过一年的流动资金贷款，在借贷双方协商基础上，原则上实行本金分期偿还，并审慎约定每期还本金额。",
+      "fragmentId": "FRG-REGFIN001-0023",
+      "pageNo": null,
+      "seqNo": 23,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "a4032a06ea210f24c1fa8ee7cc74511f83592f24346d638fb7e9ef007bc4b9fa",
+      "contentText": "**第二十四条** 前条所指支付条款，包括但不限于以下内容：\n\n（一）贷款资金的支付方式和贷款人受托支付的金额标准；\n\n（二）支付方式变更及触发变更条件；\n\n（三）贷款资金支付的限制、禁止行为；\n\n（四）借款人应及时提供的贷款资金使用记录和资料。",
+      "fragmentId": "FRG-REGFIN001-0024",
+      "pageNo": null,
+      "seqNo": 24,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "7283744ddb266e2849dc218c26c060d7fdb812e30e09a811f2d032573621893b",
+      "contentText": "**第二十五条** 贷款人应要求借款人在合同中对与贷款相关的重要内容作出承诺，承诺内容包括但不限于：\n\n（一）及时向贷款人提供真实、完整、有效的材料；\n\n（二）配合贷款人进行贷款支付管理、贷后管理及相关检查；\n\n（三）进行合并、分立、股权转让，以及进行可能影响其偿债能力的对外投资、对外提供担保、实质性增加债务融资等重大事项前征得贷款人同意；\n\n（四）贷款人有权根据借款人资金回笼情况提前收回贷款；\n\n（五）发生影响偿债能力的重大不利事项时及时通知贷款人。",
+      "fragmentId": "FRG-REGFIN001-0025",
+      "pageNo": null,
+      "seqNo": 25,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "658b23815baece85c6ff8861f62f2034cd856e3bd118f7ae54748b1953d8b80b",
+      "contentText": "**第二十六条** 贷款人应与借款人在合同中约定，出现以下情形之一时，借款人应承担的违约责任，以及贷款人可采取的提前收回贷款、调整贷款支付方式、调整贷款利率、收取罚息、压降授信额度、停止或中止贷款发放等措施，并追究相应法律责任：\n\n（一）未按约定用途使用贷款的；\n\n（二）未按约定方式进行贷款资金支付的；\n\n（三）未遵守承诺事项的；\n\n（四）突破约定财务指标的；\n\n（五）发生重大交叉违约事件的；\n\n（六）违反借款合同约定的其他情形的。",
+      "fragmentId": "FRG-REGFIN001-0026",
+      "pageNo": null,
+      "seqNo": 26,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "f279c4a9c3c264abec61638b111897ad7acb200b6393b36d7b80e301a2824fa1",
+      "contentText": "**第二十七条** 贷款人应设立独立的责任部门或岗位，负责流动资金贷款发放和支付审核。",
+      "fragmentId": "FRG-REGFIN001-0027",
+      "pageNo": null,
+      "seqNo": 27,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "378bd54ab8a446761ce2fc3ea0ad678a2d2082ef18d10f1ce0437e969c7d053a",
+      "contentText": "**第二十八条** 贷款人在发放贷款前应确认借款人满足合同约定的提款条件，并按照合同约定通过贷款人受托支付或借款人自主支付的方式对贷款资金的支付进行管理与控制。贷款人应健全贷款资金支付管控体系，加强金融科技应用，有效监督贷款资金按约定用途使用。\n\n贷款人受托支付是指贷款人根据借款人的提款申请和支付委托，将贷款通过借款人账户支付给符合合同约定用途的借款人交易对象。\n\n借款人自主支付是指贷款人根据借款人的提款申请将贷款资金发放至借款人账户后，由借款人自主支付给符合合同约定用途的借款人交易对象。",
+      "fragmentId": "FRG-REGFIN001-0028",
+      "pageNo": null,
+      "seqNo": 28,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "9dab292615abe039b481b6ec72e6024d6b7353b86f893a49ed34ad206bf35704",
+      "contentText": "**第二十九条** 贷款人应根据借款人的行业特征、经营规模、管理水平、信用状况等因素和贷款业务品种，合理约定贷款资金支付方式及贷款人受托支付的金额标准。",
+      "fragmentId": "FRG-REGFIN001-0029",
+      "pageNo": null,
+      "seqNo": 29,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "198cdedd388c1e5e6c60af36ebb4e079c4380a044c3e330cf517ce479a731886",
+      "contentText": "**第三十条** 具有以下情形之一的流动资金贷款，应采用贷款人受托支付方式：\n\n（一）与借款人新建立信贷业务关系且借款人信用状况一般；\n\n（二）支付对象明确且向借款人某一交易对象单笔支付金额超过一千万元人民币；\n\n（三）贷款人认定的其他情形。",
+      "fragmentId": "FRG-REGFIN001-0030",
+      "pageNo": null,
+      "seqNo": 30,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "96b1d5c4f48b16b468b6f9780754220fca1e747583c6b1db35a5e265e92ef461",
+      "contentText": "**第三十一条** 采用贷款人受托支付的，贷款人应根据约定的贷款用途，审核借款人提供的支付申请所列支付对象、支付金额等信息是否与相应的商务合同等证明材料相符。审核同意后，贷款人应将贷款资金通过借款人账户支付给借款人交易对象。\n\n对于贷款资金使用记录良好的借款人，在合同约定的贷款用途范围内，出现合理的紧急用款需求，贷款人经评估认为风险可控的，可适当简化借款人需提供的受托支付事前证明材料和流程，于放款完成后及时完成事后审核。",
+      "fragmentId": "FRG-REGFIN001-0031",
+      "pageNo": null,
+      "seqNo": 31,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "9dbeda79e37919047288d5222fdfcfe853d89eba67e80df597a453f5f39d1741",
+      "contentText": "**第三十二条** 采用借款人自主支付的，贷款人应按借款合同约定要求借款人定期汇总报告贷款资金支付情况，并通过账户分析、凭证查验或现场调查等方式核查贷款支付是否符合约定用途，以及是否存在以化整为零方式规避受托支付的情形。",
+      "fragmentId": "FRG-REGFIN001-0032",
+      "pageNo": null,
+      "seqNo": 32,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "01fbe612160ae1b6d5f0e7a82c40a963baf2101e5b45e2a2373b232022742694",
+      "contentText": "**第三十三条** 在贷款发放或支付过程中，借款人出现以下情形的，贷款人应与借款人协商补充贷款发放和支付条件，或根据合同约定变更贷款支付方式、停止或中止贷款资金的发放和支付：\n\n（一）信用状况下降；\n\n（二）经营及财务状况明显趋差；\n\n（三）贷款资金使用出现异常或规避受托支付；\n\n（四）其他重大违反合同约定的行为。",
+      "fragmentId": "FRG-REGFIN001-0033",
+      "pageNo": null,
+      "seqNo": 33,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "2caa572b11c4829f29faa2a7a9bfb18a28d45e4769b255f037e5e28a825a3491",
+      "contentText": "**第三十四条** 贷款人应加强对借款人资金挪用行为的监控，发现借款人挪用贷款资金的，应按照合同约定采取要求借款人整改、提前归还贷款或下调贷款风险分类等相应措施进行管控。",
+      "fragmentId": "FRG-REGFIN001-0034",
+      "pageNo": null,
+      "seqNo": 34,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "446af09179598de506befa6841c28f7ff6a05e0fafe6e160980d424cba6550fe",
+      "contentText": "**第三十五条** 贷款人应加强贷款资金发放后的管理，针对借款人所属行业及经营特点，通过定期与不定期现场检查与非现场监测，分析借款人经营、财务、信用、支付、担保及融资数量和渠道变化等状况，掌握各种影响借款人偿债能力的风险因素。\n\n对于简化或不再进行现场实地调查的业务，应当按照适当比例实施贷后实地检查。",
+      "fragmentId": "FRG-REGFIN001-0035",
+      "pageNo": null,
+      "seqNo": 35,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "366173fb1ef0196d99ee375042235d259c2564b42910733b4a712edc3ee7e49a",
+      "contentText": "**第三十六条** 贷款人应通过借款合同的约定，要求借款人指定专门资金回笼账户并及时提供该账户资金进出情况。\n\n贷款人可根据借款人信用状况、融资情况等，与借款人协商签订账户管理协议，明确约定对指定账户回笼资金进出的管理。\n\n贷款人应关注大额及异常资金流入流出情况，加强对资金回笼账户的监控。",
+      "fragmentId": "FRG-REGFIN001-0036",
+      "pageNo": null,
+      "seqNo": 36,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "e2f84eac87b214014ed68e278551d0be7227f95b5bd58ddf15d1dedf1f67c723",
+      "contentText": "**第三十七条** 贷款人应动态关注借款人经营、管理、财务及资金流向等重大预警信号，根据合同约定及时采取提前收回贷款、追加担保等有效措施防范化解贷款风险。",
+      "fragmentId": "FRG-REGFIN001-0037",
+      "pageNo": null,
+      "seqNo": 37,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "2e70264520f498c86ddc306d35f7154264780bbcd5cbed552356b8f6e34501f8",
+      "contentText": "**第三十八条** 贷款人应评估贷款业务品种、额度、期限与借款人经营状况、还款能力的匹配程度，作为与借款人后续合作的依据，必要时及时调整与借款人合作的策略和内容。",
+      "fragmentId": "FRG-REGFIN001-0038",
+      "pageNo": null,
+      "seqNo": 38,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "6f3d870606c3dd5f2e368fdc36e6ea24c38f5a6ac7d815a849d11e90e16a3f26",
+      "contentText": "**第三十九条** 贷款人应根据法律法规规定和借款合同的约定，参与借款人大额融资、资产出售以及兼并、分立、股份制改造、破产清算等活动，维护贷款人债权。",
+      "fragmentId": "FRG-REGFIN001-0039",
+      "pageNo": null,
+      "seqNo": 39,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "7eb518d954e3286571e0c08036d94d56fcbaa8d2bccda8e9ab43ddd2d86ad963",
+      "contentText": "**第四十条** 借款人申请贷款展期的，贷款人应审慎评估展期原因和后续还款安排的可行性。同意展期的，应根据借款人还款来源等情况，合理确定展期期限，并加强对贷款的后续管理，按照实质风险状况进行风险分类。\n\n期限一年以内的贷款展期期限累计不得超过原贷款期限；期限超过一年的贷款展期期限累计不得超过原贷款期限的一半。",
+      "fragmentId": "FRG-REGFIN001-0040",
+      "pageNo": null,
+      "seqNo": 40,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "55590887d417b6c7447e84f083a5c52e41b664ddc17646f90ef5bcdeb2443ac1",
+      "contentText": "**第四十一条** 贷款人应按照借款合同约定，收回贷款本息。\n\n对于未按照借款合同约定偿还的贷款，贷款人应采取清收、协议重组、债权转让或核销等措施进行处置。",
+      "fragmentId": "FRG-REGFIN001-0041",
+      "pageNo": null,
+      "seqNo": 41,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "12cff0f2285d7616f927ddcae92694e62fb37a9608e8fc41c3152776acda2a0b",
+      "contentText": "**第四十二条** 贷款人违反本办法规定经营流动资金贷款业务的，国家金融监督管理总局及其派出机构应当责令其限期改正。贷款人有下列情形之一的，国家金融监督管理总局及其派出机构可根据《中华人民共和国银行业监督管理法》采取相关监管措施：\n\n（一）流动资金贷款业务流程有缺陷的；\n\n（二）未将贷款管理各环节的责任落实到具体部门和岗位的；\n\n（三）贷款调查、风险评价、贷后管理未尽职的。",
+      "fragmentId": "FRG-REGFIN001-0042",
+      "pageNo": null,
+      "seqNo": 42,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "3d265dc84298404df1f2f90ffb1af803e77a08e0535448d37f9c57980f9a5175",
+      "contentText": "**第四十三条** 贷款人有下列情形之一的，国家金融监督管理总局及其派出机构可根据《中华人民共和国银行业监督管理法》对其采取相关监管措施或进行处罚：\n\n（一）以降低信贷条件或超过借款人实际资金需求发放贷款的；\n\n（二）未按本办法规定签订借款合同的；\n\n（三）与借款人串通或参与虚构贸易背景违规发放贷款的；\n\n（四）放任借款人将流动资金贷款用于借款人股东分红、金融资产投资、固定资产投资、股权投资以及国家禁止生产、经营的领域和用途的；\n\n（五）超越或变相超越权限审批贷款的；\n\n（六）未按本办法规定进行贷款资金支付管理与控制的；\n\n（七）对借款人严重违约行为未采取有效措施的；\n\n（八）严重违反本办法规定的审慎经营规则的其他情形的。",
+      "fragmentId": "FRG-REGFIN001-0043",
+      "pageNo": null,
+      "seqNo": 43,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "ed88994d804e99268796fa95b6325472a45c63c67aa8880797281d4640961435",
+      "contentText": "**第四十四条** 国家金融监督管理总局及其派出机构可以根据贷款人的经营管理情况、风险水平和流动资金贷款业务开展情况等，对贷款人流动资金贷款管理提出相关审慎监管要求。",
+      "fragmentId": "FRG-REGFIN001-0044",
+      "pageNo": null,
+      "seqNo": 44,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "5e9093a12a2b1bffde1aa987bc8a3e5fa1cb5843422e4693161610a1f919de00",
+      "contentText": "**第四十五条** 对专利权、著作权等知识产权以及采矿权等其他无形资产办理的贷款，可适用本办法，或根据贷款项目的业务特征、运行模式等参照固定资产贷款管理相关办法执行。",
+      "fragmentId": "FRG-REGFIN001-0045",
+      "pageNo": null,
+      "seqNo": 45,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "4979a3275f5b7f1d4128262b047e93ffbc8110c884c318c6029cf04b961f6998",
+      "contentText": "**第四十六条** 对于贷款金额五十万元人民币以下的固定资产相关融资需求，可参照本办法执行。",
+      "fragmentId": "FRG-REGFIN001-0046",
+      "pageNo": null,
+      "seqNo": 46,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "6a471055768f242f715657f309216b5c97ac67be40a13354aa64fd7d63133310",
+      "contentText": "**第四十七条** 国家金融监督管理总局对互联网贷款、汽车贷款以及其他特殊类贷款另有规定的，从其规定。",
+      "fragmentId": "FRG-REGFIN001-0047",
+      "pageNo": null,
+      "seqNo": 47,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "ed08dff1a74b48d4618287087ee1f67bc73a1196e67cd7d3a20400603375d353",
+      "contentText": "**第四十八条** 国家开发银行、政策性银行以及经国家金融监督管理总局批准设立的非银行金融机构发放的流动资金贷款，可参照本办法执行。",
+      "fragmentId": "FRG-REGFIN001-0048",
+      "pageNo": null,
+      "seqNo": 48,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "9069bec84164167e4738e1fae40e821627cc4722208fa1f614c93b93079e86ef",
+      "contentText": "**第四十九条** 贷款人应依据本办法制定流动资金贷款管理实施细则及操作规程。",
+      "fragmentId": "FRG-REGFIN001-0049",
+      "pageNo": null,
+      "seqNo": 49,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "6affe13ee15aa0bf8f291552040532122a8129b8bc77659f93b9858876be9e0b",
+      "contentText": "**第五十条** 本办法由国家金融监督管理总局负责解释。",
+      "fragmentId": "FRG-REGFIN001-0050",
+      "pageNo": null,
+      "seqNo": 50,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    },
+    {
+      "contentSha256": "fc67a27ded6353590a3ba7007d3ad632fd5bc98a160e1bc7a0d840804eb25aa2",
+      "contentText": "**第五十一条** 本办法自2024年7月1日起施行，《流动资金贷款管理暂行办法》（中国银行业监督管理委员会令2010年第1号）同时废止。",
+      "fragmentId": "FRG-REGFIN001-0051",
+      "pageNo": null,
+      "seqNo": 51,
+      "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+    }
+  ],
+  "sourceId": "REG-FIN-001",
+  "sourceVersionId": "SV-REGFIN001-20260922-dfa2dbff"
+}

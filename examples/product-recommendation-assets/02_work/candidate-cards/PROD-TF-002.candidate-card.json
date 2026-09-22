@@ -32,7 +32,16 @@
     },
     {
       "conflictId": null,
-      "evidenceIds": [],
+      "evidenceIds": [
+        "EVS-REGTF002-11ea4525",
+        "EVS-REGTF002-145e8fd8",
+        "EVS-REGTF002-41f5f699",
+        "EVS-REGTF002-5c197a50",
+        "EVS-REGTF002-7fa275ee",
+        "EVS-REGTF002-9157b372",
+        "EVS-REGXFAM001-0b940e85",
+        "EVS-REGXFAM001-fd8cf7ce"
+      ],
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "NOT_APPLICABLE",
       "provenanceState": "DEMO",

@@ -1,5 +1,5 @@
 {
-  "assertionCount": 7,
+  "assertionCount": 15,
   "assertions": [
     {
       "applicabilityScope": {
@@ -9,7 +9,7 @@
       "assertionId": "ASM-PRODIB001-038f163e",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -29,7 +29,7 @@
       "assertionId": "ASM-PRODIB001-e3abf9c9",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -51,7 +51,7 @@
       "assertionId": "ASM-PRODIB001-c46230df",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -70,17 +70,195 @@
         "effectiveFrom": "2026-09-06",
         "effectiveTo": null
       },
-      "assertionId": "ASM-PRODIB001-0a6b8ab7",
+      "assertionId": "ASM-PRODIB001-6fb7d9db",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
-      "evidenceIds": [],
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGIB001-699f7b49"
+      ],
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "UNKNOWN",
+      "knowledgeState": "CANDIDATE",
       "normalizedValue": null,
       "productId": "PROD-IB-001",
       "productVersionScope": "version=2026.09.06.1",
-      "rawValue": null,
+      "rawValue": "商业银行开办并购贷款业务应当遵循依法合规、审慎经营、风险可控、商业可持续的原则。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODIB001-5b5dd6a5",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGIB001-713392c5"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-IB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业银行开展尽职调查，应当全面涵盖并购双方的相关情况，包括但不限于目标企业或者资产的商业价值、潜在回报和估值水平，并购双方的股东结构、公司治理、经营状况、财务情况和整体资信，并购交易的合规性等。涉及担保的，应当全面调查担保人的担保能力、抵质押物价值等。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODIB001-28da74f6",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGIB001-3375183b"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-IB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业银行应当在全面分析战略风险、法律与合规风险、整合风险、经营及财务风险等与并购有关的各项风险的基础上，审慎评估并购贷款的风险，重点评估借款人的偿债能力，同时关注并购后目标企业的发展前景、协同效应和经营效益，综合评估对并购贷款的影响。涉及跨境交易的，还应当分析国别风险、汇率风险和资金过境风险等。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODIB001-41f40d76",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGIB001-ba508e87"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-IB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业银行评估法律与合规风险，包括但不限于以下内容：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODIB001-307a835c",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGIB001-9610bfbf"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-IB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业银行原则上应当要求借款人提供能够覆盖并购贷款风险的担保，包括但不限于资产抵押和股权质押，以及符合法律规定的其他形式的担保。以目标企业股权质押时，商业银行应当采用更为审慎的方法，评估其股权价值和确定质押率。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODIB001-5472aca5",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGIB001-d3dab6fd"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-IB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "商业银行在贷款发放前应当确认借款人满足合同约定的提款条件。提款条件应当至少包括除并购贷款外其他并购交易资金已按约定的支付进度足额到位、并购交易合规性条件已满足等内容。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODIB001-62527605",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGIB001-73824fb6"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-IB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "国家金融监督管理总局及其派出机构可以根据商业银行的经营管理情况、风险水平和并购贷款业务开展情况等，对商业银行并购贷款管理提出审慎监管要求。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODIB001-0885e085",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-0b940e85"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-IB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "依据《中华人民共和国商业银行法》和《中华人民共和国外资银行管理条例》设立的商业银行，适用本办法有关规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODIB001-33939b8b",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-fd8cf7ce"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-IB-001",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "除国家法律、法规、委托代理合同有相关规定和要求的情况以外，商业银行应当拒绝任何单位和个人利用银行渠道直接向客户收取任何费用。",
       "reviewDecisionId": null,
       "supersedes": null,
       "valueType": "TEXT"
@@ -93,7 +271,7 @@
       "assertionId": "ASM-PRODIB001-dadae0cf",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -113,7 +291,7 @@
       "assertionId": "ASM-PRODIB001-f55e5775",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -133,7 +311,7 @@
       "assertionId": "ASM-PRODIB001-73d4f70a",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "NOT_APPLICABLE",
@@ -142,11 +320,11 @@
       "productVersionScope": "version=2026.09.06.1",
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-68daa2f0",
-      "supersedes": "ASM-PRODIB001-0a6b8ab7",
+      "supersedes": "ASM-PRODIB001-6fb7d9db",
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-415977d1",
+  "extractionRunId": "RUN-20260922-2922ed36",
   "policyId": "FLD-INVESTMENT_BANKING-001",
   "policyOwnerApproved": false,
   "productId": "PROD-IB-001",

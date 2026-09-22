@@ -1,0 +1,607 @@
+{
+  "evidenceCount": 25,
+  "evidenceSpans": [
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGTF003-d2c4db4e",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0004",
+      "locator": {
+        "clause": "第四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "票据出票人制作票据，应当按照法定条件在票据上签章，并按照所记载的事项承担票据责任。",
+      "quoteHash": "d2c4db4eb427e1c179019d10009514b585d3733095f63934267bbca77bde0e90",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-9d999004",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0009",
+      "locator": {
+        "clause": "第九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "票据上的记载事项必须符合本法的规定。",
+      "quoteHash": "9d9990040197cdd49c7c217d3043bd630ad27f3c11b8765dea9a53d3012b7dd7",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGTF003-2f40e912",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0019",
+      "locator": {
+        "clause": "第十九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "汇票是出票人签发的，委托付款人在见票时或者在指定日期无条件支付确定的金额给收款人或者持票人的票据。",
+      "quoteHash": "2f40e91289fb9d45af96e48a040bba8f5f1dfc77f8222d0f3815cfea9f5d446d",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-ee60b515",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0024",
+      "locator": {
+        "clause": "第二十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "汇票上可以记载本法规定事项以外的其他出票事项，但是该记载事项不具有汇票上的效力。",
+      "quoteHash": "ee60b515d89876d45e012f71654903916b23788e6b6f0358d7dd52e0b040cad5",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-b85a348d",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0026",
+      "locator": {
+        "clause": "第二十六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "出票人签发汇票后，即承担保证该汇票承兑和付款的责任。出票人在汇票得不到承兑或者付款时，应当向持票人清偿本法第七十条、第七十一条规定的金额和费用。",
+      "quoteHash": "b85a348d301f3dc415069bcacee17c6102e087c7376bfbad6b8767fa3a30613a",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGTF003-135526d7",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0033",
+      "locator": {
+        "clause": "第三十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "背书不得附有条件。背书时附有条件的，所附条件不具有汇票上的效力。",
+      "quoteHash": "135526d7d06cd42494e80b9da9b7079fd98937536882f2bab2026e5b699b50a8",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-0cf5b1a2",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0037",
+      "locator": {
+        "clause": "第三十七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "背书人以背书转让汇票后，即承担保证其后手所持汇票承兑和付款的责任。背书人在汇票得不到承兑或者付款时，应当向持票人清偿本法第七十条、第七十一条规定的金额和费用。",
+      "quoteHash": "0cf5b1a22710e044779b66919500e64a24a08d9be07dc7eab863c6ad2d221c63",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGTF003-3f04cf41",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0043",
+      "locator": {
+        "clause": "第四十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "付款人承兑汇票，不得附有条件；承兑附有条件的，视为拒绝承兑。",
+      "quoteHash": "3f04cf4151a924b2903113906b544bfc4aab897e850863501733e09e4ff7a736",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGTF003-403bbd7c",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0048",
+      "locator": {
+        "clause": "第四十八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "保证不得附有条件；附有条件的，不影响对汇票的保证责任。",
+      "quoteHash": "403bbd7cce8da08214c42c80ef9c1648b7ee550a7c302207f2fff092d7f50f40",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-58badd5f",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0054",
+      "locator": {
+        "clause": "第五十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "持票人依照前条规定提示付款的，付款人必须在当日足额付款。",
+      "quoteHash": "58badd5fb60c77bff067dc66db432f05b3d5a911dd77f92d92d06e78fa292c81",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-3edf3ec6",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0065",
+      "locator": {
+        "clause": "第六十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "持票人不能出示拒绝证明、退票理由书或者未按照规定期限提供其他合法证明的，丧失对其前手的追索权。但是，承兑人或者付款人仍应当对持票人承担责任。",
+      "quoteHash": "3edf3ec6ef8f4e81c6c5a1f4f49916ea050c8ee6e2b511e53288ee2119c9968b",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-a31e424e",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0071",
+      "locator": {
+        "clause": "第七十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "被追索人依照前条规定清偿后，可以向其他汇票债务人行使再追索权，请求其他汇票债务人支付下列金额和费用：",
+      "quoteHash": "a31e424ed4c7a47d50b2f3f180c4968c97e30bc6b96de8960bc8c0919034c1a6",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-ee51a209",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0072",
+      "locator": {
+        "clause": "第七十二条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "被追索人依照前二条规定清偿债务后，其责任解除。",
+      "quoteHash": "ee51a20965f6e7791366482c30e8aabfc2d99745e18bc4ac29d28fd80b6c6d14",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-REGTF003-ade99bd7",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0073",
+      "locator": {
+        "clause": "第七十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本票是出票人签发的，承诺自己在见票时无条件支付确定的金额给收款人或者持票人的票据。",
+      "quoteHash": "ade99bd763b66685caf4f406981e8d8d3a46af9b5eeb2b28366e1054e23a7293",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-57957120",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0079",
+      "locator": {
+        "clause": "第七十九条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本票的持票人未按照规定期限提示见票的，丧失对出票人以外的前手的追索权。",
+      "quoteHash": "57957120e4b1ce39dd7e6cd3762eb84f16b4b98b8b0e0bc3ca13dd19e4bb3438",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-951b7879",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0080",
+      "locator": {
+        "clause": "第八十条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本票的背书、保证、付款行为和追索权的行使，除本章规定外，适用本法第二章有关汇票的规定。",
+      "quoteHash": "951b7879dc319f0b5a801b148290db0fd8c8277568c4ba81ce2e71d6b95358b2",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "PROCESS",
+      "evidenceId": "EVS-REGTF003-c5e954ea",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0081",
+      "locator": {
+        "clause": "第八十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "支票是出票人签发的，委托办理支票存款业务的银行或者其他金融机构在见票时无条件支付确定的金额给收款人或者持票人的票据。",
+      "quoteHash": "c5e954ea5d9df004562a0d7ca9a7c19e4a7bc494270a6bcabb79d1a84f6635e8",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-7386390b",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0091",
+      "locator": {
+        "clause": "第九十一条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "支票的持票人应当自出票日起十日内提示付款；异地使用的支票，其提示付款的期限由中国人民银行另行规定。",
+      "quoteHash": "7386390b00295315bce54f417ca6306789a6e99d359776f91a43f6000a58f750",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-083a0ad7",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0093",
+      "locator": {
+        "clause": "第九十三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "支票的背书、付款行为和追索权的行使，除本章规定外，适用本法第二章有关汇票的规定。",
+      "quoteHash": "083a0ad7dc9339c2a6858f3ff3aef4a9f35c1a0038c997e2a5240042df54f62d",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-9f9a77a5",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0094",
+      "locator": {
+        "clause": "第九十四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "涉外票据的法律适用，依照本章的规定确定。",
+      "quoteHash": "9f9a77a5457ee0e0e24a124171255c41d0f067f82991326005bf5a1b0ff6f79e",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-7a4dfebb",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0095",
+      "locator": {
+        "clause": "第九十五条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "中华人民共和国缔结或者参加的国际条约同本法有不同规定的，适用国际条约的规定。但是，中华人民共和国声明保留的条款除外。",
+      "quoteHash": "7a4dfebba3957fa0e00ab90b8c61cb4796407757a88fbdbc57c7297df829459e",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-0d7da01b",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0103",
+      "locator": {
+        "clause": "第一百零三条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "有前条所列行为之一，情节轻微，不构成犯罪的，依照国家有关规定给予行政处罚。",
+      "quoteHash": "0d7da01b398205b6d6246663da7aa95316cdd3f8263ae6f6ce09c9ef500bdeff",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-d0a1a3b7",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0104",
+      "locator": {
+        "clause": "第一百零四条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "金融机构工作人员在票据业务中玩忽职守，对违反本法规定的票据予以承兑、付款或者保证的，给予处分；造成重大损失，构成犯罪的，依法追究刑事责任。",
+      "quoteHash": "d0a1a3b7fb32589c781cf283a4c2a445da022bd36b49dde162542c686e1577ac",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-8076ade9",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0106",
+      "locator": {
+        "clause": "第一百零六条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "依照本法规定承担赔偿责任以外的其他违反本法规定的行为，给他人造成损失的，应当依法承担民事责任。",
+      "quoteHash": "8076ade9187e718f1c621ce5fdaa5f27630e90b404def83d03970c0438872516",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "authorityLevel": "REGULATORY",
+      "claimType": "REGULATORY",
+      "evidenceId": "EVS-REGTF003-01d31b24",
+      "extractionRunId": "RUN-20260922-2922ed36",
+      "fragmentId": "FRG-REGTF003-0107",
+      "locator": {
+        "clause": "第一百零七条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本法规定的各项期限的计算，适用民法通则关于计算期间的规定。",
+      "quoteHash": "01d31b24b2d0755a6813d75a0607cc3f5f86396cad6e147a14d2344ae38fd121",
+      "retrievedAt": "2026-09-22T19:10:00+08:00",
+      "sourceBytesHash": "fd3ba439c11d5c65d7aece2943cc37a814c431fb067fd5f41f14b65318d364b8",
+      "sourceId": "REG-TF-003",
+      "sourcePath": "01_raw/_authoritative/REG-TF-003.md",
+      "sourceVersionId": "SV-REGTF003-20260922-fd3ba439",
+      "usage": "AUTHORITATIVE"
+    }
+  ],
+  "sourceId": "REG-TF-003",
+  "sourceVersionId": "SV-REGTF003-20260922-fd3ba439"
+}

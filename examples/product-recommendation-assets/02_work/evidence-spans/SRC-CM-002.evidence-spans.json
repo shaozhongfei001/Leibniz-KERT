@@ -9,7 +9,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "PROCESS",
       "evidenceId": "EVS-SRCCM002-fffd6fb9",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCCM002-0008",
       "locator": {
         "clause": "第八条",
@@ -33,7 +33,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "PRICE",
       "evidenceId": "EVS-SRCCM002-7c1df27e",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCCM002-0009",
       "locator": {
         "clause": "第九条",
@@ -57,7 +57,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "PRICE",
       "evidenceId": "EVS-SRCCM002-a6691e48",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCCM002-0010",
       "locator": {
         "clause": "第十条",
@@ -81,7 +81,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "PRICE",
       "evidenceId": "EVS-SRCCM002-ffd6ea0a",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCCM002-0011",
       "locator": {
         "clause": "第十一条",
@@ -105,7 +105,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-SRCCM002-22c1d2ba",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCCM002-0013",
       "locator": {
         "clause": "第十三条",
@@ -129,7 +129,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "PROCESS",
       "evidenceId": "EVS-SRCCM002-baa492d1",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCCM002-0015",
       "locator": {
         "clause": "第十五条",
@@ -153,7 +153,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "PROCESS",
       "evidenceId": "EVS-SRCCM002-68db5549",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCCM002-0016",
       "locator": {
         "clause": "第十六条",

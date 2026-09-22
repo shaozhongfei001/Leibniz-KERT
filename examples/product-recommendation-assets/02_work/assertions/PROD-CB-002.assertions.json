@@ -1,5 +1,5 @@
 {
-  "assertionCount": 7,
+  "assertionCount": 28,
   "assertions": [
     {
       "applicabilityScope": {
@@ -9,7 +9,7 @@
       "assertionId": "ASM-PRODCB002-3dc2c348",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -29,7 +29,7 @@
       "assertionId": "ASM-PRODCB002-d9da5efc",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -51,7 +51,7 @@
       "assertionId": "ASM-PRODCB002-256cf041",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -70,17 +70,481 @@
         "effectiveFrom": "2026-09-06",
         "effectiveTo": null
       },
-      "assertionId": "ASM-PRODCB002-875d5f25",
+      "assertionId": "ASM-PRODCB002-94dda188",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
-      "evidenceIds": [],
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-50328449"
+      ],
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "UNKNOWN",
+      "knowledgeState": "CANDIDATE",
       "normalizedValue": null,
       "productId": "PROD-CB-002",
       "productVersionScope": "version=2026.09.06.1",
-      "rawValue": null,
+      "rawValue": "为完善跨境担保外汇管理，规范跨境担保项下收支行为，促进跨境担保业务健康有序发展，根据《中华人民共和国物权法》、《中华人民共和国担保法》及《中华人民共和国外汇管理条例》等法律法规，特制定本规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-bf267574",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-74cf36d9"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本规定所称的跨境担保是指担保人向债权人书面作出的、具有法律约束力、承诺按照担保合同约定履行相关付款义务并可能产生资金跨境收付或资产所有权跨境转移等国际收支交易的担保行为。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-e3167157",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-a29212cd"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "境内机构提供或接受跨境担保，应当遵守国家法律法规和行业主管部门的规定，并按本规定办理相关外汇管理手续。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-ab255afa",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-06018d3a"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "境内机构提供或接受其他形式跨境担保，应符合相关外汇管理规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-1c64fa7b",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-991e1ba4"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "担保人办理内保外贷业务，在遵守国家法律法规、行业主管部门规定及外汇管理规定的前提下，可自行签订内保外贷合同。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-6b1eef60",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-60c930f3"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "担保人签订内保外贷合同后，应按以下规定办理内保外贷登记。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-3ffb2dbb",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-d662ad77"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行、非银行金融机构作为担保人提供内保外贷，按照行业主管部门规定，应具有相应担保业务经营资格。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-fe9c0e44",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-0b88bbd9"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "内保外贷项下资金用途应当符合以下规定：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-c903851b",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-5cc60360"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "内保外贷业务发生担保履约的，成为对外债权人的境内担保人或反担保人应当按规定办理对外债权登记手续。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-88ae879d",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-38040a61"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "外保内贷业务发生境外担保履约的，境内债务人应到所在地外汇局办理短期外债签约登记及相关信息备案手续。外汇局在外债签约登记环节对债务人外保内贷业务的合规性进行事后核查。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-71870f21",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-1c0e068b"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "外汇局不对担保当事各方设定担保物权的合法性进行审查。担保当事各方应自行确认担保合同内容符合境内外相关法律法规和行业主管部门的规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-c7cecf8b",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-51b9fbeb"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "担保人与债权人之间因提供抵押、质押等物权担保而产生的跨境收支和交易事项，已存在限制或程序性外汇管理规定的，应当符合规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-b75abc50",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-525cf366"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "当担保人与债权人分属境内、境外，或担保物权登记地（或财产所在地、收益来源地）与担保人、债权人的任意一方分属境内、境外时，境内担保人或境内债权人应按下列规定办理相关外汇管理手续：",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-2736e3cc",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-631e7fb6"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "担保人为第三方债务人向债权人提供物权担保，构成内保外贷或外保内贷的，应当按照内保外贷或外保内贷相关规定办理担保登记手续，并遵守相关规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-9c4f63ac",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-b7126d55"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "境内机构提供或接受除内保外贷和外保内贷以外的其他形式跨境担保，在符合境内外法律法规和本规定的前提下，可自行签订跨境担保合同。除外汇局另有明确规定外，担保人、债务人不需要就其他形式跨境担保到外汇局办理登记或备案。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-13862a8a",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-e898a327"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "境内债务人对外支付担保费，可按照服务贸易外汇管理有关规定直接向银行申请办理。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-8265a674",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-890d31b3"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "担保人、债务人、债权人向境内银行申请办理与跨境担保相关的购付汇或收结汇业务时，境内银行应当对跨境担保交易的背景进行尽职审查，以确定该担保合同符合中国法律法规和本规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-0441fdac",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-4aca5e9f"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "外汇局对跨境担保合同的核准、登记或备案情况以及本规定明确的其他管理事项与管理要求，不构成跨境担保合同的生效要件。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-dd2e1225",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-7c566f97"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "外汇局对境内机构跨境担保业务进行核查和检查，担保当事各方、境内银行应按照外汇局要求提供相关资料。对未按本规定及相关规定办理跨境担保业务的，外汇局根据《中华人民共和国外汇管理条例》进行处罚。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-5f453ec0",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGCB002-18e1c52e"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本规定由国家外汇管理局负责解释。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-e36cb5ba",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-0b940e85"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "依据《中华人民共和国商业银行法》和《中华人民共和国外资银行管理条例》设立的商业银行，适用本办法有关规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCB002-c8b459ed",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-fd8cf7ce"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CB-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "除国家法律、法规、委托代理合同有相关规定和要求的情况以外，商业银行应当拒绝任何单位和个人利用银行渠道直接向客户收取任何费用。",
       "reviewDecisionId": null,
       "supersedes": null,
       "valueType": "TEXT"
@@ -93,7 +557,7 @@
       "assertionId": "ASM-PRODCB002-fd3338e1",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -113,7 +577,7 @@
       "assertionId": "ASM-PRODCB002-6b0b3dcb",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -133,7 +597,7 @@
       "assertionId": "ASM-PRODCB002-e6c0631e",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "NOT_APPLICABLE",
@@ -142,11 +606,11 @@
       "productVersionScope": "version=2026.09.06.1",
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-23e0953e",
-      "supersedes": "ASM-PRODCB002-875d5f25",
+      "supersedes": "ASM-PRODCB002-fe9c0e44",
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-415977d1",
+  "extractionRunId": "RUN-20260922-2922ed36",
   "policyId": "FLD-CROSS_BORDER-001",
   "policyOwnerApproved": false,
   "productId": "PROD-CB-002",

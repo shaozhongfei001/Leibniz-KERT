@@ -9,7 +9,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "PROCESS",
       "evidenceId": "EVS-SRCTF002-0cb4ec16",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCTF002-0002",
       "locator": {
         "clause": "第二条",
@@ -33,7 +33,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-SRCTF002-f4af5cb2",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCTF002-0004",
       "locator": {
         "clause": "第四条",
@@ -57,7 +57,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "PROCESS",
       "evidenceId": "EVS-SRCTF002-9cce8bb5",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCTF002-0011",
       "locator": {
         "clause": "第十一条",
@@ -81,7 +81,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-SRCTF002-498d5e35",
-      "extractionRunId": "RUN-20260922-415977d1",
+      "extractionRunId": "RUN-20260922-2922ed36",
       "fragmentId": "FRG-SRCTF002-0013",
       "locator": {
         "clause": "第十三条",

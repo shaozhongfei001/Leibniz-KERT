@@ -1,6 +1,14 @@
 {
-  "assertionCount": 5,
+  "assertionCount": 12,
   "bySource": {
+    "REG-CB-002": 27,
+    "REG-CM-002": 36,
+    "REG-FIN-001": 20,
+    "REG-IB-001": 27,
+    "REG-TF-001": 28,
+    "REG-TF-002": 12,
+    "REG-TF-003": 25,
+    "REG-XFAM-001": 31,
     "SRC-CB-001": 10,
     "SRC-CB-002": 4,
     "SRC-CM-001": 12,
@@ -19,7 +27,7 @@
     "SRC-XFAM-002": 10,
     "SRC-XFAM-003": 7
   },
-  "evidenceCount": 136,
-  "extractionRunId": "RUN-20260922-415977d1",
+  "evidenceCount": 342,
+  "extractionRunId": "RUN-20260922-2922ed36",
   "generatedAt": "2026-09-22T19:10:00+08:00"
 }

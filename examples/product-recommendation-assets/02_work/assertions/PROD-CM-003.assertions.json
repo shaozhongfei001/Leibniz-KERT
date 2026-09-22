@@ -1,5 +1,5 @@
 {
-  "assertionCount": 11,
+  "assertionCount": 12,
   "assertions": [
     {
       "applicabilityScope": {
@@ -9,7 +9,7 @@
       "assertionId": "ASM-PRODCM003-c030df5a",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -29,7 +29,7 @@
       "assertionId": "ASM-PRODCM003-bae418c4",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -51,7 +51,7 @@
       "assertionId": "ASM-PRODCM003-872dfa49",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "eligibility.minAccountBalance",
       "knowledgeState": "UNKNOWN",
@@ -71,7 +71,7 @@
       "assertionId": "ASM-PRODCM003-5d7bc66b",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -90,17 +90,41 @@
         "effectiveFrom": "2026-09-06",
         "effectiveTo": null
       },
-      "assertionId": "ASM-PRODCM003-52ecf048",
+      "assertionId": "ASM-PRODCM003-20b08f75",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
-      "evidenceIds": [],
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-0b940e85"
+      ],
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "UNKNOWN",
+      "knowledgeState": "CANDIDATE",
       "normalizedValue": null,
       "productId": "PROD-CM-003",
       "productVersionScope": "version=2026.09.06.1",
-      "rawValue": null,
+      "rawValue": "依据《中华人民共和国商业银行法》和《中华人民共和国外资银行管理条例》设立的商业银行，适用本办法有关规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODCM003-a0943bf5",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-fd8cf7ce"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-CM-003",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "除国家法律、法规、委托代理合同有相关规定和要求的情况以外，商业银行应当拒绝任何单位和个人利用银行渠道直接向客户收取任何费用。",
       "reviewDecisionId": null,
       "supersedes": null,
       "valueType": "TEXT"
@@ -113,7 +137,7 @@
       "assertionId": "ASM-PRODCM003-948d0ba2",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -133,7 +157,7 @@
       "assertionId": "ASM-PRODCM003-1a0d82be",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCCM002-68db5549"
       ],
@@ -155,7 +179,7 @@
       "assertionId": "ASM-PRODCM003-85dfbd57",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM003-f351ef59"
       ],
@@ -177,7 +201,7 @@
       "assertionId": "ASM-PRODCM003-54b8312f",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -197,7 +221,7 @@
       "assertionId": "ASM-PRODCM003-b9553a13",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "eligibility.minAccountBalance",
       "knowledgeState": "NOT_APPLICABLE",
@@ -217,7 +241,7 @@
       "assertionId": "ASM-PRODCM003-7362a5b6",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "NOT_APPLICABLE",
@@ -226,11 +250,11 @@
       "productVersionScope": "version=2026.09.06.1",
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-cae93552",
-      "supersedes": "ASM-PRODCM003-52ecf048",
+      "supersedes": "ASM-PRODCM003-a0943bf5",
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-415977d1",
+  "extractionRunId": "RUN-20260922-2922ed36",
   "policyId": "FLD-CASH_MANAGEMENT-001",
   "policyOwnerApproved": false,
   "productId": "PROD-CM-003",

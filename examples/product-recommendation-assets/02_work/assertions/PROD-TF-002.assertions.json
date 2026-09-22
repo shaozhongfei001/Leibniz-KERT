@@ -1,5 +1,5 @@
 {
-  "assertionCount": 7,
+  "assertionCount": 14,
   "assertions": [
     {
       "applicabilityScope": {
@@ -9,7 +9,7 @@
       "assertionId": "ASM-PRODTF002-d2d7752a",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -29,7 +29,7 @@
       "assertionId": "ASM-PRODTF002-9230d7b9",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -51,7 +51,7 @@
       "assertionId": "ASM-PRODTF002-58a0d850",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -70,17 +70,173 @@
         "effectiveFrom": "2026-09-06",
         "effectiveTo": null
       },
-      "assertionId": "ASM-PRODTF002-28115dcb",
+      "assertionId": "ASM-PRODTF002-7ecb6bb9",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
-      "evidenceIds": [],
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF002-41f5f699"
+      ],
       "fieldPath": "compliance.regulatoryBasis",
-      "knowledgeState": "UNKNOWN",
+      "knowledgeState": "CANDIDATE",
       "normalizedValue": null,
       "productId": "PROD-TF-002",
       "productVersionScope": "version=2026.09.06.1",
-      "rawValue": null,
+      "rawValue": "信用证业务的各方当事人应当遵守中华人民共和国的法律、法规以及本办法的规定，遵守诚实信用原则，认真履行义务，不得利用信用证进行欺诈等违法犯罪活动，不得损害社会公共利益。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF002-b0feb278",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF002-7fa275ee"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "开证行或保兑行对第二受益人提交的单据不得以索款金额与单价的减少，投保比例的增加，以及受益人名称与原信用证规定的受益人名称不同而作为不符交单予以拒付。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF002-fbd489ab",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF002-11ea4525"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "开证行或保兑行审核单据发现不符并决定拒付的，应在收到单据的次日起5个营业日内一次性将全部不符点以电子方式或其他快捷方式通知交单行或受益人。如开证行或保兑行未能按规定通知不符点，则无权宣称交单不符。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF002-9c6ec747",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF002-145e8fd8"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "银行收到单据时，应仅以单据本身为依据，认真审核信用证规定的所有单据，以确定是否为相符交单。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF002-e502fd81",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF002-9157b372"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "信用证要求提交运输单据、保险单据和发票以外的单据时，应对单据的出单人及其内容作出明确规定。未作规定的，只要所提交的单据内容表面形式满足单据功能且与信用证及其他规定单据不矛盾，银行可予接受。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF002-d77376b1",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGTF002-5c197a50"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "本办法规定的各项期限的计算，适用民法通则关于计算期间的规定。期限最后一日是法定节假日的，顺延至下一个营业日，但信用证规定的装运日或服务提供日不得顺延。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF002-dd84d388",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-0b940e85"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "依据《中华人民共和国商业银行法》和《中华人民共和国外资银行管理条例》设立的商业银行，适用本办法有关规定。",
+      "reviewDecisionId": null,
+      "supersedes": null,
+      "valueType": "TEXT"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-06",
+        "effectiveTo": null
+      },
+      "assertionId": "ASM-PRODTF002-e47daca1",
+      "conflictId": null,
+      "createdAt": "2026-09-22T19:10:00+08:00",
+      "createdByRunId": "RUN-20260922-2922ed36",
+      "evidenceIds": [
+        "EVS-REGXFAM001-fd8cf7ce"
+      ],
+      "fieldPath": "compliance.regulatoryBasis",
+      "knowledgeState": "CANDIDATE",
+      "normalizedValue": null,
+      "productId": "PROD-TF-002",
+      "productVersionScope": "version=2026.09.06.1",
+      "rawValue": "除国家法律、法规、委托代理合同有相关规定和要求的情况以外，商业银行应当拒绝任何单位和个人利用银行渠道直接向客户收取任何费用。",
       "reviewDecisionId": null,
       "supersedes": null,
       "valueType": "TEXT"
@@ -93,7 +249,7 @@
       "assertionId": "ASM-PRODTF002-4457fae7",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -113,7 +269,7 @@
       "assertionId": "ASM-PRODTF002-9ec6d0bd",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -133,7 +289,7 @@
       "assertionId": "ASM-PRODTF002-7b2e7267",
       "conflictId": null,
       "createdAt": "2026-09-22T19:10:00+08:00",
-      "createdByRunId": "RUN-20260922-415977d1",
+      "createdByRunId": "RUN-20260922-2922ed36",
       "evidenceIds": [],
       "fieldPath": "compliance.regulatoryBasis",
       "knowledgeState": "NOT_APPLICABLE",
@@ -142,11 +298,11 @@
       "productVersionScope": "version=2026.09.06.1",
       "rawValue": null,
       "reviewDecisionId": "DEC-20260922-e987d7fd",
-      "supersedes": "ASM-PRODTF002-28115dcb",
+      "supersedes": "ASM-PRODTF002-fbd489ab",
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-415977d1",
+  "extractionRunId": "RUN-20260922-2922ed36",
   "policyId": "FLD-TRADE_FINANCE-001",
   "policyOwnerApproved": false,
   "productId": "PROD-TF-002",

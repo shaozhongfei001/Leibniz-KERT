@@ -41,7 +41,7 @@ ASM_DIR = BASE / "02_work" / "assertions"
 POLICY = GITS / "specs" / "product-knowledge" / "field-policy.schema.json"
 
 CST = timezone(timedelta(hours=8))
-CLAUSE_RE = re.compile(r"^\*\*(第[一二三四五六七八九十百]+条)\*\*\s*(.*)$")
+CLAUSE_RE = re.compile(r"^\*\*(第[一二三四五六七八九十百零〇]+条)\*\*\s*(.*)$")
 
 # 权威级排序：数值越小权威越高。证据权威级必须 <= 字段要求的权威级
 AUTHORITY_RANK = {

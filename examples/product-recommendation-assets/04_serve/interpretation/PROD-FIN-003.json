@@ -1,5 +1,5 @@
 {
-  "bundleHash": "7f2403581eb2a684a7d3ea9cd2c24063dcf145d3bff0829b34f7257040ea4af4",
+  "bundleHash": "b22fe6702081a372ed092a1509c50fab48631a2cc5ae10b230ca294999190220",
   "generatedAt": "2026-09-22T19:10:00+08:00",
   "isStale": false,
   "lifecycleState": "PUBLISHED",
@@ -9,8 +9,16 @@
     "INTERPRETATION": true,
     "RECOMMENDATION": false
   },
-  "releaseId": "RLS-2026.09.22.80",
+  "releaseId": "RLS-2026.09.22.67",
   "sourceVersions": [
+    "SV-REGCB002-20260922-e2e87a3c",
+    "SV-REGCM002-20260922-70856944",
+    "SV-REGFIN001-20260922-dfa2dbff",
+    "SV-REGIB001-20260922-c9f87041",
+    "SV-REGTF001-20260922-5aeaa4ae",
+    "SV-REGTF002-20260922-617e9640",
+    "SV-REGTF003-20260922-fd3ba439",
+    "SV-REGXFAM001-20260922-300f1d6d",
     "SV-SRCCB001-20260922-75a3b602",
     "SV-SRCCB002-20260922-fdb439c3",
     "SV-SRCCM001-20260922-5879e814",
