@@ -101,7 +101,29 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | SRC-XFAM-001 | 《对公客户准入与评级管理办法》（行内制度） | INTERNAL_POLICY | 公司金融产品管理部 | PENDING_SOURCE | 客户类型/规模/评级准入条款 | 全部 13 张 |
 | SRC-XFAM-002 | 《产品定价管理办法》（行内制度） | INTERNAL_POLICY | 公司金融产品管理部 | PENDING_SOURCE | 利率/费率定价区间与审批权限 | 全部 13 张 |
 | SRC-XFAM-003 | 《对公业务销售适当性管理办法》（行内制度） | INTERNAL_POLICY | 合规管理部 | PENDING_SOURCE | 销售边界、适当性评估、禁止行为条款 | 全部 13 张 |
-| REG-XFAM-001 | 《商业银行服务价格管理办法》（原银监会/发改委 2014 年第 1 号令） | REGULATORY | 合规管理部 | PENDING_SOURCE | 价格公示义务、政府指导价与市场调节价划分 | 全部 13 张（价格边界章节） |
+| REG-XFAM-001 | 《商业银行服务价格管理办法》（原银监会/发改委 2014 年第 1 号令） | REGULATORY | 合规管理部 | **AVAILABLE** | 7 章 38 条已入库，条款号待 Owner 核定 | 全部 13 张（价格边界章节） |
+
+**REG-XFAM-001 入库记录（跨族通用价格法规）**
+
+| 项 | 值 |
+|---|---|
+| 文件字节数 | 14341 |
+| bytes_sha256 | 300f1d6d68b475c37042e6782d7f882b8105dfca0121a4150879e19b9787d24b |
+| 令号 | 2014年第1号（中国银监会、国家发展改革委） |
+| 发布 / 施行 | 2014-02-14 / 2014-08-01 |
+| 章节条款 | 7 章 38 条 |
+| 定位方式 | CLAUSE |
+| usage | AUTHORITATIVE |
+| authorityLevel | REGULATORY |
+| clauseVerified | false（条款号待 Owner 核定） |
+| 来源 URL | https://www.gov.cn/gongbao/content/2014/content_2671530.htm |
+| 来源承载 | 中国政府网《国务院公报》2014年第13号 |
+| 抓取时间 | 2026-09-22（PC8 真实法规入库） |
+| 抓取凭据 | `01_raw/_authoritative/snapshots/REG-XFAM-001.provenance.md` |
+| 凭据强度局限 | **转写文本**，非原始 HTML 字节快照 ⇒ `bytes_sha256` 只保证入库文件自身完整性，**不主张**与站点字节一致（详见凭据文件 §2） |
+| 版本时点 | 以 2014年第1号令为准；若被修订/替代/废止，须**显式登记版本差异并更换源文件**，禁止静默替换 |
+| 未做 | 本行合规对「现行有效性 / 适用性」的确认；确认前用途限于工程链路与口径联调 |
+| 废止 | 《商业银行服务价格管理暂行办法》（2003年第3号）已废止 |
 
 ### 5.2 CASH_MANAGEMENT 现金管理（pilot 族，3 卡）
 
@@ -272,10 +294,10 @@ CLAUSE_VERIFIED 条款号已由 Owner 核定，可作确定性依据
 | CROSS_BORDER | — SRC-CB-001 | — SRC-CB-002 | — 复用 SRC-XFAM-003 | — REG-CB-001/002 | 4 |
 | FINANCING | — SRC-FIN-001 | — SRC-FIN-003 | — SRC-FIN-005 | — REG-FIN-001/002 | 5 |
 | INVESTMENT_BANKING | — SRC-IB-001 | — 复用 SRC-XFAM-003 | — 复用 SRC-XFAM-003 | — REG-IB-001 | 2 |
-| 跨族通用 | — SRC-XFAM-001/002 | — | — SRC-XFAM-003 | — REG-XFAM-001 | 4 |
+| 跨族通用 | — SRC-XFAM-001/002 | — | — SRC-XFAM-003 | ○ REG-XFAM-001 | 3 |
 
-**汇总**：权威区登记源 **28** 条 = **27 `PENDING_SOURCE` + 1 `AVAILABLE`**（REG-CM-001，
-已抽出 25 条款，`clauseVerified=false` 故记 `○` 而非 `●`），缺口 **27/28**，
+**汇总**：权威区登记源 **28** 条 = **26 `PENDING_SOURCE` + 2 `AVAILABLE`**（REG-CM-001、REG-XFAM-001，
+前者抽出 25 条款、后者已入库全文 7 章 38 条，二者 `clauseVerified=false` 故记 `○` 而非 `●`），缺口 **26/28**，
 `CLAUSE_VERIFIED` **0** 条。
 公开参考区登记源 **2 条**，均已 `AVAILABLE`（PUB-PRICE-001 / PUB-PRICE-002）。
 
