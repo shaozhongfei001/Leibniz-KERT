@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GITS + KERT 全景集成拓扑</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #eb6c36;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1320px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 900px; display: block; }
+    footer {
+      margin-top: 1.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(45,49,66,0.12);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      color: var(--color-muted);
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · GITS + KERT 架构盘点 1/4</p>
+    <h1>GITS + KERT 全景集成拓扑</h1>
+
+    <svg viewBox="0 0 1280 780" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="gits-kert-panorama-title gits-kert-panorama-desc">
+      <title id="gits-kert-panorama-title">GITS + KERT 全景集成拓扑</title>
+      <desc id="gits-kert-panorama-desc">两仓系统全景：左侧 GITS（Vue3 前端、apps/api、apps/worker、MySQL 与 Jena 存储），右侧 KERT（FastAPI 入口、Worker、文件工作区与 Kùzu 图），底部外部系统带；两仓唯一集成通道为 apps/api 到 KERT FastAPI 8106 端口的 HTTP 调用。</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- ===================== ZONES ===================== -->
+      <rect x="40" y="48" width="560" height="420" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <rect x="52" y="52" width="132" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="118" y="61" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">GITS 仓 · JAVA / SPRING</text>
+
+      <rect x="640" y="48" width="400" height="420" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <rect x="652" y="52" width="148" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="726" y="61" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">KERT 仓 · PYTHON / FASTAPI</text>
+
+      <rect x="40" y="516" width="1200" height="172" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <rect x="52" y="520" width="132" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="118" y="529" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">外部系统 / 隔离资产</text>
+
+      <!-- ===================== ARROWS ===================== -->
+      <!-- A1 SPA -> api -->
+      <line x1="200" y1="148" x2="200" y2="208" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- A2 api -> worker -->
+      <line x1="280" y1="240" x2="360" y2="240" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+      <!-- A3 api -> MySQL -->
+      <line x1="160" y1="272" x2="160" y2="340" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- A4 api -> Jena -->
+      <path d="M 240,272 V 296 Q 240,304 248,304 H 336 Q 344,304 344,312 V 340" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- A5 api -> kert-api (集成主通道, accent) -->
+      <path d="M 280,224 H 624 Q 632,224 632,216 V 200 Q 632,192 640,192 H 680" fill="none" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+      <!-- A6 kert-api -> api 异步回执 (dashed) -->
+      <path d="M 680,208 H 664 Q 656,208 656,216 V 240 Q 656,248 648,248 H 280" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+      <!-- A7 api -> CRM -->
+      <path d="M 120,224 H 60 Q 52,224 52,232 V 600 Q 52,608 60,608 H 560" fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <!-- A8 外部事件 -> worker (dashed, hop over A9 at y=536) -->
+      <path d="M 340,580 V 544 a 8,8 0 0,1 0,-16 V 468 Q 340,460 348,460 H 472 Q 480,460 480,452 V 268" fill="none" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+      <!-- A9 api -> LLM -->
+      <path d="M 260,272 V 528 Q 260,536 268,536 H 907 Q 915,536 915,544 V 580" fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <!-- A10 kert-api -> LLM -->
+      <path d="M 840,192 H 992 Q 1000,192 1000,200 V 556 Q 1000,564 992,564 H 959 Q 951,564 951,572 V 580" fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <!-- A11 kert-api -> LightRAG (dashed link) -->
+      <path d="M 840,216 H 1040 Q 1048,216 1048,224 V 600 Q 1048,608 1056,608 H 1080" fill="none" stroke="#2e5aa8" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow-link)"/>
+      <!-- A12 api -> Oracle (quarantine dashed) -->
+      <path d="M 120,248 H 76 Q 68,248 68,256 V 600 Q 68,608 76,608 H 80" fill="none" stroke="rgba(45,49,66,0.30)" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+      <!-- A13 kert-api -> workspace -->
+      <line x1="740" y1="224" x2="740" y2="380" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- A14 worker -> workspace (hop over A15 horizontal at y=344) -->
+      <path d="M 930,220 V 308 Q 930,316 922,316 H 848 Q 840,316 840,324 V 336 a 8,8 0 0,0 0,16 V 380" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- A15 kert-api -> Kùzu -->
+      <path d="M 800,224 V 336 Q 800,344 808,344 H 942 Q 950,344 950,352 V 384" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- ===================== ARROW LABELS ===================== -->
+      <!-- A1 -->
+      <rect x="212" y="164" width="76" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="250" y="173" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">REST /API/V1</text>
+      <!-- A2 -->
+      <rect x="296" y="220" width="48" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="320" y="229" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">领域事件</text>
+      <!-- A3 -->
+      <rect x="172" y="296" width="80" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="212" y="305" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">MYBATIS/JDBC</text>
+      <!-- A4 -->
+      <rect x="356" y="308" width="60" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="386" y="317" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">OWL/SHACL</text>
+      <!-- A5 -->
+      <rect x="532" y="196" width="92" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="578" y="205" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HTTP · API KEY</text>
+      <!-- A6 -->
+      <rect x="576" y="256" width="92" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="622" y="265" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">202 → /V1/JOBS</text>
+      <!-- A7 -->
+      <rect x="64" y="400" width="108" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="118" y="409" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">写回经 HUMAN GATE</text>
+      <!-- A8 -->
+      <rect x="492" y="380" width="52" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="518" y="389" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">事件摄取</text>
+      <!-- A9 -->
+      <rect x="272" y="400" width="116" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="330" y="409" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">LLMCLIENT · 降级模板</text>
+      <!-- A10 -->
+      <rect x="1012" y="400" width="52" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="1038" y="409" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">出站脱敏</text>
+      <!-- A11 -->
+      <rect x="1060" y="400" width="108" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="1114" y="409" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">派生检索 · 零写入</text>
+      <!-- A12 -->
+      <rect x="80" y="420" width="120" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="140" y="429" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">QUARANTINE 默认禁用</text>
+      <!-- A13 -->
+      <rect x="752" y="296" width="84" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="794" y="305" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">读 04_SERVE</text>
+      <!-- A14 -->
+      <rect x="942" y="260" width="60" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="972" y="269" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">摄取/发布</text>
+      <!-- A15 -->
+      <rect x="962" y="360" width="92" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="1008" y="369" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">/V1/GRAPH/QUERY</text>
+
+      <!-- ===================== NODES ===================== -->
+      <!-- Vue3 SPA (input) -->
+      <rect x="120" y="96" width="160" height="52" rx="6" fill="#f5f5f5"/>
+      <rect x="120" y="96" width="160" height="52" rx="6" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+      <rect x="128" y="102" width="28" height="12" rx="2" fill="transparent" stroke="rgba(122,131,153,0.40)" stroke-width="0.8"/>
+      <text x="142" y="111" fill="rgba(122,131,153,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SPA</text>
+      <text x="200" y="126" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Vue3 前端</text>
+      <text x="200" y="140" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">NAIVE UI · 46 视图</text>
+
+      <!-- apps/api (focal) -->
+      <rect x="120" y="208" width="160" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="120" y="208" width="160" height="64" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.2"/>
+      <rect x="128" y="214" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.40)" stroke-width="0.8"/>
+      <text x="142" y="223" fill="rgba(235,108,54,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+      <text x="200" y="240" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">apps/api 主服务</text>
+      <text x="200" y="254" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">SPRING BOOT :8080</text>
+
+      <!-- apps/worker -->
+      <rect x="360" y="212" width="160" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="360" y="212" width="160" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="368" y="218" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="388" y="227" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">WORKER</text>
+      <text x="440" y="240" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">apps/worker</text>
+      <text x="440" y="254" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">:8090 · 事件异步分发</text>
+
+      <!-- MySQL (store) -->
+      <rect x="100" y="340" width="140" height="52" rx="6" fill="#f5f5f5"/>
+      <rect x="100" y="340" width="140" height="52" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="108" y="346" width="24" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.40)" stroke-width="0.8"/>
+      <text x="120" y="355" fill="rgba(79,93,117,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">DB</text>
+      <text x="170" y="370" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">MySQL / H2</text>
+      <text x="170" y="384" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">8.4 · FLYWAY</text>
+
+      <!-- Jena (store) -->
+      <rect x="280" y="340" width="140" height="52" rx="6" fill="#f5f5f5"/>
+      <rect x="280" y="340" width="140" height="52" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="288" y="346" width="24" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.40)" stroke-width="0.8"/>
+      <text x="300" y="355" fill="rgba(79,93,117,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">RDF</text>
+      <text x="350" y="370" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Jena 语义库</text>
+      <text x="350" y="384" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">OWL/TURTLE 本体</text>
+
+      <!-- kert-api (focal) -->
+      <rect x="680" y="160" width="160" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="680" y="160" width="160" height="64" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.2"/>
+      <rect x="688" y="166" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.40)" stroke-width="0.8"/>
+      <text x="702" y="175" fill="rgba(235,108,54,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+      <text x="760" y="192" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">kert-api 公共入口</text>
+      <text x="760" y="206" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">FASTAPI :8106</text>
+
+      <!-- kert-worker -->
+      <rect x="860" y="164" width="140" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="860" y="164" width="140" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="868" y="170" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="888" y="179" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">WORKER</text>
+      <text x="930" y="192" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">kert-worker</text>
+      <text x="930" y="206" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">无 HTTP · 异步作业</text>
+
+      <!-- 文件工作区 (store) -->
+      <rect x="660" y="380" width="200" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="660" y="380" width="200" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="668" y="386" width="20" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.40)" stroke-width="0.8"/>
+      <text x="678" y="395" fill="rgba(79,93,117,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">FS</text>
+      <text x="760" y="410" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">文件工作区（权威源）</text>
+      <text x="760" y="424" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">01_RAW→04_SERVE · 90_CONTROL</text>
+
+      <!-- Kùzu (store) -->
+      <rect x="900" y="384" width="100" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="900" y="384" width="100" height="56" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="908" y="390" width="36" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.40)" stroke-width="0.8"/>
+      <text x="926" y="399" fill="rgba(79,93,117,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">GRAPH</text>
+      <text x="950" y="414" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Kùzu 图库</text>
+      <text x="950" y="428" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">可重建投影</text>
+
+      <!-- Oracle (optional/quarantine) -->
+      <rect x="80" y="580" width="150" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="80" y="580" width="150" height="56" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+      <rect x="88" y="586" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.25)" stroke-width="0.8"/>
+      <text x="102" y="595" fill="rgba(45,49,66,0.5)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+      <text x="155" y="608" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Oracle 源库</text>
+      <text x="155" y="622" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">隔离 · 需 ADR 启用</text>
+
+      <!-- 外部事件源 -->
+      <rect x="300" y="580" width="150" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="300" y="580" width="150" height="56" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <rect x="308" y="586" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.25)" stroke-width="0.8"/>
+      <text x="322" y="595" fill="rgba(45,49,66,0.5)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+      <text x="375" y="608" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">外部事件源</text>
+      <text x="375" y="622" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">工商/司法/招投标</text>
+
+      <!-- CRM -->
+      <rect x="560" y="580" width="150" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="560" y="580" width="150" height="56" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <rect x="568" y="586" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.25)" stroke-width="0.8"/>
+      <text x="582" y="595" fill="rgba(45,49,66,0.5)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+      <text x="635" y="608" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">CRM 系统</text>
+      <text x="635" y="622" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">写回目标 · REST</text>
+
+      <!-- LLM -->
+      <rect x="840" y="580" width="150" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="840" y="580" width="150" height="56" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <rect x="848" y="586" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.25)" stroke-width="0.8"/>
+      <text x="862" y="595" fill="rgba(45,49,66,0.5)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+      <text x="915" y="608" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">LLM 服务</text>
+      <text x="915" y="622" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">DEEPSEEK 等</text>
+
+      <!-- LightRAG -->
+      <rect x="1080" y="580" width="150" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="1080" y="580" width="150" height="56" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <rect x="1088" y="586" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.25)" stroke-width="0.8"/>
+      <text x="1102" y="595" fill="rgba(45,49,66,0.5)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+      <text x="1155" y="608" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">LightRAG</text>
+      <text x="1155" y="622" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">派生检索层</text>
+
+      <!-- ===================== LEGEND ===================== -->
+      <line x1="40" y1="716" x2="1240" y2="716" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <text x="40" y="740" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEGEND</text>
+
+      <rect x="140" y="728" width="16" height="12" rx="2" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+      <text x="164" y="737" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">集成焦点</text>
+
+      <rect x="260" y="728" width="16" height="12" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="284" y="737" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">应用 / 服务</text>
+
+      <rect x="400" y="728" width="16" height="12" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="424" y="737" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">权威存储</text>
+
+      <rect x="540" y="728" width="16" height="12" rx="2" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <text x="564" y="737" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">外部系统</text>
+
+      <rect x="680" y="728" width="16" height="12" rx="2" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="704" y="737" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">隔离 / 未启用</text>
+
+      <line x1="840" y1="734" x2="868" y2="734" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+      <text x="876" y="737" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">两仓集成通道</text>
+
+      <line x1="1010" y1="734" x2="1038" y2="734" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <text x="1046" y="737" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">HTTP 外部调用</text>
+
+      <line x1="1180" y1="734" x2="1208" y2="734" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+      <text x="1216" y="737" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">异步</text>
+    </svg>
+
+    <footer>
+      回源锚点 — GITS：Dockerfile:41（api :8080）· compose.local.yaml（worker :8090 / mysql :3306）· KERT 对接适配器 DshHttp*（Leibniz-KERT docs/integration/GITS_KERT_A_PLUS_B_HANDOFF.md:10-16）· 领域事件通道（specs/events/domain-events.asyncapi.json:6-14）｜
+      KERT：src/kert/api/server.py:421（create_app）· deploy/systemd/kert-api.service:40-43（:8106）· src/kert/infrastructure/graph/kuzu_builder.py:1-8 · src/kert/infrastructure/lightrag_client.py:1-25 · 闸门/记忆权威在 GITS（server.py:954-959）｜
+      索引状态：INDEX_STALE（merge @2026-09-23），全部事实已回源 · 基线 diagrams/ARCHITECTURE.md V1.1 + V1.1 后增量盘点
+    </footer>
+  </div>
+</body>
+</html>

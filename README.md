@@ -228,6 +228,24 @@ KERT 工程内实现"客户经理持续经营 Skill 运行平台"（依据 `docs
 - `kert-sequence-execute.png`：时序图（GITS 调 execute 完整链路：customerId→取数→evidence→LLM→sections 回传）
 - `kert-deployment-topology.png`：部署拓扑（8106 / DSH :3080 / GITS :8080 / H2 内存库）
 
+## GITS + KERT 架构图（2026-10-12）
+
+基于两仓回源盘点（GITS V1.1 基线 + V1.1 后增量；KERT `server.py`/`application/`/`infrastructure/` 文件:行锚点见各图 HTML 页脚）绘制的架构图，PNG 由自包含 HTML/SVG 2× 栅格化，HTML 源同目录可交互查看：
+
+| 图 | PNG | HTML 源 |
+|------|-----|---------|
+| GITS + KERT 全景集成拓扑 | [gits-kert-panorama.png](docs/assets/gits-kert-architecture/gits-kert-panorama.png) | [html](docs/assets/gits-kert-architecture/gits-kert-panorama.html) |
+| KERT 内部分层（唯一公共入口） | [kert-internal-layers.png](docs/assets/gits-kert-architecture/kert-internal-layers.png) | [html](docs/assets/gits-kert-architecture/kert-internal-layers.html) |
+| GITS ↔ KERT 集成调用面（安全铺装路） | [gits-kert-integration-road.png](docs/assets/gits-kert-architecture/gits-kert-integration-road.png) | [html](docs/assets/gits-kert-architecture/gits-kert-integration-road.html) |
+
+![GITS + KERT 全景集成拓扑](docs/assets/gits-kert-architecture/gits-kert-panorama.png)
+
+![KERT 内部分层](docs/assets/gits-kert-architecture/kert-internal-layers.png)
+
+![GITS ↔ KERT 集成调用面](docs/assets/gits-kert-architecture/gits-kert-integration-road.png)
+
+要点：两仓唯一集成通道为 GITS `apps/api`（`DshHttp*` 适配器组）→ KERT `kert-api :8106`（API Key 作用域认证，202 异步 + `/v1/jobs` 轮询）；KERT 存储以文件工作区（`01_raw→04_serve`+`90_control`）为唯一权威源，Parquet/Kùzu/SQLite/DuckDB 均为派生；Java Skill Runtime PoC 未接线，「GITS 直连 / 嵌入 Java Runtime」为规则禁止路径（AGENTS.md §3）。
+
 ## v1.4 SP-20 服务建议书（Phase 1，2026-08-23）
 
 - **技能**：`SP-20 对公客户服务建议书生成`（HYBRID：确定性装配 + 逐章并行 LLM + 规则校验 + 确定性双版本过滤）

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KERT 内部分层架构</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #eb6c36;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1320px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 900px; display: block; }
+    footer {
+      margin-top: 1.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(45,49,66,0.12);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      color: var(--color-muted);
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · GITS + KERT 架构盘点 3/4</p>
+    <h1>KERT 内部分层（Python Core 唯一公共入口）</h1>
+
+    <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="kert-internal-title kert-internal-desc">
+      <title id="kert-internal-title">KERT 内部分层架构</title>
+      <desc id="kert-internal-desc">KERT 仓五层结构：GITS 经 6 层中间件进入 FastAPI 唯一公共入口 8106 端口；应用服务层分读、执行、供给、门禁作业与分析；技能与知识资产层含仓内技能包、7 个外部技能包和 90_control 知识地图控制面；存储层以文件工作区为权威源并派生 Parquet、Kùzu、SQLite 与 DuckDB；外部层为 LLM、LightRAG 与未接线的 Java Skill Runtime PoC。</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- ===================== ROW EYEBROWS ===================== -->
+      <text x="40" y="64" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.14em">01 · ENTRY — 唯一公共入口</text>
+      <text x="40" y="200" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.14em">02 · APPLICATION</text>
+      <text x="40" y="324" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.14em">03 · SKILL &amp; KNOWLEDGE ASSETS</text>
+      <text x="40" y="448" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.14em">04 · STORAGE — 文件工作区为权威源</text>
+      <text x="40" y="572" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.14em">05 · EXTERNAL / 未接线</text>
+
+      <!-- ===================== ARROWS ===================== -->
+      <!-- ingress chain -->
+      <line x1="260" y1="112" x2="300" y2="112" stroke="#2e5aa8" stroke-width="1.4" marker-end="url(#arrow-link)"/>
+      <line x1="520" y1="112" x2="580" y2="112" stroke="#2e5aa8" stroke-width="1.4" marker-end="url(#arrow-link)"/>
+      <!-- api -> service bus -->
+      <line x1="690" y1="148" x2="690" y2="184" stroke="#4f5d75" stroke-width="1.2"/>
+      <line x1="1100" y1="140" x2="1100" y2="184" stroke="#4f5d75" stroke-width="1.2"/>
+      <line x1="148" y1="184" x2="1108" y2="184" stroke="#4f5d75" stroke-width="1.2"/>
+      <line x1="148" y1="184" x2="148" y2="212" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="388" y1="184" x2="388" y2="212" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="628" y1="184" x2="628" y2="212" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="868" y1="184" x2="868" y2="212" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="1108" y1="184" x2="1108" y2="212" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- SkillExec -> asset braid -->
+      <line x1="328" y1="276" x2="328" y2="336" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 356,276 V 300 Q 356,308 364,308 H 592 Q 600,308 600,316 V 336" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 384,276 V 292 Q 384,300 392,300 H 822 Q 830,300 830,308 V 336" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- Provision -> 90_control (hop over braid b3 at y=300) -->
+      <path d="M 628,276 V 292 a 8,8 0 0,0 0,16 V 314 Q 628,322 636,322 H 842 Q 850,322 850,330 V 336" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- KnowledgeService -> Parquet -->
+      <path d="M 124,276 V 412 Q 124,420 132,420 H 380 Q 388,420 388,428 V 460" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- KnowledgeService -> Kùzu (hops) -->
+      <path d="M 172,276 V 404 a 8,8 0 0,0 0,16 V 420 Q 172,428 180,428 H 380 a 8,8 0 0,1 16,0 H 620 Q 628,428 628,436 V 460" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- KnowledgeService -> LightRAG (dashed, hop over LLM route at x=460) -->
+      <path d="M 100,276 V 540 Q 100,548 108,548 H 452 a 8,8 0 0,1 16,0 H 672 Q 680,548 680,556 V 584" fill="none" stroke="#2e5aa8" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow-link)"/>
+      <!-- SkillExec -> LLM (left margin route, hop over bus at y=184) -->
+      <path d="M 388,212 V 184 a 8,8 0 0,1 0,-16 V 168 Q 388,160 380,160 H 32 Q 24,160 24,168 V 604 Q 24,612 32,612 H 280" fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <!-- GatesJobs -> SQLite -->
+      <path d="M 960,276 V 428 Q 960,436 952,436 H 876 Q 868,436 868,444 V 460" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- Analytics -> DuckDB -->
+      <line x1="1108" y1="276" x2="1108" y2="460" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- workspace -> Parquet / Kùzu -->
+      <line x1="256" y1="492" x2="280" y2="492" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 200,524 V 544 Q 200,552 208,552 H 620 Q 628,552 628,544 V 524" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- ===================== ARROW LABELS ===================== -->
+      <rect x="262" y="124" width="36" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="280" y="133" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HTTPS</text>
+      <rect x="524" y="124" width="52" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="550" y="133" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">认证后路由</text>
+      <rect x="440" y="164" width="180" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="530" y="173" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">路由分发 · /V1/* · /API/SKILL/*</text>
+      <rect x="420" y="284" width="64" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="452" y="293" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">SKILL 分发</text>
+      <rect x="136" y="360" width="64" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="168" y="369" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">查询/实体</text>
+      <rect x="640" y="436" width="52" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="666" y="445" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">图查询</text>
+      <rect x="240" y="530" width="116" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="298" y="539" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">派生检索 · 零写入</text>
+      <rect x="40" y="142" width="120" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="100" y="151" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">出站脱敏 · 契约执行</text>
+      <rect x="880" y="416" width="64" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="912" y="425" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">状态权威</text>
+      <rect x="1120" y="360" width="64" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="1152" y="369" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">宽表只读</text>
+      <rect x="360" y="532" width="76" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="398" y="541" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">物化 · 投影</text>
+
+      <!-- ===================== NODES: ENTRY ===================== -->
+      <rect x="80" y="84" width="180" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="80" y="84" width="180" height="56" rx="6" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+      <rect x="88" y="90" width="36" height="12" rx="2" fill="transparent" stroke="rgba(122,131,153,0.40)" stroke-width="0.8"/>
+      <text x="106" y="99" fill="rgba(122,131,153,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CALLER</text>
+      <text x="170" y="112" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">GITS apps/api</text>
+      <text x="170" y="126" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">唯一调用方 · 仅传 CUSTOMERID</text>
+
+      <rect x="300" y="84" width="220" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="300" y="84" width="220" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="308" y="90" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="322" y="99" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SEC</text>
+      <text x="410" y="112" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">6 层中间件链</text>
+      <text x="410" y="126" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">观测→脱敏→大小→并发→限流→API KEY</text>
+
+      <rect x="580" y="76" width="220" height="72" rx="6" fill="#f5f5f5"/>
+      <rect x="580" y="76" width="220" height="72" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.2"/>
+      <rect x="588" y="82" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.40)" stroke-width="0.8"/>
+      <text x="602" y="91" fill="rgba(235,108,54,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+      <text x="690" y="110" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">kert-api · FastAPI</text>
+      <text x="690" y="124" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">:8106 · 唯一公共入口</text>
+      <text x="690" y="136" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">30+ 端点 · 统一响应信封</text>
+
+      <rect x="1000" y="84" width="200" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="1000" y="84" width="200" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="1008" y="90" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="1028" y="99" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">WORKER</text>
+      <text x="1100" y="112" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">kert-worker</text>
+      <text x="1100" y="126" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">无 HTTP · LEASE 轮询</text>
+
+      <!-- ===================== NODES: APPLICATION (y=212 h=64) ===================== -->
+      <rect x="40" y="212" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="40" y="212" width="216" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="48" y="218" width="24" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="60" y="227" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SVC</text>
+      <text x="148" y="242" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">知识服务</text>
+      <text x="148" y="256" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">KNOWLEDGESERVICE</text>
+      <text x="148" y="268" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">只读投影 · 查询/检索/规则</text>
+
+      <rect x="280" y="212" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="280" y="212" width="216" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="288" y="218" width="24" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="300" y="227" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SVC</text>
+      <text x="388" y="242" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">技能执行服务</text>
+      <text x="388" y="256" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">SKILLEXECUTIONSERVICE</text>
+      <text x="388" y="268" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">注册表 · 幂等 · 路由计划取数</text>
+
+      <rect x="520" y="212" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="520" y="212" width="216" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="528" y="218" width="24" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="540" y="227" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SVC</text>
+      <text x="628" y="242" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">控制面供给</text>
+      <text x="628" y="256" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">PROVISION</text>
+      <text x="628" y="268" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">KM/路由策略 装入 WORKSPACE</text>
+
+      <rect x="760" y="212" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="760" y="212" width="216" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="768" y="218" width="24" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="780" y="227" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SVC</text>
+      <text x="868" y="242" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">门禁 · 作业 · 报告</text>
+      <text x="868" y="256" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">GATES · JOBS · REPORT</text>
+      <text x="868" y="268" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">G0-G5 · 幂等 · HTML 报告</text>
+
+      <rect x="1000" y="212" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="1000" y="212" width="216" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="1008" y="218" width="24" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="1020" y="227" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SVC</text>
+      <text x="1108" y="242" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">经营分析</text>
+      <text x="1108" y="256" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">OPERATIONALANALYTICS</text>
+      <text x="1108" y="268" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">CCRM-BA 10 屏唯一口径</text>
+
+      <!-- ===================== NODES: ASSETS (y=336 h=64) ===================== -->
+      <rect x="200" y="336" width="240" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="200" y="336" width="240" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="208" y="342" width="24" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="220" y="351" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">PKG</text>
+      <text x="320" y="366" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">仓内技能包</text>
+      <text x="320" y="380" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">SKILLS/</text>
+      <text x="320" y="392" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">SKILL-CUSTOMER-* · SP-15/20/21</text>
+
+      <rect x="480" y="336" width="240" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="480" y="336" width="240" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="488" y="342" width="24" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="500" y="351" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">PKG</text>
+      <text x="600" y="366" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">外部技能包 ×7</text>
+      <text x="600" y="380" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">EXAMPLES/BANK-FRONT-SKILLS</text>
+      <text x="600" y="392" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">SKILL.MD FRONT MATTER 动态加载</text>
+
+      <rect x="760" y="336" width="180" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="760" y="336" width="180" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="768" y="342" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="782" y="351" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CTRL</text>
+      <text x="850" y="366" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">知识地图控制面</text>
+      <text x="850" y="380" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">90_CONTROL · KM×7</text>
+      <text x="850" y="392" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle">ROUTE POLICY DENY-DEFAULT</text>
+
+      <!-- ===================== NODES: STORAGE (y=460 h=64) ===================== -->
+      <rect x="40" y="460" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="40" y="460" width="216" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="48" y="466" width="20" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.40)" stroke-width="0.8"/>
+      <text x="58" y="475" fill="rgba(79,93,117,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">FS</text>
+      <text x="148" y="490" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">文件工作区（权威源）</text>
+      <text x="148" y="504" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">01_RAW→04_SERVE</text>
+      <text x="148" y="516" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">+ 90_CONTROL</text>
+
+      <rect x="280" y="460" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="280" y="460" width="216" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="388" y="492" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Parquet 投影</text>
+      <text x="388" y="506" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">04_SERVE 服务投影</text>
+
+      <rect x="520" y="460" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="520" y="460" width="216" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="628" y="492" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Kùzu 图库</text>
+      <text x="628" y="506" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">可重建投影 · 本体物化</text>
+
+      <rect x="760" y="460" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="760" y="460" width="216" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="868" y="492" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">SQLite Runtime Store</text>
+      <text x="868" y="506" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">幂等/JOB/审计 · 非权威</text>
+
+      <rect x="1000" y="460" width="216" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="1000" y="460" width="216" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="1108" y="492" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">DuckDB 分析</text>
+      <text x="1108" y="506" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">只读宽表 · 可选接入</text>
+
+      <!-- ===================== NODES: EXTERNAL (y=584 h=56) ===================== -->
+      <rect x="280" y="584" width="240" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="280" y="584" width="240" height="56" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <rect x="288" y="590" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.25)" stroke-width="0.8"/>
+      <text x="302" y="599" fill="rgba(45,49,66,0.5)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+      <text x="400" y="612" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">LLM 服务</text>
+      <text x="400" y="626" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">DEEPSEEK 等 · 可插拔适配器</text>
+
+      <rect x="560" y="584" width="240" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="560" y="584" width="240" height="56" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <rect x="568" y="590" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.25)" stroke-width="0.8"/>
+      <text x="582" y="599" fill="rgba(45,49,66,0.5)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+      <text x="680" y="612" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">LightRAG</text>
+      <text x="680" y="626" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">派生检索层 · ADR-017</text>
+
+      <rect x="880" y="584" width="280" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="880" y="584" width="280" height="56" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+      <rect x="888" y="590" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.25)" stroke-width="0.8"/>
+      <text x="902" y="599" fill="rgba(45,49,66,0.5)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">POC</text>
+      <text x="1020" y="612" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Java Skill Runtime（未接线）</text>
+      <text x="1020" y="626" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">SPRING AI ALIBABA POC · PARTIAL_PASS</text>
+
+      <!-- ===================== LEGEND ===================== -->
+      <line x1="40" y1="668" x2="1240" y2="668" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <text x="40" y="692" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEGEND</text>
+
+      <rect x="140" y="680" width="16" height="12" rx="2" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+      <text x="164" y="689" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">公共入口焦点</text>
+
+      <rect x="300" y="680" width="16" height="12" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="324" y="689" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">服务 / 资产</text>
+
+      <rect x="460" y="680" width="16" height="12" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="484" y="689" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">存储（FS 为权威源）</text>
+
+      <rect x="680" y="680" width="16" height="12" rx="2" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <text x="704" y="689" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">外部系统</text>
+
+      <rect x="840" y="680" width="16" height="12" rx="2" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="864" y="689" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">未接线 / 派生</text>
+
+      <line x1="1020" y1="686" x2="1048" y2="686" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <text x="1056" y="689" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">HTTP 出站</text>
+    </svg>
+
+    <footer>
+      回源锚点 — 入口：src/kert/api/server.py:421（create_app）· :8106（deploy/systemd/kert-api.service:40-43）· 中间件栈（server.py:375-399）· 技能注册表（application/skills.py:285-301）· 外部包 fail-closed 解析（server.py:159-193）· 存储：infrastructure/graph/kuzu_builder.py:1-8 · infrastructure/runtime_store.py:1-16 · infrastructure/lightrag_client.py:1-25（ADR-017）· Java PoC 未接线：poc/spring-ai-alibaba-skill-runtime/POC_RESULT.md:4,43-46（ADR-016）· GITS 仅传 customerId（skills.py:218 · customer_knowledge.py:1）· 闸门/记忆权威在 GITS（server.py:954-959）
+    </footer>
+  </div>
+</body>
+</html>

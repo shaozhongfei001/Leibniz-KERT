@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GITS ↔ KERT 集成调用面（安全铺装路）</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #eb6c36;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1240px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 900px; display: block; }
+    footer {
+      margin-top: 1.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(45,49,66,0.12);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      color: var(--color-muted);
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · Secure Paved Road · GITS + KERT 架构盘点 4/4</p>
+    <h1>GITS ↔ KERT 集成调用面：唯一铺装路与两条禁止路径</h1>
+
+    <svg viewBox="0 0 1200 780" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="gits-kert-road-title gits-kert-road-desc">
+      <title id="gits-kert-road-title">GITS 与 KERT 集成调用面安全铺装路</title>
+      <desc id="gits-kert-road-desc">三个信任域：GITS 信任域持有人工门禁与审计权威，KERT 信任域以 FastAPI 8106 为唯一公共入口并经路由策略 fail-closed 执行技能，Java Skill Runtime PoC 处于未接线隔离区；唯一批准路径是 apps/api 到 kert-api 的 HTTP 调用，GITS 直连 Java Runtime 与将 Java Runtime 嵌入 GITS 两条路径被禁止并在边界前终止。</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- ===================== TRUST ZONES ===================== -->
+      <rect x="40" y="80" width="420" height="400" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <rect x="52" y="84" width="184" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="144" y="93" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">GITS 信任域 · 闸门/记忆/审计权威</text>
+
+      <rect x="560" y="80" width="400" height="400" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <rect x="572" y="84" width="172" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="658" y="93" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">KERT 信任域 · 唯一公共入口</text>
+
+      <rect x="560" y="520" width="400" height="140" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8" stroke-dasharray="5,4"/>
+      <rect x="572" y="524" width="140" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="642" y="533" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">未接线区 · POC 隔离</text>
+
+      <!-- ===================== PATHS ===================== -->
+      <!-- P1 批准的铺装路: apps/api -> kert-api -->
+      <line x1="320" y1="188" x2="640" y2="188" stroke="#eb6c36" stroke-width="1.8" marker-end="url(#arrow-accent)"/>
+      <!-- P2 异步回执: kert-api -> apps/api -->
+      <line x1="640" y1="212" x2="320" y2="212" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+      <!-- P3 kert-api -> SkillExecutionService (批准的运行路径) -->
+      <line x1="740" y1="232" x2="740" y2="300" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- P4 SkillExec -> 90_control -->
+      <line x1="740" y1="364" x2="740" y2="404" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- P5 apps/api -> human-action (特权门禁) -->
+      <line x1="220" y1="232" x2="220" y2="300" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- P6 human-action -> AuditLog -->
+      <line x1="220" y1="364" x2="220" y2="404" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- P7 禁止路径 1: GITS 直连 Java Runtime (边界前终止) -->
+      <path d="M 320,240 H 592 Q 600,240 600,248 V 536 Q 600,544 608,544 H 640" fill="none" stroke="rgba(45,49,66,0.35)" stroke-width="1" stroke-dasharray="5,4"/>
+      <line x1="644" y1="540" x2="652" y2="548" stroke="#2d3142" stroke-width="1.6"/>
+      <line x1="652" y1="540" x2="644" y2="548" stroke="#2d3142" stroke-width="1.6"/>
+      <!-- P8 禁止路径 2: Java Runtime 嵌入 GITS (边界前终止) -->
+      <line x1="640" y1="604" x2="568" y2="604" stroke="rgba(45,49,66,0.35)" stroke-width="1" stroke-dasharray="5,4"/>
+      <line x1="556" y1="600" x2="564" y2="608" stroke="#2d3142" stroke-width="1.6"/>
+      <line x1="564" y1="600" x2="556" y2="608" stroke="#2d3142" stroke-width="1.6"/>
+
+      <!-- ===================== PATH LABELS ===================== -->
+      <rect x="360" y="164" width="200" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="460" y="173" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">允许 · POST /API/SKILL/EXECUTE · API KEY 身份</text>
+      <rect x="380" y="224" width="160" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="460" y="233" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">202 → DSHJOBPOLLER 轮询 /V1/JOBS</text>
+      <rect x="752" y="256" width="100" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="802" y="265" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">PYTHON 原生执行</text>
+      <rect x="752" y="376" width="140" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="822" y="385" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">路由计划 · DENY-DEFAULT</text>
+      <rect x="232" y="256" width="120" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="292" y="265" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">闸门推进 · 记忆权威</text>
+      <rect x="232" y="376" width="108" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="286" y="385" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">审计 ACTOR/HASH</text>
+      <rect x="612" y="384" width="176" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="700" y="393" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">禁止 · GITS 直连 JAVA RUNTIME</text>
+      <rect x="368" y="596" width="184" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="460" y="605" fill="#7a8399" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">禁止 · JAVA RUNTIME 嵌入 GITS</text>
+
+      <!-- ===================== NODES: ZONE A ===================== -->
+      <rect x="120" y="160" width="200" height="72" rx="6" fill="#f5f5f5"/>
+      <rect x="120" y="160" width="200" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="128" y="166" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="142" y="175" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+      <text x="220" y="192" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">apps/api</text>
+      <text x="220" y="206" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">DSHHTTP* 适配器组</text>
+      <text x="220" y="218" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">EXECUTE · GATE · JOBPOLLER</text>
+
+      <rect x="120" y="300" width="200" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="120" y="300" width="200" height="64" rx="6" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="1" stroke-dasharray="4,4"/>
+      <rect x="128" y="306" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.40)" stroke-width="0.8"/>
+      <text x="142" y="315" fill="rgba(235,108,54,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">GATE</text>
+      <text x="220" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">human-action 人工门禁</text>
+      <text x="220" y="346" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">特权门禁 · 副作用唯一出口</text>
+
+      <rect x="120" y="404" width="200" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="120" y="404" width="200" height="56" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="128" y="410" width="28" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.40)" stroke-width="0.8"/>
+      <text x="142" y="419" fill="rgba(79,93,117,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">AUDIT</text>
+      <text x="220" y="432" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">AuditLogPort 审计</text>
+      <text x="220" y="446" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">ACTORID · PAYLOAD-HASH</text>
+
+      <!-- ===================== NODES: ZONE B ===================== -->
+      <rect x="640" y="160" width="200" height="72" rx="6" fill="#f5f5f5"/>
+      <rect x="640" y="160" width="200" height="72" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.2"/>
+      <rect x="648" y="166" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.40)" stroke-width="0.8"/>
+      <text x="662" y="175" fill="rgba(235,108,54,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+      <text x="740" y="192" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">kert-api :8106</text>
+      <text x="740" y="206" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">唯一公共入口 · 回环绑定</text>
+      <text x="740" y="218" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">作用域 READ/EXECUTE/ADMIN</text>
+
+      <rect x="640" y="300" width="200" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="640" y="300" width="200" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="648" y="306" width="24" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="660" y="315" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SVC</text>
+      <text x="740" y="330" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">SkillExecutionService</text>
+      <text x="740" y="344" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">批准的运行路径 · 幂等</text>
+
+      <rect x="640" y="404" width="200" height="56" rx="6" fill="#f5f5f5"/>
+      <rect x="640" y="404" width="200" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="648" y="410" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="662" y="419" fill="rgba(45,49,66,0.8)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CTRL</text>
+      <text x="740" y="432" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">90_control 路由策略</text>
+      <text x="740" y="446" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">FAIL-CLOSED · DEFAULT=DENY</text>
+
+      <!-- ===================== NODES: ZONE C ===================== -->
+      <rect x="640" y="560" width="200" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="640" y="560" width="200" height="64" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+      <rect x="648" y="566" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.25)" stroke-width="0.8"/>
+      <text x="662" y="575" fill="rgba(45,49,66,0.5)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">POC</text>
+      <text x="740" y="590" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Java Skill Runtime</text>
+      <text x="740" y="604" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">隔离运行时 · PARTIAL_PASS</text>
+      <text x="740" y="616" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">仅备选 · 未接线</text>
+
+      <!-- ===================== EDITORIAL CALLOUT ===================== -->
+      <text x="60" y="560" fill="#4f5d75" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">三条强制规则：GITS 仅经 Python Core</text>
+      <text x="60" y="580" fill="#4f5d75" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">公共 HTTP 调用；不得直连 Java Runtime；</text>
+      <text x="60" y="600" fill="#4f5d75" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">不得将 Java Runtime 嵌入 GITS。</text>
+
+      <!-- ===================== LEGEND ===================== -->
+      <line x1="40" y1="704" x2="1160" y2="704" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <text x="40" y="728" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEGEND</text>
+
+      <line x1="140" y1="722" x2="172" y2="722" stroke="#eb6c36" stroke-width="1.8" marker-end="url(#arrow-accent)"/>
+      <text x="180" y="725" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">批准的铺装路（唯一通道）</text>
+
+      <line x1="380" y1="722" x2="408" y2="722" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+      <text x="416" y="725" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">异步回执</text>
+
+      <line x1="540" y1="722" x2="568" y2="722" stroke="rgba(45,49,66,0.35)" stroke-width="1" stroke-dasharray="5,4"/>
+      <line x1="571" y1="719" x2="577" y2="725" stroke="#2d3142" stroke-width="1.4"/>
+      <line x1="577" y1="719" x2="571" y2="725" stroke="#2d3142" stroke-width="1.4"/>
+      <text x="584" y="725" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">禁止路径（边界前终止）</text>
+
+      <rect x="800" y="716" width="16" height="12" rx="2" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="824" y="725" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">特权门禁</text>
+
+      <rect x="940" y="716" width="16" height="12" rx="2" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="964" y="725" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.06em">隔离运行时</text>
+    </svg>
+
+    <footer>
+      回源锚点 — 强制规则：Leibniz-KERT/AGENTS.md §3（不得修改 GITS 仓 · 不得直连 Java Runtime · 不得嵌入 GITS）· 唯一入口与端点：src/kert/api/server.py:421 / :911-935（execute）· 闸门权威在 GITS：server.py:952-959 · interaction_memory.py:7（KERT 不存记忆）· GITS 侧适配器：DshHttpSkillExecutionAdapter / DshHttpSkillGateAdapter / DshJobPoller / V14KertIntegrationController（docs/integration/GITS_KERT_A_PLUS_B_HANDOFF.md:10-16，dsh.base-url=http://127.0.0.1:8106）· 路由策略 DENY-DEFAULT：examples/bank-front-knowledge-maps/90_control/schema/route_policy.json · PoC 结论：poc/spring-ai-alibaba-skill-runtime/POC_RESULT.md:4,43-46（ADR-016）
+    </footer>
+  </div>
+</body>
+</html>
