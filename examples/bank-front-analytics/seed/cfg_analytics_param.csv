@@ -1,0 +1,6 @@
+﻿param_key,param_value,unit,remark,eff_date
+alert_threshold,0.15,ratio,监视器环比告警阈值（±）,2026-09-22
+roe_leverage,12.5,ratio,ROE = ROA × 杠杆系数（真实资本口径接入前近似）,2026-09-22
+roa_annualize_months,12,month,ROA 年化月数,2026-09-22
+inactive_months,3,month,不动户判定月数 N,2026-09-22
+profit_source,DERIVED,enum,利润口径：DERIVED=造数近似 / FTP=真实 FTP 利润列（无列则 fail-closed）,2026-09-22

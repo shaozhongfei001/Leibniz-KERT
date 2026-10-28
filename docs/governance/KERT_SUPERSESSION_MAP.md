@@ -28,4 +28,4 @@
 | `docs/architecture/KERT_SPRING_AI_ALIBABA_VS_PYTHON_NATIVE_COMPARISON_V1.0.md` | `docs/architecture/KERT_CONTROLLED_HYBRID_ARCHITECTURE_V1.0_CANDIDATE.md` | SUPERSEDED_BY_C_PRIME |
 | `docs/architecture/KERT_PRODUCTION_EVOLUTION_PLAN_V2_CANDIDATE.md` | `docs/architecture/KERT_PRODUCTION_EVOLUTION_PLAN_V2.1_CANDIDATE.md` | SUPERSEDED_BY_V2_1 |
 | `docs/integration/GITS_KERT_A_PLUS_B_HANDOFF.md` | `docs/integration/GITS_KERT_A_PLUS_B_HANDOFF_V1.1_CANDIDATE.md` | SUPERSEDED_BY_V1_1 |
-| `poc/spring-ai-alibaba-skill-runtime/README.md` | `poc/spring-ai-alibaba-skill-runtime/POC2_PLAN.md` / `POC2_RESULT.md` | SUPERSEDED_FOR_POC2_STATUS |
+| ~~`poc/spring-ai-alibaba-skill-runtime/README.md`~~ | ~~`poc/spring-ai-alibaba-skill-runtime/POC2_PLAN.md` / `POC2_RESULT.md`~~ | **DELETED_2026-10-28** —— 确认 KERT 技能执行器为 Python + FastAPI（`p24_serve_8107.py` → `kert.api.server.create_app`，执行逻辑在 `src/kert/application/skills.py` 的 `execute` / `execute_async`），Spring AI Alibaba 仅存在于该 Java PoC，`src/`、`Makefile`、`.github/workflows`、`deploy/` 零引用，故整个 PoC 目录与 `docs/architecture/KERT_SPRING_AI_ALIBABA_SKILL_RUNTIME_POC_V1.0.md` 已删除 |

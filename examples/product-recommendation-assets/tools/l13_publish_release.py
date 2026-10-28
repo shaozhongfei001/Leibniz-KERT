@@ -38,6 +38,10 @@ RPT_DIR = BASE / "02_work" / "reports"
 CARD_DIR = BASE / "02_work" / "candidate-cards"
 SV_DIR = BASE / "02_work" / "source-versions"
 REL_DIR = BASE / "04_serve" / "releases"
+# 2026-10-28：GITS「产品知识」解读页（/product-knowledge/interpretation）与 CTR-PK-INT-001
+# 端点已下线，GITS 侧 KertReleaseSnapshotAdapter 与本目录下 13 个投影 JSON 已删除。
+# 本脚本仍会重新生成 04_serve/interpretation/*.json —— 该产物当前**无消费者**，
+# 保留生成逻辑仅为不中断 Release 发布链；若确认不再需要，可连同 VIEW_FIELDS/projection 段一并移除。
 INT_DIR = BASE / "04_serve" / "interpretation"
 DEC_DIR = BASE / "90_control" / "decisions"
 

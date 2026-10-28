@@ -16,16 +16,8 @@
 
 ## 项目结构
 
-```text
-poc/spring-ai-alibaba-skill-runtime/
-├── src/main/java/com/kert/skillruntime/
-│   ├── config/
-│   ├── controller/
-│   ├── service/
-│   ├── model/
-│   └── security/
-└── src/test/java/
-```
+> 2026-10-28：`poc/spring-ai-alibaba-skill-runtime/` 已删除（Spring AI Alibaba 未被生产链路使用）。
+> KERT 运行时是 Python + FastAPI，本文件保留仅作为历史 Java 编码规范的记录。
 
 ## 测试
 
