@@ -71,7 +71,7 @@ def test_apply_then_idempotent_rerun(target):
     assert r.exit_code == 0, r.output
     created, overwritten, unchanged = _counts(r.output)
     assert created > 0 and overwritten == 0 and unchanged == 0
-    assert "RP-KERT-BANKFRONT-001@1.0.0" in r.output
+    assert "RP-KERT-BANKFRONT-001@1.1.0" in r.output
 
     r2 = _run(["provision", "-w", str(target), "-s", str(SOURCE)])
     assert r2.exit_code == 0, r2.output
@@ -121,7 +121,9 @@ def test_init_flag_initializes_fresh_volume_then_provisions(tmp_path):
     assert r.exit_code == 0, r.output
     assert "已初始化工作区" in r.output
     assert (ws / ".kert_workspace").is_file()
-    assert len(list((ws / CATALOG).glob("KM-*.json"))) == 3
+    # 推导式：与**受控源**的地图张数一致（M7 ② 起为 7；不写死总数）
+    assert len(list((ws / CATALOG).glob("KM-*.json"))) == \
+        len(list((SOURCE / CATALOG).glob("KM-*.json"))) >= 7
     created, _, _ = _counts(r.output)
 
     # 已初始化 ⇒ no-op，且照常幂等供给

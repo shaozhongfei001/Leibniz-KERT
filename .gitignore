@@ -67,3 +67,4 @@ data/
 # 依据：gits-cbanking/docs/architecture/UNDERSTAND_ANYTHING_CODE_LEVEL_ASSESSMENT.md
 .ua/
 .understand-anything/
+*.duckdb

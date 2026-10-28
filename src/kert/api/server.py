@@ -29,6 +29,7 @@ POST /v1/analytics/combo-query     （CCRM-BA：客户级多条件圈选）
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from pathlib import Path
@@ -293,6 +294,70 @@ class AnalyticsComboQueryRequest(BaseModel):
     filters: dict = Field(default_factory=dict)
     pageNumber: int = 0
     pageSize: int = 20
+
+
+_PROVENANCE_VALUES = ("VERIFIED", "DEMO")
+"""`provenanceState` 契约取值域（见 `specs/product-knowledge/product-knowledge-release.schema.json`）。"""
+
+_DEFAULT_PROVENANCE = "DEMO"
+"""证据不足时的 fail-closed 取值：**未证实一律按演示处理**（不得冒充真实制度）。"""
+
+
+def derive_provenance_state(citations, workspace) -> str:
+    """派生响应级 ``provenanceState`` —— **不取自检索返回值**（CR-5 边界第 5 条）。
+
+    唯一证据：**出处回译到的 KERT 产物**顶层 ``provenanceState``
+    （回译用 :func:`~kert.infrastructure.lightrag_client.parse_artifact_file_source`，
+    与发布侧同一把尺）。取值域与契约一致：``VERIFIED`` / ``DEMO``。
+
+    规则（保守方向，与 ``INV-RLS-09``「DEMO 不得冒充真实」同向）：
+      · 任一产物为 ``DEMO`` ⇒ ``DEMO``（真实来源不得"洗白"混入的演示内容）；
+      · 全部产物为 ``VERIFIED`` ⇒ ``VERIFIED``；
+      · **证据不足**（无 citations / 不可回译 / 产物缺失 / 值不在取值域）⇒ ``DEMO``。
+    """
+    from ..infrastructure.lightrag_client import (
+        LightRagArtifactRefused,
+        parse_artifact_file_source,
+    )
+
+    states: list[str] = []
+    for c in citations or ():
+        if not isinstance(c, dict):
+            continue
+        source = c.get("docId") or c.get("filePath")
+        if not source:
+            continue
+        try:
+            rel = parse_artifact_file_source(str(source))
+        except LightRagArtifactRefused:
+            continue
+        path = Path(workspace) / rel
+        if not path.is_file():
+            continue
+        try:
+            doc = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if not isinstance(doc, dict):
+            continue
+        value = doc.get("provenanceState")
+        if not isinstance(value, str):
+            continue
+        normalized = value.strip().upper()
+        if normalized not in _PROVENANCE_VALUES:
+            continue
+        states.append(normalized)
+    if not states:
+        return _DEFAULT_PROVENANCE
+    return "DEMO" if "DEMO" in states else "VERIFIED"
+
+
+def derive_simulation_only(citations, workspace) -> bool:
+    """``simulationOnly`` 与 ``provenanceState`` **同源**：``DEMO`` ⇒ ``True``。
+
+    两字段由同一派生源产生 ⇒ 天然自洽，不会出现"一个说模拟、另一个说真实"的组合。
+    """
+    return derive_provenance_state(citations, workspace) == _DEFAULT_PROVENANCE
 
 
 def _response(request_id: str, data: dict, meta: dict | None = None) -> dict:
@@ -711,7 +776,7 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
     # 边界（CR-5 冻结口径，越界即回问）：
     #   1. **纯新增**：不改 /v1/search、/v1/data/query、/v1/entities/*、/v1/evidence/* 的语义与响应；
     #   2. 响应带**可回译出处**（chunkId = lightRAG referenceId；docId/filePath 可回译到 KERT 产物路径）
-    #      与 `evidenceClass` / `simulationOnly`；
+    #      与 `evidenceClass` / `provenanceState` / `simulationOnly`（后两者**同源派生**自出处产物，见第 5 条）；
     #   3. **fail-closed**：实例不可达 / 鉴权失败 / 响应形状不符 ⇒ 返回**具名 `LIGHTRAG_*` 码**，
     #      **禁止**空结果冒充成功（本端点**不吞错**、**不返回空列表**）；
     #   4. 不扩 EGRESS_ROOTS（本端点只读检索，不写入）；01_raw 一律 IR 白名单外（由 egress 侧守卫）；
@@ -752,7 +817,10 @@ def create_app(workspace: Path, service_id: str = "product_knowledge",
                 "relations": r["relations"],
                 "citations": citations,
                 "evidenceClass": "DERIVED_RETRIEVAL",
-                "simulationOnly": False,
+                # 两字段**同源派生**（出处回译到的产物 `provenanceState`；**不取自检索**，见边界 5）；
+                # 证据不足即按 `DEMO`（fail-closed）。**禁止**写成字面量。
+                "provenanceState": derive_provenance_state(citations, ws),
+                "simulationOnly": derive_simulation_only(citations, ws),
             }
             return _response(req.request_id, data)
         except LightRagError as exc:

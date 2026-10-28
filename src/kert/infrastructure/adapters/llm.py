@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 from ...domain.errors import UsageError
+from ...domain.fact_label import LABEL_FACT
 
 _log = logging.getLogger(__name__)
 
@@ -403,7 +404,7 @@ class DeterministicLlmAdapter(LlmAdapter):
         )
 
         claims = [
-            {"claim": f"{customer}{focus}相关事实已装配（{cid}）", "factLabel": "F",
+            {"claim": f"{customer}{focus}相关事实已装配（{cid}）", "factLabel": LABEL_FACT,
              "source": f"ContextPackage.{fields[0]}", "date": "2026-09-08"},
         ]
         unknowns = [

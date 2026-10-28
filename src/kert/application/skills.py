@@ -55,6 +55,11 @@ from ..domain.knowledge_source import (
     SourceHealth,
     resolve_declaration,
 )
+from ..domain.skill_status import (
+    EXIT_POLICY_NO_NEW_EVIDENCE,
+    SKILL_ERROR,
+    SKILL_OK,
+)
 from ..infrastructure.adapters import llm as llm_mod
 from ..infrastructure.classification import detect_value_patterns, redact_for_llm
 
@@ -180,7 +185,8 @@ class SkillExecutionService:
                  customer_knowledge_service_id: str = "customer_knowledge",
                  runtime_store: object | None = None,
                  profile: str | None = None,
-                 llm_redaction: bool | None = None):
+                 llm_redaction: bool | None = None,
+                 analytics: object | None = None):
         """knowledge: 兼容参数（历史 product_knowledge 检索），v1.3 起取数走客户知识库。
         customer_knowledge_service_id: 客户知识服务投影（v1.3 数据所有权：按 customerId 取数）。
         skill_packages: 可选外部 Skill 包根目录（含 <skill>/SKILL.md + references/output-schema.md），
@@ -218,6 +224,20 @@ class SkillExecutionService:
         self._sp20 = None  # SP-20 执行器（懒加载）
         self._sp21 = None  # SP-21 执行器（懒加载）
         self._sp15 = None  # SP-15 执行器（懒加载，WP6-2 注册）
+        # CCRM-BA 落地：对公经营分析服务（确定性 DuckDB 查询，非 LLM）。
+        # None ⇒ 4 个数据分析 Skill 一律具名拒绝（fail-closed）。
+        self._analytics = analytics
+
+    def attach_analytics(self, analytics: object,
+                         skill_packages: Path | str | None = None) -> None:
+        """接入经营分析服务并（可选）追加分析 Skill 包目录。
+
+        与构造参数 ``analytics`` 等价，供 server 侧在 DuckDB 可用时动态接入，
+        避免未配置分析的部署（与既有测试）受到注册表扰动。
+        """
+        self._analytics = analytics
+        if skill_packages:
+            self._load_packages(Path(skill_packages))
 
     # ---------------- 外部 Skill 包加载（SKILL.md + output-schema.md）----------------
 
@@ -310,7 +330,7 @@ class SkillExecutionService:
         if info is None:
             trace.append({"phase": "resolve", "status": "failed", "message": "未知 skillId"})
             return self._finish(SkillExecuteResult(
-                request_id=request_id, status="skill_error",
+                request_id=request_id, status=SKILL_ERROR,
                 errors=[{"code": "UNKNOWN_SKILL", "message": f"未知 skillId: {skill_id}"}],
                 assembly_trace=trace, skill_id=skill_id))
 
@@ -322,14 +342,14 @@ class SkillExecutionService:
                 trace.append({"phase": "evidence", "status": "blocked",
                               "message": "未提供 evidenceTimestamp，无新证据策略拦截（exit_policy_no_new_evidence）"})
                 return self._finish(SkillExecuteResult(
-                    request_id=request_id, status="exit_policy_no_new_evidence",
+                    request_id=request_id, status=EXIT_POLICY_NO_NEW_EVIDENCE,
                     assembly_trace=trace, skill_id=skill_id))
             latest = self._evidence_ts.get(customer)
             if latest is not None and str(ts) <= str(latest):
                 trace.append({"phase": "evidence", "status": "blocked",
                               "message": "evidenceTimestamp 未更新，无新证据策略拦截（exit_policy_no_new_evidence）"})
                 return self._finish(SkillExecuteResult(
-                    request_id=request_id, status="exit_policy_no_new_evidence",
+                    request_id=request_id, status=EXIT_POLICY_NO_NEW_EVIDENCE,
                     assembly_trace=trace, skill_id=skill_id))
             self._evidence_ts[customer] = str(ts)
 
@@ -341,21 +361,21 @@ class SkillExecutionService:
             data, model_call = run(request, trace)
             trace.append({"phase": "compose", "status": "ok", "message": "结果组装完成"})
             result = SkillExecuteResult(
-                request_id=request_id, status="ok", data=data,
+                request_id=request_id, status=SKILL_OK, data=data,
                 assembly_trace=trace, model_calls=[model_call], skill_id=skill_id)
         except SkillError as exc:
             # SP-15 等契约码透传：errors[].code 使用执行器声明的 KERT_* 码（fail-closed）
             trace.append({"phase": "compose", "status": "failed",
                           "message": exc.message})
             result = SkillExecuteResult(
-                request_id=request_id, status="skill_error",
+                request_id=request_id, status=SKILL_ERROR,
                 errors=[{"code": exc.code, "message": exc.message}],
                 assembly_trace=trace, skill_id=skill_id)
         except Exception as exc:
             trace.append({"phase": "compose", "status": "failed",
                           "message": str(exc)})
             result = SkillExecuteResult(
-                request_id=request_id, status="skill_error",
+                request_id=request_id, status=SKILL_ERROR,
                 errors=[{"code": "SKILL_EXECUTION_FAILED", "message": str(exc)}],
                 assembly_trace=trace, skill_id=skill_id)
         return self._finish(result)
@@ -386,7 +406,7 @@ class SkillExecutionService:
         """把持久化的响应载荷还原为 :class:`SkillExecuteResult`。"""
         return SkillExecuteResult(
             request_id=request_id,
-            status=str(payload.get("status", "ok")),
+            status=str(payload.get("status", SKILL_OK)),
             data=payload.get("data") or {},
             errors=payload.get("errors") or [],
             assembly_trace=payload.get("assemblyTrace") or [],
@@ -822,6 +842,97 @@ class SkillExecutionService:
         return [{"heading": f"{kid} {ki[kid]['title']}", "content": ki[kid]["content"]}
                 for kid in ids if kid in ki]
 
+    # ---------------- 数据分析 Skill（CCRM-BA，确定性 DuckDB）----------------
+
+    def _require_analytics(self):
+        if self._analytics is None:
+            raise SkillError(
+                "ANALYTICS_UNAVAILABLE",
+                "经营分析服务未接入（KERT_ANALYTICS_DUCKDB 未配置或库不存在）")
+        return self._analytics
+
+    @staticmethod
+    def _analytics_payload(request: dict) -> dict:
+        """分析 Skill 的输入载荷：request.input 优先，兼容裸 request。"""
+        payload = request.get("input") if isinstance(request.get("input"), dict) \
+            else request
+        return payload if isinstance(payload, dict) else {}
+
+    def _run_operating_metrics(self, request: dict, trace: list[dict]):
+        """SK-FRONT-008 经营指标分析：4 屏（行=机构）。"""
+        analytics = self._require_analytics()
+        p = self._analytics_payload(request)
+        screen = str(p.get("screen") or "operating-customer")
+        result = analytics.metrics(
+            screen=screen,
+            dim=str(p.get("dim") or "INDUSTRY"),
+            org_id=str(p.get("orgId") or "350000"),
+            period=str(p.get("period") or analytics.periods()[-1]))
+        trace.append({"phase": "analytics", "status": "ok",
+                      "message": f"screen={screen} rows={len(result['rows'])}"})
+        data = {"skillId": "bank-front-operating-metrics",
+                "screen": screen, "screenLabel": result["screenLabel"],
+                "period": result["period"], "orgId": result["orgId"],
+                "rows": result["rows"]}
+        return data, {"model": "duckdb-deterministic", "calls": 1}
+
+    def _run_segment_analysis(self, request: dict, trace: list[dict]):
+        """SK-FRONT-009 细分客群分析：客户分布特征 / 细分客户业务（4 tab）。"""
+        analytics = self._require_analytics()
+        p = self._analytics_payload(request)
+        screen = str(p.get("screen") or "segment-distribution")
+        result = analytics.metrics(
+            screen=screen,
+            dim=str(p.get("dim") or "INDUSTRY"),
+            org_id=str(p.get("orgId") or "350000"),
+            period=str(p.get("period") or analytics.periods()[-1]),
+            biz_type=p.get("bizType"))
+        trace.append({"phase": "analytics", "status": "ok",
+                      "message": f"screen={screen} rows={len(result['rows'])}"})
+        data = {"skillId": "bank-front-customer-segment",
+                "screen": screen, "screenLabel": result["screenLabel"],
+                "bizType": result.get("bizType"),
+                "period": result["period"], "orgId": result["orgId"],
+                "rows": result["rows"]}
+        return data, {"model": "duckdb-deterministic", "calls": 1}
+
+    def _run_combo_query_skill(self, request: dict, trace: list[dict]):
+        """SK-FRONT-010 组合查询：客户级多条件圈选（营销/尽调名单）。"""
+        analytics = self._require_analytics()
+        p = self._analytics_payload(request)
+        result = analytics.combo_query(
+            filters=p.get("filters") if isinstance(p.get("filters"), dict) else {},
+            page_number=int(p.get("page", {}).get("number", 0)
+                            if isinstance(p.get("page"), dict) else 0),
+            page_size=int(p.get("page", {}).get("size", 20)
+                          if isinstance(p.get("page"), dict) else 20))
+        trace.append({"phase": "analytics", "status": "ok",
+                      "message": f"total={result['total']}"})
+        data = {"skillId": "bank-front-combo-query",
+                "rows": result["rows"], "total": result["total"],
+                "page": result["page"], "period": result["period"],
+                "orgId": result["orgId"]}
+        return data, {"model": "duckdb-deterministic", "calls": 1}
+
+    def _run_metrics_monitor(self, request: dict, trace: list[dict]):
+        """SK-FRONT-011 指标监视器：业务增减 / 存贷比 / 不良分布 + 超阈值告警。"""
+        analytics = self._require_analytics()
+        p = self._analytics_payload(request)
+        screen = str(p.get("screen") or "monitor-balance")
+        result = analytics.metrics(
+            screen=screen,
+            dim=str(p.get("dim") or "INDUSTRY"),
+            org_id=str(p.get("orgId") or "350000"),
+            period=str(p.get("period") or analytics.periods()[-1]))
+        trace.append({"phase": "analytics", "status": "ok",
+                      "message": (f"screen={screen} rows={len(result['rows'])} "
+                                  f"alerts={len(result.get('alerts', []))}")})
+        data = {"skillId": "bank-front-metrics-monitor",
+                "screen": screen, "screenLabel": result["screenLabel"],
+                "period": result["period"], "orgId": result["orgId"],
+                "rows": result["rows"], "alerts": result.get("alerts", [])}
+        return data, {"model": "duckdb-deterministic", "calls": 1}
+
     # ---------------- Skill 执行器 ----------------
 
     def _executor(self, skill_id: str):
@@ -838,6 +949,16 @@ class SkillExecutionService:
             if skill_id == "bank-front-supply-chain-graph":
                 # v1.3：供应链图谱从客户知识库构建（不依赖 GITS 传 markdown）
                 return self._run_supply_chain
+            # CCRM-BA 落地（2026-09-22）：4 个数据分析 Skill 走确定性 DuckDB 执行器，
+            # 不经 LLM（数字必须可复算）；分析服务未接入时具名拒绝（fail-closed）。
+            if skill_id == "bank-front-operating-metrics":
+                return self._run_operating_metrics
+            if skill_id == "bank-front-customer-segment":
+                return self._run_segment_analysis
+            if skill_id == "bank-front-combo-query":
+                return self._run_combo_query_skill
+            if skill_id == "bank-front-metrics-monitor":
+                return self._run_metrics_monitor
 
             pkg = self._packages[skill_id]
 
@@ -1102,10 +1223,13 @@ class SkillExecutionService:
 
     def _run_supply_chain(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
         customer_id = request.get("customerId") or ""
+        # M7 ②：纳入计划门禁 —— 资产清单由**计划**给出（地图 KM-CORP-RM-SUPPLYCHAIN 的 assetRefs），
+        # 计划被拒（策略缺失/未映射/歧义/地图未注册/本体引用缺失）即拒绝执行，不回落字面量清单。
+        plan = self._route_plan(trace, "KM-CORP-RM-SUPPLYCHAIN", "SUPPLY_CHAIN_GRAPH_ANALYSIS")
+        assets = self._plan_assets(plan)
         ki = self._load_ki(customer_id, trace)
-        self._trace_ki(trace, "KI-FRONT-001", "公司供应链图谱", "KI-FRONT-001" in ki)
-        self._trace_ki(trace, "KI-FRONT-002", "产业链八维研判", "KI-FRONT-002" in ki)
-        self._trace_ki(trace, "KI-FRONT-003", "行内变动行为", "KI-FRONT-003" in ki)
+        for kid in assets:
+            self._trace_ki(trace, kid, self._ki_title(kid), kid in ki)
 
         if self._ckp is None or not self._ckp.available:
             graph = {"nodes": [], "edges": [], "buildStatus": "partial"}
@@ -1132,6 +1256,8 @@ class SkillExecutionService:
     def _run_service_proposal(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
         from ..application.service_proposal import ServiceProposalExecutor
 
+        # M7 ②：纳入计划门禁（与既有 3 个技能同口径）——被拒即拒绝执行，不进执行器。
+        self._route_plan(trace, "KM-CORP-RM-PROPOSAL", "SERVICE_PROPOSAL_PREPARATION")
         if self._sp20 is None:
             self._sp20 = ServiceProposalExecutor()
         return self._sp20.execute(request, trace)
@@ -1139,6 +1265,8 @@ class SkillExecutionService:
     def _run_interaction_memory(self, request: dict, trace: list[dict]) -> tuple[dict, dict]:
         from ..application.interaction_memory import InteractionMemoryExecutor
 
+        # M7 ②：纳入计划门禁（与既有 3 个技能同口径）——被拒即拒绝执行，不进执行器。
+        self._route_plan(trace, "KM-CORP-RM-MEMORY", "INTERACTION_MEMORY_EXTRACTION")
         if self._sp21 is None:
             self._sp21 = InteractionMemoryExecutor()
         return self._sp21.execute(request, trace)
@@ -1153,6 +1281,9 @@ class SkillExecutionService:
         """
         from ..application.product_recommendation.sp15_skill import Sp15SkillExecutor
 
+        # M7 ②：纳入计划门禁（与既有 3 个技能同口径）——被拒即拒绝执行，不进执行器。
+        # taskType 沿用激活合同 AC-PRODUCT-RECOMMEND-001 的既有声明（不新造）。
+        self._route_plan(trace, "KM-CORP-RM-PRODUCT", "PRODUCT_RECOMMENDATION_DECISION")
         if self._sp15 is None:
             self._sp15 = Sp15SkillExecutor()
         res = self._sp15.execute(request)

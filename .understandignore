@@ -22,12 +22,15 @@ build/
 UNKNOWN.egg-info/
 
 # ============================================================
-# B. 证据/数据/临时工作区 —— 硬排除（非代码，且体积大）
+# B. 证据/数据/临时工作区 —— 【已于 2026-09-15 由 Owner 裁决放开】
+#    裁决：UA-D10（见 gits-cbanking/docs/architecture/UNDERSTAND_ANYTHING_CODE_LEVEL_ASSESSMENT.md 附六）
+#    理由（Owner）：要求把整仓"全部"理解一遍，接受出域面扩大
+#    ⚠ 放开范围不代表产物获得权威性：.ua/ 仍是 DERIVED 派生视图
 # ============================================================
-evidence/
-data/
-poc/
-bank_front_ws/
+# evidence/
+# data/
+# poc/
+# bank_front_ws/
 
 # ============================================================
 # C. 凭据与二进制

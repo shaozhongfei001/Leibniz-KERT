@@ -576,8 +576,14 @@ def _job_status_extra(fm: dict, body: str) -> list[str]:
     return errors
 
 
+#: 任务状态文件合同标签（**单一命名源**）：写入方 ``application/jobs.py`` 与本处声明共用；
+#: 合同 ``JobStatusData.schema`` == 本值由 `tests/unit/test_contract_enum_single_source.py` 的
+#: ``MAPPINGS`` 机械核对。改名只动这一处（否则"声明 vs 写出的文件"静默分叉）。
+JOB_STATUS_SCHEMA = "job_status/v1"
+
+
 JOB_STATUS_SPEC = SchemaSpec(
-    schema_name="job_status/v1",
+    schema_name=JOB_STATUS_SCHEMA,
     primary_id="job_id",
     fields=[
         FieldSpec("job_id", required=True),
@@ -620,8 +626,14 @@ def _run_report_extra(fm: dict, body: str) -> list[str]:
     return errors
 
 
+#: 运行报告文件合同标签（**单一命名源**，同上：写入方 ``application/jobs.py`` 与本处声明共用）。
+#: 本标签目前**不在** OpenAPI 合同 `enum` 内 ⇒ 无可登记行；单源关系由
+#: `tests/unit/test_contract_tags_single_source.py` 的"声明 == 常量 + 写入方无字面量"机械核对。
+RUN_REPORT_SCHEMA = "run_report/v1"
+
+
 RUN_REPORT_SPEC = SchemaSpec(
-    schema_name="run_report/v1",
+    schema_name=RUN_REPORT_SCHEMA,
     primary_id="job_id",
     fields=[
         FieldSpec("job_id", required=True),

@@ -17,12 +17,16 @@ from ..domain.errors import (
     EXIT_QUALITY_GATE,
 )
 from ..infrastructure import locks as locks_mod
+from .egress import egress_app
 
 app = typer.Typer(
     no_args_is_help=True,
     add_completion=False,
     help="KERT 文件目录型数据知识服务模拟平台（KERT-SPEC-001 V1.0）",
 )
+
+#: 数据出口（外部 LightRAG）运维命令组（P-1 ops 面；ADR-017「数据出口」）
+app.add_typer(egress_app, name="egress")
 
 _COMMON = "text|json"
 
@@ -136,7 +140,8 @@ def provision_cmd(
     data = result.to_dict()
     counts = result.counts()
     lines = [f"workspace: {result.workspace}", f"source: {result.source}",
-             f"策略: {result.policy_id}@{result.policy_version}  地图: {result.map_count}",
+             f"策略: {result.policy_id}@{result.policy_version}  地图: {result.map_count}"
+             f"  合同: {result.contract_count}",
              f"新建 {counts['CREATED']} / 覆盖 {counts['UPDATED']} / 未变 {counts['UNCHANGED']}"]
     lines += [f"  [{it.action}] {it.rel_path}" for it in result.items]
     if dry_run:

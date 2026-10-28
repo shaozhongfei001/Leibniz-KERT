@@ -14,6 +14,11 @@
   的本体块不一致、或 **SHACL 实例校验未通过** ⇒ **抛具名错误且不写任何产物**；
   SHACL 结论必须是**可判定且为真**（``conforms is True``）——"声明了 SHACL 却无实例图"
   不算通过（``ONTOLOGY_INSTANCES_NOT_CONFORMING``，见 :func:`_assert_shacl_conforms`）；
+- **``conforms`` 必须与"是否空转"一起读**（D-35 收口）：血缘 ``shaclValidation.vacuous=true``
+  表示没有任何实例命中任一 ``sh:targetClass``（``targetedInstances=0``）⇒ 此时 ``conforms=true``
+  **不含**"已被约束"的信息，**不得**作为证据；``vacuous=null`` 表示未声明 SHACL（不适用）。
+  该事实由 :mod:`kert.domain.ontology_parse` 的真实图遍历给出，并钉在
+  ``tests/unit/test_ontology_assets_and_parse.py``（内置资产当前即 ``vacuous=true``）；
 - 产物落卷走**同一工作区**（``ws``），不写仓库；重复执行是**幂等覆盖**（图先删后建）。
 """
 from __future__ import annotations
@@ -128,11 +133,17 @@ def materialize_ontology(workspace: Path | str,
         "assets": [{"file": a.file, "authoritySource": a.authority_source, "role": a.role,
                     "bytes": a.bytes, "contentSha256": a.content_sha256} for a in assets.assets],
         "graph": graph,
-        # SHACL 判据的**结论留痕**：产出这件事本身就带上了"哪份 shapes 对哪份实例图判过、判成什么"
+        # SHACL 判据的**结论留痕**：产出这件事本身就带上了"哪份 shapes 对哪份实例图判过、判成什么、
+        # 以及**这次校验有没有信息量**"。`vacuous=true` ⇒ 声明了 SHACL 但没有任何实例命中任一
+        # `sh:targetClass`（命名空间不相交等）⇒ 此时 `conforms=true` **不得**当作"已被约束"的证据；
+        # `vacuous=null` ⇒ 未声明 SHACL，该问题不适用（D-35 收口）。
         "shaclValidation": {
             "conforms": summary.instances_conforms,
             "violations": summary.instance_violations,
             "shapes": summary.shape_count,
+            "vacuous": summary.vacuous,
+            "targetedInstances": summary.targeted_instances,
+            "matchedShapes": summary.matched_shapes,
             "instancesFile": instances_asset.file if instances_asset is not None else None,
         },
         "ontology": _ontology_block(res, assets),
@@ -310,6 +321,10 @@ def _render_md(service_id: str, version: str, summary, assets, graph: dict) -> s
         f"数据属性：**{c['datatypeProperties']}**",
         f"- SHACL：NodeShape **{c['shapes']}**，属性约束 **{c['shapeProperties']}**；"
         f"实例校验 conforms=**{summary.instances_conforms}**，违规 **{c['instanceViolations']}**",
+        f"- **空转判据（D-35）**：`vacuous=**{summary.vacuous}**`（命中实例 "
+        f"**{c['targetedInstances']}**，受约束 shape **{c['matchedShapes']}**）"
+        "——`vacuous=true` 意味着**没有任何实例落在 shapes 的 targetClass 内**，"
+        "此时 `conforms=true` 不含“已被约束”的信息，**不得作为证据**；`vacuous=null` 表示未声明 SHACL。",
         f"- 类层次边：**{c['subclassEdges']}**；三元组：**{c['triples']}**",
         "",
         "## 推理（**已评估，未启用**）",

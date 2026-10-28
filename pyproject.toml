@@ -22,6 +22,10 @@ dependencies = [
     # 将来若确需推理，再按最小化原则单独追加并留痕。
     "rdflib>=7.6",
     "pyshacl>=0.40",
+    # CCRM-BA 落地（Owner 指令 2026-09-22）：对公经营分析造数表落 DuckDB
+    # （docs/architecture/KERT_OPEN_SOURCE_TECH_STACK_V1.0 §存储既定选型）。
+    # 仅 analytics_store 局部导入，不拖累核心启动路径。
+    "duckdb>=1.0",
 ]
 
 [project.optional-dependencies]
@@ -45,6 +49,14 @@ kert = "kert.cli.main:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+# Web 界面静态件（.html/.js/.css）**不是** .py ⇒ 默认**不进** wheel。
+# 实测缺陷（2026-09-17）：非 editable 安装（`pip install .`）下 `site-packages/kert/dsh/` **没有**
+# `static/` ⇒ `GET /dsh/*` 恒 **503**（"DSH 界面未安装"）⇒ **部署形态下界面不可用**。
+# 判据：`scripts/ci/ui_smoke.py` 的「发布物」一格（缺件即**具名**失败）+ CI job `ui-smoke`
+#（非 editable 安装 = 验发布物，而不是源树）。
+[tool.setuptools.package-data]
+"kert.dsh" = ["static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

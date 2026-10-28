@@ -24,6 +24,7 @@ import re
 from pathlib import Path
 
 from ..domain import hashing, ids, states, timeutil
+from ..domain.contracts.specs import JOB_STATUS_SCHEMA, RUN_REPORT_SCHEMA
 from ..domain.errors import ConflictError, UsageError
 from ..infrastructure import logging as logging_mod, markdown
 from ..infrastructure.fs import WorkspaceWriter
@@ -234,7 +235,7 @@ class JobController:
     def _write_status(self, finished_at=None) -> None:
         """派生写出 ``STATUS.md``（M2.4 起为只读投影，权威在 SQLite）。"""
         fm = {
-            "schema": "job_status/v1",
+            "schema": JOB_STATUS_SCHEMA,
             "job_id": self.job_id,
             "job_type": self.job_type,
             "status": self.status,
@@ -267,7 +268,7 @@ class JobController:
         duration_ms = int((finished_at - self.started_at).total_seconds() * 1000)
         log_sha = self.logger.sha256() or hashing.sha256_hex("")
         fm = {
-            "schema": "run_report/v1",
+            "schema": RUN_REPORT_SCHEMA,
             "job_id": self.job_id,
             "final_status": final_status,
             "started_at": timeutil.ts_utc(self.started_at),

@@ -59,6 +59,37 @@ def test_parse_gives_real_statistics_on_real_assets():
     assert any(p.parents for p in s.classes), "类层次（rdfs:subClassOf）应被解析出来"
 
 
+def test_builtin_shacl_check_is_vacuous_because_namespaces_do_not_intersect():
+    """钉住**当前内置资产的事实**（D-35）：这次 SHACL 校验是**空转**的。
+
+    出处（实测，逐字来自文件首行）：
+
+    - ``90_control/ontology/products.ttl:1`` ⇒ ``@prefix gits: <https://gits.bank.example/ontology/core#>``
+    - ``90_control/ontology/gits-core.shacl.ttl:1`` / ``gits-core.owl.ttl:1``
+      ⇒ ``@prefix gits: <https://gientech.com/gits/kno/>``
+
+    两个命名空间**不相交** ⇒ 产品实例（``…/core#Product``）与
+    ``sh:targetClass gits:Product``（``…/gits/kno/Product``）永远匹配不上 ⇒
+    **没有任何实例受约束**，``conforms=true`` 是"没人可查"，**不含**"已被约束"的信息。
+
+    本用例**只钉事实、不判好坏**：命名空间要不要修属**资产语义决定**（该资产是 gits 侧权威件），
+    Owner 已把"空转 ⇒ 拒绝物化"登记为挂起裁定 D-35。若哪天命名空间被修好，
+    本用例会变红 —— 那是"回来复核口径"的信号，不是回归。
+    """
+    products = (ASSETS_SRC / "products.ttl").read_text(encoding="utf-8")
+    shacl = (ASSETS_SRC / "gits-core.shacl.ttl").read_text(encoding="utf-8")
+    assert "https://gits.bank.example/ontology/core#" in products
+    assert "https://gientech.com/gits/kno/" in shacl
+    assert "https://gientech.com/gits/kno/" not in products
+
+    _, s = _summary()
+    assert s.instances_conforms is True, "既有事实：pyshacl 报通过"
+    assert s.vacuous is True, "内置资产的 SHACL 是空转：没有任何实例命中 targetClass"
+    assert s.targeted_instances == 0 and s.matched_shapes == 0
+    assert s.shape_count >= 30, "shapes 确实解析出来了（不是没解析，而是没命中）"
+    assert s.counts()["targetedInstances"] == 0 and s.counts()["matchedShapes"] == 0
+
+
 def test_drift_is_named_refusal(tmp_path):
     """漂移检测：副本被改（append 一字节）⇒ **具名拒绝** `ONTOLOGY_ASSET_DRIFT`，且指到文件名。"""
     dst = tmp_path / "90_control" / "ontology"

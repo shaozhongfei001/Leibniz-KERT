@@ -79,7 +79,7 @@ def test_provisioned_workspace_records_resolved_plan(ws):
     assert e["status"] == "ok"
     assert e["mapId"] == "KM-CORP-RM-OUTREACH"
     assert e["versions"]["knowledgeMap"] == "KM-CORP-RM-OUTREACH@1.0.0"
-    assert e["versions"]["routePolicy"] == "RP-KERT-BANKFRONT-001@1.0.0"
+    assert e["versions"]["routePolicy"] == "RP-KERT-BANKFRONT-001@1.1.0"
     assert e["versions"]["ontology"] == _ONTOLOGY_VERSION
     assert len(e["planHash"]) == 16
     assert e["message"].startswith("按计划进入知识地图 KM-CORP-RM-OUTREACH@1.0.0")

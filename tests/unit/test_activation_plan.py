@@ -40,6 +40,14 @@ REAL_TASKS = {
                             ["skill-customer-meeting-script"]),
     "PRE_VISIT_PREPARATION": ("KM-CORP-RM-PREVISIT", "1.0.1", 7,
                               ["skill-customer-previsit-report"]),
+    # M7 ②：新增纳入计划门禁的 4 个技能。assetCount=0 是**如实**结果——这 3 个技能
+    # 当前不经控制面读受治理知识资产（来源是技能包目录 / 请求 context），故地图 assetRefs 为空；
+    # 「地图 ↔ 技能真实读取集」由 tests/integration/test_control_plane_consistency.py 机械核对。
+    "SUPPLY_CHAIN_GRAPH_ANALYSIS": ("KM-CORP-RM-SUPPLYCHAIN", "1.0.0", 3,
+                                    ["bank-front-supply-chain-graph"]),
+    "PRODUCT_RECOMMENDATION_DECISION": ("KM-CORP-RM-PRODUCT", "1.0.0", 0, ["SP-15"]),
+    "SERVICE_PROPOSAL_PREPARATION": ("KM-CORP-RM-PROPOSAL", "1.0.0", 0, ["SP-20"]),
+    "INTERACTION_MEMORY_EXTRACTION": ("KM-CORP-RM-MEMORY", "1.0.0", 0, ["SP-21"]),
 }
 
 HASH_RE = re.compile(r"^[0-9a-f]{16}$")
@@ -76,7 +84,7 @@ def test_real_workspace_builds_plan_for_each_task():
         assert HASH_RE.match(plan.plan_hash), plan.plan_hash
         assert plan.plan_id == plan_id_for(task, plan.plan_hash)
         assert plan.map_key == f"{map_id}@{map_version}"
-        assert plan.policy_key == "RP-KERT-BANKFRONT-001@1.0.0"
+        assert plan.policy_key == "RP-KERT-BANKFRONT-001@1.1.0"
         assert len(plan.assets) == asset_count, [a.asset_id for a in plan.assets]
         assert list(plan.skills) == skills
         assert plan.route_reason, "计划必须携带路由理由"
@@ -85,7 +93,7 @@ def test_real_workspace_builds_plan_for_each_task():
         # 本体引用槽位自 M7.3 第三步起填入**真实声明值**（见本文件"本体引用"一节）
         assert plan.versions["ontology"] == ONTOLOGY_VERSION_A
         assert plan.versions["knowledgeMap"] == f"{map_id}@{map_version}"
-        assert plan.versions["routePolicy"] == "RP-KERT-BANKFRONT-001@1.0.0"
+        assert plan.versions["routePolicy"] == "RP-KERT-BANKFRONT-001@1.1.0"
 
 
 def test_real_workspace_plan_is_deterministic_across_builders():

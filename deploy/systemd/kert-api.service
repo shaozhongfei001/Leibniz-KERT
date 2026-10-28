@@ -28,6 +28,13 @@ EnvironmentFile=/etc/kert/api.env
 Environment=PYTHONPATH=/opt/kert/src
 Environment=PYTHONUNBUFFERED=1
 
+# CCRM-BA 对公经营分析（Owner 决策 2026-09-22）：显式声明 DuckDB 路径即接入
+# /v1/analytics/* 与 4 个数据分析 Skill（SK-FRONT-008~011）。
+# 未声明 ⇒ 分析能力不接入（端点 503，注册表零扰动）；声明但库缺失 ⇒ 启动即失败（fail-closed）。
+# 库由构建脚本生成：scripts/build_analytics_duckdb.py --db /var/lib/kert/cb_analytics.duckdb
+# （/var/lib/kert 已在 ReadWritePaths 内，可写）
+Environment=KERT_ANALYTICS_DUCKDB=/var/lib/kert/cb_analytics.duckdb
+
 # 仅监听回环：TLS 与对外暴露由反向代理负责（见部署文档 §2.2）
 # 生产 profile 下若绑非回环地址且未启用认证，启动会被拒绝（fail-fast）
 ExecStart=/opt/kert/.venv/bin/python /opt/kert/scripts/serve_skill_service.py \

@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import json
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -22,7 +23,12 @@ import pytest
 from starlette.testclient import TestClient
 
 from kert.api.server import create_app
-from kert.infrastructure.lightrag_client import API_KEY_ENV, URL_ENV
+from kert.infrastructure.lightrag_client import (
+    API_KEY_ENV,
+    URL_ENV,
+    LightRagArtifactRefused,
+    parse_artifact_file_source,
+)
 
 REPO = Path(__file__).resolve().parents[2]
 #: 保留端口（IANA discard）：连接必然失败 ⇒ 稳定的「不可达」反例。
@@ -73,7 +79,22 @@ def test_available_instance_returns_derived_citations(ws, monkeypatch):
 
     data = resp.json()["data"]
     assert data["evidenceClass"] == "DERIVED_RETRIEVAL"
-    assert data["simulationOnly"] is False
+    # provenanceState / simulationOnly **同源派生**（CR-5 边界 5：不得取自检索、不得字面量）⇒
+    # 由出处回译到的产物 `provenanceState` **独立复算**（不由被测函数提供，避免同义反复）。
+    states = []
+    for c in data["citations"]:
+        try:
+            rel = parse_artifact_file_source(c["docId"])
+        except LightRagArtifactRefused:
+            continue
+        art = ws / rel
+        if art.is_file():
+            state = json.loads(art.read_text(encoding="utf-8")).get("provenanceState")
+            if isinstance(state, str) and state.strip().upper() in ("VERIFIED", "DEMO"):
+                states.append(state.strip().upper())
+    expected_state = "DEMO" if (not states or "DEMO" in states) else "VERIFIED"
+    assert data["provenanceState"] == expected_state, data["citations"]
+    assert data["simulationOnly"] is (expected_state == "DEMO")
     assert set(data) >= {"query", "mode", "endpoint", "entities", "relations", "citations"}
     for c in data["citations"]:
         assert c["chunkId"], "出处必须带 chunkId（lightRAG referenceId）"

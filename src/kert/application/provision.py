@@ -7,8 +7,12 @@
 ``90_control/schema/route_policy.json``          路由策略（``load_route_policy`` 读）
 ``90_control/schema/ontology_reference.json``    本体引用声明（``load_ontology_reference`` 读）
 ``90_control/schema/knowledge_sources.json``     知识源能力声明（``load_declaration`` 读；M7.1-A）
+``90_control/schema/activations/AC-*.json``      激活合同副本（``ActivationContractRegistry`` 读；§5.5 ①）
 ``90_control/catalog/provision_manifest.json``   供给留痕（哈希/时刻/来源）
 ============================  ==================================================
+
+⚠ 激活合同副本**只搬 ``AC-*.json``**：同目录的 `PROVENANCE.md`（出处说明）不随供给搬运，
+运行时工作区的出处由留痕 ``provision_manifest.json`` 的逐份 ``sha256`` 承担。
 
 ⚠ ``knowledge_sources.json`` **必须**落在 ``90_control/schema/``：``90_control/catalog/``
 已被两类内容占用（``KM-*.json`` 知识地图 与 管道资产台账 ``asset_catalog`` 的
@@ -32,6 +36,11 @@
    （M7.1-A 只读、未接线）——缺它不应让整个部署起不来；而"非法"必须中止，
    否则会破坏纪律 1。若将来该声明成为读取链的必需件，应在彼时把它改为
    "缺失即拒绝"（属语义升级，须单独授权与评估）。
+8. **激活合同副本与本体引用同为"可选但必须校验"**（§5.5 ①）：副本目录**缺失**或为空
+   ⇒ 不供给（不报错）；副本**非法**（结构非法、或同 ID 出现于两个文件而冲突）⇒ 全量中止。
+   取舍理由：合同目前仅由 :mod:`kert.domain.activation_contract` 解析，
+   尚未成为读取链的必需件（§5.5 ③ 校验器 / ④ 计划槽位未完成）；缺它不应让部署起不来，
+   而"非法"必须中止，否则破坏纪律 1。若将来计划构建以合同为必需件，应改为"缺失即拒绝"。
 """
 
 from __future__ import annotations
@@ -42,6 +51,12 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from ..domain import timeutil
+from ..domain.activation_contract import (
+    ACTIVATIONS_DIRNAME,
+    ActivationContractRegistry,
+    activations_dir,
+    contract_files,
+)
 from ..domain.errors import UsageError
 from ..domain.knowledge_map import (
     KnowledgeMapRegistry,
@@ -99,6 +114,7 @@ class ProvisionResult:
     policy_id: str | None = None
     policy_version: str | None = None
     map_count: int = 0
+    contract_count: int = 0
     dry_run: bool = False
     manifest_rel: str | None = None
     warnings: tuple[str, ...] = field(default_factory=tuple)
@@ -123,6 +139,7 @@ class ProvisionResult:
             "policyId": self.policy_id,
             "policyVersion": self.policy_version,
             "mapCount": self.map_count,
+            "contractCount": self.contract_count,
             "manifest": self.manifest_rel,
             "warnings": list(self.warnings),
             "items": [it.to_dict() for it in self.items],
@@ -153,10 +170,16 @@ def _plan_items(ws: Path, src: Path) -> list[tuple[str, Path, Path]]:
     if ks_src.is_file():
         pairs.append((f"90_control/schema/{KNOWLEDGE_SOURCES_FILENAME}",
                       ks_src, knowledge_sources_path(ws)))
+    # 激活合同副本（§5.5 ①）：与本体引用同为"可选但必须校验"（见模块 docstring 纪律 8）。
+    # 目录来自加载器 activations_dir()，文件名形态由 contract_files() 保证（纪律 3）。
+    for f in contract_files(src):
+        pairs.append((f"90_control/schema/{ACTIVATIONS_DIRNAME}/{f.name}",
+                      f, activations_dir(ws) / f.name))
     return pairs
 
 
-def validate_source(source: Path) -> tuple[KnowledgeMapRegistry, object, object, object]:
+def validate_source(source: Path) -> tuple[
+        KnowledgeMapRegistry, object, object, object, ActivationContractRegistry]:
     """把**源**当工作区全量校验（与消费侧同一套加载器）。
 
     校验顺序与"要供给什么"一一对应，且**先于任何写入**（纪律 1）：
@@ -166,13 +189,17 @@ def validate_source(source: Path) -> tuple[KnowledgeMapRegistry, object, object,
     3. 路由策略（``load_route_policy``）——**必需**（缺它则路由默认拒绝，供给无意义）；
     4. 本体引用（``load_ontology_reference``）——可选；存在即校验，非法即中止；
     5. 知识源能力声明（``load_declaration``）——可选；存在即校验，非法即中止
-       （M7.1-A；与第 4 项同口径，见模块 docstring 纪律 7）。
+       （M7.1-A；与第 4 项同口径，见模块 docstring 纪律 7）；
+    6. 激活合同副本（``ActivationContractRegistry.load``）——可选；存在即校验，非法即中止
+       （§5.5 ①；与第 4 项同口径，见模块 docstring 纪律 8。同 ID 出现于两个文件
+       属注册表冲突，同样中止全量供给）。
 
     抛 :class:`~kert.domain.errors.SchemaValidationError`（源内某份定义非法）
     或 :class:`~kert.domain.errors.UsageError`（源不是工作区 / 缺少必需件）。
 
-    :return: ``(registry, policy, ontology_reference, knowledge_sources_declaration)``；
-        后两项在源未放置对应文件时为 ``None``（**不是**"无声明也放行"）。
+    :return: ``(registry, policy, ontology_reference, knowledge_sources_declaration,
+        activation_contracts)``；第 4/5 项在源未放置对应文件时为 ``None``
+        （**不是**"无声明也放行"），第 6 项在未落副本时为空注册表。
     """
     src = Path(source)
     if not is_workspace(src):
@@ -184,11 +211,12 @@ def validate_source(source: Path) -> tuple[KnowledgeMapRegistry, object, object,
     policy = load_route_policy(src)
     ref = load_ontology_reference(src)
     decl = load_declaration(src)
+    contracts = ActivationContractRegistry.load(src)
     if not registry.maps:
         raise UsageError(f"供给源未注册任何知识地图（{catalog_dir(src)}）: {src}")
     if policy is None:
         raise UsageError(f"供给源缺少路由策略（{policy_path(src)}）: {src}")
-    return registry, policy, ref, decl
+    return registry, policy, ref, decl, contracts
 
 
 def provision_control_plane(workspace: Path, source: Path, *,
@@ -212,7 +240,7 @@ def provision_control_plane(workspace: Path, source: Path, *,
     if ws.resolve() == src.resolve():
         raise UsageError(f"供给源与目标工作区相同: {ws}")
 
-    registry, policy, _ref, _decl = validate_source(src)
+    registry, policy, _ref, _decl, contracts = validate_source(src)
 
     items: list[ProvisionItem] = []
     pending: list[tuple[Path, str]] = []
@@ -235,7 +263,8 @@ def provision_control_plane(workspace: Path, source: Path, *,
         return ProvisionResult(workspace=ws, source=str(src), items=tuple(items),
                                policy_id=policy.policy_id,
                                policy_version=policy.version,
-                               map_count=len(registry.maps), dry_run=True)
+                               map_count=len(registry.maps),
+                               contract_count=len(contracts), dry_run=True)
 
     for d_path, text in pending:
         _write_atomic(d_path, text)
@@ -248,6 +277,7 @@ def provision_control_plane(workspace: Path, source: Path, *,
         "policyId": policy.policy_id,
         "policyVersion": policy.version,
         "mapCount": len(registry.maps),
+        "contractCount": len(contracts),
         "counts": {a: sum(1 for it in items if it.action == a)
                    for a in (ACTION_CREATED, ACTION_UPDATED, ACTION_UNCHANGED)},
         "items": [it.to_dict() for it in items],
@@ -260,4 +290,5 @@ def provision_control_plane(workspace: Path, source: Path, *,
                            policy_id=policy.policy_id,
                            policy_version=policy.version,
                            map_count=len(registry.maps),
+                           contract_count=len(contracts),
                            manifest_rel=f"90_control/catalog/{MANIFEST_FILENAME}")

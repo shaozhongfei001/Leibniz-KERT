@@ -1,8 +1,8 @@
 {
   "schema": "route_policy/v1",
   "policyId": "RP-KERT-BANKFRONT-001",
-  "version": "1.0.0",
-  "title": "企业客户经理 · 知识路由策略（外联 / 会面 / 访前）",
+  "version": "1.1.0",
+  "title": "企业客户经理 · 知识路由策略（外联 / 会面 / 访前 / 供应链 / 产品 / 建议书 / 记忆）",
   "defaultDecision": "DENY",
   "rules": [
     {
@@ -22,6 +22,30 @@
       "taskType": "PRE_VISIT_PREPARATION",
       "knowledgeMapId": "KM-CORP-RM-PREVISIT",
       "reason": "访前准备：先锁定客户实体与关系，再定向加载供应链与经营解读知识"
+    },
+    {
+      "priority": 20,
+      "taskType": "SUPPLY_CHAIN_GRAPH_ANALYSIS",
+      "knowledgeMapId": "KM-CORP-RM-SUPPLYCHAIN",
+      "reason": "供应链图谱分析：先读公司供应链图谱、产业链八维研判与行内变动行为三条知识条目，再建三段式图谱"
+    },
+    {
+      "priority": 30,
+      "taskType": "PRODUCT_RECOMMENDATION_DECISION",
+      "knowledgeMapId": "KM-CORP-RM-PRODUCT",
+      "reason": "产品适配与综合方案：任务类型沿用激活合同 AC-PRODUCT-RECOMMEND-001 的既有声明（不新造）"
+    },
+    {
+      "priority": 40,
+      "taskType": "SERVICE_PROPOSAL_PREPARATION",
+      "knowledgeMapId": "KM-CORP-RM-PROPOSAL",
+      "reason": "对公客户服务建议书：先取得知识地图与本体引用门禁许可，再逐章装配（SP-20）"
+    },
+    {
+      "priority": 50,
+      "taskType": "INTERACTION_MEMORY_EXTRACTION",
+      "knowledgeMapId": "KM-CORP-RM-MEMORY",
+      "reason": "交互记忆抽取：先取得门禁许可，再抽取候选记忆并做确定性比对（SP-21）"
     }
   ]
 }

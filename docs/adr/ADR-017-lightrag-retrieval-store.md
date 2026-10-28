@@ -128,9 +128,15 @@ KERT 以「**只读接入外部 LightRAG server**」的方式使用 LightRAG：�
 **⑦-a CI 覆盖边界与 opt-in 运行（2026-09-16）**：**不加 marker、不把任何用例排除出默认套件** ——
 本文件对三种环境**各自断言对应分支**（不可达 ⇒ 具名 `LIGHTRAG_UNAVAILABLE`；在线未授权 ⇒ 具名 401；
 在线已授权 ⇒ 真 E2E）⇒ 默认套件（含 CI）**仍会执行**它，并验证"**不可达 ⇒ 具名错误**"这条契约。
-⚠ **边界（必须写清，防误读）**：**CI 无 LightRAG 实例** ⇒ 本文件在 CI 上走"**具名不可达**"分支
-⇒ **真正的 E2E 路径（发布 / 检索 / 撤回）不在 CI 被执行**；**"CI 绿"不等于"E2E 已验"**。
-带凭据的 **opt-in** 命令（人工/专项验证时用）：
+⚠ **边界（必须写清，防误读）**：`test` job 的默认套件在 CI 上**仍无实例** ⇒ 本文件在那里走
+"**具名不可达**"分支（`LIGHTRAG_UNAVAILABLE`），这条契约照旧被验证。
+**2026-09-17 事实更正（覆盖补齐，非决策变更）**：新增专职 CI job **`retrieval-loop-e2e`** 在 CI 内起
+**真实 lightrag-server**（`lightrag-hku[api]` **仅该 job 安装**，不进 `pyproject`/运行时依赖），
+模型面接**确定性 mock**（`scripts/ci/lightrag_mock_llm.py`；就绪与真往返闸门
+`scripts/ci/retrieval_loop_readiness.py`）⇒ **接入路径（发布 / 检索[出处回指] / 撤回）在 CI 被执行**
+（覆盖本文件、`test_lightrag_retrieval.py`、六环链环 5、数据出口运维面真实例用例）。
+⚠ 但它**不验检索质量与真实模型行为**（模型是确定性的假模型）⇒ **"CI 绿"仍不等于
+"带真实模型的 E2E 已验"**。带凭据的 **opt-in** 命令（真实模型/专项验证时用）：
 `KERT_LIGHTRAG_URL=… KERT_LIGHTRAG_API_KEY=… python -m pytest tests/integration/test_lightrag_publication.py -q`。
 ⚠ **报数纪律（本轮教训）**：报 `integration`/`unit` 计数时**必须注明"带凭据 / 不带凭据"** ——
 同一文件在两态下结论可能相反（"server 在线但无凭据"曾使其 **1 红**，而"**无实例**"与"**带凭据**"均绿）。

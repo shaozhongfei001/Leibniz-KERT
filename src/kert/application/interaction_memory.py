@@ -12,6 +12,7 @@ import json
 import re
 from dataclasses import dataclass
 
+from ..domain.service_result import SERVICE_PARTIAL, SERVICE_SUCCESS
 from ..infrastructure.adapters import llm as llm_mod
 
 MEMORY_SKILL_ID = "SP-21"
@@ -99,8 +100,10 @@ class InteractionMemoryExecutor:
 
         # 3) 规则校验
         rule_violations = self._check_rules(candidates)
-        status = "SUCCESS" if not rule_violations else "PARTIAL"
-        trace.append({"phase": "compose", "status": "ok" if status == "SUCCESS" else "failed",
+        status = SERVICE_SUCCESS if not rule_violations else SERVICE_PARTIAL
+        # 跨域映射：域值 → **轨迹条目域**（`ok`/`failed`）。判据端引用单一源常量；
+        # 目标端属轨迹域（assembly-trace），与本域相交不等、**不得合并**。
+        trace.append({"phase": "compose", "status": "ok" if status == SERVICE_SUCCESS else "failed",
                       "message": f"规则校验：违规 {len(rule_violations)} 条（{status}）"})
 
         result = {

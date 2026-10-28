@@ -20,6 +20,21 @@ import pyarrow.parquet as pq
 from ..domain import timeutil
 from ..domain.errors import AssetNotFoundError, ServiceNotReadyError, UsageError
 from ..domain.ontology_reference import check_lineage_ontology, lineage_ontology_fields
+from ..domain.query_modes import (
+    DIRECTION_BOTH,
+    DIRECTION_IN,
+    DIRECTION_OUT,
+    GRAPH_CYPHER_ARROWS,
+    GRAPH_DIRECTIONS,
+    GRAPH_MODE_CLOSURE,
+    GRAPH_MODE_NEIGHBOR,
+    GRAPH_MODE_PATHS,
+    GRAPH_MODES,
+    SEARCH_MODE_FULLTEXT,
+    SEARCH_MODE_HYBRID,
+    SEARCH_MODE_VECTOR,
+    SEARCH_MODES,
+)
 from ..domain.rules import dsl
 from ..infrastructure import markdown
 from ..infrastructure.parquet import build_filter
@@ -33,6 +48,23 @@ _FULLTEXT_STOP = {"的", "了", "是", "在", "和", "与", "及", "或", "一�
 #: `01_raw`/`02_work`/`90_control`（可能含凭据/草案）**不在**其列。
 EGRESS_ROOTS = ("03_core", "04_serve")
 
+#: 出处头里的**摘要行**前缀（`publish` 写入 / `retract` 归属校验 / `egress_state` 判据
+#: **三处共用** ⇒ 判据单点、不分叉；行序要求见 :meth:`KnowledgeService.publish_artifact`）。
+EGRESS_SHA_PREFIX = "- sha256: "
+
+#: 数据出口状态（`egress_state` 的分类；`egress_publish` 的动作依据）
+EGRESS_MISSING = "missing"    # 实例上**无**该出处
+EGRESS_CURRENT = "current"    # 实例正文摘要 == 本地产物**当前**摘要
+EGRESS_STALE = "stale"        # 实例上有，但正文摘要 != 本地当前摘要（**具名**，不静默当成功）
+#: `egress_publish` 的动作结果（state 的第二维：做了什么）
+EGRESS_STATE_PUBLISHED = "published"    # 本次写入
+EGRESS_STATE_REFRESHED = "refreshed"    # 撤回（**经归属校验**）后重发
+
+
+def sha_marker(digest: str) -> str:
+    """出处头里的摘要标记（**唯一判据载体**：写入 / 校验 / 查询三处共用）。"""
+    return f"{EGRESS_SHA_PREFIX}{digest}"
+
 
 def _egress_rel(rel_path: str) -> str:
     """校验发布对象是**工作区内的 03_core/04_serve 相对路径**；越界 ⇒ 具名拒绝。"""
@@ -45,6 +77,59 @@ def _egress_rel(rel_path: str) -> str:
         raise LightRagArtifactRefused(
             f"只允许发布工作区产物（{'/'.join(EGRESS_ROOTS)}）：{rel_path!r}")
     return rel.as_posix()
+
+
+def _lightrag_client():
+    """按 env 构造实例客户端（连接参数只走 env；见 lightrag_client 模块 docstring）。"""
+    from ..infrastructure.lightrag_client import LightRagClient
+
+    return LightRagClient.from_env()
+
+
+#: 全链关联 ID 的两个既有字段名（**取自计划本身**，不新造）：
+#: 计划 / 物化血缘（``PLAN_LINEAGE.json``=``plan.to_dict()``）/ 发布结果 / 检索引用
+#: 四处一律用这两个键承载同一条链的身份。
+PLAN_ID_KEY = "planId"
+PLAN_HASH_KEY = "planHash"
+#: 物化血缘文件名（`ProjectionBuilder` 产物版本目录旁；见 `materialize_from_plan`）
+PLAN_LINEAGE_NAME = "PLAN_LINEAGE.json"
+
+
+def plan_identity_for_artifact(ws: Path, rel_path: str) -> dict | None:
+    """**全链关联 ID 的唯一取 ID 入口**：由产物路径取同版本目录旁的**计划身份**。
+
+    一次业务动作的链 = 计划 → 物化 → 发布 → 检索；四处共用**同一对** ``planId``/``planHash``
+    （键名取自计划自身，**不新造字段名**）。取法：产物形如
+    ``04_serve/<svc>/version=<v>/<name>`` ⇒ 读**同目录**的 :data:`PLAN_LINEAGE_NAME`
+    （= ``plan.to_dict()`` 原样照抄，由 :meth:`KnowledgeService.materialize_from_plan` 写入）
+    ⇒ 返回其 ``planId``/``planHash``。
+
+    - 无该产物形态 / 无血缘文件（如 ``03_core`` 资产）⇒ 返回 ``None``：
+      **不伪造占位 ID**（调用方据此**省略**字段，而不是写空串）；
+    - 血缘文件存在但**不可用**（坏 JSON / 缺 ID）⇒ **具名** :class:`UsageError`（fail-closed）：
+      "关联 ID 静默消失"正是这条链最该防的失效。
+    """
+    rel = PurePosixPath(str(rel_path).strip())
+    parts = rel.parts
+    if len(parts) < 4 or parts[0] != "04_serve" or not parts[2].startswith("version="):
+        return None
+    lineage = ws / parts[0] / parts[1] / parts[2] / PLAN_LINEAGE_NAME
+    if not lineage.is_file():
+        return None
+    try:
+        doc = json.loads(lineage.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise UsageError(f"物化血缘不可读（{lineage.relative_to(ws).as_posix()}）：{exc}") from exc
+    if not isinstance(doc, dict):
+        raise UsageError(f"物化血缘非对象：{lineage.relative_to(ws).as_posix()}")
+    plan_id = doc.get(PLAN_ID_KEY)
+    plan_hash = doc.get(PLAN_HASH_KEY)
+    if not (isinstance(plan_id, str) and plan_id.strip()):
+        raise UsageError(f"物化血缘缺 {PLAN_ID_KEY}：{lineage.relative_to(ws).as_posix()}")
+    if not (isinstance(plan_hash, str) and plan_hash.strip()):
+        raise UsageError(f"物化血缘缺 {PLAN_HASH_KEY}：{lineage.relative_to(ws).as_posix()}")
+    return {PLAN_ID_KEY: plan_id, PLAN_HASH_KEY: plan_hash,
+            "lineagePath": lineage.relative_to(ws).as_posix()}
 
 
 @dataclass
@@ -132,9 +217,9 @@ class KnowledgeService:
 
     def graph(self, start_entity_ids: list[str], *,
               relation_types: list[str] | None = None,
-              direction: str = "OUT", max_depth: int = 1,
+              direction: str = DIRECTION_OUT, max_depth: int = 1,
               max_nodes: int = 100,
-              mode: str = "neighbor") -> ServiceResult:
+              mode: str = GRAPH_MODE_NEIGHBOR) -> ServiceResult:
         """图谱查询（IMP-ADR-011：Kùzu 投影后端，回退内存 BFS）。
 
         mode: neighbor（多级可达，默认）/ closure（递归闭包，去重）/ paths（路径枚举）。
@@ -143,9 +228,9 @@ class KnowledgeService:
             raise UsageError("max_depth 最大为 10")
         if max_nodes > 1000:
             raise UsageError("max_nodes 最大为 1000")
-        if direction not in ("OUT", "IN", "BOTH"):
+        if direction not in GRAPH_DIRECTIONS:
             raise UsageError(f"非法 direction: {direction!r}")
-        if mode not in ("neighbor", "closure", "paths"):
+        if mode not in GRAPH_MODES:
             raise UsageError(f"非法 mode: {mode!r}")
         try:
             from ..infrastructure.graph.kuzu_builder import KuzuGraphBuilder
@@ -160,7 +245,7 @@ class KnowledgeService:
                                   max_depth, max_nodes, mode)
 
     def _graph_memory(self, start_entity_ids, relation_types, direction,
-                      max_depth, max_nodes, mode="neighbor") -> ServiceResult:
+                      max_depth, max_nodes, mode=GRAPH_MODE_NEIGHBOR) -> ServiceResult:
         """内存邻接 BFS（原实现，max_depth 上限放宽到 10；paths 模式返回节点序列）。"""
         ents = {r["entity_id"]: r for r in self._read_table("entities.parquet").to_pylist()}
         rels = self._read_table("relations.parquet").to_pylist()
@@ -168,11 +253,11 @@ class KnowledgeService:
         for rel in rels:
             if relation_types and rel["relation_type"] not in relation_types:
                 continue
-            if direction in ("OUT", "BOTH"):
+            if direction in (DIRECTION_OUT, DIRECTION_BOTH):
                 adj.setdefault(rel["source_id"], []).append(
                     {"target": rel["target_id"], "relation_type": rel["relation_type"],
                      "relation_id": rel["relation_id"], "statement_id": rel.get("statement_id")})
-            if direction in ("IN", "BOTH"):
+            if direction in (DIRECTION_IN, DIRECTION_BOTH):
                 adj.setdefault(rel["target_id"], []).append(
                     {"target": rel["source_id"], "relation_type": rel["relation_type"],
                      "relation_id": rel["relation_id"], "statement_id": rel.get("statement_id")})
@@ -195,13 +280,13 @@ class KnowledgeService:
                               "relation_type": e["relation_type"],
                               "relation_id": e["relation_id"],
                               "statement_id": e["statement_id"]})
-                if mode == "paths":
+                if mode == GRAPH_MODE_PATHS:
                     paths.append([n for n in trail + [e["target"]]])
                 if e["target"] not in visited:
                     queue.append((e["target"], depth + 1, trail + [e["target"]]))
         data = {"nodes": list(nodes.values()), "edges": edges,
                 "node_count": len(nodes), "edge_count": len(edges), "mode": mode}
-        if mode == "paths":
+        if mode == GRAPH_MODE_PATHS:
             data["paths"] = paths
         return ServiceResult(data=data, meta=self._meta(ranking_policy_version="none"))
 
@@ -213,13 +298,14 @@ class KnowledgeService:
         db = kuzu.Database(str(builder.graph_path()))
         con = kuzu.Connection(db)
         depth = max(max_depth, 1)
-        arrow = {"OUT": "->", "IN": "<-", "BOTH": "-"}[direction]
-        rel = f"-[:Rel*1..{depth}]{arrow}" if direction != "BOTH" else f"-[:Rel*1..{depth}]-"
+        arrow = GRAPH_CYPHER_ARROWS[direction]
+        rel = (f"-[:Rel*1..{depth}]{arrow}" if direction != DIRECTION_BOTH
+               else f"-[:Rel*1..{depth}]{GRAPH_CYPHER_ARROWS[DIRECTION_BOTH]}")
         nodes: dict[str, dict] = {}
         edges: list[dict] = []
         paths: list[list[str]] = []
         for s in start_entity_ids:
-            if mode in ("neighbor", "closure"):
+            if mode in (GRAPH_MODE_NEIGHBOR, GRAPH_MODE_CLOSURE):
                 rows = con.execute(
                     f"MATCH p=(a:Company {{eid:$s}}){rel}(b:Company) "
                     "RETURN b.eid, b.name, b.etype, MIN(length(p)) AS d "
@@ -237,11 +323,12 @@ class KnowledgeService:
                 for eid, rt, rid, sid in edge_rows:
                     edges.append({"source": s, "target": eid, "relation_type": rt,
                                   "relation_id": rid, "statement_id": sid})
-            elif mode == "paths":
+            elif mode == GRAPH_MODE_PATHS:
                 # paths 必须方向敏感（BOTH 拆 OUT/IN），避免核心-供应商环路打转
-                dirs = ["OUT", "IN"] if direction == "BOTH" else [direction]
+                dirs = ([DIRECTION_OUT, DIRECTION_IN] if direction == DIRECTION_BOTH
+                        else [direction])
                 for d in dirs:
-                    arrow_p = {"OUT": "->", "IN": "<-"}[d]
+                    arrow_p = GRAPH_CYPHER_ARROWS[d]
                     rows = con.execute(
                         f"MATCH p=(a:Company {{eid:$s}})-[:Rel*1..{depth}]{arrow_p}(b:Company) "
                         "RETURN nodes(p) LIMIT $n",
@@ -253,22 +340,22 @@ class KnowledgeService:
             edges = [e for e in edges if e["relation_type"] in relation_types]
         data = {"nodes": list(nodes.values()), "edges": edges,
                 "node_count": len(nodes), "edge_count": len(edges), "mode": mode}
-        if mode == "paths":
+        if mode == GRAPH_MODE_PATHS:
             data["paths"] = paths
         return ServiceResult(data=data, meta=self._meta(ranking_policy_version="none"))
 
     # ---------------- 检索（FR-SRV-002、§15） ----------------
 
-    def search(self, query: str, *, mode: str = "FULLTEXT", top_k: int = 10,
+    def search(self, query: str, *, mode: str = SEARCH_MODE_FULLTEXT, top_k: int = 10,
                filters: dict | None = None) -> ServiceResult:
-        if mode not in ("FULLTEXT", "VECTOR", "HYBRID"):
+        if mode not in SEARCH_MODES:
             raise UsageError(f"非法检索模式: {mode!r}")
         segs = self._read_table("segments.parquet", filters=filters).to_pylist()
-        if mode in ("FULLTEXT", "HYBRID"):
+        if mode in (SEARCH_MODE_FULLTEXT, SEARCH_MODE_HYBRID):
             ft = _fulltext_score(query, segs)
         else:
             ft = []
-        if mode in ("VECTOR", "HYBRID"):
+        if mode in (SEARCH_MODE_VECTOR, SEARCH_MODE_HYBRID):
             try:
                 vec = self._read_table("vectors.parquet").to_pylist()
             except AssetNotFoundError:
@@ -281,9 +368,9 @@ class KnowledgeService:
                     vs.append((v["segment_id"], _cosine(query_vec, v["embedding"])))
         else:
             vs = []
-        if mode == "FULLTEXT":
+        if mode == SEARCH_MODE_FULLTEXT:
             hits = ft
-        elif mode == "VECTOR":
+        elif mode == SEARCH_MODE_VECTOR:
             hits = vs
         else:
             # 归一化融合：0.5 全文 + 0.5 向量（ranking_policy_version 记录）
@@ -306,15 +393,17 @@ class KnowledgeService:
                 "document_id": seg.get("document_id"),
                 "content_excerpt": _excerpt(seg.get("content", ""), query),
                 "score": round(score, 4),
-                "score_type": "HYBRID" if mode == "HYBRID" else mode,
+                "score_type": (SEARCH_MODE_HYBRID if mode == SEARCH_MODE_HYBRID else mode),
                 "page_from": seg.get("page_from"), "page_to": seg.get("page_to"),
                 "source_version": seg.get("source_release_id"),
                 "evidence_uri": seg.get("source_path"),
             })
         return ServiceResult(
             data={"query": query, "mode": mode, "hits": results,
-                  "hit_count": len(results), "degraded": mode == "VECTOR" and not vs},
-            meta=self._meta(ranking_policy_version="rank/v1" if mode == "HYBRID" else "none"),
+                  "hit_count": len(results),
+                  "degraded": mode == SEARCH_MODE_VECTOR and not vs},
+            meta=self._meta(ranking_policy_version=(
+                "rank/v1" if mode == SEARCH_MODE_HYBRID else "none")),
         )
 
     # ---------------- 客户知识取数（v1.3 数据所有权：按 customerId 读库） ----------------
@@ -417,7 +506,8 @@ class KnowledgeService:
         :param service_id: 目标 service_id；缺省用本实例的 ``service_id``。
         :param include_vectors: 是否产出 ``vectors.parquet``（透传既有 builder）。
         :returns: ``service_id`` / ``projection_version`` / ``job_id`` / ``files`` /
-                  ``lineage_path`` / ``plan``（计划原文）。
+                  ``lineage_path`` / ``plan``（计划原文）**＋全链关联 ID**：``planId`` /
+                  ``planHash``（键名取自计划自身 ⇒ 与血缘、发布结果、检索引用**同字段名、同值**）。
         """
         from ..domain.activation_plan import ActivationPlanBuilder
         from .projection import ProjectionBuilder
@@ -455,6 +545,8 @@ class KnowledgeService:
                 "job_id": result.job_id,
                 "files": list(result.files),
                 "lineage_path": lineage_rel,
+                PLAN_ID_KEY: lineage[PLAN_ID_KEY],
+                PLAN_HASH_KEY: lineage[PLAN_HASH_KEY],
                 "plan": lineage}
 
     # ---------------- LightRAG 检索（M7 · D-31：接入外部 server） ----------------
@@ -473,6 +565,11 @@ class KnowledgeService:
         `docs/adr/ADR-017-lightrag-retrieval-store.md`），故不影响 §18.5/§6.3 的
         "工作区内无隐藏持久化数据库"口径。
 
+        **全链关联 ID（⑧）**：每条出处按 `filePath`（= 发布标识，可回译）反解出产物路径
+        ⇒ 取其**计划身份** ⇒ 出处上追加 ``artifact`` / ``planId`` / ``planHash``
+        （与计划、物化血缘、发布结果**同名同值**）。反解不出（如被实例名规范化吃掉目录）
+        或该产物无计划血缘 ⇒ **省略**这些键（不伪造）。
+
         :param query: 检索语句。
         :param mode: lightRAG 既有模式（``local``/``global``/``hybrid``/``naive``/``mix``）。
         :param client: 注入的 :class:`~kert.infrastructure.lightrag_client.LightRagClient`
@@ -484,8 +581,27 @@ class KnowledgeService:
         result = client.query_data(query, mode=mode)
         return {"query": result.query, "mode": result.mode, "endpoint": result.endpoint,
                 "entities": list(result.entities), "relations": list(result.relations),
-                "citations": [{"referenceId": c.reference_id, "filePath": c.file_path,
-                               "content": c.content} for c in result.citations]}
+                "citations": [self._citation_with_chain(c) for c in result.citations]}
+
+    def _citation_with_chain(self, citation) -> dict:
+        """检索引用 → 链身份（不可回译 / 无血缘 ⇒ **省略**键，不伪造）。"""
+        from ..infrastructure.lightrag_client import (
+            LightRagArtifactRefused,
+            parse_artifact_file_source,
+        )
+
+        out = {"referenceId": citation.reference_id, "filePath": citation.file_path,
+               "content": citation.content}
+        try:
+            rel = parse_artifact_file_source(citation.file_path)
+        except LightRagArtifactRefused:
+            return out
+        out["artifact"] = rel
+        identity = plan_identity_for_artifact(self.ws, rel)
+        if identity is not None:
+            out[PLAN_ID_KEY] = identity[PLAN_ID_KEY]
+            out[PLAN_HASH_KEY] = identity[PLAN_HASH_KEY]
+        return out
 
     # ---------------- LightRAG 发布 / 撤回（M7 · P-1：数据出口，ADR-017） ----------------
 
@@ -502,9 +618,15 @@ class KnowledgeService:
           （可回译的 ``04_serve__<svc>__version=<v>__<name>``）⇒ 检索命中的 `filePath` **回指产物路径 + 版本**；
           正文再前置**出处头**（相对路径 + sha256）⇒ 只看引用片段也能回溯；
         - **幂等**：同 `file_source` 已存在 ⇒ `already_published`（先查后写，不重复写入）；
+        - **全链关联 ID（⑧）**：产物若有**计划血缘**（同版本目录的
+          :data:`PLAN_LINEAGE_NAME`）⇒ 出处头**追加**计划标识行（在摘要行**之后**，
+          故 D-34 的摘要判据不变）、返回里带上**同名同值**的 ``planId``/``planHash``
+          ⇒ 检索命中的引用文本与发布结果**共享同一条链的 ID**；无血缘则**省略**
+          （不伪造占位），`03_core` 资产属此类；
         - 失败一律**具名**抛出（越界 / 文件缺失 / 不可达 / 超时），**不静默**。
 
-        :returns: ``{artifact, file_source, sha256, bytes, status, track_id, endpoint}``
+        :returns: ``{artifact, file_source, sha256, bytes, status, track_id, endpoint}``，
+            有计划血缘时**追加** ``planId`` / ``planHash``。
         """
         from ..infrastructure.lightrag_client import (
             LightRagClient,
@@ -518,18 +640,28 @@ class KnowledgeService:
         raw = path.read_bytes()
         digest = hashlib.sha256(raw).hexdigest()
         source = artifact_file_source(rel)
+        identity = plan_identity_for_artifact(self.ws, rel)   # 无血缘 ⇒ None（不伪造）
         # ⚠ 行序是**语义**的：撤回前的归属校验靠实例返回的 `content_summary`（正文**头部窗口**）
         # 读到本行 ⇒ `sha256` 必须尽量靠前，否则长路径会把摘要窗口挤出 digest 而令校验恒失效（D-34）。
+        # ⇒ 计划标识行只能**排在摘要行之后**（不得插到它前面）。
+        chain_lines = "" if identity is None else (
+            f"- 计划标识: {identity[PLAN_ID_KEY]}\n"
+            f"- 计划哈希: {identity[PLAN_HASH_KEY]}\n")
         header = ("# KERT 产物出处（数据出口；登记见 ADR-017）\n"
-                  f"- sha256: {digest}\n"
+                  f"{sha_marker(digest)}\n"
                   f"- 产物路径: {rel}\n"
-                  f"- 发布标识: {source}\n\n")
+                  f"- 发布标识: {source}\n"
+                  f"{chain_lines}\n")
         client = client or LightRagClient.from_env()
         outcome = client.publish_text(header + raw.decode("utf-8", errors="replace"),
                                       file_source=source)
-        return {"workspace": str(self.ws), "artifact": rel, "file_source": source,
-                "sha256": digest, "bytes": len(raw), "status": outcome.status,
-                "track_id": outcome.track_id, "endpoint": "/documents/text"}
+        out = {"workspace": str(self.ws), "artifact": rel, "file_source": source,
+               "sha256": digest, "bytes": len(raw), "status": outcome.status,
+               "track_id": outcome.track_id, "endpoint": "/documents/text"}
+        if identity is not None:
+            out[PLAN_ID_KEY] = identity[PLAN_ID_KEY]
+            out[PLAN_HASH_KEY] = identity[PLAN_HASH_KEY]
+        return out
 
     def retract_artifact(self, rel_path: str, *, timeout: float = 180.0,
                          visibility_timeout: float = 20.0, force: bool = False,
@@ -580,7 +712,7 @@ class KnowledgeService:
                     "verified": not force, "sha256": digest,
                     "status": "nothing_to_retract"}
         if not force:
-            marker = f"- sha256: {digest}"
+            marker = sha_marker(digest)
             foreign = [d.doc_id for d in found if marker not in (d.content_summary or "")]
             if foreign:
                 raise LightRagRetractRefused(
@@ -595,11 +727,121 @@ class KnowledgeService:
                 "status": str(payload.get("status") or ""),
                 "message": str(payload.get("message") or "")}
 
+    def egress_state(self, rel_path: str, *, client=None, documents=None) -> dict:
+        """**内容变更检测**（运维面）：实例上该出处的正文摘要 vs 本地产物**当前**摘要。
+
+        判据 = 实例返回的 ``content_summary``（正文**头部窗口**）里我们自写的
+        :func:`sha_marker`（出处头行序见 :meth:`publish_artifact`，摘要必须落在窗口内）。
+        这是该实例 API 下**唯一可用**的判据：无"读正文"端点、不支持自定义 metadata
+        （ADR-017「数据出口」）⇒ **不另找判据**。
+
+        **口径与撤回一致**：``current`` 要求**全部**条目（含 `dup-*` 残留）的摘要都等于本地
+        当前摘要 —— 与 :meth:`retract_artifact` 的归属校验同一条判据 ⇒
+        ``state == current`` ⟺ 带校验的撤回可放行（**不产生"能撤回但不 current"的第二态**）。
+
+        :param documents: 已取的实例文档全量（省一次全表扫；多产物批查时复用）；缺省按 client 取。
+        :returns: ``{workspace, artifact, file_source, sha256, bytes, state, documents}``，
+            ``state ∈ {missing, current, stale}``；``documents`` 逐条标注摘要是否命中。
+        :raises AssetNotFoundError: 本地产物不存在（**无从比对**，不静默）。
+        """
+        from ..infrastructure.lightrag_client import artifact_file_source
+
+        rel = _egress_rel(rel_path)
+        path = self.ws / rel
+        if not path.is_file():
+            raise AssetNotFoundError(f"产物不存在: {rel}")
+        raw = path.read_bytes()
+        digest = hashlib.sha256(raw).hexdigest()
+        source = artifact_file_source(rel)
+        if documents is None:
+            client = client or _lightrag_client()
+            documents = client.documents()
+        hits = [d for d in documents if getattr(d, "file_path", "") == source]
+        marker = sha_marker(digest)
+        if not hits:
+            state = EGRESS_MISSING
+        elif all(marker in (getattr(d, "content_summary", "") or "") for d in hits):
+            state = EGRESS_CURRENT
+        else:
+            state = EGRESS_STALE
+        return {
+            "workspace": str(self.ws), "artifact": rel, "file_source": source,
+            "sha256": digest, "bytes": len(raw), "state": state,
+            "documents": [
+                {"doc_id": d.doc_id, "status": d.status, "chunks_count": d.chunks_count,
+                 "marker_hit": marker in (getattr(d, "content_summary", "") or "")}
+                for d in hits
+            ],
+        }
+
+    def egress_publish(self, rel_path: str, *, refresh: bool = False, client=None) -> dict:
+        """**运维面发布**：默认**安全**（同出处已有内容 ⇒ 不写不删）；``refresh`` 才"撤回→重发"。
+
+        动作全部由 :meth:`egress_state` 的**同一判据**决定（不存在第二套比较）：
+
+        - ``missing`` ⇒ 发布（``state=published``）；
+        - ``current`` 且非 ``refresh`` ⇒ **不发写请求**（幂等，``status=already_published``）；
+        - ``stale`` 且非 ``refresh`` ⇒ **具名** ``stale``、**不写不删**、**绝不静默当作成功**：
+          这正是旧行为的缺口（同 `file_source` 已存在即回 ``already_published`` ⇒
+          产物内容变了而知识库永远停在旧内容）；
+        - ``refresh`` ⇒ 先 :meth:`retract_artifact`（**归属校验默认开启，不因 refresh 而放宽**）：
+          只有"实例上那份正文 == 本工作区该产物**当前**正文"才允许删（D-34）⇒ 然后重发。
+          ⚠ 故 ``stale`` + ``refresh`` **会具名拒绝**（此时"实例上那份"与"他人的合法文档"
+          在摘要窗口内**不可区分**，删它就是把 D-34 的事故重演一遍）—— 拒绝时**一份都不删**。
+          确需清理**来源已变**的条目，是操作员的**显式**动作：``retract_artifact(force=True)``。
+
+        :returns: ``{workspace, artifact, file_source, sha256, bytes, prior_state, state,
+            status, published, refresh, removed, documents, track_id, endpoint}``
+        :raises AssetNotFoundError: 本地产物不存在。
+        :raises LightRagRetractRefused: ``refresh`` 的归属校验失败（fail-closed）。
+        """
+        from ..infrastructure.lightrag_client import ALREADY_PUBLISHED
+
+        rel = _egress_rel(rel_path)
+        state_info = self.egress_state(rel, client=client)
+        prior = state_info["state"]
+        result = {
+            "workspace": state_info["workspace"], "artifact": rel,
+            "file_source": state_info["file_source"], "sha256": state_info["sha256"],
+            "bytes": state_info["bytes"], "prior_state": prior,
+            "refresh": bool(refresh), "published": False, "removed": [],
+            "documents": state_info["documents"],
+        }
+        if prior == EGRESS_CURRENT and not refresh:
+            result.update(state=EGRESS_CURRENT, status=ALREADY_PUBLISHED)
+            return result
+        if prior == EGRESS_STALE and not refresh:
+            result.update(state=EGRESS_STALE, status=EGRESS_STALE)
+            return result
+        if refresh and prior != EGRESS_MISSING:
+            # force **不传** ⇒ 归属校验生效（refresh 不是绕过 D-34 的开关）
+            removed = self.retract_artifact(rel, client=client)
+            result["removed"] = list(removed.get("removed") or [])
+        out = self.publish_artifact(rel, client=client)
+        result.update(state=EGRESS_STATE_REFRESHED if prior != EGRESS_MISSING
+                      else EGRESS_STATE_PUBLISHED,
+                      status=out["status"], published=True,
+                      track_id=out.get("track_id"), endpoint=out.get("endpoint"))
+        # 全链关联 ID（⑧）：发布结果与计划/血缘/检索引用**同名同值**（无血缘则省略）
+        result.update({k: out[k] for k in (PLAN_ID_KEY, PLAN_HASH_KEY) if k in out})
+        return result
+
     # ---------------- 证据溯源（FR-SRV-007、§15.5） ----------------
 
     def trace(self, object_id: str) -> ServiceResult:
-        """服务结果 → 投影记录 → Core MD → 片段 → Raw 批次清单与哈希。"""
+        """服务结果 → 投影记录 → Core MD → 片段 → Raw 批次清单与哈希。
+
+        **全链关联 ID（⑧）—— 同一条链也能经本方法取回**：当 ``object_id`` 命中某次物化血缘的
+        ``planId`` / ``planHash`` 时，改走 :meth:`_plan_chain`（计划 → 物化 → 数据出口锚点），
+        返回值**只使用合同已声明的 ``data`` 键**（``object_id`` / ``chain`` / ``complete``），
+        链身份放在 ``chain[]`` 条目里（条目为**开集**，见 ``specs/kert-openapi-v1.yaml``
+        ``EvidenceResponse``）⇒ 既有 ``/v1/evidence/{object_id}`` 路径即可取回，**无需新增端点或字段**。
+        """
         version = self._active_version()
+        plan_chain = self._plan_chain(object_id)
+        if plan_chain is not None:
+            return ServiceResult(data=plan_chain,
+                                 meta=self._meta(chain=f"plan:{object_id}"))
         chain: list[dict] = []
         # 1. 投影层
         chain.append({"layer": "04_serve", "object": object_id,
@@ -641,6 +883,62 @@ class KnowledgeService:
         )
 
     # ---------------- 溯源辅助 ----------------
+
+    def _plan_chain(self, chain_id: str) -> dict | None:
+        """按**计划身份**取回全链的**本地可得部分**（计划 → 物化 → 数据出口锚点）。
+
+        - ``chain_id`` 命中某次物化血缘的 ``planId`` 或 ``planHash`` 时返回链；否则 ``None``
+          （调用方落到既有"资产溯源"路径 ⇒ 既有语义不变）；
+        - 返回值**只含合同已声明的** ``data`` 键（``object_id`` / ``chain`` / ``complete``）；
+          身份键（``planId``/``planHash``/``file_source``）放在 ``chain[]`` 条目内（开集）；
+        - ``complete`` 的**局部口径**（不得外推）：本地可得的链都已取到 =
+          血缘 + 版本目录 + **至少一个**可出区产物（``EGRESS_ROOTS`` 下的确定性 ``file_source``）；
+          ⚠ **发布/检索的"状态"不在本地留痕**（数据出口只读工作区，ADR-017 ⑥）⇒ 这里给出的是
+          与发布结果、检索引用**同名同值**的**锚点**（``file_source``），用 ``kert egress status``
+          或检索命中的 ``filePath`` 即可对上，**不声称**"已发布/已检索到"。
+        """
+        from ..infrastructure.lightrag_client import (
+            LightRagArtifactRefused,
+            artifact_file_source,
+        )
+
+        base = self.ws / "04_serve"
+        if not base.is_dir():
+            return None
+        for lineage in sorted(base.glob(f"*/version=*/{PLAN_LINEAGE_NAME}")):
+            try:
+                doc = json.loads(lineage.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if not isinstance(doc, dict):
+                continue
+            if chain_id not in (doc.get(PLAN_ID_KEY), doc.get(PLAN_HASH_KEY)):
+                continue
+            vdir = lineage.parent
+            entries = [{
+                "layer": "plan", "object": doc.get(PLAN_ID_KEY),
+                PLAN_ID_KEY: doc.get(PLAN_ID_KEY), PLAN_HASH_KEY: doc.get(PLAN_HASH_KEY),
+                "taskType": doc.get("taskType"), "subjectId": doc.get("subjectId"),
+                "path": lineage.relative_to(self.ws).as_posix(),
+            }]
+            entries.append({"layer": "04_serve", "object": vdir.name,
+                            "path": vdir.relative_to(self.ws).as_posix(),
+                            "files": sorted(p.name for p in vdir.iterdir() if p.is_file())})
+            anchors = 0
+            for p in sorted(vdir.iterdir()):
+                if not p.is_file():
+                    continue
+                rel = p.relative_to(self.ws).as_posix()
+                try:
+                    source = artifact_file_source(rel)
+                except LightRagArtifactRefused:
+                    continue
+                anchors += 1
+                entries.append({"layer": "04_serve/egress", "object": source,
+                                "artifact": rel, "file_source": source,
+                                "sha256": hashlib.sha256(p.read_bytes()).hexdigest()})
+            return {"object_id": chain_id, "chain": entries, "complete": anchors > 0}
+        return None
 
     def _find_core_asset(self, object_id: str) -> dict | None:
         core_dir = self.ws / "03_core"

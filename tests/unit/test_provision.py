@@ -18,7 +18,11 @@ from kert.application.provision import (
     ACTION_UPDATED,
     provision_control_plane,
 )
-from kert.domain.errors import SchemaValidationError, UsageError
+from kert.domain.activation_contract import (
+    CODE_NONE_REGISTERED,
+    ActivationContractRegistry,
+)
+from kert.domain.errors import RuleConflictError, SchemaValidationError, UsageError
 from kert.domain.knowledge_source import (
     CODE_DECLARATION_ABSENT,
     FILENAME as KNOWLEDGE_SOURCES_FILENAME,
@@ -30,9 +34,28 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SOURCE = REPO_ROOT / "examples" / "bank-front-knowledge-maps"
 CATALOG = "90_control/catalog"
 SCHEMA_DIR = "90_control/schema"
+ACTIVATIONS = "activations"
 
-#: 供给清单文件数（3 张地图 + route_policy + ontology_reference + knowledge_sources）
-PROVISION_ITEM_COUNT = 6
+#: 受控源的地图清单（**从源推导**：新增地图只改源，不改本文件 —— PR #6 的教训：
+#: 硬编码总数会让"供给面按设计扩了"表现为假红）
+MAP_FILES = tuple(sorted(p.name for p in (SOURCE / CATALOG).glob("KM-*.json")))
+MAP_COUNT = len(MAP_FILES)
+
+#: 内置本体资产（M7-⑤ 起由 `kert provision` 供给）：从源目录推导（4 件资产 + PROVENANCE.json）
+#: 受控源位置是 ``90_control/ontology/``（**不是** ``90_control/schema/ontology/``）
+ONTOLOGY_REL = "90_control/ontology"
+ONTOLOGY_FILES = tuple(sorted(p.name for p in (SOURCE / ONTOLOGY_REL).iterdir() if p.is_file()))
+
+#: 非地图类 schema 声明：route_policy + ontology_reference + knowledge_sources
+SCHEMA_DECLARATIONS = 3
+
+#: 激活合同副本（§5.5 ①：裁定"变更单落地前只落 2 份"）
+CONTRACT_FILES = ("AC-FACT-RECONCILIATION-001.json", "AC-PRODUCT-RECOMMEND-001.json")
+
+#: **核心**供给面（必有）：地图 + 3 类 schema 声明。仅作**防空转下限**用。
+#: 总数**不写死**（PR #6 的教训）：可选供给面（内置本体资产 / 激活合同副本）由各自批次接入，
+#: 相关断言一律写成"与源逐份一致"或"与本次 ``r.items`` 自洽"的**关系式/不变式**。
+CORE_ITEM_COUNT = MAP_COUNT + SCHEMA_DECLARATIONS
 
 
 @pytest.fixture
@@ -57,33 +80,57 @@ def source_copy(tmp_path: Path) -> Path:
 def test_creates_all_control_plane_files(target):
     r = provision_control_plane(target, SOURCE)
 
-    assert r.map_count == 3
+    # 防空转：源侧声明数异常收缩（删地图/删本体资产）会让下面"逐份存在"的比对失去意义
+    assert MAP_COUNT >= 7, f"受控源地图数 {MAP_COUNT} < 7（M7 ② 起应为 7 张）"
+    assert len(ONTOLOGY_FILES) >= 5, f"受控源本体资产 {len(ONTOLOGY_FILES)} < 5"
+
+    assert r.map_count == MAP_COUNT
+    assert r.contract_count == len(CONTRACT_FILES)
     assert r.policy_id == "RP-KERT-BANKFRONT-001"
-    assert r.policy_version == "1.0.0"
-    assert r.counts() == {ACTION_CREATED: PROVISION_ITEM_COUNT, ACTION_UPDATED: 0,
+    # M7 ②：策略受治理内容变更（3 → 7 条规则）⇒ 版本必须升（否则 planHash 失去可追溯性）
+    assert r.policy_version == "1.1.0"
+    # 不变式：首次供给 ⇒ **全部**新建（总数用 len(r.items)，不写死）
+    assert r.counts() == {ACTION_CREATED: len(r.items), ACTION_UPDATED: 0,
                           ACTION_UNCHANGED: 0}
+    assert len(r.items) >= CORE_ITEM_COUNT, f"供给份数 {len(r.items)} 低于核心下限"
     assert r.changed() is True
     assert r.manifest_rel == f"{CATALOG}/provision_manifest.json"
 
-    assert sorted(p.name for p in (target / CATALOG).glob("KM-*.json")) == [
-        "KM-CORP-RM-MEETING.json", "KM-CORP-RM-OUTREACH.json", "KM-CORP-RM-PREVISIT.json"]
+    assert sorted(p.name for p in (target / CATALOG).glob("KM-*.json")) == list(MAP_FILES)
     assert (target / SCHEMA_DIR / "route_policy.json").is_file()
     assert (target / SCHEMA_DIR / "ontology_reference.json").is_file()
     # M7.1-A 第 4 类：知识源能力声明（若从 _plan_items 移除本项，本断言必红）
     assert (target / SCHEMA_DIR / KNOWLEDGE_SOURCES_FILENAME).is_file()
+    # §5.5 ① 第 5 类：激活合同副本（同样由 _plan_items 决定；移除即必红）
+    assert sorted(p.name for p in (target / SCHEMA_DIR / ACTIVATIONS).glob("AC-*.json")) \
+        == sorted(CONTRACT_FILES)
 
     manifest = json.loads((target / r.manifest_rel).read_text(encoding="utf-8"))
     assert manifest["schema"] == "control_plane_provision/v1"
-    assert len(manifest["items"]) == PROVISION_ITEM_COUNT
+    assert manifest["contractCount"] == len(CONTRACT_FILES)
+    # 不变式：留痕份数 == 本次实际供给份数（不写死总数）
+    assert len(manifest["items"]) == len(r.items)
     assert all(len(i["sha256"]) == 64 for i in manifest["items"])
-    assert sorted(i["relPath"] for i in manifest["items"]) == sorted([
-        f"{CATALOG}/KM-CORP-RM-MEETING.json",
-        f"{CATALOG}/KM-CORP-RM-OUTREACH.json",
-        f"{CATALOG}/KM-CORP-RM-PREVISIT.json",
-        f"{SCHEMA_DIR}/route_policy.json",
-        f"{SCHEMA_DIR}/ontology_reference.json",
-        f"{SCHEMA_DIR}/{KNOWLEDGE_SOURCES_FILENAME}",
-    ])
+
+    # 供给面**两向**钉住（不写死总数）：
+    #   ① 下限 = 核心声明（地图 + 3 类 schema 声明）必须逐份供给；
+    #   ② 上限 = 只允许本清单内的项（新出现未登记项 ⇒ 变红，须在此显式登记）。
+    core = ({f"{CATALOG}/{n}" for n in MAP_FILES}
+            | {f"{SCHEMA_DIR}/route_policy.json",
+               f"{SCHEMA_DIR}/ontology_reference.json",
+               f"{SCHEMA_DIR}/{KNOWLEDGE_SOURCES_FILENAME}"})
+    allowed = (core
+               | {f"{ONTOLOGY_REL}/{n}" for n in ONTOLOGY_FILES}
+               | {f"{SCHEMA_DIR}/{ACTIVATIONS}/{n}" for n in CONTRACT_FILES})
+    rel_paths = {i["relPath"] for i in manifest["items"]}
+    assert core <= rel_paths, f"核心供给面缺份: {sorted(core - rel_paths)}"
+    assert rel_paths <= allowed, f"供给面出现未登记项: {sorted(rel_paths - allowed)}"
+    # 可选供给面若已接入，份数必须与源**逐份**一致（不可少、不可多）
+    for rel_dir, names in ((ONTOLOGY_REL, ONTOLOGY_FILES),
+                           (f"{SCHEMA_DIR}/{ACTIVATIONS}", CONTRACT_FILES)):
+        got = {k for k in rel_paths if k.startswith(f"{rel_dir}/")}
+        if got:
+            assert got == {f"{rel_dir}/{n}" for n in names}, f"{rel_dir} 供给份与源不一致"
 
 
 def test_idempotent_second_run_rewrites_nothing(target):
@@ -94,7 +141,7 @@ def test_idempotent_second_run_rewrites_nothing(target):
 
     second = provision_control_plane(target, SOURCE)
     assert second.counts() == {ACTION_CREATED: 0, ACTION_UPDATED: 0,
-                               ACTION_UNCHANGED: PROVISION_ITEM_COUNT}
+                               ACTION_UNCHANGED: len(second.items)}
     assert second.changed() is False
     assert {p.name: p.stat().st_mtime_ns for p in (target / CATALOG).glob("KM-*.json")} == mtimes
 
@@ -109,7 +156,7 @@ def test_source_change_yields_updated_only_for_that_file(target, source_copy):
 
     r = provision_control_plane(target, source_copy)
     assert r.counts() == {ACTION_CREATED: 0, ACTION_UPDATED: 1,
-                          ACTION_UNCHANGED: PROVISION_ITEM_COUNT - 1}
+                          ACTION_UNCHANGED: len(r.items) - 1}
     updated = [i for i in r.items if i.action == ACTION_UPDATED]
     assert updated[0].rel_path == f"{CATALOG}/KM-CORP-RM-MEETING.json"
     assert "（改）" in (target / CATALOG / "KM-CORP-RM-MEETING.json").read_text(encoding="utf-8")
@@ -207,7 +254,7 @@ def test_source_without_knowledge_sources_is_tolerated(target, source_copy):
     (source_copy / SCHEMA_DIR / KNOWLEDGE_SOURCES_FILENAME).unlink()
 
     r = provision_control_plane(target, source_copy)
-    assert r.counts() == {ACTION_CREATED: PROVISION_ITEM_COUNT - 1, ACTION_UPDATED: 0,
+    assert r.counts() == {ACTION_CREATED: len(r.items), ACTION_UPDATED: 0,
                           ACTION_UNCHANGED: 0}
     assert not (target / SCHEMA_DIR / KNOWLEDGE_SOURCES_FILENAME).exists()
     assert resolve_declaration(target).code == CODE_DECLARATION_ABSENT
@@ -279,7 +326,8 @@ def test_provisioned_workspace_serves_routing(target):
 
     c = TestClient(create_app(target))
     listed = c.get("/v1/knowledge-maps").json()["data"]
-    assert listed["count"] == 3
+    # 推导式：与受控源的地图张数一致（M7 ② 起为 7；不写死）
+    assert listed["count"] == MAP_COUNT
     assert listed["policy"]["policyId"] == "RP-KERT-BANKFRONT-001"
 
     plan = c.post("/v1/routing/plan",
@@ -315,4 +363,71 @@ def test_provisioned_workspace_can_load_knowledge_sources(target):
     assert ws_plan.to_dict()["planHash"] == src_plan.to_dict()["planHash"]
     assert "knowledgeSources" not in ws_plan.to_dict()["versions"]
     # 反空转：工作区确实被供给过（否则上面的相等可能是"两边都拒绝"的假相等）
-    assert len(KnowledgeMapRegistry.load(target).maps) == 3
+    assert len(KnowledgeMapRegistry.load(target).maps) == MAP_COUNT
+
+
+def test_provisioned_workspace_can_load_activation_contracts(target):
+    """供给后运行时工作区能加载激活合同副本（§5.5 ① 的端到端证明）。
+
+    这是**本项修复的目的**：修复前 `_plan_items` 不含 `schema/activations/`，
+    副本只存在于受治理源工作区，运行时工作区一律以 ``NONE_REGISTERED`` 默认拒绝。
+    """
+    provision_control_plane(target, SOURCE)
+
+    reg = ActivationContractRegistry.load(target)
+    assert len(reg) == len(CONTRACT_FILES)
+    assert reg.resolve_for_task("FACT_RECONCILIATION_30M").allowed
+    assert reg.resolve_for_task("PRODUCT_RECOMMENDATION_DECISION").allowed
+
+    # 反空转：目标侧与源侧解析出的合同引用键逐条一致（供给未改变语义）
+    src_reg = ActivationContractRegistry.load(SOURCE)
+    assert [c.key for c in reg.contracts] == [c.key for c in src_reg.contracts]
+
+    # 有意取舍：出处说明 PROVENANCE.md 不随供给搬运（运行时出处由留痕 sha256 承担）
+    assert not (target / SCHEMA_DIR / ACTIVATIONS / "PROVENANCE.md").exists()
+
+
+def test_source_without_activations_is_tolerated(target, source_copy):
+    """副本目录**缺失** ⇒ 不供给、不报错（纪律 8：与本体引用同口径）。
+
+    ⚠ 这是**有意**取舍：合同尚未成为读取链必需件（§5.5 ③ 校验器 / ④ 计划槽位未完成），
+    缺它不应让整个部署起不来；**非法**才必须中止（见下两个用例）。
+    """
+    shutil.rmtree(source_copy / SCHEMA_DIR / ACTIVATIONS)
+
+    r = provision_control_plane(target, source_copy)
+    assert r.counts() == {ACTION_CREATED: len(r.items), ACTION_UPDATED: 0,
+                          ACTION_UNCHANGED: 0}
+    assert r.contract_count == 0
+    assert not (target / SCHEMA_DIR / ACTIVATIONS).exists()
+    res = ActivationContractRegistry.load(target).resolve_for_task("FACT_RECONCILIATION_30M")
+    assert res.code == CODE_NONE_REGISTERED
+
+
+def test_invalid_activation_copy_writes_nothing(target, source_copy):
+    """副本**非法**（含权威未声明字段）⇒ 一份都不写（纪律 1 + 纪律 8）。"""
+    p = source_copy / SCHEMA_DIR / ACTIVATIONS / CONTRACT_FILES[0]
+    doc = json.loads(p.read_text(encoding="utf-8"))
+    doc["knowledgeItemIds"] = ["KI-009"]          # 权威 schema 未声明的字段
+    p.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(SchemaValidationError):
+        provision_control_plane(target, source_copy)
+
+    assert list((target / CATALOG).glob("KM-*.json")) == []
+    assert list((target / SCHEMA_DIR).glob("*.json")) == []
+    assert not (target / SCHEMA_DIR / ACTIVATIONS).exists()
+    assert not (target / CATALOG / "provision_manifest.json").exists()
+
+
+def test_duplicate_contract_id_writes_nothing(target, source_copy):
+    """同 ID 出现于两个文件（注册表冲突）⇒ 同样中止全量供给，一份不写。"""
+    src_dir = source_copy / SCHEMA_DIR / ACTIVATIONS
+    (src_dir / "AC-DUP-0001.json").write_text(
+        (src_dir / CONTRACT_FILES[0]).read_text(encoding="utf-8"), encoding="utf-8")
+
+    with pytest.raises(RuleConflictError):
+        provision_control_plane(target, source_copy)
+
+    assert list((target / CATALOG).glob("KM-*.json")) == []
+    assert not (target / SCHEMA_DIR / ACTIVATIONS).exists()
