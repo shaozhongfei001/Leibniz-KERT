@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""Release 发布与三视图投影（Loop L13 · KERT 侧）
+"""Release 发布（Loop L13 · KERT 侧）
 
 产出：
   04_serve/releases/RLS-*.json              （CTR-PK-RLS-001 实例）
-  04_serve/interpretation/PROD-CM-001.json  （CTR-PK-INT-001 三视图投影，供 GITS 消费）
   90_control/decisions/DECISIONS.template.json（待 Owner 签署的决策模板）
+
+2026-10-28：原产出的 04_serve/interpretation/PROD-*.json（CTR-PK-INT-001 三视图投影）
+已随 GITS「产品知识」页下线一并移除生成逻辑 —— GITS 侧消费方
+（KertReleaseSnapshotAdapter 与解读/检索端点）已删除，该投影不再有消费者。
 
 **红线：AI / 脚本不得代替 Owner 决定。**
 本脚本**不会**自动生成任何 ReviewDecision：
@@ -38,21 +41,10 @@ RPT_DIR = BASE / "02_work" / "reports"
 CARD_DIR = BASE / "02_work" / "candidate-cards"
 SV_DIR = BASE / "02_work" / "source-versions"
 REL_DIR = BASE / "04_serve" / "releases"
-# 2026-10-28：GITS「产品知识」解读页（/product-knowledge/interpretation）与 CTR-PK-INT-001
-# 端点已下线，GITS 侧 KertReleaseSnapshotAdapter 与本目录下 13 个投影 JSON 已删除。
-# 本脚本仍会重新生成 04_serve/interpretation/*.json —— 该产物当前**无消费者**，
-# 保留生成逻辑仅为不中断 Release 发布链；若确认不再需要，可连同 VIEW_FIELDS/projection 段一并移除。
-INT_DIR = BASE / "04_serve" / "interpretation"
 DEC_DIR = BASE / "90_control" / "decisions"
 
 CST = timezone(timedelta(hours=8))
 OWNER_ROLES = {"PRODUCT_OWNER", "RISK_OWNER", "COMPLIANCE_OWNER"}
-VIEW_FIELDS = {
-    "OVERVIEW": ["identity.productCode", "compliance.regulatoryBasis"],
-    "ELIGIBILITY": ["eligibility.customerSegment", "eligibility.minAccountBalance",
-                    "eligibility.prerequisiteProducts"],
-    "PRICING": ["pricing.serviceFee"],
-}
 def _resolve_args() -> argparse.Namespace:
     """PC8 T1：产品可由命令行指定；**默认值保持既有行为不变**（PROD-CM-001）。
 
@@ -238,115 +230,6 @@ def main():
         json.dumps(release, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8")
 
-    # ---- 三视图投影（CTR-PK-INT-001）----
-    field_state = {f["fieldPath"]: f for f in health["fields"]}
-    asm_by_field = {}
-    for a in asm["assertions"]:
-        asm_by_field.setdefault(a["fieldPath"], []).append(a)
-
-    # 当前有效断言（状态优先级取末端）：避免把历史/被取代断言的证据重复带出。
-    # F-L13-06：此前遍历该字段全部断言，导致 CONFLICT 与 SUPPORTED 的证据叠加，
-    # 9 条摘要实为 4 个去重 evidenceId。
-    STATE_ORDER = {"SUPPORTED": 5, "REVIEWED": 4, "NOT_APPLICABLE": 3,
-                   "CONFLICT": 2, "STALE": 2, "CANDIDATE": 1, "UNKNOWN": 0}
-
-    def _active(field):
-        items = asm_by_field.get(field, [])
-        if not items:
-            return None
-        superseded = {a.get("supersedes") for a in items if a.get("supersedes")}
-        alive = [a for a in items if a["assertionId"] not in superseded] or items
-        return sorted(alive, key=lambda a: (STATE_ORDER.get(a["knowledgeState"], 0),
-                                            a.get("createdAt", ""), a["assertionId"]))[-1]
-
-    views = {}
-    for view, fps in VIEW_FIELDS.items():
-        items = []
-        for fp in fps:
-            st = field_state.get(fp, {})
-            state = st.get("knowledgeState", "UNKNOWN")
-            # CTR-PK-INT-001 呈现枚举只有 5 态；CANDIDATE 未经 Owner 复核，
-            # 按 fail-closed 归一为 UNKNOWN，且不得回链证据（未复核结论不呈现）。
-            if state == "CANDIDATE":
-                state = "UNKNOWN"
-            # 未就绪状态一律 displayValue=null，禁止补齐
-            display = None
-            if state == "SUPPORTED":
-                sup = next((a for a in asm_by_field.get(fp, [])
-                            if a["knowledgeState"] == "SUPPORTED"), None)
-                val = (sup or {}).get("normalizedValue")
-                if isinstance(val, (int, float)):
-                    display = f"{val / 10000:g} 万元" if val >= 10000 else f"{val:g} 元"
-                elif val is not None:
-                    display = str(val)
-            summaries = []
-            active = _active(fp)
-            seen_eids = set()
-            if state not in ("UNKNOWN", "CONFLICT", "STALE"):
-                for eid in (active or {}).get("evidenceIds", []):
-                    if eid in seen_eids:
-                        continue
-                    seen_eids.add(eid)
-                    ev = evs.get(eid)
-                    if not ev:
-                        continue
-                    loc = ev["locator"]
-                    hint = loc.get("clause") or f"p.{loc.get('page', '?')}"
-                    summaries.append({
-                        "evidenceId": ev["evidenceId"],
-                        "sourceId": ev["sourceId"],
-                        "sourceVersionId": ev["sourceVersionId"],
-                        "authorityLevel": ev["authorityLevel"],
-                        "locatorHint": hint,
-                        "quoteExcerpt": ev["quote"][:200],
-                    })
-            items.append({
-                "fieldPath": fp,
-                "displayValue": display,
-                "knowledgeState": state,
-                "evidenceSummaries": summaries,
-                "conflictId": st.get("conflictId"),
-            })
-        views[view] = items
-
-    projection = {
-        "productId": PRODUCT_ID,
-        "releaseId": release_id,
-        "bundleHash": bundle,
-        "lifecycleState": lifecycle,
-        "isStale": False,
-        "staleReason": None,
-        "provenanceState": "DEMO",
-        "purposeAllowed": {"INTERPRETATION": interpretation_ready,
-                           "RECOMMENDATION": recommendation_ready},
-        "views": views,
-        "sourceVersions": sorted(svs),
-        "generatedAt": ts.isoformat(),
-    }
-    INT_DIR.mkdir(parents=True, exist_ok=True)
-    int_path = INT_DIR / f"{PRODUCT_ID}.json"
-    # PC8 F-PC8-13：**不得用 DRAFT 覆盖既有已发布投影**（原实现无条件覆盖 ⇒ 重跑链在"新 Release 未签署"时
-    # 会把"已发布可读"退回 404 —— 实测 PROD-CM-001 曾由 RLS-2026.09.06.1 变为 DRAFT 投影而 404）。
-    # 策略：DRAFT 且已有已发布投影 ⇒ 保留旧投影；若上游制品已变（bundleHash 不同）⇒ 把旧投影**显式标 stale**，
-    # 消费者收到 409 RELEASE_STALE 而不是静默读到过期内容；从未发布过的产品仍写入 DRAFT 投影（看得到"未发布"）。
-    if lifecycle != "PUBLISHED" and int_path.exists():
-        prev = json.loads(int_path.read_text(encoding="utf-8"))
-        if prev.get("lifecycleState") == "PUBLISHED":
-            if prev.get("bundleHash") != bundle:
-                prev["isStale"] = True
-                prev["staleReason"] = (f"上游制品已变更（当前 bundleHash={bundle[:12]}… ≠ 已发布 "
-                                       f"{str(prev.get('bundleHash'))[:12]}…），需重新发布后再消费")
-                int_path.write_text(json.dumps(prev, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-                                    encoding="utf-8")
-                print(f"KEEP   | 保留既有已发布投影并标 stale（本次 Release {release_id} 为 {lifecycle}）")
-            else:
-                print(f"KEEP   | 保留既有已发布投影（本次 Release {release_id} 为 {lifecycle}，内容一致）")
-        else:
-            int_path.write_text(json.dumps(projection, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-                                encoding="utf-8")
-    else:
-        int_path.write_text(json.dumps(projection, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-                            encoding="utf-8")
 
     if lifecycle != "PUBLISHED":
         (BASE / "90_control" / "BLOCKED_ON_OWNER.json").write_text(
