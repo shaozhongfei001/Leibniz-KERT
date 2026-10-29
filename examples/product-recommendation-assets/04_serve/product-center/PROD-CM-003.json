@@ -15,7 +15,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S02-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S02-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -41,7 +41,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S05-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S05-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -67,7 +67,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S05-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S05-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -94,37 +94,11 @@
       }
     ],
     "reviewState": "DRAFT",
-    "rows": [
-      {
-        "productId": "PROD-SET-001",
-        "values": {
-          "RELATION": "前置产品",
-          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
-        },
-        "versionId": ""
-      },
-      {
-        "productId": "PROD-SET-001",
-        "values": {
-          "RELATION": "配套产品",
-          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
-        },
-        "versionId": ""
-      },
-      {
-        "productId": "PROD-FIN-001",
-        "values": {
-          "RELATION": "配套产品",
-          "SOURCE_ALIAS": "WORKING_CAPITAL_LOAN"
-        },
-        "versionId": ""
-      }
-    ]
+    "rows": []
   },
   "derivation": {
     "absentSections": {
       "FAQ": "全仓无 FAQ 来源 ⇒ 不生成问答（不编造）",
-      "PRICING": "卡片 §8 仅记「按行内收费标准执行（待核定）」⇒ 不出内容（Owner 裁定 O-2）",
       "TERMS_missing_keys": [
         "LIMIT",
         "TENOR",
@@ -134,18 +108,23 @@
         "COLLATERAL"
       ]
     },
-    "aliasMapSource": "gits `specs/knowledge-architecture/instances/product/sim/product-relations.SIM.ttl`（`sim:sourceAlias` ⇒ `rdf:object` 产品 id；含 Owner 决策 `OWNER-DECISION-2026-09-22-D2`）",
+    "aliasMapSource": null,
     "notes": "证据 isDemo=true（SIM 阶段资产）；卡片 §9 风险与 §11 版本语义不属 8 章，未产出。",
     "rules": [
       "TERMS ← §2 适用客户/适用场景（只产出 ELIGIBLE_ENTITY / PURPOSE）",
       "FIT ← §2 场景（TYPICAL_USE）+ §5 排除/禁止（NOT_SUITABLE/PROHIBITED_USE）+ §4 准入（ACCOUNT/CREDIT/CONTRACT）+ §6 前置",
       "PROCESS ← §7 流程（按 → 切分；卡片无细节 ⇒ summary=stepName）",
       "MATERIALS ← §7 材料（枚举清单；卡片无用途说明 ⇒ 如实标注）",
+      "PRICING ← §8 定价政策条款（逐条引用原文；费率金额待核定 ⇒ 不产出数字，approvalRequired 依条款是否含审批/审核要求）",
       "SALES ← §10 销售边界",
       "COMPARE ← §6 关系 + front matter 前置/配套产品码（reviewState=DRAFT：脚本派生未人工复核）"
     ],
     "tool": "tools/l40_build_product_center_sections.py",
-    "unresolvedRelationCodes": []
+    "unresolvedRelationCodes": [
+      "SETTLEMENT_ACCOUNT",
+      "SETTLEMENT_ACCOUNT",
+      "WORKING_CAPITAL_LOAN"
+    ]
   },
   "evidenceRefs": [
     {
@@ -157,7 +136,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S01-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S01-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -174,7 +153,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S02-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S02-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -191,7 +170,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S03-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S03-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -208,7 +187,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S04-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S04-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -225,7 +204,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S05-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S05-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -242,7 +221,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S06-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S06-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -259,7 +238,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -276,7 +255,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S08-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S08-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -293,7 +272,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S09-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S09-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -310,7 +289,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S10-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S10-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -327,7 +306,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODCM003-S11-1cff064c",
+      "evidenceId": "EVR-PRODCM003-S11-84f63bd5",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "公司金融产品管理部",
@@ -337,7 +316,7 @@
     }
   ],
   "faqs": [],
-  "generatedAt": "2026-09-22T21:40:00+08:00",
+  "generatedAt": "2026-10-29T22:25:30.370228+08:00",
   "materialGroups": [
     {
       "groupType": "BASIC_REQUIRED",
@@ -354,7 +333,7 @@
               "effectiveFrom": "2026-09-01",
               "effectiveTo": null,
               "evidenceClass": "DOCUMENTED_RULE",
-              "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+              "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
               "evidenceType": "PRODUCT_CARD_SECTION",
               "isDemo": true,
               "ownerOrg": "公司金融产品管理部",
@@ -383,7 +362,7 @@
               "effectiveFrom": "2026-09-01",
               "effectiveTo": null,
               "evidenceClass": "DOCUMENTED_RULE",
-              "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+              "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
               "evidenceType": "PRODUCT_CARD_SECTION",
               "isDemo": true,
               "ownerOrg": "公司金融产品管理部",
@@ -412,7 +391,7 @@
               "effectiveFrom": "2026-09-01",
               "effectiveTo": null,
               "evidenceClass": "DOCUMENTED_RULE",
-              "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+              "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
               "evidenceType": "PRODUCT_CARD_SECTION",
               "isDemo": true,
               "ownerOrg": "公司金融产品管理部",
@@ -441,7 +420,7 @@
               "effectiveFrom": "2026-09-01",
               "effectiveTo": null,
               "evidenceClass": "DOCUMENTED_RULE",
-              "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+              "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
               "evidenceType": "PRODUCT_CARD_SECTION",
               "isDemo": true,
               "ownerOrg": "公司金融产品管理部",
@@ -474,7 +453,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S04-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S04-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -499,7 +478,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S04-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S04-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -509,8 +488,8 @@
         }
       ],
       "prerequisiteId": "PRE-PROD-CM-003-S4-2",
-      "prerequisiteType": "CREDIT",
-      "requirementText": "信用评级 A 及以上。"
+      "prerequisiteType": "ACCOUNT",
+      "requirementText": "在本行开立对公结算账户，结算流水稳定。"
     },
     {
       "conditional": false,
@@ -524,7 +503,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S04-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S04-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -535,7 +514,7 @@
       ],
       "prerequisiteId": "PRE-PROD-CM-003-S4-3",
       "prerequisiteType": "ACCOUNT",
-      "requirementText": "在本行开立对公结算账户，结算流水稳定。"
+      "requirementText": "客户申请法人账户透支，内部评级不低于 A 级；评级低于 A 级的，按《对公客户准入与评级管理办法》（`SRC-XFAM-001`）第八条、第九条处理。"
     },
     {
       "conditional": false,
@@ -549,7 +528,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S06-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S06-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -560,10 +539,98 @@
       ],
       "prerequisiteId": "PRE-PROD-CM-003-S6",
       "prerequisiteType": "ACCOUNT",
-      "requirementText": "产品：对公结算账户。"
+      "requirementText": "对公结算账户。"
     }
   ],
-  "pricingItems": [],
+  "pricingItems": [
+    {
+      "approvalRequired": false,
+      "determiningFactors": [
+        "费率金额：源材料未给出具体数值，待核定（不编造）"
+      ],
+      "disclosureLevel": "RM_INTERNAL",
+      "explanation": "透支资金按日计息，利率不低于同期贷款市场报价利率加 150 个基点，具体以协议约定为准。",
+      "priceListEvidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§8",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODCM003-S08-84f63bd5",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/cash-management/version=2026.09.01.1/product-cards/PROD-CM-003.md#S08",
+          "title": "产品卡《法人账户透支》§8 价格边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "pricingItemId": "PRI-PROD-CM-003-01",
+      "pricingType": "INTEREST_RATE"
+    },
+    {
+      "approvalRequired": false,
+      "determiningFactors": [
+        "费率金额：源材料未给出具体数值，待核定（不编造）"
+      ],
+      "disclosureLevel": "RM_INTERNAL",
+      "explanation": "透支服务费按透支额度年化百分之零点五收取，最低每户每年人民币 2000 元。",
+      "priceListEvidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§8",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODCM003-S08-84f63bd5",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/cash-management/version=2026.09.01.1/product-cards/PROD-CM-003.md#S08",
+          "title": "产品卡《法人账户透支》§8 价格边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "pricingItemId": "PRI-PROD-CM-003-02",
+      "pricingType": "FEE"
+    },
+    {
+      "approvalRequired": false,
+      "determiningFactors": [
+        "费率金额：源材料未给出具体数值，待核定（不编造）"
+      ],
+      "disclosureLevel": "RM_INTERNAL",
+      "explanation": "逾期未归还透支资金的，自逾期之日起按协议利率上浮百分之五十计收罚息，并暂停新增透支。",
+      "priceListEvidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§8",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODCM003-S08-84f63bd5",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/cash-management/version=2026.09.01.1/product-cards/PROD-CM-003.md#S08",
+          "title": "产品卡《法人账户透支》§8 价格边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "pricingItemId": "PRI-PROD-CM-003-03",
+      "pricingType": "OVERDUE"
+    }
+  ],
   "processSteps": [
     {
       "actors": [],
@@ -577,7 +644,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -593,8 +660,8 @@
       "sequence": 1,
       "slaReference": null,
       "stepId": "STP-PROD-CM-003-01",
-      "stepName": "申请受理",
-      "summary": "申请受理"
+      "stepName": "客户申请",
+      "summary": "客户申请"
     },
     {
       "actors": [],
@@ -608,7 +675,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -639,7 +706,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -655,8 +722,8 @@
       "sequence": 3,
       "slaReference": null,
       "stepId": "STP-PROD-CM-003-03",
-      "stepName": "额度审批",
-      "summary": "额度审批"
+      "stepName": "评级与额度核定",
+      "summary": "评级与额度核定"
     },
     {
       "actors": [],
@@ -670,7 +737,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -686,8 +753,8 @@
       "sequence": 4,
       "slaReference": null,
       "stepId": "STP-PROD-CM-003-04",
-      "stepName": "协议签署",
-      "summary": "协议签署"
+      "stepName": "合同签署",
+      "summary": "合同签署"
     },
     {
       "actors": [],
@@ -701,7 +768,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S07-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -717,8 +784,39 @@
       "sequence": 5,
       "slaReference": null,
       "stepId": "STP-PROD-CM-003-05",
-      "stepName": "额度启用",
-      "summary": "额度启用"
+      "stepName": "系统参数配置",
+      "summary": "系统参数配置"
+    },
+    {
+      "actors": [],
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§7",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODCM003-S07-84f63bd5",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "公司金融产品管理部",
+          "sourceRef": "03_core/cash-management/version=2026.09.01.1/product-cards/PROD-CM-003.md#S07",
+          "title": "产品卡《法人账户透支》§7 流程与材料",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "exceptions": [],
+      "humanDecisionRequired": false,
+      "inputs": [],
+      "outputs": [],
+      "sequence": 6,
+      "slaReference": null,
+      "stepId": "STP-PROD-CM-003-06",
+      "stepName": "放款与贷后管理",
+      "summary": "放款与贷后管理"
     }
   ],
   "productFamily": "CASH_MANAGEMENT",
@@ -737,7 +835,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S10-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S10-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -763,7 +861,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S10-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S10-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -779,7 +877,7 @@
   ],
   "schema": "product_center_sections/v1",
   "sourceCardRef": "03_core/cash-management/version=2026.09.01.1/product-cards/PROD-CM-003.md",
-  "sourceCardSha256": "1cff064c8a42378451146416ebf233de14aa2b87fb20ca194c6ab2549aa400b2",
+  "sourceCardSha256": "84f63bd56eb1703f7beba17bd2ce26b2eae80aff109db83615ff45b66bd745d6",
   "summary": {
     "boundaryStatement": "房地产开发、证券投资等禁止用途主体。",
     "isNot": [
@@ -808,7 +906,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S02-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S02-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",
@@ -835,7 +933,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODCM003-S02-1cff064c",
+          "evidenceId": "EVR-PRODCM003-S02-84f63bd5",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "公司金融产品管理部",

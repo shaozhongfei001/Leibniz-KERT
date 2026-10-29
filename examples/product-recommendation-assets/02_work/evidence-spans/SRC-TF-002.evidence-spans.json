@@ -1,5 +1,5 @@
 {
-  "evidenceCount": 4,
+  "evidenceCount": 5,
   "evidenceSpans": [
     {
       "applicabilityScope": {
@@ -7,9 +7,9 @@
         "effectiveTo": null
       },
       "authorityLevel": "INTERNAL_POLICY",
-      "claimType": "PROCESS",
+      "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-SRCTF002-0cb4ec16",
-      "extractionRunId": "RUN-20260922-84773271",
+      "extractionRunId": "RUN-20260922-59c0d758",
       "fragmentId": "FRG-SRCTF002-0002",
       "locator": {
         "clause": "第二条",
@@ -19,10 +19,10 @@
       "quote": "本规程适用于本行办理的**国内信用证**开立、通知、交单、审单、付款与议付环节的行内操作。",
       "quoteHash": "0cb4ec1664bce53b718f08bd1059481971e0e895ef64867a6ba16b8915b55418",
       "retrievedAt": "2026-09-22T21:40:00+08:00",
-      "sourceBytesHash": "1c45f1015ff4753f616370947fe57e69cf8ff9a3ff065acd7b4e4624325030c1",
+      "sourceBytesHash": "c9d492b3a7b6258cac2f082cc42c4df52e96d89983362f7435e57fbb1e8225ab",
       "sourceId": "SRC-TF-002",
       "sourcePath": "01_raw/_authoritative/SRC-TF-002.DEMO.md",
-      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101",
+      "sourceVersionId": "SV-SRCTF002-20260922-c9d492b3",
       "usage": "AUTHORITATIVE"
     },
     {
@@ -33,7 +33,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-SRCTF002-f4af5cb2",
-      "extractionRunId": "RUN-20260922-84773271",
+      "extractionRunId": "RUN-20260922-59c0d758",
       "fragmentId": "FRG-SRCTF002-0004",
       "locator": {
         "clause": "第四条",
@@ -43,10 +43,10 @@
       "quote": "申请开证的客户应满足：一、依法登记并在本行开立结算账户；二、内部评级不低于本行国内信用证业务准入线（见 `SRC-XFAM-001`）；三、已核定**开证额度**；四、基础交易真实、可核验（按 `SRC-TF-003`）。",
       "quoteHash": "f4af5cb2e7bee2a61c8129fbffd64acd939d65024038b9471d03055a84cfd752",
       "retrievedAt": "2026-09-22T21:40:00+08:00",
-      "sourceBytesHash": "1c45f1015ff4753f616370947fe57e69cf8ff9a3ff065acd7b4e4624325030c1",
+      "sourceBytesHash": "c9d492b3a7b6258cac2f082cc42c4df52e96d89983362f7435e57fbb1e8225ab",
       "sourceId": "SRC-TF-002",
       "sourcePath": "01_raw/_authoritative/SRC-TF-002.DEMO.md",
-      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101",
+      "sourceVersionId": "SV-SRCTF002-20260922-c9d492b3",
       "usage": "AUTHORITATIVE"
     },
     {
@@ -57,7 +57,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "PROCESS",
       "evidenceId": "EVS-SRCTF002-9cce8bb5",
-      "extractionRunId": "RUN-20260922-84773271",
+      "extractionRunId": "RUN-20260922-59c0d758",
       "fragmentId": "FRG-SRCTF002-0011",
       "locator": {
         "clause": "第十一条",
@@ -67,10 +67,10 @@
       "quote": "发现**不符点**的，应一次性列明并按行内既定流程处理（退单、要求修改或按客户授权接受不符点）；**不符点处理的法律效果以 `REG-TF-002` 为准**。",
       "quoteHash": "9cce8bb5ce14438e1cadfd36c88d9ce0a45d83d074972acfc7bd59dc33df25d0",
       "retrievedAt": "2026-09-22T21:40:00+08:00",
-      "sourceBytesHash": "1c45f1015ff4753f616370947fe57e69cf8ff9a3ff065acd7b4e4624325030c1",
+      "sourceBytesHash": "c9d492b3a7b6258cac2f082cc42c4df52e96d89983362f7435e57fbb1e8225ab",
       "sourceId": "SRC-TF-002",
       "sourcePath": "01_raw/_authoritative/SRC-TF-002.DEMO.md",
-      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101",
+      "sourceVersionId": "SV-SRCTF002-20260922-c9d492b3",
       "usage": "AUTHORITATIVE"
     },
     {
@@ -81,7 +81,7 @@
       "authorityLevel": "INTERNAL_POLICY",
       "claimType": "ELIGIBILITY",
       "evidenceId": "EVS-SRCTF002-498d5e35",
-      "extractionRunId": "RUN-20260922-84773271",
+      "extractionRunId": "RUN-20260922-59c0d758",
       "fragmentId": "FRG-SRCTF002-0013",
       "locator": {
         "clause": "第十三条",
@@ -91,13 +91,37 @@
       "quote": "议付与融资安排应纳入客户统一授信管理；**议付的法定条件与追索安排以 `REG-TF-002` 为准**。",
       "quoteHash": "498d5e359a186c8aee341e951411b2e9f99bbab240379cdcae31cdf7dad7e4f6",
       "retrievedAt": "2026-09-22T21:40:00+08:00",
-      "sourceBytesHash": "1c45f1015ff4753f616370947fe57e69cf8ff9a3ff065acd7b4e4624325030c1",
+      "sourceBytesHash": "c9d492b3a7b6258cac2f082cc42c4df52e96d89983362f7435e57fbb1e8225ab",
       "sourceId": "SRC-TF-002",
       "sourcePath": "01_raw/_authoritative/SRC-TF-002.DEMO.md",
-      "sourceVersionId": "SV-SRCTF002-20260922-1c45f101",
+      "sourceVersionId": "SV-SRCTF002-20260922-c9d492b3",
+      "usage": "AUTHORITATIVE"
+    },
+    {
+      "applicabilityScope": {
+        "effectiveFrom": "2026-09-22",
+        "effectiveTo": null
+      },
+      "authorityLevel": "INTERNAL_POLICY",
+      "claimType": "ELIGIBILITY",
+      "evidenceId": "EVS-SRCTF002-8bed036b",
+      "extractionRunId": "RUN-20260922-59c0d758",
+      "fragmentId": "FRG-SRCTF002-0018",
+      "locator": {
+        "clause": "第十八条",
+        "clauseVerified": false,
+        "kind": "CLAUSE"
+      },
+      "quote": "本行国内信用证业务准入线为内部评级 BBB 级；评级低于该线的，按《对公客户准入与评级管理办法》（`SRC-XFAM-001`）第八条、第九条处理。",
+      "quoteHash": "8bed036bd3e7352ed7feff519d8dd12a0beb075800df38f0bde7a3948450a9ae",
+      "retrievedAt": "2026-09-22T21:40:00+08:00",
+      "sourceBytesHash": "c9d492b3a7b6258cac2f082cc42c4df52e96d89983362f7435e57fbb1e8225ab",
+      "sourceId": "SRC-TF-002",
+      "sourcePath": "01_raw/_authoritative/SRC-TF-002.DEMO.md",
+      "sourceVersionId": "SV-SRCTF002-20260922-c9d492b3",
       "usage": "AUTHORITATIVE"
     }
   ],
   "sourceId": "SRC-TF-002",
-  "sourceVersionId": "SV-SRCTF002-20260922-1c45f101"
+  "sourceVersionId": "SV-SRCTF002-20260922-c9d492b3"
 }

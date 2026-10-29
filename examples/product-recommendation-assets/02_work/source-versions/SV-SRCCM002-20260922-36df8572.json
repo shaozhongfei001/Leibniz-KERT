@@ -1,19 +1,20 @@
 {
   "allowedClaimTypes": [
     "PROCESS",
+    "PRICE",
     "ELIGIBILITY"
   ],
   "authorityLevel": "INTERNAL_POLICY",
-  "byteSize": 4280,
-  "bytesSha256": "5879e81430538f75091805f2f3a2db23bd2cd98bbbb32f731c575221d058093f",
+  "byteSize": 3764,
+  "bytesSha256": "36df85722df4ecc49cb757f4a858dbfbaad4e85daf223fc7ba2ab66224eff7d3",
   "ingestedAt": "2026-09-22T21:40:00+08:00",
   "pageCount": null,
   "productFamily": "CASH_MANAGEMENT",
   "provenanceState": "DEMO",
   "provenanceUrl": null,
-  "sourceId": "SRC-CM-001",
-  "sourcePath": "01_raw/_authoritative/SRC-CM-001.DEMO.md",
-  "sourceVersionId": "SV-SRCCM001-20260922-5879e814",
+  "sourceId": "SRC-CM-002",
+  "sourcePath": "01_raw/_authoritative/SRC-CM-002.DEMO.md",
+  "sourceVersionId": "SV-SRCCM002-20260922-36df8572",
   "supersededBy": null,
   "zone": "_authoritative"
 }

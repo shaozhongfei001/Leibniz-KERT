@@ -1,5 +1,5 @@
 {
-  "fragmentCount": 22,
+  "fragmentCount": 23,
   "fragments": [
     {
       "contentSha256": "9a275713e5dc1ede7eb3da659c6cbae61c735cc9e41f40cc6917eaf2615518b5",
@@ -7,7 +7,7 @@
       "fragmentId": "FRG-SRCSET002-0001",
       "pageNo": null,
       "seqNo": 1,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "ee523194d2902c3cfc92f2f6d40539f6d1f66a5450d6e9877d4aa788e2f8f40d",
@@ -15,7 +15,7 @@
       "fragmentId": "FRG-SRCSET002-0002",
       "pageNo": null,
       "seqNo": 2,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "8802bccae36d9f81165aea5325125e041ba77fdeebb545dfe57e7772f7d77ec4",
@@ -23,7 +23,7 @@
       "fragmentId": "FRG-SRCSET002-0003",
       "pageNo": null,
       "seqNo": 3,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "c5f34a5b3e909eb3f9885bedc26d1703e250a476dac2b6e3500c5d58fbea3516",
@@ -31,7 +31,7 @@
       "fragmentId": "FRG-SRCSET002-0004",
       "pageNo": null,
       "seqNo": 4,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "4e30c444344e70a466d615a3efe83c29f972024697f06278d4e54964cc37031d",
@@ -39,7 +39,7 @@
       "fragmentId": "FRG-SRCSET002-0005",
       "pageNo": null,
       "seqNo": 5,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "5d76f82b3c39f993c6c157516bd3c97eecfee80968310fb3521ac5a8fcff3842",
@@ -47,7 +47,7 @@
       "fragmentId": "FRG-SRCSET002-0006",
       "pageNo": null,
       "seqNo": 6,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "51b9465af13786aa50db8889a2c290c964094f970bd071d97e083a48bd693cbc",
@@ -55,7 +55,7 @@
       "fragmentId": "FRG-SRCSET002-0007",
       "pageNo": null,
       "seqNo": 7,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "898b4b992b581f519f746fa242444b60f9b3df3915f6fc6771342ca44d3a349f",
@@ -63,7 +63,7 @@
       "fragmentId": "FRG-SRCSET002-0008",
       "pageNo": null,
       "seqNo": 8,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "31493765dc76e26e0af3578366b20ffeec5bc9ee87c7e6cde5d0d961452645d2",
@@ -71,7 +71,7 @@
       "fragmentId": "FRG-SRCSET002-0009",
       "pageNo": null,
       "seqNo": 9,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "9b59c6d155aab71d2664c77a1b2ebba63763d18c4971cffd6ae79ff35f6b7d8c",
@@ -79,7 +79,7 @@
       "fragmentId": "FRG-SRCSET002-0010",
       "pageNo": null,
       "seqNo": 10,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "37cf2c5e727094686978e0ea3a065e04ba404ec23fc1276b71cc534e87d33e87",
@@ -87,7 +87,7 @@
       "fragmentId": "FRG-SRCSET002-0011",
       "pageNo": null,
       "seqNo": 11,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "252f0ac03f4407d319d228c5ce42b1f76fcd641d50fe1a558127f5486de1321d",
@@ -95,7 +95,7 @@
       "fragmentId": "FRG-SRCSET002-0012",
       "pageNo": null,
       "seqNo": 12,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "16177dda737ad29b53f784feb6cf5a9ecece3912b652c1703627390a286470d7",
@@ -103,7 +103,7 @@
       "fragmentId": "FRG-SRCSET002-0013",
       "pageNo": null,
       "seqNo": 13,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "c54fee0ef646ba6f58e16e0e0b5386d40df33094f785b15fde4ba07c0780ea6d",
@@ -111,7 +111,7 @@
       "fragmentId": "FRG-SRCSET002-0014",
       "pageNo": null,
       "seqNo": 14,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "814b0e42238882f85f9e6d530e47f83e79faaef01f10f68bb7a27cfb0fe50193",
@@ -119,7 +119,7 @@
       "fragmentId": "FRG-SRCSET002-0015",
       "pageNo": null,
       "seqNo": 15,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "210ba93162a64c4c1695180ddbfc3385e1a8f0c107f6f4eae673276a3bc2aa9f",
@@ -127,7 +127,7 @@
       "fragmentId": "FRG-SRCSET002-0016",
       "pageNo": null,
       "seqNo": 16,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "5561c94080ba9c15681edd31ff79b940847e90016643b40529d67760adcc97e3",
@@ -135,7 +135,7 @@
       "fragmentId": "FRG-SRCSET002-0017",
       "pageNo": null,
       "seqNo": 17,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "e56da5ca751f5e8a0861230571a94fc43e6f1819463b0616d529c58654b4a2d3",
@@ -143,7 +143,7 @@
       "fragmentId": "FRG-SRCSET002-0018",
       "pageNo": null,
       "seqNo": 18,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
       "contentSha256": "20570a40a3a246ded0a3c2c691bc73bfa0b8b0622bfa8d4153a64116968b17bf",
@@ -151,33 +151,41 @@
       "fragmentId": "FRG-SRCSET002-0019",
       "pageNo": null,
       "seqNo": 19,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
-      "contentSha256": "e570471247213d8bf4a013d5d55d4a09a47cdc04fa9d8e83dcf8233f2992a8fb",
-      "contentText": "**第二十条** 本办法与上位监管规定不一致的，**适用监管规定**；本行其他制度与本办法不一致的，按\"从严\"原则执行。",
+      "contentSha256": "8ed8c034e3f894f0cf63d61438492a9e3f42f4d7db3509d60ad928f199b8c7c8",
+      "contentText": "**第二十条** 本行国内保理业务准入线为内部评级 BBB 级；评级低于该线的，按《对公客户准入与评级管理办法》（`SRC-XFAM-001`）第八条、第九条处理。",
       "fragmentId": "FRG-SRCSET002-0020",
       "pageNo": null,
       "seqNo": 20,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
-      "contentSha256": "88862b60ac6432767579baa7cf05d4f19efa5b44582e9e7d3c45795b3ef77223",
-      "contentText": "**第二十一条** 本办法由 DEMO-BANK 交易银行部负责解释与修订。",
+      "contentSha256": "8ea0b4b3922faaa033dcca4c20a372fe898ded16a661d618d549c4ff43988326",
+      "contentText": "**第二十一条** 本办法与上位监管规定不一致的，**适用监管规定**；本行其他制度与本办法不一致的，按\"从严\"原则执行。",
       "fragmentId": "FRG-SRCSET002-0021",
       "pageNo": null,
       "seqNo": 21,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     },
     {
-      "contentSha256": "b9a24afe30d7728d34deb02642b2bb77ff3f607bfd0ac621586b76cc08ab9659",
-      "contentText": "**第二十二条** 本办法自发布之日起施行。",
+      "contentSha256": "41fdc9863b8843a9de4d8dfe37703fa44497680af279dc7d04b09131f91001f3",
+      "contentText": "**第二十二条** 本办法由 DEMO-BANK 交易银行部负责解释与修订。",
       "fragmentId": "FRG-SRCSET002-0022",
       "pageNo": null,
       "seqNo": 22,
-      "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
+    },
+    {
+      "contentSha256": "9e018b5ccf6a5293675dba839cbee54c4344fcc7df0376db66891ac8139af6d3",
+      "contentText": "**第二十三条** 本办法自发布之日起施行。",
+      "fragmentId": "FRG-SRCSET002-0023",
+      "pageNo": null,
+      "seqNo": 23,
+      "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
     }
   ],
   "sourceId": "SRC-SET-002",
-  "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7"
+  "sourceVersionId": "SV-SRCSET002-20260922-34afeab9"
 }

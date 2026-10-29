@@ -9,7 +9,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGCB001-355470e6",
-      "extractionRunId": "RUN-20260922-84773271",
+      "extractionRunId": "RUN-20260922-59c0d758",
       "fragmentId": "FRG-REGCB001-0001",
       "locator": {
         "clause": "一",
@@ -33,7 +33,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "PROCESS",
       "evidenceId": "EVS-REGCB001-b30a763d",
-      "extractionRunId": "RUN-20260922-84773271",
+      "extractionRunId": "RUN-20260922-59c0d758",
       "fragmentId": "FRG-REGCB001-0002",
       "locator": {
         "clause": "二",
@@ -57,7 +57,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGCB001-9ced501c",
-      "extractionRunId": "RUN-20260922-84773271",
+      "extractionRunId": "RUN-20260922-59c0d758",
       "fragmentId": "FRG-REGCB001-0003",
       "locator": {
         "clause": "三",
@@ -81,7 +81,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGCB001-bd000da7",
-      "extractionRunId": "RUN-20260922-84773271",
+      "extractionRunId": "RUN-20260922-59c0d758",
       "fragmentId": "FRG-REGCB001-0004",
       "locator": {
         "clause": "四",
@@ -105,7 +105,7 @@
       "authorityLevel": "REGULATORY",
       "claimType": "REGULATORY",
       "evidenceId": "EVS-REGCB001-b33ee28c",
-      "extractionRunId": "RUN-20260922-84773271",
+      "extractionRunId": "RUN-20260922-59c0d758",
       "fragmentId": "FRG-REGCB001-0005",
       "locator": {
         "clause": "五",

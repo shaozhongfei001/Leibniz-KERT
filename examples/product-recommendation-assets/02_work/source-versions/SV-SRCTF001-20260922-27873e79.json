@@ -5,8 +5,8 @@
     "PROCESS"
   ],
   "authorityLevel": "INTERNAL_POLICY",
-  "byteSize": 5856,
-  "bytesSha256": "1ac1446e84b4766b0493d14a13ded2548dbdd614b303ef3996fe5d57f0eec6d2",
+  "byteSize": 6089,
+  "bytesSha256": "27873e7978e3bce74fb6553e1cb8a112c94b0174219eb57698727b3cdb4d4ac0",
   "ingestedAt": "2026-09-22T21:40:00+08:00",
   "pageCount": null,
   "productFamily": "TRADE_FINANCE",
@@ -14,7 +14,7 @@
   "provenanceUrl": null,
   "sourceId": "SRC-TF-001",
   "sourcePath": "01_raw/_authoritative/SRC-TF-001.DEMO.md",
-  "sourceVersionId": "SV-SRCTF001-20260922-1ac1446e",
+  "sourceVersionId": "SV-SRCTF001-20260922-27873e79",
   "supersededBy": null,
   "zone": "_authoritative"
 }

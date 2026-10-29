@@ -8,5 +8,36 @@
   ],
   "reason": "缺少 Owner 签署的 ReviewDecision，Release 不得 PUBLISHED",
   "releaseId": "RLS-2026.09.22.102",
-  "unblockCommand": "python3 tools/l13_publish_release.py --decisions 90_control/decisions/signed.json"
+  "unblockCommand": "python3 tools/l13_publish_release.py --decisions 90_control/decisions/signed.json",
+  "resolution": {
+    "state": "RESOLVED",
+    "note": "append-only：上方 blockedAt/lifecycleState/reason/releaseId/unblockCommand 保持 2026-09-22T19:10 阻塞时的事实，未回写；本块仅追加解除依据。",
+    "resolvedByDecisionsFile": "90_control/decisions/signed-pc8-r5.json",
+    "decisionsAttestedBy": "OWNER",
+    "decisionsAttestedAt": "2026-09-22T23:30:00+08:00",
+    "decisionCount": 29,
+    "appliedBy": "l13_apply_decisions.py + l13_publish_release.py（逐产品，SOURCE_DATE_EPOCH=2026-09-22T21:40:00+08:00）",
+    "releasedProducts": 13,
+    "releases": {
+      "PROD-CB-001": "RLS-2026.09.22.173",
+      "PROD-CB-002": "RLS-2026.09.22.174",
+      "PROD-CM-001": "RLS-2026.09.22.175",
+      "PROD-CM-002": "RLS-2026.09.22.176",
+      "PROD-CM-003": "RLS-2026.09.22.177",
+      "PROD-FIN-001": "RLS-2026.09.22.178",
+      "PROD-FIN-002": "RLS-2026.09.22.179",
+      "PROD-FIN-003": "RLS-2026.09.22.180",
+      "PROD-IB-001": "RLS-2026.09.22.181",
+      "PROD-SET-001": "RLS-2026.09.22.182",
+      "PROD-SET-002": "RLS-2026.09.22.183",
+      "PROD-TF-001": "RLS-2026.09.22.184",
+      "PROD-TF-002": "RLS-2026.09.22.185"
+    },
+    "gateResult": {
+      "blockers": 0,
+      "interpretationReady": true,
+      "recommendationReady": false,
+      "recommendationReadyReason": "DEMO 派生知识恒不得进入 RECOMMENDATION_READY（INV-EVS-09）"
+    }
+  }
 }

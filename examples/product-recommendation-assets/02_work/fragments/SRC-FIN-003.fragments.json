@@ -1,5 +1,5 @@
 {
-  "fragmentCount": 17,
+  "fragmentCount": 18,
   "fragments": [
     {
       "contentSha256": "0f4c3b2bdd7b68d3d770e81d3ea56894bd56dc8eaf2e6db37568544bf2d39f7d",
@@ -7,7 +7,7 @@
       "fragmentId": "FRG-SRCFIN003-0001",
       "pageNo": null,
       "seqNo": 1,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "e60fb56533f6e99fcdf788bed24ef920f21e63752b2a738ed928a0c3ae751b6f",
@@ -15,7 +15,7 @@
       "fragmentId": "FRG-SRCFIN003-0002",
       "pageNo": null,
       "seqNo": 2,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "3743f10901c38969e5717571363dee205dbc6c1af3a47eddf76bf106df1225e5",
@@ -23,7 +23,7 @@
       "fragmentId": "FRG-SRCFIN003-0003",
       "pageNo": null,
       "seqNo": 3,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "778c4844995848850c46e2b8dc8fe56d031f57b6d2d5cc0088338316130939fd",
@@ -31,7 +31,7 @@
       "fragmentId": "FRG-SRCFIN003-0004",
       "pageNo": null,
       "seqNo": 4,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "a591efb34278747761f3871c409947d52585c84d6deef72e702c32368a4e37bd",
@@ -39,7 +39,7 @@
       "fragmentId": "FRG-SRCFIN003-0005",
       "pageNo": null,
       "seqNo": 5,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "e5529d0f6a5e91389b3717001d8acd0b3841b5842b6c3a7bd355559d730b97e6",
@@ -47,7 +47,7 @@
       "fragmentId": "FRG-SRCFIN003-0006",
       "pageNo": null,
       "seqNo": 6,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "8219ced166ae6da60de00ec60ef88e0de84fb4b3f85622c0a80b5137a63e9e58",
@@ -55,7 +55,7 @@
       "fragmentId": "FRG-SRCFIN003-0007",
       "pageNo": null,
       "seqNo": 7,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "6f117f898514cbbfcc87472c9746f9db9ca8768c2ef81292bc58ec84b4938674",
@@ -63,7 +63,7 @@
       "fragmentId": "FRG-SRCFIN003-0008",
       "pageNo": null,
       "seqNo": 8,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "1980f1d9267e8d4cc41ad323afa4b926628d7ec765642051751b7b7fabd07438",
@@ -71,7 +71,7 @@
       "fragmentId": "FRG-SRCFIN003-0009",
       "pageNo": null,
       "seqNo": 9,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "2b5e05468b8771fcfd8ca6524f4374a257df83ac7d852089c83e5bb4f4064101",
@@ -79,7 +79,7 @@
       "fragmentId": "FRG-SRCFIN003-0010",
       "pageNo": null,
       "seqNo": 10,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "3cee39de3d86a7fbe4f5c370cf6a5875a9b63d402c08dbc3e2631e995d9e8d6b",
@@ -87,7 +87,7 @@
       "fragmentId": "FRG-SRCFIN003-0011",
       "pageNo": null,
       "seqNo": 11,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "ddc538abcab49bd2b946bb0225a8d1ad4c591799a0a6838e2b25559daa4dd732",
@@ -95,7 +95,7 @@
       "fragmentId": "FRG-SRCFIN003-0012",
       "pageNo": null,
       "seqNo": 12,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "0e6022324252ba0db6c9397c2a0e406a6ca460963200975ea9d152bbc2c20324",
@@ -103,7 +103,7 @@
       "fragmentId": "FRG-SRCFIN003-0013",
       "pageNo": null,
       "seqNo": 13,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
       "contentSha256": "3f0815227937ef80d78b10d1b4b341ba3d0905da19b2b5d0a30a0d520dd380d3",
@@ -111,33 +111,41 @@
       "fragmentId": "FRG-SRCFIN003-0014",
       "pageNo": null,
       "seqNo": 14,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
-      "contentSha256": "87cee470d4b5cac9e4a78f0d89b20de79e1986b5ead12896dde4161b507302d9",
-      "contentText": "**第十五条** 本规程与本办法之外的具体产品制度不一致的，按\"就高不就低\"原则执行。",
+      "contentSha256": "02ef2e81ad5aa88f66ecd3e546b2f1d37125067366a8470f733ba2f85b5a8e83",
+      "contentText": "**第十五条** 本行供应链金融业务（含应收账款类与订单类）准入线为内部评级 BBB 级；评级低于该线的，按《对公客户准入与评级管理办法》（`SRC-XFAM-001`）第八条、第九条处理。",
       "fragmentId": "FRG-SRCFIN003-0015",
       "pageNo": null,
       "seqNo": 15,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
-      "contentSha256": "f819c1d8feae3e3a363af06f1232e746b3b5e65c67b0c12e930b337935d811f9",
-      "contentText": "**第十六条** 本规程由 DEMO-BANK 公司金融产品管理部负责解释与修订。",
+      "contentSha256": "bc12b30da149cc3b19e06b45c2a93a094690b576b98cae1726b24ba12b1edd37",
+      "contentText": "**第十六条** 本规程与本办法之外的具体产品制度不一致的，按\"就高不就低\"原则执行。",
       "fragmentId": "FRG-SRCFIN003-0016",
       "pageNo": null,
       "seqNo": 16,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     },
     {
-      "contentSha256": "47c8a9642bb346b9b97a1d125a218ab478675e78978134df863401d218191aa3",
-      "contentText": "**第十七条** 本规程自发布之日起施行。",
+      "contentSha256": "084c4baf7cb41084b93a3405189b58d40ce6b32998f999d0da4faa7076331b51",
+      "contentText": "**第十七条** 本规程由 DEMO-BANK 公司金融产品管理部负责解释与修订。",
       "fragmentId": "FRG-SRCFIN003-0017",
       "pageNo": null,
       "seqNo": 17,
-      "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
+    },
+    {
+      "contentSha256": "a78e4d571649e30a2f41747734acff955705b5a894ef2c0d5c9c4d7f07c1c4c8",
+      "contentText": "**第十八条** 本规程自发布之日起施行。",
+      "fragmentId": "FRG-SRCFIN003-0018",
+      "pageNo": null,
+      "seqNo": 18,
+      "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
     }
   ],
   "sourceId": "SRC-FIN-003",
-  "sourceVersionId": "SV-SRCFIN003-20260922-3ec1e5d2"
+  "sourceVersionId": "SV-SRCFIN003-20260922-dc4b755a"
 }
