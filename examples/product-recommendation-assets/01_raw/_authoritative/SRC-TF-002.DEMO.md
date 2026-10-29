@@ -6,7 +6,7 @@ provenance_state: DEMO
 zone: _authoritative
 authority_level: INTERNAL_POLICY
 product_family: TRADE_FINANCE
-allowed_claim_types: [PROCESS, ELIGIBILITY]
+allowed_claim_types: [ELIGIBILITY, PROCESS, PRICE]
 registry_status: AVAILABLE
 version: "1.0-demo"
 effective_date: "2026-09-22"
@@ -67,10 +67,14 @@ demo_notice: "本文件为演示用虚构制度文本，由 PC8 造数（TL 派�
 
 **第十七条** 档案管理：申请书、信用证副本、单据影像、审单记录、付款凭证应成套归档，并与客户台账关联。
 
-## 第五章 附则
+## 第五章 准入评级线
 
-**第十八条** 本规程与上位监管规定不一致的，**适用监管规定**；本行其他制度与本规程不一致的，按"从严"原则执行。
+**第十八条** 本行国内信用证业务准入线为内部评级 BBB 级；评级低于该线的，按《对公客户准入与评级管理办法》（`SRC-XFAM-001`）第八条、第九条处理。
 
-**第十九条** 本规程由 DEMO-BANK 交易银行部负责解释与修订。
+## 第六章 附则
 
-**第二十条** 本规程自发布之日起施行。
+**第十九条** 本规程与上位监管规定不一致的，**适用监管规定**；本行其他制度与本规程不一致的，按"从严"原则执行。
+
+**第二十条** 本规程由 DEMO-BANK 交易银行部负责解释与修订。
+
+**第二十一条** 本规程自发布之日起施行。

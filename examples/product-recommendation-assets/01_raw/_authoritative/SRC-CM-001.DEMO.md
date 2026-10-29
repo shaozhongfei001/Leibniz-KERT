@@ -6,7 +6,7 @@ provenance_state: DEMO
 zone: _authoritative
 authority_level: INTERNAL_POLICY
 product_family: CASH_MANAGEMENT
-allowed_claim_types: [PROCESS, ELIGIBILITY]
+allowed_claim_types: [ELIGIBILITY, PROCESS, PRICE]
 registry_status: AVAILABLE
 version: "1.0-demo"
 effective_date: "2026-09-06"
