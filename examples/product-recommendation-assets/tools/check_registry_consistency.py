@@ -163,37 +163,39 @@ def main():
                 if f.name.endswith(".DEMO.md"):
                     demo_disk[f.name.split(".")[0]] = (zone, f)
                 else:
-                    on_disk[f.stem] = (zone, f)
+                    # 同一 source_id 可有多物理件：REG-CM-001 既有 PDF 原件又有 MD 转写件。
+                    # 旧实现用 `on_disk[f.stem] = ...` 会互相覆盖 ⇒ 实测值与登记块张冠李戴（F 修正 2026-10-29）。
+                    on_disk.setdefault(f.stem, []).append((zone, f))
 
     for sid, status in rows.items():
         if status in ("AVAILABLE", "CLAUSE_VERIFIED"):
             hit = on_disk.get(sid)
-            check(f"{sid} AVAILABLE 且文件落盘", hit is not None,
-                  "磁盘未找到" if hit is None else str(hit[1].name))
+            check(f"{sid} AVAILABLE 且文件落盘", bool(hit),
+                  "磁盘未找到" if not hit else "、".join(f.name for _z, f in hit))
         elif status == "PENDING_SOURCE":
             check(f"{sid} PENDING 且文件确实不存在", sid not in on_disk,
                   "状态 PENDING 但磁盘有文件！" if sid in on_disk else "")
 
-    # 登记元数据 vs 文件系统真值
-    for sid, (zone, f) in sorted(on_disk.items()):
-        real_bytes = f.stat().st_size
-        real_hash = sha256_file(f)
-        # 在文档中找该源的入库记录块
-        blk = re.search(rf"{re.escape(sid)} 入库记录.*?(?=\n## |\Z)", text, re.S)
+    # 登记元数据 vs 文件系统真值（**逐物理件**：同一 source_id 的每个文件都必须被登记）
+    for sid, entries in sorted(on_disk.items()):
+        # 入库记录块只取到下一个块标题/章节，避免跨源串读
+        blk = re.search(rf"{re.escape(sid)} 入库记录.*?(?=\n\*\*[^\n]*入库记录|\n## |\Z)", text, re.S)
         scope = blk.group(0) if blk else text
-        mb = re.search(r"文件字节数\s*\|\s*(\d+)", scope)
-        if mb:
-            check(f"{sid} 登记字节数 == 实测", int(mb.group(1)) == real_bytes,
-                  f"登记 {mb.group(1)} vs 实测 {real_bytes}")
-        if real_hash in text:
-            check(f"{sid} 登记 SHA-256 == 实测", True, real_hash[:16] + "…")
-        else:
-            check(f"{sid} 登记 SHA-256 == 实测", False, f"实测 {real_hash[:16]}… 未在登记表出现")
+        for zone, f in entries:
+            real_bytes = f.stat().st_size
+            real_hash = sha256_file(f)
+            row = re.search(
+                rf"\|\s*{re.escape(sid)}\s*\|\s*{real_bytes}\s*\|\s*`?{real_hash}`?\s*\|", text)
+            in_block = (real_hash in scope
+                        and re.search(rf"文件字节数[^|\n]*\|\s*{real_bytes}\b", scope) is not None)
+            ok = bool(row or in_block)
+            check(f"{sid}/{f.name} 登记字节数与 SHA-256 == 实测", ok,
+                  "" if ok else f"实测 {real_bytes}B {real_hash[:16]}…；汇总行与入库记录块均未登记该件")
 
-        # 5：双区路径与 usage 一致
-        if zone == "_public_reference":
-            check(f"{sid} 公开区 => VERIFICATION_ONLY 语义", "VERIFICATION_ONLY" in text,
-                  "登记表未声明公开轨限制")
+            # 5：双区路径与 usage 一致
+            if zone == "_public_reference":
+                check(f"{sid} 公开区 => VERIFICATION_ONLY 语义", "VERIFICATION_ONLY" in text,
+                      "登记表未声明公开轨限制")
 
     # 8：DEMO 演示轨一致性（L10 · DECISION-20260906-01 路径 C）
     for sid in sorted(demo):

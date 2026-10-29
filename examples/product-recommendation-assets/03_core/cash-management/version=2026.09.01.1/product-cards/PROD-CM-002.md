@@ -54,6 +54,10 @@ complementary_products: [SETTLEMENT_ACCOUNT, CORPORATE_E_BANK, CASH_POOL]
 - 信用评级 BBB 及以上。
 - 主账户与归集账户均在本行开立。
 
+<!-- enrich:SRC-CM-003 begin -->
+- 准入依据（依据 SRC-CM-003 第四条）：集团客户本部内部评级不低于 BBB 级；成员单位中评级低于 B 级的数量占比不得超过百分之三十。
+<!-- enrich:SRC-CM-003 end -->
+
 ## 5. 排除条件与禁止用途
 
 - 无明确授权关系的账户归集。
