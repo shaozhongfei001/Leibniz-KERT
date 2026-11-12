@@ -9,7 +9,7 @@
       "assertionId": "ASM-PRODCB001-b40103f9",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "UNKNOWN",
@@ -29,7 +29,7 @@
       "assertionId": "ASM-PRODCB001-7bc11c96",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [
         "EVS-SRCXFAM001-40b34db6"
       ],
@@ -51,7 +51,7 @@
       "assertionId": "ASM-PRODCB001-66b18cf9",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [
         "EVS-SRCXFAM001-d3e72c76"
       ],
@@ -73,7 +73,7 @@
       "assertionId": "ASM-PRODCB001-cd6e8ca4",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [
         "EVS-REGCB001-355470e6"
       ],
@@ -95,7 +95,7 @@
       "assertionId": "ASM-PRODCB001-388a931c",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [
         "EVS-REGCB001-9ced501c"
       ],
@@ -117,7 +117,7 @@
       "assertionId": "ASM-PRODCB001-825db2c8",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [
         "EVS-REGCB001-bd000da7"
       ],
@@ -139,7 +139,7 @@
       "assertionId": "ASM-PRODCB001-e59e1185",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [
         "EVS-REGCB001-b33ee28c"
       ],
@@ -161,7 +161,7 @@
       "assertionId": "ASM-PRODCB001-cd2843e8",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [
         "EVS-REGXFAM001-0b940e85"
       ],
@@ -183,7 +183,7 @@
       "assertionId": "ASM-PRODCB001-481066ca",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [
         "EVS-REGXFAM001-fd8cf7ce"
       ],
@@ -205,7 +205,7 @@
       "assertionId": "ASM-PRODCB001-83052d9f",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [],
       "fieldPath": "pricing.serviceFee",
       "knowledgeState": "UNKNOWN",
@@ -225,7 +225,7 @@
       "assertionId": "ASM-PRODCB001-7f0e00d3",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [],
       "fieldPath": "identity.productCode",
       "knowledgeState": "NOT_APPLICABLE",
@@ -245,7 +245,7 @@
       "assertionId": "ASM-PRODCB001-f25136cb",
       "conflictId": null,
       "createdAt": "2026-09-22T21:40:00+08:00",
-      "createdByRunId": "RUN-20260922-84773271",
+      "createdByRunId": "RUN-20260922-59c0d758",
       "evidenceIds": [
         "EVS-REGCB001-355470e6"
       ],
@@ -260,7 +260,7 @@
       "valueType": "TEXT"
     }
   ],
-  "extractionRunId": "RUN-20260922-84773271",
+  "extractionRunId": "RUN-20260922-59c0d758",
   "policyId": "FLD-CROSS_BORDER-001",
   "policyOwnerApproved": false,
   "productId": "PROD-CB-001",

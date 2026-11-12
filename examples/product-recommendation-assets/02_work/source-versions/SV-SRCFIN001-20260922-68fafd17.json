@@ -6,8 +6,8 @@
     "RISK"
   ],
   "authorityLevel": "INTERNAL_POLICY",
-  "byteSize": 5858,
-  "bytesSha256": "2a95a8c6f15c0145c06f938259870340187561ab6b6609f2e62aff6a3ae49a56",
+  "byteSize": 6310,
+  "bytesSha256": "68fafd17a194a17a755eb0798ac5b4039659e543d0f17af27dd58491e446aa3b",
   "ingestedAt": "2026-09-22T21:40:00+08:00",
   "pageCount": null,
   "productFamily": "FINANCING",
@@ -15,7 +15,7 @@
   "provenanceUrl": null,
   "sourceId": "SRC-FIN-001",
   "sourcePath": "01_raw/_authoritative/SRC-FIN-001.DEMO.md",
-  "sourceVersionId": "SV-SRCFIN001-20260922-2a95a8c6",
+  "sourceVersionId": "SV-SRCFIN001-20260922-68fafd17",
   "supersededBy": null,
   "zone": "_authoritative"
 }

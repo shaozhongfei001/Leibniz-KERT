@@ -15,7 +15,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S02-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S02-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -41,7 +41,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S05-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S05-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -67,7 +67,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S05-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S05-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -94,29 +94,11 @@
       }
     ],
     "reviewState": "DRAFT",
-    "rows": [
-      {
-        "productId": "PROD-SET-001",
-        "values": {
-          "RELATION": "前置产品",
-          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
-        },
-        "versionId": ""
-      },
-      {
-        "productId": "PROD-SET-001",
-        "values": {
-          "RELATION": "配套产品",
-          "SOURCE_ALIAS": "SETTLEMENT_ACCOUNT"
-        },
-        "versionId": ""
-      }
-    ]
+    "rows": []
   },
   "derivation": {
     "absentSections": {
       "FAQ": "全仓无 FAQ 来源 ⇒ 不生成问答（不编造）",
-      "PRICING": "卡片 §8 仅记「按行内收费标准执行（待核定）」⇒ 不出内容（Owner 裁定 O-2）",
       "TERMS_missing_keys": [
         "LIMIT",
         "TENOR",
@@ -126,18 +108,21 @@
         "COLLATERAL"
       ]
     },
-    "aliasMapSource": "gits `specs/knowledge-architecture/instances/product/sim/product-relations.SIM.ttl`（`sim:sourceAlias` ⇒ `rdf:object` 产品 id；含 Owner 决策 `OWNER-DECISION-2026-09-22-D2`）",
+    "aliasMapSource": null,
     "notes": "证据 isDemo=true（SIM 阶段资产）；卡片 §9 风险与 §11 版本语义不属 8 章，未产出。",
     "rules": [
       "TERMS ← §2 适用客户/适用场景（只产出 ELIGIBLE_ENTITY / PURPOSE）",
       "FIT ← §2 场景（TYPICAL_USE）+ §5 排除/禁止（NOT_SUITABLE/PROHIBITED_USE）+ §4 准入（ACCOUNT/CREDIT/CONTRACT）+ §6 前置",
       "PROCESS ← §7 流程（按 → 切分；卡片无细节 ⇒ summary=stepName）",
       "MATERIALS ← §7 材料（枚举清单；卡片无用途说明 ⇒ 如实标注）",
+      "PRICING ← §8 定价政策条款（逐条引用原文；费率金额待核定 ⇒ 不产出数字，approvalRequired 依条款是否含审批/审核要求）",
       "SALES ← §10 销售边界",
       "COMPARE ← §6 关系 + front matter 前置/配套产品码（reviewState=DRAFT：脚本派生未人工复核）"
     ],
     "tool": "tools/l40_build_product_center_sections.py",
     "unresolvedRelationCodes": [
+      "SETTLEMENT_ACCOUNT",
+      "SETTLEMENT_ACCOUNT",
       "FINANCIAL_ADVISORY"
     ]
   },
@@ -151,7 +136,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S01-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S01-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -168,7 +153,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S02-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S02-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -185,7 +170,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S03-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S03-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -202,7 +187,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S04-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S04-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -219,7 +204,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S05-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S05-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -236,7 +221,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S06-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S06-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -253,7 +238,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -270,7 +255,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S08-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S08-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -287,7 +272,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S09-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S09-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -304,7 +289,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S10-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S10-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -321,7 +306,7 @@
       "effectiveFrom": "2026-09-01",
       "effectiveTo": null,
       "evidenceClass": "DOCUMENTED_RULE",
-      "evidenceId": "EVR-PRODIB001-S11-b27182bd",
+      "evidenceId": "EVR-PRODIB001-S11-e8b41b4c",
       "evidenceType": "PRODUCT_CARD_SECTION",
       "isDemo": true,
       "ownerOrg": "投资银行部",
@@ -331,7 +316,7 @@
     }
   ],
   "faqs": [],
-  "generatedAt": "2026-09-22T21:40:00+08:00",
+  "generatedAt": "2026-10-29T22:25:30.402285+08:00",
   "materialGroups": [
     {
       "groupType": "BASIC_REQUIRED",
@@ -348,7 +333,7 @@
               "effectiveFrom": "2026-09-01",
               "effectiveTo": null,
               "evidenceClass": "DOCUMENTED_RULE",
-              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
               "evidenceType": "PRODUCT_CARD_SECTION",
               "isDemo": true,
               "ownerOrg": "投资银行部",
@@ -377,7 +362,7 @@
               "effectiveFrom": "2026-09-01",
               "effectiveTo": null,
               "evidenceClass": "DOCUMENTED_RULE",
-              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
               "evidenceType": "PRODUCT_CARD_SECTION",
               "isDemo": true,
               "ownerOrg": "投资银行部",
@@ -406,7 +391,7 @@
               "effectiveFrom": "2026-09-01",
               "effectiveTo": null,
               "evidenceClass": "DOCUMENTED_RULE",
-              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
               "evidenceType": "PRODUCT_CARD_SECTION",
               "isDemo": true,
               "ownerOrg": "投资银行部",
@@ -435,7 +420,7 @@
               "effectiveFrom": "2026-09-01",
               "effectiveTo": null,
               "evidenceClass": "DOCUMENTED_RULE",
-              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
               "evidenceType": "PRODUCT_CARD_SECTION",
               "isDemo": true,
               "ownerOrg": "投资银行部",
@@ -464,7 +449,7 @@
               "effectiveFrom": "2026-09-01",
               "effectiveTo": null,
               "evidenceClass": "DOCUMENTED_RULE",
-              "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+              "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
               "evidenceType": "PRODUCT_CARD_SECTION",
               "isDemo": true,
               "ownerOrg": "投资银行部",
@@ -497,7 +482,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S04-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S04-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -507,31 +492,6 @@
         }
       ],
       "prerequisiteId": "PRE-PROD-IB-001-S4-1",
-      "prerequisiteType": "CREDIT",
-      "requirementText": "依法设立并有效存续；信用评级 AA 及以上。"
-    },
-    {
-      "conditional": false,
-      "evidenceRefs": [
-        {
-          "accessLevel": "RM_INTERNAL",
-          "anchor": "§4",
-          "contentHash": null,
-          "documentNumber": null,
-          "documentVersion": "1.0.0",
-          "effectiveFrom": "2026-09-01",
-          "effectiveTo": null,
-          "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S04-b27182bd",
-          "evidenceType": "PRODUCT_CARD_SECTION",
-          "isDemo": true,
-          "ownerOrg": "投资银行部",
-          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S04",
-          "title": "产品卡《并购贷款》§4 准入条件",
-          "verificationState": "VERIFIED"
-        }
-      ],
-      "prerequisiteId": "PRE-PROD-IB-001-S4-2",
       "prerequisiteType": "CONTRACT",
       "requirementText": "并购交易合法合规，符合国家产业政策。"
     },
@@ -547,7 +507,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S04-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S04-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -556,7 +516,7 @@
           "verificationState": "VERIFIED"
         }
       ],
-      "prerequisiteId": "PRE-PROD-IB-001-S4-3",
+      "prerequisiteId": "PRE-PROD-IB-001-S4-2",
       "prerequisiteType": "CONTRACT",
       "requirementText": "并购方与目标企业有产业协同。"
     },
@@ -572,7 +532,32 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S04-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S04-e8b41b4c",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S04",
+          "title": "产品卡《并购贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-IB-001-S4-3",
+      "prerequisiteType": "CONTRACT",
+      "requirementText": "并购贷款占比不超过交易价款的 60%（监管要求）。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S04-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -582,8 +567,33 @@
         }
       ],
       "prerequisiteId": "PRE-PROD-IB-001-S4-4",
-      "prerequisiteType": "CONTRACT",
-      "requirementText": "并购贷款占比不超过交易价款的 60%（监管要求）。"
+      "prerequisiteType": "CREDIT",
+      "requirementText": "并购方（借款人）应同时满足：一、依法登记并存续，具备相应行业经营资质；二、内部评级不低于本行并购贷款准入线（见 `SRC-XFAM-001`）；三、已核定并购贷款专项额度；四、并购交易真实、合法，且已就交易背景完成核验（按 `SRC-TF-003`）。"
+    },
+    {
+      "conditional": false,
+      "evidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§4",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S04-e8b41b4c",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S04",
+          "title": "产品卡《并购贷款》§4 准入条件",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "prerequisiteId": "PRE-PROD-IB-001-S4-5",
+      "prerequisiteType": "CREDIT",
+      "requirementText": "本行并购贷款业务准入线为内部评级 AA 级；评级低于该线的，按《对公客户准入与评级管理办法》（`SRC-XFAM-001`）第八条、第九条处理。"
     },
     {
       "conditional": false,
@@ -597,7 +607,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S06-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S06-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -608,10 +618,40 @@
       ],
       "prerequisiteId": "PRE-PROD-IB-001-S6",
       "prerequisiteType": "ACCOUNT",
-      "requirementText": "产品：对公结算账户。"
+      "requirementText": "对公结算账户。"
     }
   ],
-  "pricingItems": [],
+  "pricingItems": [
+    {
+      "approvalRequired": true,
+      "determiningFactors": [
+        "费率金额：源材料未给出具体数值，待核定（不编造）"
+      ],
+      "disclosureLevel": "RM_INTERNAL",
+      "explanation": "并购贷款**利率**适用《产品定价管理办法》（`SRC-XFAM-002`）及本行利率管理规定，**不得**低于本行成本与风险下限审批发放。",
+      "priceListEvidenceRefs": [
+        {
+          "accessLevel": "RM_INTERNAL",
+          "anchor": "§8",
+          "contentHash": null,
+          "documentNumber": null,
+          "documentVersion": "1.0.0",
+          "effectiveFrom": "2026-09-01",
+          "effectiveTo": null,
+          "evidenceClass": "DOCUMENTED_RULE",
+          "evidenceId": "EVR-PRODIB001-S08-e8b41b4c",
+          "evidenceType": "PRODUCT_CARD_SECTION",
+          "isDemo": true,
+          "ownerOrg": "投资银行部",
+          "sourceRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md#S08",
+          "title": "产品卡《并购贷款》§8 价格边界",
+          "verificationState": "VERIFIED"
+        }
+      ],
+      "pricingItemId": "PRI-PROD-IB-001-01",
+      "pricingType": "INTEREST_RATE"
+    }
+  ],
   "processSteps": [
     {
       "actors": [],
@@ -625,7 +665,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -656,7 +696,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -687,7 +727,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -718,7 +758,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -749,7 +789,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -780,7 +820,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -811,7 +851,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S07-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S07-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -847,7 +887,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S10-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S10-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -873,7 +913,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S10-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S10-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -889,7 +929,7 @@
   ],
   "schema": "product_center_sections/v1",
   "sourceCardRef": "03_core/investment-banking/version=2026.09.01.1/product-cards/PROD-IB-001.md",
-  "sourceCardSha256": "b27182bdda9a2641b2a202e2529317843e062e851ab7c1417f551caa4d7fe4ad",
+  "sourceCardSha256": "e8b41b4c3caeffbcda149faf1819b686c579812c51b910177c44f4d6e096c679",
   "summary": {
     "boundaryStatement": "房地产开发、高污染、产能过剩行业并购。",
     "isNot": [
@@ -918,7 +958,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S02-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S02-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",
@@ -945,7 +985,7 @@
           "effectiveFrom": "2026-09-01",
           "effectiveTo": null,
           "evidenceClass": "DOCUMENTED_RULE",
-          "evidenceId": "EVR-PRODIB001-S02-b27182bd",
+          "evidenceId": "EVR-PRODIB001-S02-e8b41b4c",
           "evidenceType": "PRODUCT_CARD_SECTION",
           "isDemo": true,
           "ownerOrg": "投资银行部",

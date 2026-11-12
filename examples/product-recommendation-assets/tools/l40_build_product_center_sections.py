@@ -11,7 +11,8 @@ GITS 只保存**授权投影**且**不得本地兜底生成结论**。故由本�
 
 1. 每个对象都带 `evidenceRefs`，`sourceRef` 指回**卡片小节**（可回译）；
 2. 卡片里没有的**不产出**：
-   - `PRICING`：卡片 §8 仅写「按行内收费标准执行（**待核定**）」⇒ `pricingItems: []`（Owner 裁定 O-2）；
+   - `PRICING`：卡片 §8 有定价政策条款 ⇒ 逐条产出 `pricingItems`（`explanation` 引原文、
+     **费率金额待核定不编数字**）；§8 无条款 ⇒ `pricingItems: []` 并登记 `absentSections`（Owner 裁定 O-2）；
    - `FAQ`：**全仓无来源** ⇒ `faqs: []`（不生成问答）；
    - `TERMS` 只产出卡片确有的 `ELIGIBLE_ENTITY` / `PURPOSE`（`LIMIT`/`TENOR`/`REPAYMENT`/`COLLATERAL`
      卡片无对应内容 ⇒ 不产出）；
@@ -41,6 +42,8 @@ CST = timezone(timedelta(hours=8))
 
 SECTION_RE = re.compile(r"^##\s+(\d+)\.\s*(.+?)\s*$")
 BULLET_RE = re.compile(r"^[-*]\s+(.+?)\s*$")
+# enrich 回填的条款行：`- <label>（依据 <SRC> 第N条）：<原文>`
+CLAUSE_BULLET_RE = re.compile(r"^(制度依据|适用范围依据|排除依据|准入依据|定价政策)（依据 (SRC-[A-Z0-9-]+) (第[^）]+条)）：(.+)$")
 
 
 def now_cst() -> datetime:
@@ -74,6 +77,9 @@ def parse_card(path: Path) -> dict:
         elif line.strip():
             cur["prose"].append(line.strip())
     return {"path": path, "fm": fm, "sections": sections}
+
+
+CITE_RE = re.compile(r"（依据 [^）]+）")
 
 
 def kv(bullets: list[str], key: str) -> str | None:
@@ -120,11 +126,16 @@ def build_one(pr: dict, alias_map: dict | None = None) -> dict:
     s2, s3, s4, s5 = (sections.get(n, {}) for n in (2, 3, 4, 5))
     s6, s7, s8, s10 = (sections.get(n, {}) for n in (6, 7, 8, 10))
 
+    def _clause(b: str) -> tuple[str, str, str] | None:
+        """识别 enrich 条款行 ⇒ (label, sourceId, clauseId, 原文)；普通项目符号返回 None。"""
+        m = CLAUSE_BULLET_RE.match(b)
+        return (m.group(1), m.group(2), m.group(3), m.group(4)) if m else None
+
     # ---- OVERVIEW（§1 概览 + 结构化字段）----
     overview_text = " ".join(sections.get(1, {}).get("prose", []))
     one_sentence = overview_text.split("。")[0] + "。" if overview_text else None
     solves = [b for b in s3.get("bullets", [])]
-    is_not = [b for b in s5.get("bullets", [])]
+    is_not = [(cl[3] if (cl := _clause(b)) else b) for b in s5.get("bullets", [])]
     nearest = [b for b in s6.get("bullets", []) if b.startswith("配套")]
 
     # ---- TERMS（只产出卡片确有的 termKey）----
@@ -147,25 +158,38 @@ def build_one(pr: dict, alias_map: dict | None = None) -> dict:
         boundaries.append({"boundaryId": f"BND-{pid}-TYPICAL", "boundaryType": "TYPICAL_USE",
                            "scenarioName": "适用场景", "scenarioDescription": scene,
                            "alternativeDirection": None, "evidenceRefs": E(2)})
+    scope_no = 0
+    for b in s2.get("bullets", []):
+        cl = _clause(b)
+        if cl and cl[0] == "适用范围依据":
+            scope_no += 1
+            boundaries.append({"boundaryId": f"BND-{pid}-SCOPE{scope_no}", "boundaryType": "TYPICAL_USE",
+                               "scenarioName": "适用客户分层（制度依据）",
+                               "scenarioDescription": cl[3], "alternativeDirection": None,
+                               "evidenceRefs": E(2)})
     for i, b in enumerate(s5.get("bullets", []), 1):
-        btype = "PROHIBITED_USE" if b.startswith("禁止") else "NOT_SUITABLE"
+        cl = _clause(b)
+        text = cl[3] if cl else b
+        btype = "PROHIBITED_USE" if text.startswith("禁止") else "NOT_SUITABLE"
         boundaries.append({"boundaryId": f"BND-{pid}-EXCL{i}", "boundaryType": btype,
                            "scenarioName": "排除条件" if btype == "NOT_SUITABLE" else "禁止用途",
-                           "scenarioDescription": b, "alternativeDirection": None,
+                           "scenarioDescription": text, "alternativeDirection": None,
                            "evidenceRefs": E(5)})
     prerequisites = []
     for i, b in enumerate(s4.get("bullets", []), 1):
-        ptype = "ACCOUNT" if "账户" in b else ("CREDIT" if "评级" in b else "CONTRACT")
+        cl = _clause(b)
+        text = cl[3] if cl else b
+        ptype = "ACCOUNT" if "账户" in text else ("CREDIT" if "评级" in text else "CONTRACT")
         prerequisites.append({"prerequisiteId": f"PRE-{pid}-S4-{i}", "prerequisiteType": ptype,
-                              "requirementText": b, "conditional": False, "evidenceRefs": E(4)})
-    front_pre = kv(s6.get("bullets", []), "前置")
+                              "requirementText": text, "conditional": False, "evidenceRefs": E(4)})
+    front_pre = kv(s6.get("bullets", []), "前置产品") or kv(s6.get("bullets", []), "前置")
     if front_pre:
         prerequisites.append({"prerequisiteId": f"PRE-{pid}-S6", "prerequisiteType": "ACCOUNT",
                               "requirementText": front_pre, "conditional": False, "evidenceRefs": E(6)})
 
     # ---- PROCESS（§7 流程箭头串；卡片只给步骤名 ⇒ summary 与 stepName 同值，不编细节）----
     steps = []
-    flow = kv(s7.get("bullets", []), "流程") or ""
+    flow = CITE_RE.sub("", kv(s7.get("bullets", []), "流程") or "")
     for i, name in enumerate([x.strip().strip("。；;，,") for x in re.split(r"→|->", flow) if x.strip()], 1):
         steps.append({"stepId": f"STP-{pid}-{i:02d}", "sequence": i, "stepName": name,
                       "summary": name, "actors": [], "inputs": [], "outputs": [],
@@ -185,6 +209,26 @@ def build_one(pr: dict, alias_map: dict | None = None) -> dict:
                           # 契约里 `scope` 为 object（非 nullable）⇒ 无值即**省略**，不写 null
                           "evidenceRefs": E(7)})
     material_groups = ([{"groupType": "BASIC_REQUIRED", "items": materials}] if materials else [])
+
+    # ---- PRICING（§8 定价政策条款）----
+    # ⚠ 源材料**没有**具体费率数字 ⇒ `explanation` 逐字引用条款原文，`determiningFactors`
+    #   明标「待核定」，**不编数字**；`approvalRequired` 仅取条款是否含审批/审核要求。
+    pricing = []
+    for b in s8.get("bullets", []):
+        cl = _clause(b)
+        if not cl or cl[0] != "定价政策":
+            continue
+        body = cl[3]
+        pricing.append({
+            "pricingItemId": f"PRI-{pid}-{len(pricing) + 1:02d}",
+            "pricingType": ("OVERDUE" if any(k in body for k in ("罚息", "逾期"))
+                            else ("INTEREST_RATE" if "利率" in body else "FEE")),
+            "explanation": body,
+            "determiningFactors": ["费率金额：源材料未给出具体数值，待核定（不编造）"],
+            "disclosureLevel": "RM_INTERNAL",
+            "approvalRequired": any(k in body for k in ("审批", "审核")),
+            "priceListEvidenceRefs": E(8),
+        })
 
     # ---- SALES BOUNDARIES（§10）----
     sales = []
@@ -236,7 +280,7 @@ def build_one(pr: dict, alias_map: dict | None = None) -> dict:
         "prerequisites": prerequisites,
         "processSteps": steps,
         "materialGroups": material_groups,
-        "pricingItems": [],
+        "pricingItems": pricing,
         "agreementClauses": [],
         "salesBoundaries": sales,
         "comparison": comparison,
@@ -249,11 +293,14 @@ def build_one(pr: dict, alias_map: dict | None = None) -> dict:
                 "FIT ← §2 场景（TYPICAL_USE）+ §5 排除/禁止（NOT_SUITABLE/PROHIBITED_USE）+ §4 准入（ACCOUNT/CREDIT/CONTRACT）+ §6 前置",
                 "PROCESS ← §7 流程（按 → 切分；卡片无细节 ⇒ summary=stepName）",
                 "MATERIALS ← §7 材料（枚举清单；卡片无用途说明 ⇒ 如实标注）",
+                "PRICING ← §8 定价政策条款（逐条引用原文；费率金额待核定 ⇒ 不产出数字，"
+                "approvalRequired 依条款是否含审批/审核要求）",
                 "SALES ← §10 销售边界",
                 "COMPARE ← §6 关系 + front matter 前置/配套产品码（reviewState=DRAFT：脚本派生未人工复核）",
             ],
             "absentSections": {
-                "PRICING": "卡片 §8 仅记「按行内收费标准执行（待核定）」⇒ 不出内容（Owner 裁定 O-2）",
+                **({"PRICING": "卡片 §8 无定价政策条款（仅「按行内收费标准执行（待核定）」）"
+                              "⇒ 不出内容（Owner 裁定 O-2）"} if not pricing else {}),
                 "FAQ": "全仓无 FAQ 来源 ⇒ 不生成问答（不编造）",
                 "TERMS_missing_keys": ["LIMIT", "TENOR", "DRAW_MODE", "INTEREST", "REPAYMENT", "COLLATERAL"],
             },

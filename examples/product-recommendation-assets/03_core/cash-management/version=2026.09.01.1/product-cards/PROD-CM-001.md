@@ -22,7 +22,7 @@ required_materials: [BUSINESS_LICENSE, GROUP_STRUCTURE_CERTIFICATE, ACCOUNT_AUTH
 admission_criteria:
   customerTypes: [GENERAL_LEGAL_PERSON]
   minScale: MEDIUM
-  minRating: A
+  minRating: BB
   requiredAccountRelationship: SETTLEMENT_ACCOUNT
 capabilities: [FUND_POOLING, INTER_COMPANY_TRANSFER, INTEREST_OPTIMIZATION, LIQUIDITY_MANAGEMENT]
 applicable_scenarios: [GROUP_FUND_CENTRALIZATION, SUBSIDIARY_CASH_MANAGEMENT, INTEREST_SAVINGS]
@@ -43,6 +43,10 @@ complementary_products: [SETTLEMENT_ACCOUNT, CORPORATE_E_BANK]
 - 适用客户：集团型企业（母公司+子公司/分公司），有资金集中管理需求。
 - 适用场景：集团资金归集、子公司现金管理、利息节约。
 
+<!-- enrich:SRC-CM-001 begin -->
+- 适用范围依据（依据 SRC-CM-001 第五条）：本产品适用于以下客户分层：大型企业客户、集团客户、机构客户。
+<!-- enrich:SRC-CM-001 end -->
+
 ## 3. 产品能力
 
 - 资金归集（日终自动/手动归集）。
@@ -50,14 +54,23 @@ complementary_products: [SETTLEMENT_ACCOUNT, CORPORATE_E_BANK]
 
 ## 4. 准入条件
 
-- 集团型企业，母公司信用评级 A 及以上。
-- 成员单位均在本行开立结算账户。
 - 集团内部资金管理权限清晰、授权完整。
+
+<!-- enrich:SRC-CM-001 begin -->
+- 准入依据（依据 SRC-CM-001 第七条）：申请办理现金管理业务的客户，应当同时满足下列条件：一、在本行开立单位银行结算账户；二、内部评级不低于 BB 级；三、申请日前连续十二个月无重大结算违规记录。
+- 准入依据（依据 SRC-CM-001 第八条）：客户评级低于 BB 级但高于 B 级的，须经一级分行交易银行部与风险管理部双签审批，方可受理。
+- 准入依据（依据 SRC-CM-001 第九条）：单一客户纳入资金归集的成员单位不少于三家，且归集主账户与成员账户须属同一集团或同一实际控制人。
+<!-- enrich:SRC-CM-001 end -->
 
 ## 5. 排除条件与禁止用途
 
 - 无明确集团架构或授权关系的主体。
 - 禁止用于规避监管的关联交易。
+
+<!-- enrich:SRC-CM-001 begin -->
+- 排除依据（依据 SRC-CM-001 第五条）：小微企业客户不适用本产品，应适用结算类产品。
+- 排除依据（依据 SRC-CM-001 第六条）：本产品不适用于以下情形：一、客户被列入本行制裁或限制名单；二、客户评级低于本办法第八条要求；三、客户存在重大未决诉讼或重大失信记录。
+<!-- enrich:SRC-CM-001 end -->
 
 ## 6. 前置、互斥、替代与配套产品
 
@@ -66,12 +79,18 @@ complementary_products: [SETTLEMENT_ACCOUNT, CORPORATE_E_BANK]
 
 ## 7. 流程与材料
 
-- 流程：需求沟通 → 方案设计 → 协议签署 → 系统配置 → 上线运行。
+- 流程：客户申请 → 尽职调查 → 评级核验 → 额度与留存参数配置 → 协议签署 → 系统开通 → 回访核验（依据 SRC-CM-001 第十五条）
 - 材料：营业执照、集团架构证明、账户授权书。
+- 办理渠道：现金管理业务的开办渠道包括：柜面、企业网银、银企直联及开放银行接口。首次签约必须经柜面完成身份核验与协议签署。（依据 SRC-CM-001 第十三条）
 
 ## 8. 价格边界
 
 - 账户管理费、归集手续费按行内收费标准执行（待核定）。
+
+<!-- enrich:SRC-CM-001 begin -->
+- 定价政策（依据 SRC-CM-001 第十六条）：现金管理服务费按照协议约定收取，收费标准应当符合《商业银行服务价格管理办法》关于市场调节价公示与告知的要求。
+- 定价政策（依据 SRC-CM-001 第十七条）：服务费的收取、减免与调整须经一级分行价格管理岗审核，减免幅度超过标准费率百分之五十的报总行审批。
+<!-- enrich:SRC-CM-001 end -->
 
 ## 9. 风险提示与人工复核
 

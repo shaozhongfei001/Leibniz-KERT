@@ -1,12 +1,13 @@
 {
   "allowedClaimTypes": [
-    "PROCESS",
     "ELIGIBILITY",
+    "PROCESS",
+    "PRICE",
     "RISK"
   ],
   "authorityLevel": "INTERNAL_POLICY",
-  "byteSize": 6672,
-  "bytesSha256": "7e91a8a7b9572e6a25ea153f28311d12af0d2135938562f162f549f597948267",
+  "byteSize": 6924,
+  "bytesSha256": "34afeab9470a6940948536cc5e22a29b942467cf3be25f02156de8d52ad843a2",
   "ingestedAt": "2026-09-22T21:40:00+08:00",
   "pageCount": null,
   "productFamily": "SETTLEMENT",
@@ -14,7 +15,7 @@
   "provenanceUrl": null,
   "sourceId": "SRC-SET-002",
   "sourcePath": "01_raw/_authoritative/SRC-SET-002.DEMO.md",
-  "sourceVersionId": "SV-SRCSET002-20260922-7e91a8a7",
+  "sourceVersionId": "SV-SRCSET002-20260922-34afeab9",
   "supersededBy": null,
   "zone": "_authoritative"
 }

@@ -5,8 +5,8 @@
     "RISK"
   ],
   "authorityLevel": "INTERNAL_POLICY",
-  "byteSize": 5396,
-  "bytesSha256": "75a3b60228ab7e815590381d49f71ece4e0862a51406941b9a78e7f62e586ead",
+  "byteSize": 5632,
+  "bytesSha256": "c606d1ae6c34d6178ad751e4a77387208bcfccff59341da8356bfb999093cb5f",
   "ingestedAt": "2026-09-22T21:40:00+08:00",
   "pageCount": null,
   "productFamily": "CROSS_BORDER",
@@ -14,7 +14,7 @@
   "provenanceUrl": null,
   "sourceId": "SRC-CB-001",
   "sourcePath": "01_raw/_authoritative/SRC-CB-001.DEMO.md",
-  "sourceVersionId": "SV-SRCCB001-20260922-75a3b602",
+  "sourceVersionId": "SV-SRCCB001-20260922-c606d1ae",
   "supersededBy": null,
   "zone": "_authoritative"
 }

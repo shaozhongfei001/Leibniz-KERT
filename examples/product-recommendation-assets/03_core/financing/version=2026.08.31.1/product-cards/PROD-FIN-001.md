@@ -22,7 +22,7 @@ required_materials: [BUSINESS_LICENSE, FINANCIAL_STATEMENT, TAX_CERTIFICATE, TRA
 admission_criteria:
   customerTypes: [GENERAL_LEGAL_PERSON]
   minScale: SMALL
-  minRating: BBB
+  minRating: BB
   requiredAccountRelationship: SETTLEMENT_ACCOUNT
 capabilities: [WORKING_CAPITAL, SHORT_TERM_LIQUIDITY, REVOLVING_CREDIT]
 applicable_scenarios: [WORKING_CAPITAL_TURNOVER, SEASONAL_STOCKING]
@@ -44,6 +44,10 @@ complementary_products: [SETTLEMENT_ACCOUNT, CORPORATE_E_BANK, CASH_MANAGEMENT]
 
 短期流动资金贷款，用于企业日常生产经营周转（采购原材料、季节性备货、营运资金周转等），期限 ≤1 年（循环/非循环额度待核定）。客户价值：以授信额度平滑日常营运资金缺口，随借随还、按实际占用计息，避免一次性中长期负债。
 
+<!-- enrich:SRC-FIN-001 begin -->
+- 制度依据（依据 SRC-FIN-001 第四条）：本办法所称借款人应为依法登记并存续的法人或非法人组织；按照国家有关规定不得办理银行贷款的主体除外。
+<!-- enrich:SRC-FIN-001 end -->
+
 ## 2. 适用客户与适用场景
 
 - 适用客户：依法设立、正常经营满 2 年（待核定）、信用评级达标、有稳定经营流水与真实经营背景的中型/小型企业。
@@ -58,11 +62,19 @@ complementary_products: [SETTLEMENT_ACCOUNT, CORPORATE_E_BANK, CASH_MANAGEMENT]
 
 - 依法设立并有效存续；证照齐全有效。
 - 经营年限 ≥2 年（待核定）；具有真实、持续的经营与还款能力。
-- 行内信用评级达标（BBB 及以上，待核定）。
+
 - 无重大不良信用记录、无失信被执行等负面信息。
 - 在本行开立对公结算账户，结算流水可核实。
 - 资金用途合法合规、与经营背景匹配。
 - 提供足额合法有效担保或经信用审批通过。
+
+<!-- enrich:SRC-FIN-001 begin -->
+- 准入依据（依据 SRC-FIN-001 第四条）：本办法所称借款人应为依法登记并存续的法人或非法人组织；按照国家有关规定不得办理银行贷款的主体除外。
+- 准入依据（依据 SRC-FIN-001 第五条）：借款人应同时满足下列基本条件：一、依法经市场监督管理部门或主管部门核准登记；二、借款用途明确、合法；三、具有持续经营能力与合法还款来源；四、信用状况良好、近十二个月无重大结算违规记录；五、内部评级不低于本办法第六条要求。
+- 准入依据（依据 SRC-FIN-001 第六条）：内部评级与受理档位统一按《对公客户准入与评级管理办法》（`SRC-XFAM-001`）第八条（档位矩阵）、第九条（双签审批）执行；本办法不再另行规定评级档位，避免与统一办法出现两套口径。
+- 准入依据（依据 SRC-FIN-001 第七条）：下列情形不得受理：一、借款用途属本办法第九条禁止用途；二、被列入本行制裁或限制名单；三、近十二个月发生贷款资金挪用且未整改完毕。
+- 准入依据（依据 SRC-FIN-001 第二十条）：本行流动资金贷款业务准入线为内部评级 BB 级；评级低于该线的，按《对公客户准入与评级管理办法》（`SRC-XFAM-001`）第八条、第九条处理。品种适用范围（**非准入门槛**）：内部评级 AA 级（含）以上的客户可申请全部流动资金贷款品种，BB 级至 A 级客户限申请标准流动资金贷款品种。
+<!-- enrich:SRC-FIN-001 end -->
 
 ## 5. 排除条件与禁止用途
 
@@ -87,6 +99,10 @@ complementary_products: [SETTLEMENT_ACCOUNT, CORPORATE_E_BANK, CASH_MANAGEMENT]
 
 - 利率以 LPR 为基准加点，按风险定价；具体区间与审批权限由《产品定价管理办法》核定（待核定数值）。
 - 费率/违约金等按合同约定，边界以《流动资金贷款管理办法》为准（待核定）。
+
+<!-- enrich:SRC-FIN-001 begin -->
+- 定价政策（依据 SRC-FIN-001 第十一条）：贷款利率按照本行定价管理有关规定确定，并在借款合同中明确约定；涉及利率调整的，应当约定调整条件与生效方式。
+<!-- enrich:SRC-FIN-001 end -->
 
 ## 9. 风险提示与人工复核
 

@@ -25,9 +25,9 @@
       "required": "REQUIRED_HARD"
     },
     {
-      "assertionCount": 2,
+      "assertionCount": 1,
       "conflictId": null,
-      "evidenceCount": 2,
+      "evidenceCount": 1,
       "fieldPath": "eligibility.prerequisiteProducts",
       "knowledgeState": "CANDIDATE",
       "needsHumanReview": false,

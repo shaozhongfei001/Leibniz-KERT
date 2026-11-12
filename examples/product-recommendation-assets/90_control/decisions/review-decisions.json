@@ -1,4 +1,6 @@
 {
+  "attestation": "Owner 于 2026-09-22 明确回复「可以」⇒ 批准本件：(a) 采纳 REG-CB-001 节一（族专属，OCR 入库件）；(b) 确认**适用性**并授权登记增补 REG-FIN-001→PROD-FIN-002、REG-CM-002→PROD-SET-001/002 ⇒ 据此新增 FIN-002 / SET-001 / SET-002 三卡采纳（族专属源条款序最小者）。本件 supersedes signed-pc8-r4.json；notAdopted 按**当前实况重算**（r4 列表含 r4 已采纳的 3 卡，属陈旧记录）。**不构成合规结论**；clause_verified=false 与逐条复核义务不变。",
+  "attestedAt": "2026-09-22T23:30:00+08:00",
   "attestedBy": "OWNER",
   "decisions": [
     {
