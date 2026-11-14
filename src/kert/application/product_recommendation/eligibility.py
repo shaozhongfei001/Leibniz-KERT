@@ -73,8 +73,11 @@ _DEFAULT_RULE_BUNDLE = {r["ruleId"]: r["ruleVersion"] for r in RULE_CATALOG}
 
 # 企业规模有序刻度（越大越高级）；低于 minScale → 不满足准入
 _SCALE_ORDER = ("MICRO", "SMALL", "MEDIUM", "LARGE")
-# 评级有序刻度（越大越好）
-_RATING_ORDER = ("BBB", "A", "AA", "AAA")
+# 评级有序刻度（越大越好）。
+# 必须覆盖产品卡实际使用的门槛：examples/product-recommendation-assets/03_core 下
+# PROD-CM-001 / PROD-FIN-001 的 front matter 是 `minRating: BB`。
+# 缺 BB 时 `_RATING_ORDER.index(min_rating)` 抛 ValueError，冒泡成 SP-15 skill_error。
+_RATING_ORDER = ("BB", "BBB", "A", "AA", "AAA")
 
 _UNKNOWN_QUESTIONS = {
     "PRODUCT_STATUS_UNKNOWN": ("产品版本状态缺失", "补录产品版本状态后重跑"),

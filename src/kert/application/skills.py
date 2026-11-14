@@ -65,6 +65,28 @@ from ..infrastructure.classification import detect_value_patterns, redact_for_ll
 
 _log = logging.getLogger(__name__)
 
+
+def _top_level_json_keys(snippet: str) -> list[str]:
+    """从「结构示意型」JSON 片段中按花括号层级提取**顶层**键。
+
+    ``references/output-schema.md`` 的示例常含 ``"score": 1-5`` 之类非法 JSON 值，
+    ``json.loads`` 必然失败。旧兜底用 ``^\\s{0,4}"key":`` 正则，会把
+    ``dimensions`` / ``battleOrder`` 的**嵌套子键**也收进 ``schema_keys``，
+    使 fail-closed 结构校验对任何真实输出都失败（八维研判 / 作战单组装恒 skill_error）。
+    本函数只认最外层对象（depth == 1）的键，缩进无关。
+    """
+    keys: list[str] = []
+    depth = 0
+    for line in snippet.splitlines():
+        stripped = line.strip()
+        if depth == 1:
+            match = re.match(r'"([A-Za-z_]\w*)"\s*:', stripped)
+            if match and match.group(1) not in keys:
+                keys.append(match.group(1))
+        depth += line.count("{") - line.count("}")
+    return keys
+
+
 IDEMPOTENCY_TTL_S = 600
 #: Runtime Store 中 Skill 执行幂等记录的作用域（M2.3）
 IDEMPOTENCY_SCOPE = "skill_execute"
@@ -271,8 +293,9 @@ class SkillExecutionService:
                         if isinstance(_obj, dict):
                             schema_keys = list(_obj.keys())
                     except Exception:
-                        _keys = _re.findall(r'^\s{0,4}"([A-Za-z_]\w*)"\s*:', snippet, _re.M)
-                        schema_keys = list(dict.fromkeys(_keys))
+                        # 非严格 JSON 的结构示意（如 "score": 1-5）→ 只取顶层键。
+                        # 用完整片段而非截断后的 schema_hint，避免括号层级被切断。
+                        schema_keys = _top_level_json_keys(m.group(1))
             self._packages[name] = {
                 "name": name, "version": version, "description": description,
                 "instruction": (body or "")[:3000],

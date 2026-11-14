@@ -23,6 +23,7 @@ from kert.api.server import (
     SKILL_PACKAGES_ENV,
     resolve_skill_packages,
 )
+from kert.application.skills import _top_level_json_keys
 
 
 def _make_packages(root: Path) -> Path:
@@ -78,3 +79,22 @@ def test_blank_env_var_is_treated_as_unset(
     """空白视为未设置：不得因「显式配置」而抛错。"""
     monkeypatch.setenv(SKILL_PACKAGES_ENV, "   ")
     assert resolve_skill_packages() in (None, DEFAULT_SKILL_PACKAGES)
+
+
+def test_schema_keys_only_contains_top_level_keys() -> None:
+    """示意型 output-schema（含 `"score": 1-5` 非法值）不得把嵌套子键当成顶层必含键。
+
+    回归：旧正则 `^\\s{0,4}"key":` 会把 `dimensions` / `battleOrder` 的子键
+    也收进 `schema_keys`，使八维研判与作战单组装恒 fail-closed（E2E 5 条红）。
+    """
+    snippet = """{
+  "schemaVersion": "1.0",
+  "battleOrder": {
+    "meta": { "id": "BO-1" },
+    "sections": { "customerBasic": { "missingFields": [] } }
+  },
+  "disclaimer": "..."
+}"""
+    assert _top_level_json_keys(snippet) == [
+        "schemaVersion", "battleOrder", "disclaimer",
+    ]
